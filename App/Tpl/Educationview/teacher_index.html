@@ -258,7 +258,7 @@
                 choose.push(_val)
             }
             // var data        =   {role_id:choose};
-            
+
             _requert.role_id = []
             _requert.role_id = choose;
             loadingTableBycondition();
@@ -284,7 +284,7 @@
     //table
     function table(){
         $("#table_list_2").clearGridData();
-        
+
         $.jgrid.defaults.styleUI = "Bootstrap";
 
         var _height = $(window).height() - ($(".title-bar").outerHeight() + $("#gridpager").outerHeight() + $("#secondPart").height() + 260);
@@ -305,44 +305,44 @@
             useColSpanStyle: true,
             colNames: ["id","教师名称", "教师角色", "创建人", "创建时间", "操作"],
             colModel: [{
-                    name: "user_id",
-                    index: "user_id",
-                    editable: false,
-                    sorttype: "text",
-                    search: true,
-                    hidden:true
-                },{
-                    name: "teacher_name",
-                    index: "teacher_name",
-                    editable: false,
-                    sorttype: "text",
-                    search: true,
-                }, {
-                    name: "roles",
-                    index: "roles",
-                    editable: false,
-                    sorttype: "text",
-                    search: true
-                }, {
-                    name: "creator_name",
-                    index: "creator_name",
-                    editable: false,
-                    sorttype: "text",
-                    search: true
-                }, {
-                    name: "create_at",
-                    index: "create_at",
-                    editable: false,
-                    sorttype: "text",
-                    search: true,
-                }, {
-                    name: "user_id",
-                    index: "user_id",
-                    editable: false,
-                    sorttype: "text",
-                    search: true,
-                    formatter:btngroup
-                }],
+                name: "user_id",
+                index: "user_id",
+                editable: false,
+                sorttype: "text",
+                search: true,
+                hidden:true
+            },{
+                name: "teacher_name",
+                index: "teacher_name",
+                editable: false,
+                sorttype: "text",
+                search: true,
+            }, {
+                name: "roles",
+                index: "roles",
+                editable: false,
+                sorttype: "text",
+                search: true
+            }, {
+                name: "creator_name",
+                index: "creator_name",
+                editable: false,
+                sorttype: "text",
+                search: true
+            }, {
+                name: "create_at",
+                index: "create_at",
+                editable: false,
+                sorttype: "text",
+                search: true,
+            },  {
+                name: "oper",
+                index: "oper",
+                editable: false,
+                sorttype: "text",
+                search: true,
+                formatter:btngroup
+            }],
             forceFit: true,
             //分页
             rowNum: 30,
@@ -356,22 +356,31 @@
                 total: "total"
             },
             hidegrid: false,
-            beforeSelectRow: function (rowid, e) {  
+            beforeSelectRow: function (rowid, e) {
 
-               var $myGrid = $(this),  
-                   i = $.jgrid.getCellIndex($(e.target).closest('td')[0]),  
-                   cm = $myGrid.jqGrid('getGridParam', 'colModel');  
-               return (cm[i].name === 'cb');  
+                var $myGrid = $(this),
+                    i = $.jgrid.getCellIndex($(e.target).closest('td')[0]),
+                    cm = $myGrid.jqGrid('getGridParam', 'colModel');
+                return (cm[i].name === 'cb');
             } ,
             loadComplete: function (res) {
                 // console.log("res", res);
             },
             gridComplete: function () {
+                var rowIds = jQuery("#table_list_2").jqGrid('getDataIDs');
+                var s_ahref = "";
+                for (var k = 0; k < rowIds.length; k++) {
+                    console.log(rowIds[k])
+                    //多选
+                    var curRowData = jQuery("#table_list_2").jqGrid('getRowData', rowIds[k]);
+                    var curChk = $("#table_list_2 #" + rowIds[k] + "").find("input");
+                    curChk.attr('value', curRowData['user_id']);//给checkbox赋值
+                }
                 setWidthHeight();
             },
             onSelectRow: function (rowid, status) {
-                    $("#title-hide").hide()
-                    $("#title-show").show();
+                $("#title-hide").hide()
+                $("#title-show").show();
                 if (status) {
                     icheck_num = icheck_num + 1;
                 } else {
@@ -382,7 +391,7 @@
                     $("#title-show").hide();
                 }
                 $("#icheck_num").text(icheck_num)
-            }, 
+            },
             onSelectAll: function (s, sx) {
                 if (sx) {
                     icheck_num = s.length
@@ -425,7 +434,9 @@
     }
     //渲染表格最后一列...操作按钮
     function btngroup(cellvalue, options, cell){
-        return '<button type="button" onclick="editTeacher('+cellvalue+')" class="btn btn-info btn-sm">角色更改</button> <button type="button" onclick="detailTeacher('+cellvalue+')" class="btn btn-info btn-sm">详情修改</button> <button type="button" onclick="liveTeacher('+cellvalue+')" class="btn btn-info btn-sm">生活照管理</button>'
+        return '<button type="button" onclick="editTeacher('+cell.user_id+')" class="btn btn-info btn-sm">角色更改</button> <button type="button" onclick="detailTeacher('+cell.user_id+')" class="btn btn-info btn-sm">详情修改</button> <button type="button" onclick="liveTeacher('+cell.user_id+')" class="btn btn-info btn-sm">生活照管理</button>'
+
+//return '<button type="button" onclick="editTeacher('+cellvalue+')" class="btn btn-info btn-sm">角色更改</button> <button type="button" onclick="detailTeacher('+cellvalue+')" class="btn btn-info btn-sm">详情修改</button> <button type="button" onclick="liveTeacher('+cellvalue+')" class="btn btn-info btn-sm">生活照管理</button>'
     }
     // 消息群发
     $("#dialog-message-send").dialog({
@@ -439,7 +450,13 @@
                 $('#table_list_2 .cbox').each(function(){
                     console.log($(this).val())
                 })
-                var roleIds         =   $('#table_list_2').jqGrid('getGridParam','selarrrow'),
+                var id_array = new Array();
+                $("input.cbox:checked").each(function () {
+                    id_array.push($(this).val());
+                });
+                console.log(id_array)
+//                var roleIds         =   $('#table_list_2').jqGrid('getGridParam','selarrrow'),
+                var roleIds         =   id_array,
                     role            =   1,
                     title           =   $('#message_title').val(),
                     message         =   $('#message_content').val(),
