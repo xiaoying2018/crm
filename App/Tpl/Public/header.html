@@ -319,7 +319,7 @@ $(function(){
 		            		<span class="fa arrow"></span>
 	            		</a>
 
-	            		<ul class="nav-second-level" <if condition="$module_name eq 'koubei' || $module_name eq 'professor' || $module_name eq 'index' || $module_name eq 'examine' || $module_name eq 'business' || ($module_name eq 'leads' && $action_name neq 'analytics') || $module_name eq 'cooperate' || $module_name eq 'contract' || $module_name eq 'finance' || $module_name eq 'case' || $module_name eq 'program' || $module_name eq 'product' || $module_name eq 'contacts'">style="display: block;"</if>>
+	            		<ul class="nav-second-level" <if condition="$module_name eq 'koubei' || $module_name eq 'professor' || $module_name eq 'index' || $module_name eq 'examine' || $module_name eq 'business' || ($module_name eq 'leads' && $action_name neq 'analytics') || $module_name eq 'cooperate' || $module_name eq 'contract' || $module_name eq 'finance' || $module_name eq 'case' || $module_name eq 'program' || $module_name eq 'product' || $module_name eq 'contacts' || $module_name eq 'casedata'">style="display: block;"</if>>
 							<?php if ( checkPerByAction('leads','index') ): ?>
 	            			<li data-flag="leads_index" <if condition="$module_name eq 'leads' &&  $action_name eq 'index'">class="active"</if>>
 	            				<i class="fa fa-angle-right"></i>
@@ -378,6 +378,14 @@ $(function(){
 	            				<a href="{:U('case/index')}">案例查询</a>
 	            			</li>
 							<?php endif; ?>
+
+                            <?php if ( checkPerByAction('casedata','index') ): ?>
+                            <li data-flag="casedata_index" <if condition="$module_name eq 'casedata' &&  $action_name eq 'index'">class="active"</if>>
+                            <i class="fa fa-angle-right"></i>
+                            <a href="{:U('casedata/index')}">案例数据</a>
+                            </li>
+                            <?php endif; ?>
+
 							<?php if ( checkPerByAction('program','index') ): ?>
 	            			<li data-flag="program_index" <if condition="$module_name eq 'program' &&  $action_name eq 'index'">class="active"</if>>
 	            				<i class="fa fa-angle-right"></i>
@@ -887,6 +895,11 @@ $(function(){
 
 						<?php if($module_name == 'cooperations'):?>
                         <li class="active"><a href="{:U('cooperations/index')}"><span class="fa fa-bank" style="display:inline"></span>&nbsp;&nbsp;合作机构</a></li>
+						<?php endif; ?>
+
+						<!-- 案例数据 -->
+						<?php if($module_name == 'casedata' && $action_name == 'index'): ?>
+							<li class="active"><a href="{:U('casedata/index')}">案例数据</a></li>
 						<?php endif; ?>
 
 						<?php if($module_name == 'case'):?>
