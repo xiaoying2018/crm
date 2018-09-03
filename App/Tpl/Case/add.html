@@ -1,0 +1,884 @@
+<include file="Public:header"/>
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css"/>
+<script src="https://cdn.bootcss.com/vue/2.5.13/vue.min.js"></script>
+<link href="/Public/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="/Public/js/images-loaded.min.js" type="text/javascript"></script>
+<script src="/Public/js/litebox.min.js" type="text/javascript"></script>
+<style type="text/css">
+    body {
+        overflow-y: hidden;
+    }
+
+    #main_pic_prev {
+        width: 120px;
+        height: 120px;
+        border: 1px dashed #d3d3d6;
+    }
+
+    .add_body_title {
+        margin: 15px auto 30px auto;
+    }
+
+    .add_title {
+        padding-bottom: 10px;
+        height: 60px;
+        margin-bottom: 15px;
+    }
+
+    .add_title > span {
+        border-bottom: 2px solid #1ab394;
+        font-size: 24px;
+    }
+
+    .add_body > div > .full-height-scroll {
+        border-right: 1px dotted #ccc;
+    }
+
+    .add_body_title {
+        margin: 20px auto 20px auto;
+        padding-left: 25px;
+    }
+
+    .add_body_form {
+        padding-left: 38px;
+        padding-bottom: 30px;
+        margin-bottom: 10px;
+        border-bottom: 1px dotted #D8D8D8;
+    }
+
+    .add_body_form > form > .form-group {
+        margin-bottom: 25px;
+    }
+
+    body {
+        overflow-y: hidden;
+    }
+
+    .form-control {
+        float: left;
+    }
+
+    .checkbox {
+        float: left;
+    }
+
+    ._prompt {
+        color: #dc4c4c;
+        white-space: nowrap;
+        font-size: 12px;
+    }
+
+    ._files table {
+        margin-top: 15px;
+        display: none;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    ._files table::-webkit-scrollbar { /*滚动条整体样式*/
+        width: 8px; /*高宽分别对应横竖滚动条的尺寸*/
+        height: 10px;
+    }
+
+    ._files table::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
+        border-radius: 5px;
+        /*  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);*/
+        background: #d8d8d8;
+    }
+
+    ._files table::-webkit-scrollbar-track { /*滚动条里面轨道*/
+        /*-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);*/
+        /*border-radius: 5px;*/
+        background: #F6F6F6;
+    }
+</style>
+<script>
+    $(function () {
+        $(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+        $(window).resize(function () {
+            $(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+        })
+    })
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-12">
+    <include file="Public:alert"/>
+    <form class="form-horizontal" id="form" role="form" action="{:U('case/adddata')}" method="post"
+          enctype="multipart/form-data">
+        <div class="ibox-content add_body" id="add_body" style="">
+            <div class="row">
+                <div class="col-md-12 add_body" style="padding-right: 0px;">
+                    <div class="full-height-scroll">
+                        <div class="row">
+                            <div class="col-md-12 add_body_title">
+                                <div class="all-inline">
+                                    <span class="sq-tag"></span>
+                                    <div class="text-tag">
+                                        <span>案例基础信息</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 add_body_form">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">姓名：</label>
+                                    <div class="col-md-7">
+                                        <input class="form-control required" type="text" id="name" name="names" value=""
+                                               aria-required="true" aria-invalid="true">
+                                        <!--<select class="form-control required"  id="names" name="names" value="">
+                                            <option value=''>--请选择--</option>
+                                            <volist name="customer" id="vo" key="key">
+                                                <option value="{$vo['name']}">
+                                                    {$vo['name']}
+                                                </option>
+                                            </volist>
+                                        </select>-->
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">录入大学：</label>
+                                    <div class="col-md-7">
+                                        <input class="form-control required" type="text" id="receive_college"
+                                               name="receive_college" value="" aria-required="true" aria-invalid="true">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">项目分类：</label>
+                                    <div class="col-md-7">
+                                        <select class="form-control required" id="programcate" name="programcate" value="">
+                                            <option value=''>--请选择--</option>
+                                            <volist name="programcate" id="vo" key="key">
+                                                <option value="{$vo['name']}">
+                                                    {$vo['name']}
+                                                </option>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">专业分类：</label>
+                                    <div class="col-md-7">
+                                        <select class="form-control" id="majorcate" name="majorcate" value="">
+                                            <option value=''>--请选择--</option>
+                                            <volist name="majorcate" id="vo" key="key">
+                                                <option value="{$vo['name']}">
+                                                    {$vo['name']}
+                                                </option>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">录取专业：</label>
+                                    <div class="col-md-7">
+                                        <input class="form-control" type="text" id="receive_major" name="receive_major"
+                                               value="" aria-required="true" aria-invalid="true">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">本科大学：</label>
+                                    <div class="col-md-7">
+                                        <input class="form-control" type="text" id="Undergraduate_college"
+                                               name="undergraduate_college" value="" aria-required="true"
+                                               aria-invalid="true">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">本科专业：</label>
+                                    <div class="col-md-7">
+                                        <input class="form-control" type="text" id="Undergraduate_major"
+                                               name="undergraduate_major" value="" aria-required="true"
+                                               aria-invalid="true">
+                                    </div>
+                                </div>
+                                <div class="form-group cluecateBox col-md-6">
+                                    <label class="col-md-3 control-label">学校级别：</label>
+                                    <div class="col-md-7">
+                                        <select class="form-control" id="college_lev" name="college_lev" value="">
+                                            <option value=''>--请选择--</option>
+                                            <option value="S">S</option>
+                                            <option value="A">A</option>
+                                            <option value="B">B</option>
+                                            <option value="C">C</option>
+                                            <option value="Z">Z</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group cluecateBox col-md-6">
+                                    <label class="col-md-3 control-label">日语等級：</label>
+                                    <div class="col-md-7">
+                                        <select class="form-control required" id="japan_language" name="japan_language" value="">
+                                            <option value=''>--请选择--</option>
+                                            <option value="0基础">0基础</option>
+                                            <option value="N1">N1</option>
+                                            <option value="N2">N2</option>
+                                            <option value="N3">N3</option>
+                                            <option value="N4">N4</option>
+                                            <option value="N5">N5</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">英语等级：</label>
+                                    <div class="col-md-7">
+                                        <input class="form-control" type="text" id="eng_language" name="eng_language"
+                                               value="" aria-required="true" aria-invalid="true">
+                                    </div>
+                                </div>
+                                <!--								<div class="form-group cluecateBox col-md-6">
+                                                                    <label class="col-md-3 control-label">专业分类：</label>
+                                                                    <div class="col-md-7">
+                                                                        <select class="form-control" id="major_category" name="major_category" value="">
+                                                                            <option value=''>--请选择--</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>-->
+
+                                <!-- 分类选择 -->
+                                <div class="form-group cluecateBox col-md-6">
+                                    <label class="col-md-3 control-label">录入年份：</label>
+                                    <div class="col-md-7">
+                                        <select class="form-control required" id="receive_year" name="receive_year" value="">
+                                            <option value=''>--请选择--</option>
+                                            <for start="2010" end="2020">
+                                                <option value="{$i}">
+                                                    {$i}
+                                                </option>
+                                            </for>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!--联系人-->
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">签约产品：</label>
+                                    <div class="col-md-7">
+                                        <select class="form-control" id="contract_product" name="contract_product"
+                                                value="">
+                                            <option value=''>--请选择--</option>
+                                            <volist name="productdata" id="vo" key="key">
+                                                <option value="{$vo['name']}">
+                                                    {$vo['name']}
+                                                </option>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-9">
+                                    <label class="col-md-2 control-label">学生学历：</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control" id="education" name="education" value="" style="width: 91%">
+                                            <option value=''>--请选择--</option>
+                                            <option value="初中">初中</option>
+                                            <option value="高中">高中</option>
+                                            <option value="大学/大专在读">大学/大专在读</option>
+                                            <option value="毕业工作">毕业工作</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!--<div class="form-group col-md-6">-->
+                                    <!--<label class="col-md-3 control-label"></label>-->
+                                    <!--<div class="col-md-7">-->
+                                        <!--<select class="form-control" id="educations" name="educations" value="">-->
+                                            <!--<option value=''>&#45;&#45;请选择&#45;&#45;</option>-->
+                                            <!--<option value="初中">初中</option>-->
+                                            <!--<option value="高中">高中</option>-->
+                                            <!--<option value="大学/大专在读">大学/大专在读</option>-->
+                                            <!--<option value="毕业工作">毕业工作</option>-->
+                                        <!--</select>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+
+
+
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">案例特点：</label>
+                                    <div class="col-md-7">
+                                        <!--<input class="form-control required" type="textarea"  rows="5" id="character" name="character" value="" aria-required="true" aria-invalid="true">-->
+                                        <textarea rows="6" class="form-control " id="character"
+                                                  name="character"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-3 control-label">备注：</label>
+                                    <div class="col-md-7">
+                                        <!--<input class="form-control required" type="textarea"  rows="5" id="character" name="character" value="" aria-required="true" aria-invalid="true">-->
+                                        <textarea rows="6" class="form-control " id="remark" name="remark"></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row" style="padding-left: 38px;">
+                                <div class="form-group col-md-6 _files"
+                                     style="padding-bottom: 20px; padding-top: 20px;">
+                                    <label class="col-md-3 control-label" style="margin-bottom: 15px;">研究计划书：<br/><span
+                                            class="_prompt">(*PS个人陈述/SOP/ESSAY)</span></label>
+                                    <div class="col-md-5" style="margin-bottom: 15px;">
+                                        <span id="main_word_name"></span>
+                                    </div>
+                                    <div class="col-md-2" style="margin-bottom: 15px;">
+                                        <a href="javascript:void(0);" class="add_file btn btn-success" data-flag="1">研究计划书</a>
+                                    </div>
+                                    <div class="" style="width: 85%;">
+                                        <table class="table product-table ">
+                                            <tr>
+                                                <td class="col-md-2">附件名称</td>
+                                                <td class="col-md-1">大小</td>
+                                                <td class="col-md-1">上传人</td>
+                                                <td class="col-md-2">上传时间</td>
+                                                <td class="col-md-2">操作</td>
+                                            </tr>
+                                            <!-- 文件列表 -->
+
+                                        </table>
+                                        <span class="col-md-2"></span>
+                                    </div>
+
+                                </div>
+                                <div class="form-group col-md-6 _files"
+                                     style="padding-bottom: 20px; padding-top: 20px;">
+                                    <label class="col-md-3 control-label" style="margin-bottom: 15px;">上传OFFER：
+                                        <br/><span class="_prompt">(*注意添加小莺水印)</span></label>
+                                    <div class="col-md-5" style="margin-bottom: 15px;">
+                                        <span id="main_word_name" style="margin-bottom: 15px;"></span>
+                                    </div>
+                                    <div class="col-md-1" style="margin-bottom: 15px;">
+                                        <!--<div class="btn btn-success fileinput-button">-->
+                                        <!--<span>上传附件</span>-->
+                                        <a href="javascript:void(0);" class="add_file btn btn-success" data-flag="2">上传offer</a>
+                                        <!--<input type="file" name="main_word" id="main_word" />-->
+                                        <!--</div>-->
+                                    </div>
+                                    <div class="" style="width: 85%;">
+                                        <table class="table product-table ">
+                                            <tr style="margin-bottom: 15px;">
+                                                <td class="col-md-2">附件名称</td>
+                                                <td class="col-md-1">大小</td>
+                                                <td class="col-md-1">上传人</td>
+                                                <td class="col-md-2">上传时间</td>
+                                                <td class="col-md-2">操作</td>
+                                            </tr>
+                                            <!-- 文件列表 -->
+
+                                        </table>
+                                        <span class="col-md-2"></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="form-group col-md-12">
+                                        <!--图片-->
+                                        <div class="form-group col-md-6 _files" style="padding-bottom: 20px;">
+                                            <label class="col-md-3 control-label"
+                                                   style="margin-bottom: 15px;">学员照片：<br/><span class="_prompt">(*建议手拿录取证书与讲师合影或正装照)</span></label>
+                                            <div class="col-md-5" style="margin-bottom: 15px;">
+                                                <!--  <img id="main_pic_prev" class="thumb80" />-->
+                                            </div>
+                                            <div class="col-md-1" style="margin-bottom: 15px; margin-left: 20px;">
+                                                <!--                                 <div class="btn btn-success fileinput-button">-->
+                                                <a href="javascript:void(0);" class="add_file btn btn-success"
+                                                   data-flag="3">上传图片</a>
+                                                <!--  </div>-->
+                                            </div>
+                                            <div class="" style="width: 85%;">
+                                                <table class="table product-table _table1 col-md-10">
+                                                    <tr style="margin-bottom: 15px;">
+                                                        <td class="col-md-2">附件名称</td>
+                                                        <td class="col-md-1">大小</td>
+                                                        <td class="col-md-1">上传人</td>
+                                                        <td class="col-md-2">上传时间</td>
+                                                        <td class="col-md-2">操作</td>
+                                                    </tr>
+                                                    <!-- 文件列表 -->
+
+                                                </table>
+                                                <span class="col-md-2"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group  col-md-6 _files" style="padding-bottom: 20px;">
+                                            <label class="col-md-3 control-label"
+                                                   style="margin-bottom: 15px;">其他文件：<br/><span class="_prompt">(*简历/签约协议纸质扫描件/报名表/收据等)</span></label>
+                                            <div class="col-md-5" style="margin-bottom: 15px;">
+                                                <!--  <img id="main_pic_prev" class="thumb80" />-->
+                                            </div>
+                                            <div class="col-md-1" style="margin-bottom: 15px;">
+                                                <!--                                 <div class="btn btn-success fileinput-button">-->
+                                                <a href="javascript:void(0);" class="add_file btn btn-success"
+                                                   data-flag="4">其他文件上传</a>
+                                                <!--  </div>-->
+                                            </div>
+
+                                            <div style="width: 85%;">
+                                                <table class="table product-table col-md-10">
+                                                    <tr style="margin-bottom: 15px;">
+                                                        <td class="col-md-2">附件名称</td>
+                                                        <td class="col-md-1">大小</td>
+                                                        <td class="col-md-1">上传人</td>
+                                                        <td class="col-md-2">上传时间</td>
+                                                        <td class="col-md-2">操作</td>
+                                                    </tr>
+                                                    <!-- 文件列表 -->
+
+                                                </table>
+                                                <span class="col-md-2"></span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="" style="display:none" id="detail-dialog-file" title="添加文件">
+                                        <div class="spiner-example">
+                                            <div class="sk-spinner sk-spinner-three-bounce">
+                                                <div class="sk-bounce1"></div>
+                                                <div class="sk-bounce2"></div>
+                                                <div class="sk-bounce3"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" value="" id="case_1" name="jihua"/>
+                                    <input type="hidden" value="" id="case_2" name="offer"/>
+                                    <input type="hidden" value="" id="case_3" name="zp"/>
+                                    <input type="hidden" value="" id="case_4" name="other"/>
+                                    <input type="hidden" value="" id="case_01"/>
+                                    <input type="hidden" value="" id="case_02"/>
+                                    <input type="hidden" value="" id="case_03"/>
+                                    <input type="hidden" value="" id="case_04"/>
+                                    <input type="hidden" id="allowExts"
+                                           value="pdf,doc,ppt,txt,xls,zip,docx,rar,pptx,xlsx,jpg,jpeg,png,gif">
+                                    <!--文档-->
+                                    <!-- <div class="form-group">
+                                        <label class="col-md-4 control-label">附件offer：</label>
+                                        <input type="file" name="main_word" id="main_word"/>
+                                    </div> -->
+
+                                    <script>
+                                        var arry = ""
+                                        var _this = ""
+                                        var _index;
+                                        var arry_;
+                                        $(".add_file").click(function () {
+                                            _index = $(this).attr("data-flag");
+                                            arry = "#case_" + $(this).attr("data-flag")
+                                            arry_ = "#case_0" + $(this).attr("data-flag")
+                                            $(arry_).val("")
+                                            _this = $(this).parent().parent().find("table")
+
+                                        })
+
+                                        $("body").on("click", ".ui-button-text-only", function () {
+                                            var files = $(arry_).val()
+                                            $.ajax({
+                                                type: "get",
+                                                url: "/index.php?m=case&a=getfile&file_id=" + files,
+                                                success: function (data) {
+                                                    console.log(data)
+//												if(!data=""){
+                                                    _this.css({"display": "inherit"})
+                                                    for (var i = 0; i < data.length; i++) {
+
+                                                        if (data[i].no_p_file_path.split(".")[1] == "docx") {
+                                                            var _str = "<a  href=" + data[i].no_p_file_path + " title='点击查看大图'>" + data[i].name + "</a>"
+                                                        } else if (data[i].no_p_file_path.split(".")[1] == "doc") {
+                                                            var _str = "<a  href=" + data[i].no_p_file_path + " title='点击查看大图'>" + data[i].name + "</a>"
+                                                        }
+                                                        else if (data[i].no_p_file_path.split(".")[1] == "xls") {
+                                                            var _str = "<a  href=" + data[i].no_p_file_path + " title='点击查看大图'>" + data[i].name + "</a>"
+                                                        } else if (data[i].no_p_file_path.split(".")[1] == "xlsx") {
+                                                            var _str = "<a  href=" + data[i].no_p_file_path + " title='点击查看大图' >" + data[i].name + "</a>"
+                                                        } else {
+                                                            var _str = "<a class='litebox_file'  href=" + data[i].no_p_file_path + " title='点击查看大图' data-litebox-group='group-" + _index + "'>" + data[i].name + "</a>"
+                                                        }
+                                                        _this.append(
+                                                            "<tr>" +
+                                                            "<td>" + _str +
+                                                            //														"<img :src=" + data[i].no_p_file_path + " alt=''>" +
+                                                            //														"<img :src=" + data[i].file_path + " alt=''>&nbsp;&nbsp;&nbsp;" +
+                                                            //														"<a class='litebox_file' href=" + data[i].file_path + " title='点击查看大图' data-litebox-group='group-1'>aaa</a>" +
+                                                            //														"<a class='litebox_file' href=" + data[i].no_p_file_path + " title='点击查看大图'data-litebox-group='group-1' >"+data[i].name+"</a>" +
+                                                            //														"<a href='javascript:;' file='" + data[i].no_p_file_path + "' filename='" + data[i].name + "'>" + data[i].name + "</a>" +
+                                                            "</td>" +
+                                                            "<td>" + parseInt(data[i].size / 1024) + "kb</td>" +
+                                                            "<td>" +
+                                                            "<a class='role_info' rel='file.owner.role_id' 'href='javascript:void(0)'> <?php echo $_SESSION['full_name']; ?></a>" +
+                                                            "</td>" +
+                                                            "<td>" + data[i].cerate_time + "</td>" +
+                                                            "<td class='tdleft'>" +
+                                                            "<a href='javascript:void(0);' class='file_delete'data_fildid ='" + data[i].file_id + "'rel='file.file_id'>删除</a>" +
+                                                            "</td>" +
+                                                            "</tr>"
+                                                        )
+
+                                                    }
+                                                    $('.litebox_file').liteBox({
+                                                        revealSpeed: 400,
+                                                        background: 'rgba(0,0,0,.8)',
+                                                        overlayClose: true,
+                                                        escKey: true,
+                                                        navKey: true,
+                                                        errorMessage: '图片加载失败.'
+                                                    });
+//												}
+                                                }
+
+                                            });
+                                        })
+
+                                        $("body").on("click", ".file_delete", function () {
+                                            if ($(this).parent().parent().siblings().length < 2) {
+                                                $(this).parent().parent().parent().parent().hide()
+                                            }
+                                            $(this).parent().parent().remove()
+
+
+                                            $.ajax({
+                                                url: "/index.php?m=case&a=delfile&file_id=" + $(this).attr("data_fildid"),
+                                                methods: "get",
+                                                success: function (res) {
+                                                    console.log(res);
+                                                }
+                                            })
+                                        })
+
+
+                                        $(document).on('click', '.add_file', function () {
+                                            var _type = $(this).attr("data-flag");
+                                            $('#detail-dialog-file').dialog('open');
+                                            $('#detail-dialog-file').load('/index.php?m=file&a=addcasefile&id=' + _type);
+
+                                        });
+
+                                        $("#detail-dialog-file").dialog({
+                                            autoOpen: false,
+                                            modal: true,
+                                            width: 800,
+                                            maxHeight: 400,
+                                            position: ["center", 200],
+                                            buttons: {
+                                                "确认": function () {
+                                                    //												window.location.reload();
+                                                    $(this).dialog("close");
+                                                },
+                                                "取消": function () {
+                                                    $(this).dialog("close");
+                                                }
+                                            }
+                                        });
+
+
+                                        $(".customerModal select.form-control").addClass("edit");
+
+                                        window.setTimeout(function () {
+                                            $(".dv_textarea.textarea_edit").txtaAutoHeight();
+                                        }, 1000)
+
+                                        $("#main_word").change(function () {
+                                            var myfile = document.getElementById('main_word');
+                                            $("#main_word_name").text(myfile.files[0].name)
+                                        });
+
+                                        $.fn.extend({
+                                            txtaAutoHeight: function () {
+                                                return this.each(function () {
+                                                    var $this = $(this);
+                                                    if (!$this.attr('initAttrH')) {
+                                                        $this.attr('initAttrH', $this.outerHeight());
+                                                    }
+                                                    setAutoHeight(this).on('input', function () {
+                                                        setAutoHeight(this);
+                                                    });
+                                                });
+
+                                                function setAutoHeight(elem) {
+                                                    var $obj = $(elem);
+                                                    return $obj.css({
+                                                        height: $obj.attr('initAttrH'),
+                                                        'overflow-y': 'hidden'
+                                                    }).height(elem.scrollHeight);
+                                                }
+                                            }
+                                        });
+                                    </script>
+                                    <!--数据录入人-->
+                                    <!--<div class="form-group">
+                                            <label class="col-md-4 control-label">数据录入人：</label>
+                                            <div class="col-md-6">
+                                                <input class="form-control required error" type="text" id="contacts_name" name="coop_addr" value="" aria-required="true" aria-invalid="true">
+                                            </div>
+                                        </div>-->
+
+                                    <script>
+                                        var CC = new Vue({
+                                            el: '.cluecateBox',
+                                            data: {
+                                                lists: {}
+                                            },
+                                            methods: {
+                                                refreshCluecate: function () {
+                                                    var id = $('#block').val(),
+                                                        that = this;
+                                                    $.ajax({
+                                                        url: "{:U('clueblock/search_cate')}",
+                                                        data: {
+                                                            block: id
+                                                        },
+                                                        dataType: 'JSON',
+                                                        type: 'GET',
+                                                        success: function (res) {
+                                                            that.lists = res.data;
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+
+                                        function refreshCluecate() {
+                                            CC.refreshCluecate();
+                                        }
+
+                                        refreshCluecate();
+                                    </script>
+
+                                    <volist name="field_list['main']" id="vo" key="key">
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label">{$vo.name}：</label>
+                                            <if condition="$vo['form_type'] == 'textarea'">
+                                                <if condition="$vo['tip_start'] eq 1">
+                                                    <div class="col-md-6">
+                                                        <textarea class="form-control" rows="5"
+                                                                  name="{$vo.field}"></textarea>
+                                                    </div>
+                                                    <div class="col-md-2"><span
+                                                            style="color: red;line-height: 32px;margin-left: 10px;">*</span>
+                                                    </div>
+                                                    <else/>
+                                                    <div class="col-md-8">
+                                                        <textarea class="form-control" rows="5"
+                                                                  name="{$vo.field}"></textarea>
+                                                    </div>
+                                                </if>
+                                                <elseif condition="$vo['form_type'] == 'address'"/>
+                                                <if condition="$vo['tip_start'] eq 1">
+                                                    <div class="col-md-7">
+                                                        {$vo.html}
+                                                    </div>
+                                                    <div class="col-md-1"><span
+                                                            style="color: red;line-height: 32px;margin-left: 10px;">*</span>
+                                                    </div>
+                                                    <else/>
+                                                    <div class="col-md-8">
+                                                        {$vo.html}
+                                                    </div>
+                                                </if>
+                                                <elseif condition="$vo['form_type'] == 'box'"/>
+                                                <div class="col-md-6">
+                                                    {$vo.html}
+                                                </div>
+                                                <if condition="$vo['tip_start'] eq 1">
+                                                    <div class="col-md-2"><span
+                                                            style="color: red;line-height: 32px;margin-left: 10px;">*</span>
+                                                    </div>
+                                                    <else/>
+                                                    <div class="col-md-2"></div>
+                                                </if>
+                                                <elseif condition="$vo['field'] == 'name'"/>
+                                                <div class="col-md-6">
+                                                    <input class="form-control required" id="name" name="name"
+                                                           onkeyup="checkinfo(name)" placeholder="" type="text"/>
+                                                </div>
+                                                <div class="col-md-2"><span
+                                                        style="color: red;line-height: 32px;margin-left: 10px;">*</span>
+                                                </div>
+                                                <else/>
+                                                <div class="col-md-6">
+                                                    {$vo.html}
+                                                </div>
+                                                <if condition="$vo['tip_start'] eq 1">
+                                                    <div class="col-md-2"><span
+                                                            style="color: red;line-height: 32px;margin-left: 10px;">*</span>
+                                                    </div>
+                                                    <else/>
+                                                    <div class="col-md-2"></div>
+                                                </if>
+                                            </if>
+                                        </div>
+                                    </volist>
+                                </div>
+                                <!--<div class="col-md-12 add_body_title">
+                                    <div class="all-inline">
+                                        <span class="sq-tag"></span>
+                                        <div class="text-tag">
+                                            <span>附加信息</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-11 add_body_form">
+                                    <volist name="field_list['data']" id="vo" key="key">
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label">{$vo.name}：</label>
+                                            <if condition="$vo['form_type'] == 'address' || $vo['form_type'] == 'box' || $vo['form_type'] == 'textarea'">
+                                                <div class="col-md-7">
+                                                    {$vo.html}
+                                                </div>
+                                                <if condition="$vo['tip_start'] eq 1">
+                                                    <div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                    <else/>
+                                                    <div class="col-md-1"></div>
+                                                </if>
+                                                <else/>
+                                                <div class="col-md-6">
+                                                    {$vo.html}
+                                                </div>
+                                                <if condition="$vo['tip_start'] eq 1">
+                                                    <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                    <else/>
+                                                    <div class="col-md-2"></div>
+                                                </if>
+                                            </if>
+                                        </div>
+                                    </volist>
+                                </div>-->
+                                <div class="col-md-1 pull-right">
+                                    <!-- <div style="height: 100%; border-right: 1px dashed gray;">&nbsp;sadf</div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tfoot_div" class="clearfix">
+            <div class="clearfix" id="tfoot_page">
+                <div class="ibox-content" style="border-top: none;padding: 15px 15px 20px 14px;">
+                    <div class="col-sm-offset-2">
+                        <button type="submit" id="save_submit" class="btn btn-primary">创建案例</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<div class="" style="display:none;" id="dialog-validate" title="{:L('VALIDATE_COMPANY_RESULT')}">
+    <div id="search_leads_content"></div>
+    <div id="search_customer_content"></div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/js/uploadPreview.js"></script>
+<script type="text/javascript">
+    //初始化上传图片
+    $("body").on('click', '#main_pic', function () {
+        var selector = $(this).attr('id');
+        $("#" + selector).uploadPreview({
+            Img: selector + "_prev",
+            Width: 120,
+            Height: 120
+        });
+    });
+    $(document).ready(function () {
+        $('#save_submit').prop('disabled', false);
+        /*form表单验证*/
+        $("#form").validate({
+            submitHandler: function (form) {
+                $('#save_submit').click(function () {
+                    $('#save_submit').prop('disabled', true);
+                });
+                form.submit();
+            }
+        });
+    });
+</script>
+<script src="/Public/js/scrollBar/jquery.mCustomScrollbar.concat.min.js"></script>
+<script type="text/javascript">
+    function checkinfo(param) {
+        var field_value = $('#' + param).val();
+        if (field_value) {
+            $.post('{:U("leads/checkinfo")}', {
+                    field_value: field_value,
+                    field_name: param,
+                },
+                function (data) {
+                    if (data.status == 1) {
+                        $('#' + param + '-error').remove('');
+                        $('#' + param).after('<label id="' + param + '-error" class="error" for="source"><i class="fa fa-times-circle"></i></label>');
+                        $('#' + param + '-error').html('<i class="fa fa-times-circle"></i>' + data.data);
+                    } else {
+                        $('#' + param + '-error').remove('');
+                    }
+                },
+                'json');
+        }
+    }
+
+    $(document).ready(function () {
+        //      $("#names").select2()
+        $('#save_submit').prop('disabled', false);
+        /*form表单验证*/
+        $("#form").validate({
+            submitHandler: function (form) {
+                $('#save_submit').click(function () {
+                    $('#save_submit').prop('disabled', true);
+                });
+                form.submit();
+            }
+        });
+    });
+    $("[data-type='nummber']").keyup(function () {
+        if (isNaN($(this).val())) {
+            $(this).val($(this).val().replace(/\D/g, ''))
+        }
+    });
+
+    //    $("#dialog-validate").dialog({
+    //        autoOpen: false,
+    //        modal: true,
+    //        width: 400,
+    //        maxHeight: 400,
+    //        buttons: {
+    //            "确定": function () {
+    //                $(this).dialog("close");
+    //            }
+    //        },
+    //        position: ["center", 100]
+    //    });
+    //    $(function () {
+    //        $('#owner_name').click(
+    //                function () {
+    //                    $('#dialog-role-list').dialog('open');
+    //                    $('#dialog-role-list').load("{:U('user/listDialog')}");
+    //                }
+    //        );
+    //        $('#name').blur(
+    //                function () {
+    //                    name = $('#name').val();
+    //                    if (name != '') {
+    //                        $.post('{:U("leads/check")}',
+    //                                {
+    //                                    name: name
+    //                                },
+    //                                function (data) {
+    //                                    if (data.data != 0) {
+    //                                        var leads_result = '';
+    //                                        var customer_result = '';
+    //                                        if (data.data['leads'].length > 0) {
+    //                                            $.each(data.data['leads'], function (k, v) {
+    //                                                leads_result += (k + 1) + '、' + v + '</br>';
+    //                                            });
+    //                                            $("#search_leads_content").html("<h5>{:L('SAME_LEADS_COMPANY')}</h5>" + leads_result);
+    //                                        }
+    //                                        if (data.data['customer'].length > 0) {
+    //                                            $.each(data.data['customer'], function (k, v) {
+    //                                                customer_result += (k + 1) + '、' + v + '</br>';
+    //                                            });
+    //                                            $("#search_customer_content").html("<h5>{:L('SAME_CUSTOMER_COMPANY')}</h5>" + customer_result);
+    //                                        }
+    //                                        if (data.data['customer'].length > 0 || data.data['leads'].length > 0)
+    //                                            $('#dialog-validate').dialog('open');
+    //
+    //
+    //                                    }
+    //                                },
+    //                                'json');
+    //                    }
+    //                }
+    //        );
+    //    });
+</script>
+<include file="Public:footer"/>

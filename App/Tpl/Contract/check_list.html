@@ -1,0 +1,43 @@
+<div>
+	<empty name="check_list">
+	<include file="Public:nodata" />
+	<else />
+		<volist name="check_list" id="vo">
+			<div style="padding-bottom:20px;border-left:1px solid #ccc;margin: 5px 0 0 15px;">
+				<if condition="$vo['is_checked'] eq 1">
+					<i class="fa fa-circle pull-left" style="margin-left:-4.5px;color:#72CE56;font-size:10px;"></i>
+				<else />
+					<i class="fa fa-circle pull-left" style="margin-left:-4.5px;color:#FB8F7A;font-size:10px;"></i>
+				</if>
+				<div class="pull-left" style="margin-left:10px;color:#999">
+					<div>{$vo['check_time']|date="H:i",###}</div>
+					<div>{$vo['check_time']|date="Y/m/d",###}</div>
+				</div>
+				<div class="pull-left" style="margin-left:10%">
+					<if condition = "$vo['user']['thumb_path']">
+						<img src="{$vo['user']['thumb_path']}" style="width:30px;height:30px;border-radius:50px;margin-top:5px;">
+					<else />
+						<img src="__PUBLIC__/img/moren.png" style="width:30px;height:30px;border-radius:50px;margin-top:5px;">
+					</if>
+				</div>
+				<div class="pull-left" style="margin-left:10px;">
+					<div>{$vo['user']['full_name']}</div>
+					<div>
+						<if condition="$vo['is_checked'] eq 1">
+							已通过合同审核
+						<elseif condition = "$vo['is_checked'] eq 2"/>
+							驳回了合同审核
+						<else/>
+							撤销了合同审核
+						</if>
+						<if condition="$vo['content']">
+							,备注：{$vo['content']}
+						</if>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+			</div>
+		</volist>
+	</empty>
+</div>
+	

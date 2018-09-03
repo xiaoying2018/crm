@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit">
+	<title>数据定位|免费日本留学|公益日本留学-小莺出国</title>
+	<link rel="stylesheet" href="__PUBLIC__/evaluation/stylesheet/reset.min.css">
+	<link rel="stylesheet" href="__PUBLIC__/evaluation/js/popover/jquery.webui-popover.min.css">
+	<link rel="stylesheet" href="__PUBLIC__/evaluation/stylesheet/plan.css">
+	<script type="text/javascript" src="__PUBLIC__/evaluation/js/jquery-1.9.1.min.js"></script>
+	<script src="https://cdn.bootcss.com/vue/2.5.13/vue.min.js"></script>
+	<script src="__PUBLIC__/evaluation/js/popover/jquery.webui-popover.min.js"></script>
+	<script src="__PUBLIC__/evaluation/js/js.cookie.min.js"></script>
+	<script src="__PUBLIC__/evaluation/js/plan.js"></script>
+</head>
+
+<body>
+	<p style="display: none;" id="flag">{$all.promote}</p>
+	<div id="evaluationres">
+		<ul class="chooseList">
+			<li class="active" data-tab="schoolRecommend">
+				<div class="ropeDv">
+					<i class="rope"></i>
+				</div>
+				<div class="block">
+					<p>学校推荐</p>
+				</div>
+			</li>
+			<li data-tab="plan">
+				<div class="ropeDv">
+					<i class="rope"></i>
+				</div>
+				<div class="block">
+					<p>时间规划</p>
+				</div>
+			</li>
+			<!-- <li data-tab="classRecommend">
+				<div class="ropeDv">
+					<i class="rope"></i>
+				</div>
+				<div class="block">
+					<p>课程推荐</p>
+				</div>
+			</li> -->
+		</ul>
+		<div class="container">
+			<!-- 推荐学校 -->
+			<div class="tabContent schoolRecommend active">
+				<ul class="list" v-if="info.school && info.school.length > 0">
+					<li class="item" v-for="n in info.school" onclick="_MEIQIA('showPanel')">
+						<div class="innerDv clearfix">
+							<img :src="'http://crm.xiaoying.net'+n.logo" :alt="n.name" class="s_logo">
+							<div class="info">
+								<h3 class="ch_name" v-text="n.name" :title="n.name"></h3>
+								<h4 class="en_name" v-text="n.name_en" :title="n.name_en"></h4>
+								<div class="apply">
+									<span><font class="num" v-text="n.apply_num"></font>人申请</span>
+								</div>
+							</div>
+							<div class="rank">TOP <span v-text="n.top"></span></div>
+						</div>
+						<div class="suggestTitle"><span>申请条件</span></div>
+						<ul class="suggestUl">
+							<li v-if="n.advise.length > 0 && n.advise[0]" v-for="n_advise in n.advise"
+								v-text="n_advise"></li>
+								<li v-else>暂无申请条件</li>
+							</ul>
+						</li>
+					</ul>
+					<div class="nodata" v-else>暂无符合条件的数据</div>
+				</div>
+				<!-- 时间规划 -->
+				<div class="tabContent plan">
+					<ul class="s_choose" v-if="info.plan && info.plan.length > 0">
+						<li class="li" v-for="n in info.plan">
+							<div class="s_title" v-text="n.name"></div>
+							<ul class="planList">
+								<li class="item" v-for="(nplan,index) in n.info" onclick="_MEIQIA('showPanel')">
+									<div class="clearfix inner">
+										<div class="num"><span v-text="index+1"></span>.</div>
+										<div class="info">
+											<div class="time" v-text="nplan.time"></div>
+											<div class="des" v-text="nplan.name"></div>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+					<div class="nodata" v-else>暂无符合条件的数据</div>
+				</div>
+				<!-- 课程推荐 -->
+				<!-- <div class="tabContent classRecommend">
+					<ul class="classList" v-if="info.course && info.course.length > 0">
+						<li class="item" v-for="n in info.course" onclick="_MEIQIA('showPanel')">
+							<div class="imgDv">
+								<img :src="'http://crm.xiaoying.net'+n.logo" :alt="n.name">
+							</div>
+							<p class="name" :title="n.name" v-text="n.name"></p>
+							<div class="class-serve">
+								<ul class="list-unstyled clearfix">
+									<li class="active">
+										<a class="a_Pop" tabindex="0" role="button" data-container="body" data-toggle="popover"
+										data-trigger="hover" data-placement="top" data-html="true" title="24小时作业批改 "
+										data-content="24小时内完成作业批改，即时反馈并巩固您的学习效果">练</a>
+									</li>
+									<li class="active">
+										<a class="a_Pop" tabindex="0" role="button" data-container="body" data-toggle="popover"
+										data-trigger="hover" data-placement="top" data-html="true" title="24小时阅卷点评 "
+										data-content="24小时内批阅您提交的试卷，给予有针对性的点评">试</a>
+									</li>
+									<li class="active">
+										<a class="a_Pop" tabindex="0" role="button" data-container="body" data-toggle="popover"
+										data-trigger="hover" data-placement="top" data-html="true" title="提问必答 "
+										data-content="对于提问做到有问必答，帮您扫清学习过程中的种种障碍">问</a>
+									</li>
+									<li class="active">
+										<a class="a_Pop" tabindex="0" role="button" data-container="body" data-toggle="popover"
+										data-trigger="hover" data-placement="top" data-html="true" title="一对一在线答疑 "
+										data-content="提供专属的一对一在线答疑，快速答疑解惑">疑</a>
+									</li>
+									<li class="active">
+										<a class="a_Pop" tabindex="0" role="button" data-container="body" data-toggle="popover"
+										data-trigger="hover" data-placement="top" data-html="true" title="班级活动 "
+										data-content="不定期组织各种线上或线下的班级活动，让学习更加生动有趣，同学关系更为紧密">动</a>
+									</li>
+									<li class="active">
+										<a class="a_Pop" tabindex="0" role="button" data-container="body" data-toggle="popover"
+										data-trigger="hover" data-placement="top" data-html="true" title="就业指导 "
+										data-content="完成全部学习后，老师对您的学习成果和能力水平给出评估，并提供专业化的就业指导">业</a>
+									</li>
+								</ul>
+								<div class="nodata" v-else>暂无符合条件的数据</div>
+							</div>
+						</li>
+					</ul>
+				</div> -->
+			</div>
+		</body>
+		</html>

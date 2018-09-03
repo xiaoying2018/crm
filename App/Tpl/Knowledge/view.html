@@ -1,0 +1,54 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<style>
+body{
+	overflow-y: hidden;
+}
+</style>
+<script>
+	$(function(){
+		$("#content_height").height(window.innerHeight-$("#content_height").offset().top-20);
+		$(window).resize(function(){
+			$("#content_height").height(window.innerHeight-$("#content_height").offset().top-20);
+		})
+	})
+</script>
+<div class="wrapper wrapper-content animated fadeIn">
+	<include file="Public:alert" />
+    <div class="row">
+	    <div class="col-lg-12">
+			<div class="title-bar" style="padding:12px 10px 12px 20px">
+				<div class="row " id="title-show">
+					<ul class="nav pull-left" style="margin:2px 0 5px 15px;">
+						<span style="font-size:21px;"><span style="border-radius:5px;"><img src="__PUBLIC__/img/zhishi_view.png"></img></span>&nbsp;&nbsp;&nbsp;{$knowledge.title}</span>&nbsp;&nbsp;
+					</ul>
+					<ul class="nav pull-right" style="margin:2px 15px 5px 0px;">
+						<a href="{:U('knowledge/edit','id='.$knowledge['knowledge_id'])}" class="btn btn-outline btn-default pull-right" style="margin-right: 15px;"><i class="fa fa-pencil"></i>&nbsp;&nbsp;编辑</a>&nbsp;&nbsp;
+					</ul>
+				</div>
+			</div>
+			<div class="tabs-container" style="margin-bottom: 10px;">
+				<div class="pull-left" style="width:100%;">
+					<div class="ibox-content" style="padding:15px 0 15px 20px;background:#fff;">
+						<div class="tab-content full-height-scroll" id="content_height">
+							<div class="tab-pane in active" id="tab1" >
+								<div class="panel-body ">
+									<div style="text-align:center;letter-spacing:8px;border-bottom:1px solid #e7e7eb;margin:0 15px 15px;padding-bottom:10px;">
+										<h2>{$knowledge.title}</h2>
+									</div>
+									<div style="text-align:center;margin-top:5px;color:#999;margin-right:15px;">
+										{$knowledge.update_time|date="Y-m-d",###}&nbsp;&nbsp;{$knowledge.owner.user_name}
+									</div>
+									<div style="margin-top:5px;margin-right:15px;">
+										{$knowledge.content}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<include file="Public:footer" />	

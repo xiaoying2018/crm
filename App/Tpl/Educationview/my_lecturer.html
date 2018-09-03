@@ -1,0 +1,576 @@
+<include file="Public:header" />
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<link href="__PUBLIC__/css/page/leadsIndex.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<!-- nice-scroll -->
+<!-- <script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script> -->
+<script src="https://nicescroll.areaaperta.com/wp-content/plugins/jnicescroll/js/jquery.nicescroll.min.js?ver=1"></script>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/mxcrm_more.js" type="text/javascript"></script>
+<style>
+    body{
+        overflow-y: hidden;
+    }
+    .option{padding-left:-30px;}
+    #oDivL_tab_Test3{background-color: #fff;border-right: 1px solid #ececec; z-index: 8 !important;}
+    .table{max-width: none;}
+    #tab_Test3{opacity: 1}
+    input[type=text],select{
+        appearance:none;
+        -moz-appearance:none;
+        -webkit-appearance:none;
+    }
+    .crm_status{
+        padding: 2px 3px;
+        border-radius: 3px;
+    }
+    /*跟进中*/
+    .status_ing{
+        border: 1px solid #00CE67;
+        background-color: none;
+        color: #00CE67;
+    }
+    /*作废*/
+    .status_no{
+        border: 1px solid #ccc;
+        background-color: #ccc;
+        color: #fff;
+    }
+    /*待跟进*/
+    .status_waning{
+        border: 1px solid #F9D10B;
+        background-color: none;
+        color: #F9D10B;
+    }
+    /*已转换*/
+    .status_tanseformed{
+        border: 1px solid #0080FF;
+        background-color: #0080FF;
+        color: #fff;
+    }
+</style>
+<style>
+    .chhose_item{
+        padding: 5px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        border-radius: 3px;
+        color: #3197ff;
+        border:1px solid #3197ff;
+        margin:0px 5px;
+    }
+    .chhose_item.choose{
+        background: #3197ff;
+        color: #fff;
+    }
+    .chhose_item .fa{
+        margin-right: 5px;
+    }
+    .li_item {
+        display: inline-block !important;
+        vertical-align: top;
+    }
+    .li_item.bt {
+        /*width: 300px;*/
+        position: relative;
+    }
+    .li_item.bt .fa {
+        position: absolute;
+        right: 10px;
+        top: 0;
+        width: 40px;
+        height: 34px;
+        line-height: 34px;
+        text-align: center;
+        cursor: pointer;
+    }
+</style>
+<style type="text/css">
+    #show_schedule #laydate{
+        display: none;
+        position: absolute;
+        top: 30px;
+        right: 0;
+    }
+    .fa-calendar{
+        font-size: 24px;
+        color: #1ab394;
+        cursor: pointer;
+    }
+    .pageDv {
+        margin: 15px 0
+    }
+
+    .pageNav {
+        text-align: center;
+        margin: 0
+    }
+
+    #totalcount {
+        padding: 0 6px
+    }
+
+    .pageNav a {
+        font-size: 14px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        padding: 5px 8px;
+        text-align: center;
+        color: #8b929f;
+        background-color: #fff;
+        border: 1px solid #1ab394;
+        display: inline-block;
+        margin-left: 5px;
+        -moz-transition: all .3s ease-in-out;
+        -webkit-transition: all .3s ease-in-out;
+        -o-transition: all .3s ease-in-out;
+        transition: all .3s ease-in-out;
+        height: 30px;
+        font-weight: normal !important
+    }
+
+    .pageNav a.page {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        line-height: 28px
+    }
+
+    .pageNav a.active {
+        color: #fff;
+        background-color: #1ab394;
+        border-color: #1ab394
+    }
+
+    .pageNav a:hover {
+        cursor: pointer;
+        color: #fff;
+        background-color: #1ab394;
+        border-color: #1ab394
+    }
+</style>
+<script src="/Public/js/jqPaginator/jqPaginator.min.js"></script>
+
+<script>
+    var choose = [];
+    $(document).on('click', '.chhose_item', function() {
+        var _val = $(this).attr("data-val");
+        if ($(this).hasClass("choose")) {
+            $(this).removeClass("choose");
+            $(this).find("i").attr("class","fa fa-square-o");
+            if (choose.indexOf(_val) > -1) {
+                console.log("xxx",choose);
+                choose.splice(choose.indexOf(_val),1)
+            }
+        }else{
+            $(this).addClass("choose");
+            $(this).find("i").attr("class","fa fa-check-square-o");
+            choose.push(_val)
+        }
+        var data        =   {role_id:choose};
+
+        period_container.getLists(data);
+
+    });
+</script>
+<div class="wrapper wrapper-content">
+    <include file="Public:alert" />
+    <div class="row" id="period_container">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+                <div class="title-bar" style="position: relative;z-index: 99;">
+                    <div id="title-show" class="clearfix">
+
+                        <ul class="clearfix row" style="margin:0; padding: 0; width: 100%; text-align: right;">
+                            <div class="col-lg-8">
+                                <a href="javascript:;" @click="getLists()" class="btn btn-primary btn-sm pull-left" style="margin:2px 0 0 0; width: 100px;">
+                                    &nbsp; 点击刷新
+                                </a>
+                            </div>
+                            <li class="li_item col-lg-2">
+                                <!--this.options[this.selectedIndex].value-->
+                                <select class="form-control" id="changecourse" name="courses">
+
+                                    <option value="" data-value="">请选择课程</option>
+                                    <volist name="courses" id="vo">
+                                        <option data-value="{$vo.id}" >&nbsp;&nbsp;{$vo.name}</option>
+                                    </volist>
+                                </select>
+
+                            </li>
+                            <li class="li_item col-lg-2">
+                                <select class="form-control" id="changeper" >
+                                    <option value=""  data-value="">请选择班级/课期</option>
+                                    <!--<option v-for="p in periods" :value="p.id">&nbsp;&nbsp;&nbsp;&nbsp;{{p.name}}</option>-->
+                                </select>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="ibox-content clearfix" style="z-index: 1;">
+                    <form id="form1" action="" method="post" style="position:relative;">
+                        <input type="hidden" name="owner_id" id="hidden_owner_id" value="0"/>
+                        <input type="hidden" name="message" id="hidden_message" value="0"/>
+                        <input type="hidden" name="sms" id="hidden_sms" value="0"/>
+                        <input type="hidden" name="email" id="hidden_email" value="0"/>
+                        <!-- class="nicescroll" -->
+                        <div id="table_div" style="overflow-x: scroll;">
+                            <table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
+                                <tr id="childNodes_num" class="tabTh">
+                                    <td style="width:30px;padding-left: 20px">
+                                        <div class="checkbox checkbox-primary">
+                                            <input type="checkbox" class="check_all"/>
+                                            <label for=""></label>
+                                        </div>
+                                    </td>
+
+                                    <td>课期(班级)名称</td>
+                                    <td>课程名称</td>
+                                    <td>课节名称</td>
+                                    <td>状态</td>
+                                    <td>开始时间</td>
+                                    <td>时长(分钟)</td>
+                                    <td>结束时间</td>
+                                    <td>班主任</td>
+                                    <td>讲师</td>
+                                    <td>操作</td>
+                                </tr>
+                                <!-- 我的线索 -->
+                                <tr class="controls_tr" v-for="(item,index) in schedules" data-target="#period_container"  :data-id="item.id">
+                                    <td style="width: 30px;padding-left: 20px" nowrap="nowrap">
+                                        <div class="checkbox checkbox-primary">
+                                            <input name="ids[]" class="check_list" type="checkbox" :value="item.id">
+                                            <label for=""></label>
+                                        </div>
+                                    </td>
+
+                                    <td>{{item.period_name}}</td>
+                                    <td>{{item.course_name}}</td>
+                                    <td>{{item.course_name}}</td>
+                                    <td>
+                                        <span v-if="item.schedule_status == 1" class="text-success">
+                                            即将开始
+                                        </span>
+                                        <span v-else-if="item.schedule_status == 2" class="text-success">
+                                            正在上课
+                                        </span>
+                                        <span v-else class="text-danger">
+                                            已经结束
+                                        </span>
+                                    </td>
+                                    <td>{{item.start_time}}</td>
+                                    <td>{{item.duration}}</td>
+                                    <td>{{item.end_time}}</td>
+                                    <td>{{item.headmaster}}</td>
+                                    <td>{{item.teacher}}</td>
+                                    <td>
+                                        <template v-if="item.schedule_status == 1 || item.schedule_status == 2" >
+                                        <a :href="item.serial" target="_blank"  class="btn btn-info btn-sm" style="color: #fff;">
+                                            <!--<button v-if="item.schedule_status == 1" class="btn btn-info btn-sm" type="button" onclick="teacherLeave(this)">进入教室</button>-->
+                                            进入教室
+                                        </a>
+                                        </template>
+
+                                        <template v-if="item.schedule_status == 1 || item.schedule_status == 2" >
+                                            <button class="btn btn-success " type="button" @click="chakanKejian(item.id)" >查看课件</button>
+                                            <button class="btn btn-success " type="button" @click="guanlianKejian(item.id)">关联课件</button>
+                                        </template>
+
+                                        <div class="file-container" style="display:inline-block;position:relative;overflow: hidden;vertical-align:middle">
+
+                                            <button class="btn btn-info fileinput-button" type="button">作业上传</button>
+                                            <input type="file" :data-id="item.id"  onchange="loadFile(this,this.files[0],2)" style="position:absolute;top:0;left:0;font-size:34px; opacity:0">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- 分页 -->
+                        <div class="pageDv" style="position: fixed;bottom: 0;z-index: 11;width: 100%; height: 30px;">
+                            <span class="pageNav pagination">
+                            </span>
+                                    <span href="">
+                                <!-- 一共检索到<font id="totalcount">{{total}}</font>条数据 -->
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 弹框模板 -->
+<div style="display:none" id="dialog-period-add" title="添加学生">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none" id="dialog-period-edit" title="学员信息修改">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none" id="dialog-period-detail" title="学员详情">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+<div style="display:none" id="dialog-periodmanage-add" title="关联课件">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#dialog-periodmanage-add").dialog({
+        autoOpen: false,
+        modal: true,
+        width: '60%',
+        maxHeight: 600,
+        position: ["center", 100],
+        buttons: {
+            '取消': function() {
+                $(this).dialog('close');
+            }
+        },
+        close: function() {
+            $(this).html('');
+        }
+    });
+
+    //下拉刷新
+    var period_container = new Vue({
+        el: "#period_container",
+        data: {
+            request:{
+                page:1,
+                rows:10,
+                lotwhere: '',
+                course:'',
+                livecontent:''
+            },
+            lists: {},
+            taday: {},
+            marks: {},
+            now: {},
+            total:"",
+            schedules:{},
+            nodata:{},
+        },
+        methods:{
+            getLists: function (data) {
+                var _this		=	this;
+                // data        =   data ? data : {};
+                $.ajax({
+                    url:"{:U('education/my_schedule')}",
+                    data:this.request,
+                    dataType:"JSON",
+                    type:"POST",
+                    success:function(res){
+                        if( res.result == false  ){
+
+                            layer.msg('ERROR '+res.error);
+                        }else{
+                            _this.schedules      =   res.schedules;
+                            _this.initPage(res.count, _this.request.rows, _this.request.page);
+                           // _this.initPage(100, _this.request.rows, 10);
+                            _this.lists = res.lists;
+                            _this.total = res.count;
+                            layer.msg('刷新成功!');
+                        }
+                    }
+                });
+            },
+            guanlianKejian:function(id){
+                $('#dialog-periodmanage-add').load('/index.php?m=course_document&a=getRelatedScheduleList&type=guanlian&schedule_id='+id);
+                $('#dialog-periodmanage-add').dialog('open');
+                //window.location.href='/index.php?m=course_document&a=index&type=guanlian&schedule_id='+id;
+            },
+            chakanKejian:function(id){
+                $('#dialog-periodmanage-add').load('/index.php?m=course_document&a=getChaKanRelatedScheduleList&type=chakan&schedule_id='+id);
+                $('#dialog-periodmanage-add').dialog('open');
+                // window.location.href='/index.php?m=course_document&a=index&type=chakan&schedule_id='+id;
+            },
+            initPage:function(count,size,page){
+                var _this = this;
+                $('.pageNav').jqPaginator({
+                    totalCounts: parseInt(count),
+                    pageSize: size,
+                    visiblePages: 5,
+                    currentPage: parseInt(page),
+                    first: "<a>首页</a>",
+                    last: "<a>末页</a>",
+                    prev: "<a>上一页</a>",
+                    page: "<a class='page'>{{page}}</a>",
+                    next: "<a>下一页</a>",
+                    onPageChange: function(num, type) {
+                        _this.request.page = num
+                        if (type != "init") {
+                            //ajax请求分页数据 num是第几页
+                            _this.getLists();
+                        }
+                    }
+                });
+            },
+        },
+    });
+    period_container.getLists()
+
+    function teacherLeave(that){
+        layer.msg( 'ERROR 暂未开发，请通知教务老师' );
+    }
+
+    function dd(data){
+        console.log(data);
+        return ;
+    }
+</script>
+
+<script type="text/javascript">
+
+    /*让复选框默认取消选择*/
+    $(':checkbox').prop('checked', false);
+    $('[data-toggle="tooltip"]').tooltip({html:true});
+
+    $(".controls_tr").mouseenter(function(){
+        $(this).find(".controls").show();
+    }).mouseleave(function(){
+        $(this).find(".controls").hide();
+    });
+
+
+    $(document).on('click','.rem_search',function(){
+        var num = $(this).attr('rel');
+        $('#con_search_'+num).remove();
+    });
+
+    function loadFile(that,file,type){
+        var pobj            =   $(that),
+            data            =   new FormData(),
+            schedule_id     =   pobj.attr('data-id');
+        if( !schedule_id ){
+            layer.msg('ERROR 参数缺失');return ;
+        }
+        if( !file ){
+            layer.msg('ERROR 请选择文件');return ;
+        }
+        dd(schedule_id)
+        switch (type){
+            case 1:
+                // 视频
+                data.append('video',file);
+                break;
+            case 2:
+                // 作业
+                data.append('homework',file);
+                break;
+        }
+        data.append('id',schedule_id);
+
+        dd(data);
+        $.ajax({
+            url:"{:U('education/schedule_upload')}",
+            data:data,
+            dataType:"JSON",
+            type:"POST",
+            processData:false,
+            contentType:false,
+            async:false,
+            success:function (res) {
+                if( res.result ){
+                    // 刷新主页数据
+                   // period_Detail.getPeriodDetail();
+                    //
+                    layer.msg( '上传成功！' );
+                    // 关闭弹框
+
+                }else{
+                    layer.msg('ERROR '+res.error);
+                }
+            }
+        });
+    }
+
+    $(document).on('change', '#changecourse', function () {
+        if($("#changecourse option:selected").attr('data-value')==''){
+            $("#changeper option:selected").attr('data-value','')
+        }
+        $.ajax({
+            url:"/index.php?m=education&a=getperbycourse",
+            data:{course:$("#changecourse option:selected").attr('data-value')},
+            dataType:"JSON",
+            type:"POST",
+            success:function (res) {
+                $('#changeper').empty()
+                console.log(res)
+                $('#changeper').append("<option data-value='' > 请选择课期/班级</option>")
+                $.each(res,function(i,k){
+//                        var h = '';
+//                        h += ;
+                    $('#changeper').append("<option data-value='"+k['id'] +"' >&nbsp;&nbsp;" + k['name'] + "</option>")
+                })
+            }
+        });
+        reloaddata()
+    });
+
+    $(document).on('change', '#changeper', function () {
+        reloaddata()
+    });
+    $(document).on('click', '.fa-search', function () {
+        reloaddata()
+    });
+
+
+    function reloaddata() {
+        var _lotwhere = $("#searchInput").val();
+        var _program_category=$("#changecourse option:selected").attr('data-value');
+        var _major_category = $("#changeper option:selected").attr('data-value')
+        console.log( _program_category+","+_major_category)
+        period_container.request.lotwhere = _lotwhere;
+        period_container.request.course = _program_category;
+        period_container.request.livecontent = _major_category;
+        period_container.request.page = 1;
+        period_container.getLists();
+        // $("#period_container").setGridParam({datatype: 'json', postData: _data}).trigger('reloadGrid');
+    }
+
+</script>
+
+<!-- loading加载 -->
+<style type="text/css">
+    #box{
+        position:absolute;
+        top:0;
+        bottom:0;
+        left:0;
+        right:0;
+        background:#000;
+        opacity:0.7;
+
+        padding-top: 200px;
+        padding-left: 45%;
+    }
+</style>
+
+
+<include file="Public:footer" />

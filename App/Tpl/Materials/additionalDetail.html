@@ -1,0 +1,199 @@
+<style>
+.additionDetail .cm_modal {
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.additionDetail .title-bar {
+    border: none;
+    font-size: 16px;
+    padding-bottom: 0;
+    margin-top: 5px;
+}
+
+.additionDetail .text-tag{
+    display: inline-block;
+}
+.additionDetail .text-tag {
+    font-size: 16px;
+    padding-left: 4px;
+    border-left: 4px solid #18a689;
+    line-height: 16px;
+    margin-top: 10px;
+}
+
+.additionDetail .table {
+    font-size: 14px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.additionDetail .table td{
+    border-color:#f2f2f2;
+}
+.td_title{
+    color: #8d8d8d !important;
+    width: 20%;
+}
+textarea{
+    outline: none;
+    border: 1px solid #e7eaec;
+    height: 100px;
+    padding: 10px;
+    overflow-y: scroll;
+    background: #fff !important;
+    width: 100%;
+}
+.nodata{
+    color: #ccc;
+}
+</style>
+<!-- 客户详细 -->
+<div class="modal fade bs-example-modal-lg additionDetail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="width: 60%;max-width: 800px;">
+        <div class="row cm_modal">
+            <div class="col-lg-12">
+                <div class="title-bar">
+                    <div class="row " id="title-show">
+                        <div class="all-inline clearfix">
+                            <div style="float: left;">
+                                <span class="text-tag">机构详情</span>
+                            </div>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="float: right;">
+                                关闭
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ">
+                    <table class="table">
+                        <tr>
+                            <td class="td_title">学员姓名：</td>
+                            <td v-html="data.sname"></td>
+                        </tr>
+                        <template v-if="data.server_cate == '1'">
+                            <tr>
+                                <td class="td_title">航班号：</td>
+                                <td v-html="data.flight_number"></td>
+                            </tr>
+                            <tr>
+                                <td class="td_title">起飞机场：</td>
+                                <td v-html="data.start_airport"></td>
+                            </tr>
+                            <tr>
+                                <td class="td_title">起飞时间：</td>
+                                <td v-html="data.start_time"></td>
+                            </tr>
+                            <tr>
+                                <td class="td_title">到达机场：</td>
+                                <td v-html="data.arrive_airport"></td>
+                            </tr>
+                            <tr>
+                                <td class="td_title">到达时间：</td>
+                                <td v-html="data.arrive_time"></td>
+                            </tr>
+                        </template>
+                        <template v-if="data.server_cate == '2'">
+                            <tr>
+                                <td class="td_title">宿舍类型：</td>
+                                <td>
+                                    <span v-if="data.dorm_cate == '1'">学校宿舍</span>
+                                    <span v-if="data.dorm_cate == '2'">自行安排</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td_title">宿舍地址：</td>
+                                <td v-html="data.dorm_addr"></td>
+                            </tr>
+                            <tr>
+                                <td class="td_title">预计入住时间：</td>
+                                <td v-html="data.come_time"></td>
+                            </tr>
+                        </template>
+                        <template v-if="data.server_cate == '3'">
+                            <tr>
+                                <td class="td_title">宿舍类型：</td>
+                                <td>
+                                    <span v-if="data.dorm_cate == '1'">学校宿舍</span>
+                                    <span v-if="data.dorm_cate == '2'">自行安排</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="td_title">宿舍地址：</td>
+                                <td v-html="data.dorm_addr"></td>
+                            </tr>
+                            <tr>
+                                <td class="td_title">预计入住时间：</td>
+                                <td v-html="data.come_time"></td>
+                            </tr>
+                        </template>
+                        <tr>
+                            <td class="td_title">负责老师：</td>
+                            <td v-html="data.teacher"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">老师联系方式：</td>
+                            <td v-html="data.teacher_connect"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">状态：</td>
+                            <td>
+                                <span v-if="data.status == '1'">已完成</span>
+                                <span v-if="data.status == '0'">进行中</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">提醒时间：</td>
+                            <td v-html="data.notice_time"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">创建时间：</td>
+                            <td v-html="data.create_time"></td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(function() {
+    var additionDetail = new Vue({
+        el: '.additionDetail',
+        data: {
+            data: {}
+        },
+        methods: {
+            // 获取详情
+            getDetail: function(id) {
+                if (!id) return;
+                var _this = this;
+                // 获取详情
+                $.ajax({
+                    type:'get',
+                    url: "{:U('materials/additionalDetail')}",
+                    data: {id:id},
+                    async: false,
+                    success: function (res) {
+                        _this.data = res.data
+                    },
+                    dataType: 'json'
+                });
+            }
+        },
+        mounted: function() {
+            var _this = this;
+            //关闭浮层
+            $(".additionDetail-close").click(function() {
+                $(".additionDetail").modal('hide');
+            })
+        }
+    })
+    $('.additionDetail').on('show.bs.modal', function(ele) {
+        additionDetail.data = {};
+        additionDetail.getDetail(ele.relatedTarget);
+    })
+});
+</script>

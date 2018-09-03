@@ -1,0 +1,842 @@
+<include file="Public:header" />
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<style type="text/css">
+.add_body >div >.full-height-scroll{
+	border-right:1px dotted #ccc;
+	overflow-x:hidden;
+}
+.add_body_title{
+	margin:15px auto 30px auto;
+	padding-left: 14px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.product_thead>tr>td{
+	background-color:#FFFFFF;padding:1px;font-size:13px;color:#999;
+}
+#main_pic_prev{width: 120px;height: 120px;border: 1px dashed #d3d3d6;}
+.showfile{
+		padding:6px;
+	}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+	<include file="Public:alert" />
+	<form class="form-horizontal" id="form" role="form" action="{:U('examine/add')}" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="type" value="{$Think.get.type}"/>
+		<div class="ibox-content add_body" id="add_body" >
+			<div class="row">
+				<div class="col-md-12 add_body">
+					<div class="full-height-scroll">
+						<div class="row" >
+							<div class="col-md-12 add_body_title" style="margin:20px 0 0 10px;">
+								<div class="all-inline">
+									<span class="sq-tag"></span>
+									<div class="text-tag">
+										<span>
+											<switch name="Think.get.type">
+												<case value="1">普通审批</case>
+												<case value="2">请假单</case>
+												<case value="3">普通报销单</case>
+												<case value="4">差旅报销单</case>
+												<case value="5">出差申请单</case>
+												<case value="6">借款申请单</case>
+												<case value="7">促销/打折/审批</case>
+											</switch>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form" style="margin:20px 0 0 21px;">
+								<switch name="Think.get.type">
+									<case value="1">
+										<div class="form-group">
+											<label class="col-md-3 control-label">申请人：</label>
+											<div class="col-md-6">
+												<input type="hidden" name="owner_role_id" value="{$_SESSION['role_id']}" id="owner_role_id"/>
+												<input class="form-control required" type="text" id="owner_name" value="{$_SESSION['full_name']}"  readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择"/>
+											</div>
+											<div class="col-md-2"><span style="color:red">*</span></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">申请事由：</label>
+											<div class="col-md-6">
+												<textarea class="form-control required" aria-required="true" rel="申请事由" rows="10" name="content"></textarea>
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">审批人：</label>
+											<div class="col-md-6">
+												<if condition="$option eq 1">
+													<input type="hidden" name="order_id" value="{$examine_step[0]['order_id']}">
+													<input type="hidden" name="examine_role_id" value="{$examine_step[0]['role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" readonly value="{$examine_step[0]['user_name']}" aria-required="true" name="examine_role" />
+												<else/>
+													<input type="hidden" name="examine_role_id" value="{$info['examine_role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" value="{$info['examine']['user_name']}" aria-required="true" name="examine_role" id="examine_role" readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择"/>
+												</if>
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-11">
+												<a id="addfile" class="pull-left" href="javascript:void(0)">上传图片</a>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-11">
+												<div id="filecontent" class="hide">
+													<span class="tishiinfo"><img src="__PUBLIC__/img/addFile.png"/><span class="fujian">附件</span></span>
+													<span id="addfilediv">本次共添加了<span id="file_num"></span>文件,总大小<span id="file_size"></span>KB&nbsp;<a href="javascript:;" style="color: #5a8ee2;" onclick="delall();">全部删除</a></span>
+												</div>
+											</div>
+										</div>
+									</case>
+									<case value="2"> 
+										<div class="form-group">
+											<label class="col-md-3 control-label">请假人：</label>
+											<div class="col-md-6">
+												<input type="hidden" name="owner_role_id" value="{$_SESSION['role_id']}" id="owner_role_id"/>
+												<input class="form-control required" type="text" id="owner_name" value="{$_SESSION['full_name']}"  readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择"/>
+											</div>
+											<div class="col-md-2"><span style="color:red">*</span></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">请假事项：</label>
+											<div class="col-md-6">
+												<select name="content" id="content" rel="请假事项" class="form-control required" aria-required="true">
+													<option >-请选择-</option>
+													<option value="事假">事假</option>
+													<option value="病假">病假</option>
+													<option value="调休">调休</option>
+													<option value="年休假">年休假</option>
+													<option value="婚假">婚假</option>
+													<option value="丧假">丧假</option>
+													<option value="生育假">生育假</option>
+													<option value="外勤">外勤</option>
+													<option value="其他">其他</option>
+												</select>
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">请假事由：</label>
+											<div class="col-md-6">
+												<textarea class="form-control required" rows="10" id="description" aria-required="true" name="description"></textarea>
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">开始时间：</label>
+											<div class="col-md-6">
+												<input class="form-control required Wdate" aria-required="true" type="text" id="start_time" name="start_time" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm', maxDate:&quot;#F{'2098-01-01'}&quot;})" value="<?php echo date('Y-m-d H:i', time());?>" />
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">结束时间：</label>
+											<div class="col-md-6">
+												<input class="form-control required Wdate" aria-required="true" type="text" id="end_time" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm', minDate:&quot;#F{$dp.$D(\'start_time\')}&quot;,maxDate:'2038-01-01'})" name="end_time" />
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">请假天数：</label>
+											<div class="col-md-6">
+												<input class="form-control required" id="duration" name="duration" aria-required="true" type="text">
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">审批人：</label>
+											<div class="col-md-6">
+												<if condition="$option eq 1">
+													<input type="hidden" name="order_id" value="{$examine_step[0]['order_id']}">
+													<input type="hidden" name="examine_role_id" value="{$examine_step[0]['role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" readonly value="{$examine_step[0]['user_name']}" aria-required="true" name="examine_role" />
+												<else/>
+													<input type="hidden" name="examine_role_id" value="{$info['examine_role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" value="{$info['examine']['user_name']}" aria-required="true" name="examine_role" id="examine_role" readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择"/>
+												</if>
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+									</case>
+									<case value="3">
+										<div class="form-group">
+											<label class="col-md-3 control-label">申请人：</label>
+											<div class="col-md-8">
+												<input type="hidden" name="owner_role_id" value="{$_SESSION['role_id']}" id="owner_role_id"/>
+												<input class="form-control required" type="text" id="owner_name" value="{$_SESSION['full_name']}"  readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择"/>
+											</div>
+											<div class="col-md-1"><span style="color:red">*</span></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">报销事由：</label>
+											<div class="col-md-8">
+												<textarea class="form-control required" rows="10" aria-required="true" name="content"></textarea>
+											</div>
+											<div class="col-md-1"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">审批人：</label>
+											<div class="col-md-8">
+												<if condition="$option eq 1">
+													<input type="hidden" name="examine_role_id" value="{$examine_step[0]['role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" readonly value="{$examine_step[0]['user_name']}" aria-required="true" name="examine_role" />
+												<else/>
+													<input type="hidden" name="examine_role_id" value="{$info['examine_role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" value="{$info['examine']['user_name']}" aria-required="true" name="examine_role" id="examine_role" readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择"/>
+												</if>
+											</div>
+											<div class="col-md-1"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">总金额(元)：</label>
+											<div class="col-md-8">
+												<input class="form-control required" aria-required="true" type="text" readonly id="budget" name="budget" />
+											</div>
+											<div class="col-md-1"></div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-11" id="add_content">
+												<table class="table table-bordered" width="95%" border="0" cellspacing="1" cellpadding="0">
+													<tbody>
+														<tr >
+															<td colspan='4' style="font-weight:700">事项1</td>
+														</tr>
+														<tr id="row_{$key+1}">
+															<td style="width:17%;color:#999;">
+																报销项              
+															</td>                                     
+															<td colspan="3">
+																<input class="form-control required" id="start_address" name="travel[1][start_address]" aria-required="true" type="text"></td>
+														</tr>
+														<tr id="row_{$key+1}">
+															<td style="width:17%;color:#999;">
+																金额(元)                    
+															</td>                                     
+															<td ><input class="form-control required bx_money" onkeyup="calculate()" name="travel[1][money]" aria-required="true" type="text"></td>                                     
+															<td style="width:17%;color:#999;">
+																备注             
+															</td>                                     
+															<td ><input class="form-control" name="travel[1][description]" type="text"></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-11">
+												<a id="addfile" class="pull-left" href="javascript:void(0)">上传发票图片</a>
+												<a class="pull-right" id="add_shixiangtwo" href="javascript:void(0)">+添加事项</a>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-11">
+												<div id="filecontent" class="hide">
+													<span class="tishiinfo"><img src="__PUBLIC__/img/addFile.png"/><span class="fujian">附件</span></span>
+													<span id="addfilediv">本次共添加了<span id="file_num"></span>文件,总大小<span id="file_size"></span>KB&nbsp;<a href="javascript:;" style="color: #5a8ee2;" onclick="delall();">全部删除</a></span>
+												</div>
+											</div>
+										</div>
+									</case>
+									<case value="4">
+										<div class="form-group">
+											<label class="col-md-3 control-label">申请人：</label>
+											<div class="col-md-8">
+												<input type="hidden" name="owner_role_id" value="{$_SESSION['role_id']}" id="owner_role_id"/>
+												<input class="form-control required" type="text" id="owner_name" value="{$_SESSION['full_name']}"  readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择"/>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">报销事由：</label>
+											<div class="col-md-8">
+												<textarea class="form-control required" rel="报销事由" rows="10" aria-required="true" name="content"></textarea>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">审批人：</label>
+											<div class="col-md-8">
+												<if condition="$option eq 1">
+													<input type="hidden" name="examine_role_id" value="{$examine_step[0]['role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" readonly value="{$examine_step[0]['user_name']}" aria-required="true" name="examine_role" />
+												<else/>
+													<input type="hidden" name="examine_role_id" value="{$info['examine_role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" value="{$info['examine']['user_name']}" aria-required="true" name="examine_role" id="examine_role" readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择" />
+												</if>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">总金额(元)：</label>
+											<div class="col-md-8">
+												<input class="form-control required" aria-required="true" type="text" readonly id="budget" name="budget" />
+											</div>
+											
+										</div>
+										<div class="form-group">
+											<div class="col-md-11" id="add_content">
+												<table class="table table-bordered" width="95%" border="0" cellspacing="1" cellpadding="0">
+													<tbody>
+														<tr >
+															<td colspan='4' style="font-weight:700">事项1</td>
+														</tr>
+														<tr id="row_{$key+1}">
+															<td style="width:17%;color:#999;">
+																出发地               
+															</td>                                     
+															<td >
+																<input class="form-control required" id="start_address" name="travel[1][start_address]" aria-required="true" type="text">        </td>                                     
+															<td style="width:17%;color:#999;">
+																出发时间            
+															</td>                                    
+															<td ><input class="form-control required Wdate" aria-required="true" type="text" name="travel[1][start_time]" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="<?php echo date('Y-m-d', time());?>" /></td>
+														</tr>
+														<tr id="row_{$key+1}">
+															<td style="width:17%;color:#999;">
+																目的地                   
+															</td>                                     
+															<td >
+																<input class="form-control required" name="travel[1][end_address]" aria-required="true" type="text"></td>                                     
+															<td style="width:17%;color:#999;">
+																到达时间             
+															</td>                                    
+															<td ><input class="form-control required Wdate" aria-required="true" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" name="travel[1][end_time]" /></td>
+														</tr>
+														<tr id="row_{$key+1}">
+															<td style="width:17%;color:#999;">
+																交通工具               
+															</td>                                     
+															<td >
+																<select class="form-control required" aria-required="true" name="travel[1][vehicle]">
+																	<option >-请选择-</option>
+																	<option value="飞机">飞机</option>
+																	<option value="汽车">汽车</option>
+																	<option value="火车">火车</option>
+																	<option value="高铁">高铁</option>
+																	<option value="轮船">轮船</option>
+																	<option value="其他">其他</option>
+																</select>
+															</td>                                     
+															<td style="width:17%;color:#999;">
+																住宿(天)            
+															</td>                                    
+															<td ><input class="form-control" name="travel[1][duration]" type="text"></td>
+														</tr>
+														<tr id="row_{$key+1}">
+															<td style="width:17%;color:#999;">
+																金额(元)                    
+															</td>                                     
+															<td ><input class="form-control required bx_money" onkeyup="calculate()" name="travel[1][money]" aria-required="true" type="text"></td>
+															<td style="width:17%;color:#999;">
+																备注             
+															</td>                                    
+															<td ><input class="form-control" name="travel[1][description]" type="text"></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-11">
+												<a id="addfile" class="pull-left" href="javascript:void(0)">上传发票图片</a>
+												<a class="pull-right" id="add_shixiang" href="javascript:void(0)">+添加事项</a>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-11">
+												<div id="filecontent" class="hide">
+													<span class="tishiinfo"><img src="__PUBLIC__/img/addFile.png"/><span class="fujian">附件</span></span>
+													<span id="addfilediv">本次共添加了<span id="file_num"></span>文件,总大小<span id="file_size"></span>KB&nbsp;<a href="javascript:;" style="color: #5a8ee2;" onclick="delall();">全部删除</a></span>
+												</div>
+											</div>
+										</div>
+									</case>
+									<case value="5">
+										<div class="form-group">
+											<label class="col-md-3 control-label">出差人：</label>
+											<div class="col-md-6">
+												<input type="hidden" name="owner_role_id" value="{$_SESSION['role_id']}" id="owner_role_id"/>
+												<input class="form-control required" type="text" id="owner_name" value="{$_SESSION['full_name']}"  readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择"/>
+											</div>
+											<div class="col-md-2"><span style="color:red">*</span></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">出差事由：</label>
+											<div class="col-md-6">
+												<textarea class="form-control required" rel="出差事由" rows="10" id="content" aria-required="true" name="content"></textarea>
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">审批人：</label>
+											<div class="col-md-6">
+												<if condition="$option eq 1">
+													<input type="hidden" name="examine_role_id" value="{$examine_step[0]['role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" readonly value="{$examine_step[0]['user_name']}" aria-required="true" name="examine_role" />
+												<else/>
+													<input type="hidden" name="examine_role_id" value="{$info['examine_role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" value="{$info['examine']['user_name']}" aria-required="true" name="examine_role" id="examine_role" readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择" />
+												</if>
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">预算(元)：</label>
+											<div class="col-md-6">
+												<input class="form-control required" aria-required="true" type="text" id="budget" name="budget" />
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">出发地：</label>
+											<div class="col-md-6">
+												<input class="form-control required" id="start_address" name="start_address" aria-required="true" type="text">
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">目的地：</label>
+											<div class="col-md-6">
+												<input class="form-control required" id="end_address" name="end_address" aria-required="true" type="text">
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">出发时间：</label>
+											<div class="col-md-6">
+												<input class="form-control required Wdate" aria-required="true" type="text" id="start_time" name="start_time" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:&quot;#F{$dp.$D('end_time')||'2098-01-01'}&quot;})" value="<?php echo date('Y-m-d', time());?>" />
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">返回时间：</label>
+											<div class="col-md-6">
+												<input class="form-control required Wdate" aria-required="true" type="text" id="end_time" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd', minDate:&quot;#F{$dp.$D(\'start_time\')}&quot;,maxDate:'2038-01-01'})" name="end_time" />
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">交通工具：</label>
+											<div class="col-md-6">
+												<select class="form-control required" aria-required="true" name="vehicle">
+													<option >-请选择-</option>
+													<option value="飞机">飞机</option>
+													<option value="汽车">汽车</option>
+													<option value="火车">火车</option>
+													<option value="高铁">高铁</option>
+													<option value="轮船">轮船</option>
+													<option value="其他">其他</option>
+												</select>
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">住宿(天)：</label>
+											<div class="col-md-6">
+												<input class="form-control" id="duration" name="duration" value="{$contract_custom}" type="text">
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-md-3 control-label">备注：</label>
+											<div class="col-md-8">
+												<textarea class="form-control required" aria-required="true" rows="10" name="description" id="description"></textarea>
+											</div>
+										</div>
+									</case>
+									<case value="6">
+										<div class="form-group">
+											<label class="col-md-3 control-label">借款人：</label>
+											<div class="col-md-7">
+												<input type="hidden" name="owner_role_id" value="{$_SESSION['role_id']}" id="owner_role_id"/>
+												<input class="form-control required" type="text" id="owner_name" value="{$_SESSION['full_name']}"  readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择"/>
+											</div>
+											<div class="col-md-1"><span style="color:red">*</span></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">借款事由：</label>
+											<div class="col-md-7">
+												<textarea class="form-control required" rel="借款事由" rows="10" id="content" aria-required="true" name="content"></textarea>
+											</div>
+											<div class="col-md-1"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">借款金额(元)：</label>
+											<div class="col-md-7">
+												<input class="form-control required" aria-required="true" type="text" id="budget" name="budget" />
+											</div>
+											<div class="col-md-1"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">审批人：</label>
+											<div class="col-md-7">
+												<if condition="$option eq 1">
+													<input type="hidden" name="examine_role_id" value="{$examine_step[0]['role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" readonly value="{$examine_step[0]['user_name']}" aria-required="true" name="examine_role" />
+												<else/>
+													<input type="hidden" name="examine_role_id" value="{$info['examine_role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" value="{$info['examine']['user_name']}" aria-required="true" name="examine_role" id="examine_role" readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择" />
+												</if>
+											</div>
+											<div class="col-md-1"></div>
+										</div>
+									</case>
+									<case value="7">
+										<div class="form-group">
+											<label class="col-md-3 control-label">申请人：</label>
+											<div class="col-md-8">
+												<input type="hidden" name="owner_role_id" value="{$_SESSION['role_id']}" id="owner_role_id"/>
+												<input class="form-control required" type="text" id="owner_name" value="{$_SESSION['full_name']}"  readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择"/>
+											</div>
+											<div class="col-md-1"><span style="color:red">*</span></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">申请事由：</label>
+											<div class="col-md-8">
+												<textarea class="form-control required" rows="10" aria-required="true" name="content"></textarea>
+											</div>
+											<div class="col-md-1"></div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">审批人：</label>
+											<div class="col-md-8">
+												<if condition="$option eq 1">
+													<input type="hidden" name="examine_role_id" value="{$examine_step[0]['role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" readonly value="{$examine_step[0]['user_name']}" aria-required="true" name="examine_role" />
+													<else/>
+													<input type="hidden" name="examine_role_id" value="{$current_branch['examine_role_id']}" id="examine_role_id" />
+													<input type="text" class="form-control required" value="{$current_branch['examine_role']}" aria-required="true" name="examine_role" id="examine_role" readonly="true" style="cursor:pointer;" title="请点击选择" placeholder="请点击选择"/>
+												</if>
+											</div>
+											<div class="col-md-1"></div>
+										</div>
+
+										<div class="form-group">
+											<label class="col-md-3 control-label">大众点评链接地址：</label>
+											<div class="col-md-8">
+												<input class="form-control required" aria-required="true" type="text" id="dzdp_url" name="dzdp_url" value="{$current_branch['url']}" />
+											</div>
+											<div class="col-md-1"></div>
+										</div>
+
+										<div class="form-group">
+											<label class="col-md-3 control-label">减免或赠送礼品金额(元)：</label>
+											<div class="col-md-8">
+												<input class="form-control required" aria-required="true" type="text" id="budget" name="budget" />
+											</div>
+											<div class="col-md-1"></div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-11">
+												<a id="addfile" class="pull-left" href="javascript:void(0)">请上传好评截图</a>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-11">
+												<div id="filecontent" class="hide">
+													<span class="tishiinfo"><img src="__PUBLIC__/img/addFile.png"/><span class="fujian">附件</span></span>
+													<span id="addfilediv">本次共添加了<span id="file_num"></span>文件,总大小<span id="file_size"></span>KB&nbsp;<a href="javascript:;" style="color: #5a8ee2;" onclick="delall();">全部删除</a></span>
+												</div>
+											</div>
+										</div>
+									</case>
+								</switch>
+							</div>
+							<div class="col-md-2 pull-right">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="tfoot_div" style="margin-top:-1px;" class="clearfix" >
+			<div class="clearfix" id="tfoot_page">
+				<div class="ibox-content">
+					<div class="col-sm-offset-3"><input name="submit" id="save_submit" class="btn btn-primary" type="submit" value="提交审批"/></div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div style="display:none;" id="dialog-role-list2" title="{:L('SELECT_HEAD')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-message" title="{:L('SELECT_HEAD')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-file" title="添加文件">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#save_submit').prop('disabled',false);
+		/*form表单验证*/
+		$("#form").validate({
+			submitHandler:function(form){
+
+				var _type = "{:I('get.type')}";
+				if(_type == 7 && ($('#file_num').text() < 1)) {
+                    alert('请上传大众点评好评截图');
+                    return false;
+				}
+
+	            $('#save_submit').click(function(){
+					$('#save_submit').prop('disabled',true);
+				});
+	            form.submit();
+	        }    
+		});
+	});
+	//计算金额
+	function calculate(){
+		var total_amount = 0;
+		$('.bx_money').each(function(k, v){
+			//合计数量
+			if($(v).val() != '' ||  $(v).val() != '0'){
+				total_amount += new Number($(v).val());
+			}
+		});
+		$('#budget').val(total_amount);
+	}
+	//添加发票图片
+	$("#addfile").click(function(){
+		$('#dialog-file').dialog('open');
+		$('#dialog-file').load('{:U("file/addlogfile")}');
+	});
+	$("#dialog-file").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 800,
+		maxHeight: 400,
+		position: ["center",100],
+		buttons: {
+			"确定": function () {
+			   $.ajax({
+					cache: true,
+					type: "POST",
+					url:'{:U("file/getfiles")}',
+					data:$('#uploadForm').serialize(),
+					async: false,
+					success: function(data) {
+					   var result = data.data.file_list;
+					   $('#filecontent').removeAttr('class');
+					   var temp = '';
+					   if(result){
+							 $.each(result,function(k,v){
+								temp += '<div class="showfile" id="del_'+v.file_id+'"><input type="hidden" name="file[]" value="'+v.file_id+'"/><img src="__PUBLIC__/productImg/'+v.pic+'">&nbsp;<span style="color:#646464;">'+v.name+'&nbsp;(&nbsp;'+v.size+'KB&nbsp;)</span>&nbsp;&nbsp;<a href="javascript:;" rel="'+v.file_id+'" onclick="del_file(this);"><img src="__PUBLIC__/img/delfile.png"/></a></div>';
+							 });
+							 $('#addfilediv').before(temp);
+							 $('#file_num').html(data.data.file_num);
+							 $('#file_size').html(data.data.file_size);
+					   }
+					  
+					}
+				});
+			   $(this).dialog("close");
+			},
+			"取消": function () {
+				 $(this).dialog("close");
+			}
+		}
+	});
+	//添加差旅报销
+	var now_rows = 1;
+	$('#add_shixiang').click(function(){
+		now_rows += 1;
+		$.ajax({
+			url: "{:U('examine/travel_business')}",
+			data:{now_rows:now_rows},
+			type: "POST",
+			success:function(er){
+				$('#add_content').append(er);
+				return true;
+			},
+			error:function(er){
+				return false;
+			}
+		});
+	});
+	$('#add_shixiangtwo').click(function(){
+		now_rows +=1;
+		$.ajax({
+			url: "{:U('examine/travel_two')}",
+			data:{now_rows:now_rows},
+			type: "POST",
+			success:function(er){
+				$('#add_content').append(er);
+				return true;
+			},
+			error:function(er){
+				return false;
+			}
+		});
+	});
+	//移除选项
+	$(document).on('click','.reduce_one',function(){
+		var row_id = $(this).attr('rel');
+		//如果行内存在商品，弹出操作提示
+		if($('#cate_'+row_id).val() == ''&&$('#expense_time_'+row_id).val() == ''&&$('#money_'+row_id).val() == ''){
+			$('#row_'+row_id).remove();
+		}else{
+			swal({
+				title: "温馨提示",
+				text: "确定要移除此事项吗？",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "是的，我要移除！",
+	       		cancelButtonText:'让我再考虑一下…',
+				closeOnConfirm:false,
+	        	closeOnCancel:false
+	        }, 
+	        function(isConfirm){
+				if (isConfirm) {
+					$('#row_'+row_id).remove();
+					swal("移除成功！", "您已经移除了此事项信息！", "success");
+				} else {
+					swal("已取消","您取消了移除操作！","error");
+					return false;
+				} 
+			});
+		}
+		// now_rows --;
+		$('#rows').val(now_rows);
+		calculate();
+	});
+
+	$('#examine_role').click(function(){
+		$('#dialog-role-list2').dialog('open');
+		$('#dialog-role-list2').load('{:U("user/listDialog","by=examine")}');
+	});
+
+	$('#owner_name').click(function () {
+		$('#dialog-role-list2').dialog('open');
+		$('#dialog-role-list2').load('{:U("user/listDialog")}');
+	});
+
+	$("#dialog-role-list2").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 800,
+		height:400,
+		buttons: { 
+			"确定": function () {
+				var item = $('input:radio[name="owner"]:checked').val();
+				var name = $('input:radio[name="owner"]:checked').attr('rel');
+				var by = $('#dialog_by').val();
+				if(item) {
+					if (by == 'examine') {
+						$('#examine_role_id').val(item);
+						$('#examine_role').val(name);
+					} else {
+						$('#owner_role_id').val(item);
+						$('#owner_name').val(name);
+					}
+				}
+				$(this).dialog("close"); 
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		},
+		position:["center",100]
+	});
+
+//删除 函数
+function del_obj(id){
+    var module = 'examine';
+    $.post("{:U('file/filedel')}",{file_id:id,module:module},function(data){
+		if(data.status == 1){
+			$('#del_'+id).remove();
+			swal("删除成功！", "你的文件被删除了", "success");
+			if($('.showfile').length > 0){
+				return true;
+			}else{
+				$('#filecontent').addClass('hide');
+			}
+		}else{
+		 	swal({
+				title: "提示",
+				text: data.info,
+				type: "error"
+			});
+		}
+		},"json"
+	);
+}
+//删除
+function del_file(obj){
+	var id = $(obj).attr('rel');
+	swal({
+		title: "您确定要删除附件信息吗？",
+		text: "删除后将无法恢复，请谨慎操作！",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "删除",
+		cancelButtonText: "取消",
+		closeOnConfirm: false
+	},
+	function(isConfirm){
+		if (isConfirm) {
+			del_obj(id);
+		}else{
+			return false;
+		}
+	});
+}
+//全部删除 函数
+function delall(){
+	swal({
+		title: "您确定要删除附件信息吗？",
+		text: "删除后将无法恢复，请谨慎操作！",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "删除",
+		cancelButtonText: "取消",
+		closeOnConfirm: false
+	},
+	function(isConfirm){
+		if (isConfirm) {
+			$('.showfile').each(function(){
+				var id = $(this).find('input[type="hidden"]').val();
+				del_obj(id);		
+			});
+		}else{
+			return false;
+		}
+	});
+}
+</script>
+<include file="Public:footer" />	

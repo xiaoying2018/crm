@@ -1,0 +1,181 @@
+<style>
+.competitiveModal .cm_modal {
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.competitiveModal .title-bar {
+    border: none;
+    font-size: 16px;
+    padding-bottom: 0;
+    margin-top: 5px;
+}
+
+.competitiveModal .text-tag{
+    display: inline-block;
+}
+.competitiveModal .text-tag {
+    font-size: 16px;
+    padding-left: 4px;
+    border-left: 4px solid #18a689;
+    line-height: 16px;
+    margin-top: 10px;
+}
+
+.competitiveModal .table {
+    font-size: 14px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.competitiveModal .table td{
+    border-color:#f2f2f2;
+}
+.td_title{
+    color: #8d8d8d !important;
+    width: 20%;
+}
+textarea{
+    outline: none;
+    border: 1px solid #e7eaec;
+    height: 100px;
+    padding: 10px;
+    overflow-y: scroll;
+    background: #fff !important;
+    width: 100%;
+}
+.nodata{
+    color: #ccc;
+}
+</style>
+<!-- 客户详细 -->
+<div class="modal fade bs-example-modal-lg competitiveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="width: 60%;max-width: 800px;">
+        <div class="row cm_modal">
+            <div class="col-lg-12">
+                <div class="title-bar">
+                    <div class="row " id="title-show">
+                        <div class="all-inline clearfix">
+                            <div style="float: left;">
+                                <span class="text-tag">机构详情</span>
+                            </div>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="float: right;">
+                                关闭
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ">
+                    <table class="table">
+                        <tr>
+                            <td class="td_title">机构名称：</td>
+                            <td v-html="data.competitive_name"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">机构分类：</td>
+                            <td v-html="data.competitive_cate_name"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">机构地址：</td>
+                            <td v-html="data.address"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">联系人：</td>
+                            <td v-html="data.contacts_name"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">联系人职位：</td>
+                            <td v-html="data.position"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">电话：</td>
+                            <td v-html="data.tel"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">邮箱：</td>
+                            <td v-html="data.email"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">qq/微信：</td>
+                            <td v-html="data.onlineNum"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">合作维护人：</td>
+                            <td v-html="data.manage_p"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">机构录入时间：</td>
+                            <td v-html="data.update_time"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">备注：</td>
+                            <td>
+                                <textarea name="" id="" cols="30" rows="10" readonly="readonly">
+                                    {{data.remark}}
+                                </textarea>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(function() {
+    var competitiveModal = new Vue({
+        el: '.competitiveModal',
+        data: {
+            data: {}
+        },
+        methods: {
+            getDetail: function(id) {
+                if (!id) return;
+                var _this = this;
+                $.ajax({
+                    url: "/competitive/detail?id="+id,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    success: function(res) {
+                        if (res) {
+                            var _res = res.detaildata;
+                            for (var key in _res) {
+                                if (key == 'update_time') {
+                                    _res["update_time"] = timestampToFormat(_res["update_time"], 'yyyy-MM-dd hh:mm:ss');
+                                }
+                                if (key == 'competitive_cate_id') {
+                                    for(var i = 0; i < res.catedata.length; i++){
+                                        if (res.catedata[i]["competitive_cate_id"] == _res[key]) {
+                                            _res["competitive_cate_name"] = res.catedata[i].competitive_cate_name;
+                                        }
+                                    }
+                                }
+                                if (_res[key].length == 0) {
+                                    _res[key] = "<span class='nodata'>暂无数据</span>"
+                                }
+                            }
+                            _this.data = _res;
+                        }
+                    },
+                    error: function(e) {
+                        console.log(e);
+                        alert('网络异常！');
+                    }
+                });
+            }
+        },
+        mounted: function() {
+            var _this = this;
+            //关闭浮层
+            $(".competitiveModal-close").click(function() {
+                $(".competitiveModal").modal('hide');
+            })
+        }
+    })
+    $('.competitiveModal').on('show.bs.modal', function(ele) {
+        competitiveModal.data = {};
+        competitiveModal.getDetail(ele.relatedTarget);
+    })
+});
+</script>

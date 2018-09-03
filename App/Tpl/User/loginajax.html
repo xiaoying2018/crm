@@ -1,0 +1,102 @@
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/css/validator.css"/>
+<script type="text/javascript" src="__PUBLIC__/js/checkuser.js"></script>
+<script src="__PUBLIC__/js/jquery.base64.js"></script>
+<script src="__PUBLIC__/js/jquery.md5.js"></script>
+<!-- ladda -->
+<script src="__PUBLIC__/style/js/plugins/ladda/spin.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/ladda/ladda.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/ladda/ladda.jquery.min.js"></script>
+<link href="__PUBLIC__/style/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+<style>
+	.close{font-size:34px;font-weight:400;color:#fff;}
+	.close:hover{color:#fff;}
+</style>
+<div class="modal-header" style="padding:3px 10px;">
+	<b style="font-size:16px;">您好，请先登录</b>
+	<button type="button" id="close" class="close close_login"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+</div>
+<div class="modal-body clearfix">
+	<form id="login_Form" class="form-horizontal m-t" method="post">
+		<div class="col-sm-12">
+			<div class="form-group">
+				<div class="col-sm-1">
+				</div>
+				<label class="control-label col-sm-2" for="name" style="width:110px;"><span style="color:#FF0011;">*</span>登录账号：</label>
+				<div class="col-sm-6">
+					<input type="text" id="login_name" name="name" rel="require" rell="登录账号" class="form-control checkit" onblur="checkform(this);"/>
+				</div>
+				<div class="col-sm-3 error_msg" id="login_nameTip"></div>
+			</div>
+			<div class="form-group ">
+				<div class="col-sm-1">
+				</div>
+				<label class="control-label col-sm-2" for="name" style="width:110px;"><span style="color:#FF0011;">*</span>登录密码：</label>
+				<div class="col-sm-6">
+					<input type="password" id="login_password" name="password" rel="password" rell="登录密码" class="form-control checkit" onblur="checkform(this);" />
+				</div>
+				<div class="col-sm-3 error_msg" id="login_passwordTip"></div>
+			</div>
+		</div>
+	</form>
+</div>
+<script>
+$(document).ready(function(){
+	$("#adbtn").click(function(){
+		$.base64.utf8encode = true;
+		if($('#login_password').val()){
+			$('#login_password').val($.md5($.trim($('#login_password').val().replace(/[\r\n]/g,""))));
+		}
+		$('.ladda-button' ).ladda( 'bind', { timeout: 2000 } );
+		if(input_msg && before_submit()){
+			$.ajax({
+				type: "POST",
+				url: "{:U('user/loginajax')}",
+				data:$("#login_Form").serialize(),
+				async: true,
+				success: function(data) {
+					if(data.status == 1){
+						swal({
+							title: "登录成功！",
+							text: "跳转中!",
+							type: "success"
+						});
+						$('#Modal_login').modal('hide');
+						top.location.reload();
+					}else{
+						swal({
+							title: "登录失败!",
+							text: data.info,
+							type: "error"
+						});
+						$('#login_name').val('');
+						$('#login_password').val('');
+					}
+				}
+			});
+		}else{
+			var item_id = [];
+			$('.checkit').each(function(k,v){
+				checkform(v);
+				item_id.push($(v).attr('id'));
+			});
+			$.each(item_id,function(k,v){
+				if($('#'+v+'Tip').html() == ''){
+					item_id.splice(k,1);
+				}
+			});
+			$('#'+item_id[0]).focus();
+			return false;
+		}
+	});
+	$(".close_login").click(function(){
+		window.location.href = "{:U('user/login')}";
+	})
+});
+</script>
+<div class="modal-footer" style="padding:8px 22px;">
+	<button class="ladda-button btn btn-primary" id="adbtn" data-style="zoom-in" type="submit">
+		<span class="ladda-label">登 录</span><span class="ladda-spinner"></span>
+	</button>
+	<!-- <button type="button" id="adbtn" class="btn btn-primary">登录</button> -->
+	<button type="button" class="btn btn-white close_login" >退出</button>
+</div>

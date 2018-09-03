@@ -1,0 +1,709 @@
+<include file="Public:header" />
+<!-- nice-scroll -->
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<!-- ladda -->
+<script src="__PUBLIC__/style/js/plugins/ladda/spin.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/ladda/ladda.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/ladda/ladda.jquery.min.js"></script>
+<link href="__PUBLIC__/style/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+<!--the css for jquery.mCustomScrollbar-->
+<link rel="stylesheet" href="__PUBLIC__/emoji/css/jquery.mCustomScrollbar.min.css"/>
+<!--the css for this plugin-->
+<link rel="stylesheet" href="__PUBLIC__/emoji/css/jquery.emoji.css"/>
+<style type="text/css">
+	body{overflow-y: hidden;}
+	.img-circle{width:35px;height:35px;border-radius: 50%;padding-left:0px;}
+	.main_time {
+		width: 100%;
+		text-align: center; 
+		margin-bottom: 10px; 
+		padding-top: 10px;
+		clear: both;
+	}
+	.message_time {
+        width: 180px;
+        margin-left: 40%;
+		font-size: 12px;
+		background: #ccc;
+		border-radius: 5px;
+    	padding: 1px 5px;
+        text-align: center;
+	}
+	.receiver{float:left;line-height: 35px;clear:both;width: 100%;}
+	.img_con img{width:30px;height:30px;border-radius: 15px;}
+	.img_con{float:left;width: 95%;}
+	.text_con{float:left;width:70%;background-color:#fff;margin:0 10px 10px 40px;padding:5px;border-radius:5px;}
+	.p_name {    
+		font-size: 12px;
+    	position: relative;
+    	left: 10px;
+    }
+	.text_con span {word-break: break-all;}
+    #myupload {width: 30px;height: 30px;float: left;}
+    .fa-img{margin-top:6px;}
+</style>
+<script>
+	$(function(){
+		var scroll_width = 5;
+        $(".message_left").height(window.innerHeight-$("#message_table").offset().top-$("#tfoot_div").height());
+        $(".emoji_container").css("top",window.innerHeight-$("#message_table").offset().top-320);
+		$(".message_div").height(window.innerHeight-$("#message_table").offset().top-$("#tfoot_div").height()-110);
+		$(window).resize(function(){
+            $(".message_left").height(window.innerHeight-$("#message_table").offset().top-$("#tfoot_div").height());
+			$(".message_div").height(window.innerHeight-$("#message_table").offset().top-$("#tfoot_div").height()-110);
+		})
+		$(".nicescroll").niceScroll({
+			cursorcolor: "#ccc",//#CC0071 光标颜色 
+		    cursoropacitymax: 1, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0 
+		    touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备 
+		    cursorwidth: scroll_width+"px", //像素光标的宽度 
+		    cursorborder: "0", //     游标边框css定义 
+		    cursorborderradius: "5px",//以像素为光标边界半径 
+		    autohidemode: false, //是否隐藏滚动条 
+		    zindex:100,
+		    background:"#F3F3F5",//滚动条背景色
+		});	
+	});	
+</script>
+<div class="wrapper wrapper-content " >
+	<include file="Public:alert" />
+    <div class="row" >
+        <div class="col-lg-12">
+        	<include file="Message:message_left" />
+        	<div class="col-lg-9" style="padding-right: 0px;">
+                <div class="ibox-content clearfix" id="message_table" style="padding:0px;">
+                    <div class="table-content clearfix" style="padding-top:0px;padding-left:0px;border: none;">  
+                        <div class="ibox-title" style="min-height: 70px;border-width: 0px 0px 1px 0px;">
+                            <div class="nav pull-left" >
+                                <if condition="$to_role_info['thumb_path']">
+                                    <img width="70px" height="70px" class="img-circle" src="{$to_role_info['thumb_path']}"/>
+                                <else/>
+                                    <img width="70px" height="70px" class="img-circle" src="__PUBLIC__/img/avatar_default.png"/>
+                                </if>
+                                <span style="font-weight:900;line-height:40px;">{$to_role_info['full_name']}</span>
+                            </div>
+                        </div>
+                    </div>
+            		<div class="ibox-content" style="border: none;">
+    					<input type="hidden" name="to_role_id" id="to_role_id" value="{$to_role_id}">
+    					<input type="hidden" name="personal_id" id="personal_id" value="1">
+    					<input type="hidden" id="request_time" value="{$request_time}">
+                        <input type="hidden" id="p" value="2" />
+    					<input type="hidden" id="load" value="1" />
+    					<div id="message_body" class="message_div nicescroll">
+                            <div id="list_message">
+        						<div id="loading">
+        							<input type="hidden" id="p" value="2" />
+        							<div class="spiner-example">
+        								<div class="sk-spinner sk-spinner-three-bounce">
+        									<div class="sk-bounce1"></div>
+        									<div class="sk-bounce2"></div>
+        									<div class="sk-bounce3"></div>
+        								</div>
+        							</div>
+        						</div>
+        						<div id="list">
+            						<volist name="all_message_list" id="vo" key="k">
+            							<if condition="$k%10 eq 0">
+            								<div class="main_time">
+            									<div class="message_time">{$vo.send_time|date="Y年m月d号 H:m",###}</div>
+            								</div>	
+            							</if>
+            							<div class="receiver" id="receiver_{$vo['message_id']}">
+            								<div class="img_con">
+            									<if condition="$vo['user']['thumb_path']">
+            										<img width="70px" height="70px" class="yh_head" src="{$vo['user']['thumb_path']}"/>
+            									<else/>
+            										<img width="70px" height="70px" class="yh_head" src="__PUBLIC__/img/avatar_default.png"/>
+            									</if>
+            									<span class="p_name">{$vo['user']['full_name']}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                <span class="p_name" style="color: #aaa;font-weight: 300;">{$vo.send_time|date="m/d H:i",###}</span>
+            								</div>
+            								<div class="text_con">
+            									<div class="right_triangle"></div>
+            									<span>
+            										<td style="text-align:right">
+            											<if condition="$vo['send_type'] eq 2">
+            												<a class="litebox" href="{$vo['file_info']['file_path']}" title="点击查看大图"><img class="pb" rel="1" src="{$vo['file_info']['file_path']}" width="150px"></a>
+            											<else/>
+            												<div style="font-size:13px">
+            													{$vo.content}
+            												</div>
+            											</if>
+            											<if condition="$vo.is_me eq 1">
+            												<div style="font-size:13px;color:#666">
+            													<a class="delete" href="javascript:;" rel="{$vo.message_id}">删除</a>&nbsp;
+            												</div>
+            											</if>
+            										</td>
+            									</span>
+            								</div>
+            							</div>
+            						</volist>
+        						</div>
+        						<div style="clear: both;" id="clearfix"></div>
+                            </div>
+    				  	</div>
+                    </div>
+				</div>
+                <div id="tfoot_div" class="clearfix" style="border-color:#ccc;border-width: 0px 1px 1px 1px;border-style: solid solid;">
+                    <div class="clearfix" id="tfoot_page">
+                        <div class="ibox-content" style="float:left;height:80px;width: 100%;border: none;">
+                            <div style="float: left;background-color:#fff;padding: 5px 2px;height:50px;width: 100%;">
+                                <div style="float: left;width: 75px;min-width: 35px;position:relative;line-height:30px;cursor:pointer;" title="发送图片">
+                                    <i class="fa fa-file-picture-o fa-img" style="color:#757575;font-size: 24px;"></i>
+                                    <div id="fileupload" style="width: 30px;height: 30px;float: left;">
+                                        <input type="hidden" name="to_role_id" value="{$to_role_id}" />
+                                        <input type="file" id="message_file" name="img" style="top:0;left:0;width:30px;opacity:0;" />
+                                    </div>
+                                </div>
+                                <div style="float: left;width: 50px;min-width: 35px;position:relative;line-height:29px;" title="表情">
+                                    <div style="margin-top: 5px;width: 30px;height: 30px;float: left;">
+                                        <input type="image" id="btn_emoji" src="__PUBLIC__/img/emoji.png" />
+                                    </div>
+                                </div>
+                                <div style="float: left;width: 60%;margin-top: -15px;">
+                                    <!-- <textarea id="chat_message" oninput="myFunction()"  style="resize: none;"  class="form-control"  rows="2" cols="200"></textarea> -->
+                                    <div id="chat_message" class="form-control" onkeyup="myFunction()" style="overflow-y:scroll;height: 60px;width: 100%;margin-top:3px;float: left;" contenteditable="true" placeholder="添加回复..."></div>
+                                </div>
+                                <div style="float: right;width: 22%;">
+                                    还可以输入 <span id="contentCount" style="color:red;">1000</span>字
+                                    <button class="ladda-button btn btn-primary" id="send" data-style="zoom-in" type="submit" >
+                                        <span class="ladda-label">发送</span><span class="ladda-spinner"></span>
+                                    </button>
+                                    <!-- <input type="submit" class="btn btn-primary" style="background-color:#00B7E1;border-color: #00B7E1;" value="发送"> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="dialog-role-list2" title="收件人">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script>
+	$('#tfoot_div').keydown(function(event){
+		if(event.keyCode == "13"){
+			$('#send').click();
+		}
+	});
+    $(function(){
+        $('#to_role').click(function () {
+            $('#dialog-role-list2').dialog('open');
+            $('#dialog-role-list2').load('{:U("user/listDialog")}');
+            return false;
+        });
+        $("#dialog-role-list2").dialog({
+            autoOpen: false,
+            modal: true,
+            width: 800,
+            maxHeight: 400,
+            buttons: { 
+                "确定": function () {
+                    var to_role_id = $('input:radio[name="owner"]:checked').val();
+                    window.location.href = "{:U('message/message_view','to_role_id=')}"+to_role_id;
+                    $(this).dialog("close"); 
+                },
+                "取消": function () {
+                    $(this).dialog("close");
+                }
+            },
+            position: ["center", 100],
+            close:function(){
+                $(this).html('');
+            }
+        });
+    })
+</script>
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+<!--(Optional) the js for jquery.mCustomScrollbar's addon-->
+<script src="__PUBLIC__/emoji/js/jquery.mousewheel-3.0.6.min.js"></script>
+<!--the js for jquery.mCustomScrollbar-->
+<script src="__PUBLIC__/emoji/js/jquery.mCustomScrollbar.min.js"></script>
+<!--the js for this plugin-->
+<script src="__PUBLIC__/emoji/js/jquery.emoji.js"></script>
+<script type="text/javascript">
+$("#chat_message").emoji({
+    button:"#btn_emoji",
+    showTab: true,
+    animation: 'none',
+    icons: [{
+        name: "小表情",
+        path: "__PUBLIC__/emoji/img/tieba/",
+        maxNum: 50,
+        file: ".jpg",
+        placeholder: ":{alias}:",
+        alias: {
+            1: "hehe",
+            2: "haha",
+            3: "tushe",
+            4: "a",
+            5: "ku",
+            6: "lu",
+            7: "kaixin",
+            8: "han",
+            9: "lei",
+            10: "heixian",
+            11: "bishi",
+            12: "bugaoxing",
+            13: "zhenbang",
+            14: "qian",
+            15: "yiwen",
+            16: "yinxian",
+            17: "tu",
+            18: "yi",
+            19: "weiqu",
+            20: "huaxin",
+            21: "hu",
+            22: "xiaonian",
+            23: "neng",
+            24: "taikaixin",
+            25: "huaji",
+            26: "mianqiang",
+            27: "kuanghan",
+            28: "guai",
+            29: "shuijiao",
+            30: "jinku",
+            31: "shengqi",
+            32: "jinya",
+            33: "pen",
+            34: "aixin",
+            35: "xinsui",
+            36: "meigui",
+            37: "liwu",
+            38: "caihong",
+            39: "xxyl",
+            40: "taiyang",
+            41: "qianbi",
+            42: "dnegpao",
+            43: "chabei",
+            44: "dangao",
+            45: "yinyue",
+            46: "haha2",
+            47: "shenli",
+            48: "damuzhi",
+            49: "ruo",
+            50: "OK"
+        },
+        title: {
+            1: "呵呵",
+            2: "哈哈",
+            3: "吐舌",
+            4: "啊",
+            5: "酷",
+            6: "怒",
+            7: "开心",
+            8: "汗",
+            9: "泪",
+            10: "黑线",
+            11: "鄙视",
+            12: "不高兴",
+            13: "真棒",
+            14: "钱",
+            15: "疑问",
+            16: "阴脸",
+            17: "吐",
+            18: "咦",
+            19: "委屈",
+            20: "花心",
+            21: "呼~",
+            22: "笑脸",
+            23: "冷",
+            24: "太开心",
+            25: "滑稽",
+            26: "勉强",
+            27: "狂汗",
+            28: "乖",
+            29: "睡觉",
+            30: "惊哭",
+            31: "生气",
+            32: "惊讶",
+            33: "喷",
+            34: "爱心",
+            35: "心碎",
+            36: "玫瑰",
+            37: "礼物",
+            38: "彩虹",
+            39: "星星月亮",
+            40: "太阳",
+            41: "钱币",
+            42: "灯泡",
+            43: "茶杯",
+            44: "蛋糕",
+            45: "音乐",
+            46: "haha",
+            47: "胜利",
+            48: "大拇指",
+            49: "弱",
+            50: "OK"
+        }
+    },
+       { name: "萌萌哒",
+        path: "__PUBLIC__/emoji/img/qq/",
+        maxNum: 91,
+        excludeNums: [41, 45, 54],
+        file: ".gif"
+    }]
+});
+
+//保存按钮loading
+$( '.ladda-button' ).ladda( 'bind', { timeout: 2000 } );
+//初始化图片查看插件
+$('.litebox').liteBox({
+  revealSpeed: 400,
+  background: 'rgba(0,0,0,.8)',
+  overlayClose: true,
+  escKey: true,
+  navKey: true,
+  errorMessage: '图片加载失败.'
+});
+//删除记录
+$(".delete").click(function(){
+    var message_id = $(this).attr('rel');
+    swal({
+        title: "您确定要删除这条信息吗？",
+        text: "删除后将无法恢复，请谨慎操作！",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "是的，我要删除！",
+        cancelButtonText:'让我再考虑一下…',
+        closeOnConfirm:false,
+        closeOnCancel:false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+            $.get("{:U('message/delete','id=')}"+message_id,function(data){
+                if(data.status == 1){
+                    $('#receiver_'+message_id).remove();
+                    swal("删除成功！", "您已经永久删除了这条信息。", "success");
+                }else{
+                    alert_crm(data.info);
+                }
+                },"json"
+            );
+        } else {
+            swal("已取消","您取消了删除操作！","error");
+        }
+    });
+});
+function changeContent(){
+	a = $("#select1 option:selected").val();
+	window.location.href="{:U('message/index', 'by=')}"+a;
+}
+$(function(){
+	<if condition="$Think.get.field neq null">
+	$("#field option[value='{$Think.get.field}']").prop("selected", true);changeCondition();
+	$("#condition option[value='{$Think.get.condition}']").prop("selected", true);changeSearch();
+	$("#search").prop('value', '{$Think.get.search}');
+	<else />
+	$("#field option[value='status_id']").prop("selected", true);changeCondition();
+	</if>
+	$("#receive_check_all").click(function(){
+		$("input[class='receive_check_list']").prop('checked', $(this).prop("checked"));
+	});
+	$("#send_check_all").click(function(){
+		$("input[class='send_check_list']").prop('checked', $(this).prop("checked"));
+	});
+	$("#send").click(function(){
+		$('#dialog-message-send').dialog('open');
+		$('#dialog-message-send').load('{:U("message/send")}');
+	});
+});
+</script>
+<script type="text/javascript">
+	//页面加载后自动滚动到底部
+	$(document).ready(function(){
+        var html_h =  parseInt($('#list').height());
+		// var html_h = $(document).height()+50; 
+		$("#message_body").animate({"scrollTop": html_h}, 800);
+	});
+
+	//信息提交
+	$(':submit').click(function(){
+		var to_role_id = $('#to_role_id').val();
+		var personal_id = $('#personal_id').val();
+        // var content = $.trim($('#chat_message').val());
+		var content = $.trim($('#chat_message').html());
+		if(!content){
+			swal({
+				title: "温馨提示",
+				text: "不能发送空白消息！",
+                type: "warning"
+			})
+            $('#chat_message').val('');
+			// $('#chat_message').html('');
+			$('#contentCount').html(1000);
+			return false;
+		}
+		chat_ajax(to_role_id,personal_id,content,1);
+	});
+
+    //发表图片
+    $("#fileupload").wrap("<form id='myupload' action='{:U('message/upload')}' method='post' enctype='multipart/form-data'></form>");
+    $("#message_file").change(function(){
+        var check_ext = checkExt();
+        if(check_ext == false)  return;
+        $("#myupload").ajaxSubmit({
+            dataType:  'json',
+            success: function(arr){
+                var to_role_id = $('#to_role_id').val();
+                var personal_id = $('#personal_id').val();
+                var content = arr.id;
+                chat_ajax(to_role_id,personal_id,content,2);
+            }
+        });
+    });
+    //文件上传格式检查
+    function checkExt(){
+        var docObj = document.getElementById("message_file");
+        var type = docObj.files[0]['type'];
+        //允许上传的文件格式
+        var ext = ['image/jpeg','image/jpg','image/png','image/gif'];
+        var status = false;
+        for(var i=0;i<ext.length;i++){
+            if(ext[i] == type){
+                status = true;
+                break;
+            }
+            else continue;
+        }
+        if(status == false) {
+            swal({
+                title: "上传失败",
+                text: "只能上传图片类型！",
+                type: "error"
+            })
+            return false;
+        }else{
+            return true;
+        }
+    }
+	//send_type :1文本格式2附件格式
+	function chat_ajax(to_role_id,personal_id,content,send_type){
+		$.ajax({
+            type:'post',
+            url: "{:U('message/ajaxSend')}",
+            data: {to_role_id: to_role_id, personal_id:personal_id, content: content,send_type:send_type},
+            async: false,
+            success: function (data) {
+                temp = '';
+                var head = '';
+                // console.log(data);
+                if (data.status == 1) {
+					if(data.data.thumb_path != ''){
+						head = '<img class="yh_head" src="'+data.data.thumb_path+'">';  
+					}else{
+						head = '<img class="yh_head" src="__PUBLIC__/img/avatar_default.png">';  
+					}
+					if(data.data.send_type == 1){
+                		temp += '<div class="receiver"><div class="img_con">'+head+'<span class="p_name">'+data.data.full_name+'&nbsp;&nbsp;&nbsp;&nbsp;'+data.data.send_time+'</span></span></div><div class="text_con"><div class="right_triangle"></div><span>'+data.data.content+'</span></div></div>';
+                	}else if(data.data.send_type == 2){
+						temp += '<div class="receiver"><div class="img_con">'+head+'<span class="p_name">'+data.data.full_name+'&nbsp;&nbsp;&nbsp;&nbsp;'+data.data.send_time+'</span></div><div class="text_con"><div class="right_triangle"></div><span><a class="litebox" href="'+data.data.file_path+'" title="点击查看大图"><img class="pb" rel="1" src="'+data.data.file_path+'" width="150px" /></a></span></div></div>';
+                	}
+                	$('#chat_message').html('');
+                	$('#clearfix').before(temp);
+                    // window.scrollTo(0, document.body.scrollHeight);
+                    var html_h =  parseInt($('#list_message').height()+100);
+                    // var html_h = $(document).height()+50; 
+					$("#message_body").animate({"scrollTop": html_h}, 1000);
+                }else{
+                    swal({
+                        title: "温馨提示",
+                        text: "发送失败，请重试！",
+                        type: "error"
+                    })
+                }        	
+            },
+            dataType: 'json'
+        });
+        $('.litebox').liteBox({
+            revealSpeed: 400,
+            background: 'rgba(0,0,0,.8)',
+            overlayClose: true,
+            escKey: true,
+            navKey: true,
+            errorMessage: '图片加载失败.'
+        });
+	}
+   
+    //自动加载新消息内容
+     message_view();
+    /*初始默认值*/
+	var message_content = '';
+	function message_view(){
+		var request_time = $('#request_time').val();//请求时间
+		var to_role_id = $('#to_role_id').val();
+		var is_data = false;
+		 $.ajax({
+            type:'post',
+            url: "{:U('message/message_content')}",
+            data: {request_time: request_time, to_role_id:to_role_id},
+            async: false,
+            success: function (data) {
+                temp = '';
+                var head = '';
+                console.log(data);
+                if (data.status == 1) {
+                	is_data = true;
+                	$.each(data.data, function(k, v){
+                		if(v.to_role_info.thumb_path != ''){
+							head = '<img class="yh_head" src="'+v.to_role_info.thumb_path+'">';  
+						}else{
+							head = '<img class="yh_head" src="__PUBLIC__/img/avatar_default.png">';  
+						}
+						if(v.send_type == 1){
+	                		temp += '<div class="receiver"><div class="img_con">'+head+'<span class="p_name">'+v.to_role_info.full_name+'&nbsp;&nbsp;&nbsp;&nbsp;'+v.send_time+'</span></div><div class="text_con"><div class="right_triangle"></div><span>'+v.content+'</span></div></div>';
+	                	}else if(v.send_type == 2){
+							temp += '<div class="receiver"><div class="img_con">'+head+'<span class="p_name">'+v.to_role_info.full_name+'&nbsp;&nbsp;&nbsp;&nbsp;'+v.send_time+'</span></div><div class="text_con"><div class="right_triangle"></div><span><a class="litebox" href="'+v.file_info.file_path+'" title="点击查看大图"><img class="pb" rel="1" src="'+v.file_info.file_path+'" width="150px" /></a></span></div></div>';
+	                	}
+                	});
+                    $('#clearfix').before(temp);
+                	// $('#message_body').append(temp);
+                    //window.scrollTo(0, document.body.scrollHeight); 
+                }          	
+            },
+            dataType: 'json'
+        });
+		setTimeout('message_view()',10000);
+		if(is_data !== false){
+            var html_h = parseInt($('#list_message').height()+100);
+			//var html_h = $(document).height()+50; 
+			$("#message_body").animate({"scrollTop": html_h}, 1000);
+		}
+        $('.litebox').liteBox({
+            revealSpeed: 400,
+            background: 'rgba(0,0,0,.8)',
+            overlayClose: true,
+            escKey: true,
+            navKey: true,
+            errorMessage: '图片加载失败.'
+        });
+	}
+
+	//头部翻页加载
+	$(document).ready(function (){
+		var loading = false;  //状态标记
+		var deviation = 30; //事件偏移量
+		var nScrollHight = 0; //滚动距离总长(注意不是滚动条的长度)
+		var nScrollTop = 0;   //滚动到的当前位置
+		var nDivHight = $("#message_body").height();
+		var scrollTop = $("#message_body").scrollTop();
+		$('#loading').hide();
+		$("#message_body").scroll(function(){
+			var p = $('#p').val();
+			var to_role_id = $('#to_role_id').val();
+            var load = $('#load').val();
+			nScrollHight = $(this)[0].scrollHeight;
+			nScrollTop = $(this)[0].scrollTop;
+			if(loading){
+				return;	
+			}
+			if(nScrollTop == 0 && load == 1){
+				$('#loading').show();
+				loading = true;
+				//alert("滚动条到头部了");
+                var temp = "";
+                var no_data = "";
+				$.ajax({
+					type:'get',
+					url:'index.php?m=message&a=message_view_data&p='+p+'&to_role_id='+to_role_id,
+					async : false,
+					success : function(data){
+                        $('#no_data').remove();
+						if (data.status == 1) {
+							$.each(data.data, function(k, v){
+                                if(k == 1){
+                                    temp += '<div class="main_time"><div class="message_time">'+v.message_time+'</div></div>';
+                                }
+								if(v.user.thumb_path != ''){
+									head = '<img class="yh_head" src="'+v.user.thumb_path+'">';  
+								}else{
+									head = '<img class="yh_head" src="__PUBLIC__/img/avatar_default.png">';  
+								}
+			                	if(v.send_type == 1){
+			                		temp += '<div class="receiver"><div class="img_con">'+head+'<span class="p_name">'+v.user.name+'&nbsp;&nbsp;&nbsp;&nbsp;'+v.send_time+'</span></div><div class="text_con"><div class="right_triangle"></div><span>'+v.content+'</span></div></div>';
+			                	}else if(v.send_type == 2){
+									temp += '<div class="receiver"><div class="img_con">'+head+'<span class="p_name">'+v.user.name+'&nbsp;&nbsp;&nbsp;&nbsp;'+v.send_time+'</span></div><div class="text_con"><div class="right_triangle"></div><span><a class="litebox" href="'+v.file_info.file_path+'" title="点击查看大图"><img class="pb" rel="1" src="'+v.file_info.file_path+'" width="150px" ></a></span></div></div>';
+			                	}
+							})
+							p++;
+							$('#p').val(p);
+						} else {
+                            no_data = "<p id='no_data' style='margin-top: 20px;text-align: center;'>没有更多数据</p>";
+                            $('#load').val('0');
+                            // alert_crm('没有更多数据了...');
+                            // alert(data.data);
+							//alert('已经到头了！');
+						}
+					}
+				});
+                if(no_data == ''){
+                    setTimeout(function() {
+                        $("#list").prepend(temp);
+                        loading = false;
+                        $('#loading').hide();
+                        $("#message_body").scrollTop(150);
+                    }, 1500);   //模拟延迟
+                }else{
+                    setTimeout(function() {
+                        $("#list").prepend(no_data);
+                        loading = false;
+                        $('#loading').hide();
+                        // $("#message_body").scrollTop(150);
+                    }, 1500);   //模拟延迟
+                }
+
+                $('.litebox').liteBox({
+                    revealSpeed: 400,
+                    background: 'rgba(0,0,0,.8)',
+                    overlayClose: true,
+                    escKey: true,
+                    navKey: true,
+                    errorMessage: '图片加载失败.'
+                });
+			}
+			if (nScrollTop + nDivHight + deviation >= nScrollHight) { 
+				//alert("我到底部了");
+	        }
+		});
+	});
+	// 字数限制
+	function myFunction(){
+        var curLength=$("#chat_message").text().length;
+		// var curLength=$("#chat_message").val().length;
+        if(curLength == 1000){
+            alert_crm('您输入的内容过长！');
+			$("#contentCount").hide();
+        }else if(curLength < 1000){
+            $("#contentCount").html(1000-$("#chat_message").text().length);
+			$("#contentCount").show();
+        }else{
+			$("#contentCount").hide();
+		}
+	}
+	// $("#chat_message").onkeyup(function(){
+ //        var curLength=$("#chat_message").val().length;
+ //        if(curLength == 1000){
+ //            alert_crm('您输入的内容过长！');
+	// 		$("#contentCount").hide();
+ //        }else if(curLength < 1000){
+ //            $("#contentCount").html(1000-$("#chat_message").val().length);
+	// 		$("#contentCount").show();
+ //        }else{
+	// 		$("#contentCount").hide();
+	// 	}
+ //    })
+</script>
+<include file="Public:footer" />

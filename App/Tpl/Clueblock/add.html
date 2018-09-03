@@ -1,0 +1,71 @@
+
+
+<div class="col-sm-12 text-center">
+    <form class="form-horizontal" id="block-create-form">
+
+        <div class="form-group">
+            <!-- person_id -->
+            <label class="col-sm-3 control-label">选择校区</label>
+            <div class="col-sm-6">
+                <select name="department_id" onchange="turnDepartmentName(this.options[this.options.selectedIndex].text)" class="form-control">
+                    <option value="">选择校区</option>
+                    <volist name="branchs" id="vo" key="k">
+                        <option
+                        <if condition="$is_edit && $info['department_id'] eq $vo['department_id']" >selected</if>
+                        value="{$vo.department_id}">{$vo.name}</option>
+                    </volist>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- name -->
+            <label class="col-sm-3 control-label">线索区名称</label>
+            <div class="col-sm-6">
+                <input id="department_name" <if condition="$is_edit" >value="{$info.name}"</if> type="text" class="form-control required" name="name" aria-required="true" placeholder="请输入线索区名称">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- person_id -->
+            <label class="col-sm-3 control-label">选择/变更负责人</label>
+            <div class="col-sm-6">
+                <select name="person_id" onchange="turnPersonName(this.options[this.options.selectedIndex].text)" class="form-control">
+                    <option value="">选择负责人</option>
+                    <volist name="persons" id="vo" key="k">
+                        <option
+                            <if condition="$is_edit && $info['person_id'] eq $vo['user_id']" >selected</if>
+                                value="{$vo.user_id}">{$vo.full_name}</option>
+                    </volist>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- name -->
+            <label class="col-sm-3 control-label">负责人名称</label>
+            <div class="col-sm-6">
+                <input id="person_name"
+                    <if condition="$is_edit" >value="{$info.person_name}"</if>
+                type="text" readonly="readonly" class="form-control required" name="person_name">
+            </div>
+        </div>
+
+        <div>
+            <if condition="$is_edit" >
+                <input type="hidden" name="id" value="{$info.id}">
+            </if>
+        </div>
+    </form>
+</div>
+
+<script src="/Public/js/JapanArea.js"></script>
+<script>
+    function turnPersonName (text) {
+        $('#person_name').val(text);
+    }
+    function turnDepartmentName (text){
+        $('#department_name').val(text);
+    }
+</script>
+

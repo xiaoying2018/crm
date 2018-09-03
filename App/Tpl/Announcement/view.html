@@ -1,0 +1,74 @@
+<include file="Public:header" />
+<style>
+	body{overflow-y: hidden;}
+</style>
+<script>
+	$(function(){
+		$("#content_height").height(window.innerHeight-$("#content_height").offset().top-20);
+		$(window).resize(function(){
+			$("#content_height").height(window.innerHeight-$("#content_height").offset().top-20);
+		})
+	})
+</script>
+<div class="wrapper wrapper-content animated fadeIn ">
+	<include file="Public:alert" />
+    <div class="row">
+	    <div class="col-lg-12">
+			<div class="title-bar" style="padding:12px 10px 12px 20px">
+				<div class="row " id="title-show">
+					<ul class="nav pull-left" style="margin:2px 0 5px 15px;">
+						<span style="font-size:21px;"><span style="border-radius:5px;"><img src="__PUBLIC__/img/gonggao_view.png"></img></span>&nbsp;&nbsp;&nbsp;{$announcement['title']}</span>&nbsp;&nbsp;
+					</ul>
+					<a href="javascript:void(0);" class="btn btn-outline btn-default pull-right" id="read_list" rel="{$announcement['announcement_id']}" style="margin-right: 15px;">查看阅读记录</a>
+					<a href="{:U('announcement/edit','id='.$announcement['announcement_id'])}" class="btn btn-outline btn-default pull-right" style="margin-right: 15px;"><i class="fa fa-pencil"></i>&nbsp;&nbsp;编辑</a> 
+				</div>
+			</div>
+			<div class="tabs-container" style="">
+				<div class="pull-left" style="width:100%;">
+					<div class="ibox-content" style="padding:15px 0 15px 20px;background:#fff;">
+						<div class="tab-content full-height-scroll" id="content_height">
+							<div class="tab-pane in active" id="tab1">
+								<div class="panel-body ">
+									<div style="text-align:center;letter-spacing:8px;border-bottom:1px solid #e7e7eb;margin:0 15px 15px;padding-bottom:10px;">
+										<h2>{$announcement['title']}</h2>
+									</div>
+									<div style="text-align:center;margin-top:5px;color:#999;margin-right:15px;">
+										{$announcement['update_time']|date="Y-m-d",###}&nbsp;&nbsp;{$announcement['owner']['user_name']}
+									</div>
+									<div style="margin-top:5px;margin-right:15px;letter-spacing:2px;">
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$announcement['content']}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="" style="display:none;" id="dialog-read_list" title="阅读记录">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script>
+$("#dialog-read_list").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 550,
+	position: ["center",100]
+});
+
+$("#read_list").click(function(){
+	var announcement_id = $(this).attr('rel');
+	$('#dialog-read_list').dialog('open');
+	$('#dialog-read_list').load('{:U("announcement/read_list","id=")}'+announcement_id);
+});
+</script>
+<include file="Public:footer" />	

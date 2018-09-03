@@ -1,0 +1,245 @@
+<include file="Public:header" />
+<style type="text/css">
+.add_body >div >.full-height-scroll{
+	border-right:1px dotted #ccc
+}
+.add_body_title{
+	margin:15px auto 30px auto;
+	padding-left: 14px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.form-control{
+	float:left;
+}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+	<include file="Public:alert" />
+	<form class="form-horizontal" id="form" action="{:U('finance/edit','t=receivingorder')}" method="post">
+		<input type='hidden' name="refer_url" value="{$refer_url}"/>			
+		<input type='hidden' name="id" value="{$info['receivingorder_id']}"/>
+		<div class="ibox-content " id="add_body" >
+			<div class="row">
+				<div class="col-md-12 add_body">
+					<div class="full-height-scroll">
+						<div class="row" >
+							<div class="col-md-12 add_body_title" style="margin:20px 0 0 0px;">
+								<div class="all-inline">
+									<span class="sq-tag"></span>
+									<div class="text-tag">
+										<span style="font-weight: 700 !important;font-size:15px;color:#000">基础信息</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+								<div class="form-group">
+									<label class="col-md-4 control-label">{:L('RECEIVABLES')}：</label>
+									<div class="col-md-6">
+										<input name="receivables_id" id="receivables_id" type="hidden" value="{$info['receivables_id']}"/>
+										<input name="receivables" class="form-control required" aria-required="true" type="text" value="{$info['receivables']['name']}" <if condition="$info['contract_id'] gt 0">readonly="true" <else/>id="receivables" </if>/>
+									</div> 
+									<div class="col-md-2"><span style="color:red">*</span></div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-4 control-label">{:L('RECEIVINGORDER NUMBER')}：</label>
+									<div class="col-md-6">
+										<input name="name" id="name" class="form-control required" aria-required="true" type="text" value="{$info['name']}" />
+									</div>
+									<div class="col-md-2"><span style="color:red">*</span></div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-4 control-label">账户名称：</label>
+									<div class="col-md-6">
+										<select name="account_id" id="account_id" class="form-control required" aria-required="true">
+											<option value="">-请选择-</option>
+											<volist name="bank_list" id="vo">
+												<option rel="{$vo['bank_account']}" rel3="{$vo['company']}" value="{$vo['account_id']}" <if condition = "$info['bank_account_id'] eq $vo['account_id']">selected</if> >{$vo['open_bank']}</option>
+											</volist>
+										</select>
+									</div> 
+									<div class="col-md-2"><span style="color:red">*</span></div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-4 control-label">账号/卡号：</label>
+									<div class="col-md-6">
+										<input name="receipt_account" readonly class="form-control required" aria-required="true" id="receipt_account" type="text" value="{$info.receipt_account}"/>
+									</div> 
+									<div class="col-md-2"><span style="color:red">*</span></div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-4 control-label ">账户类别：</label>
+									<div class="col-md-6">
+										<input name="company" id="company" readonly class="form-control required" aria-required="true" type="text"  value="{$info.company}"/>
+									</div> 
+									<div class="col-md-2"><span style="color:red">*</span></div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-4 control-label">{:L('AMOUNT OF RECEIVING')}：</label>
+									<div class="col-md-6">
+										<input class="form-control required" aria-required="true" id="money" placeholder="0.00" name="money" type="text" value="{$info['money']}" onblur="bu(this)" onkeyup="num_input(this)"/>
+									</div>
+									<div class="col-md-2"><span style="color:red">*</span></div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-4 control-label">{:L('RECEIVING TIME')}：</label>
+									<div class="col-md-6">
+										<input onclick="WdatePicker()" class="form-control required Wdate" aria-required="true" value="{$info['pay_time']|date='Y-m-d',###}" type="text" id="pay_time" name="pay_time"/>
+									</div>
+									<div class="col-md-2"><span style="color:red">*</span></div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-4 control-label">收款人：</label>
+									<div class="col-md-6">
+										<input name="owner_role_id" id="owner_role_id" type="hidden" value="{$info['owner_role_id']}"/><input name="owner_name" id="owner_name" class="form-control required" aria-required="true" type="text" value="{$info['owner_name']}" readonly="true" style="cursor:pointer;" title="请点击选择"/>
+									</div>
+									<div class="col-md-2"><span style="color:red">*</span></div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-4 control-label">{:L('DESCRIPTION')}：</label>
+									<div class="col-md-8">
+										<textarea class="form-control required" rows="3" name="description" id="description">{$info['description']}</textarea>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-2 pull-right">
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="tfoot_div" class="clearfix">
+			<div class="clearfix" id="tfoot_page">
+				<div class="ibox-content" style="border-top: none;">
+					<div class="col-sm-offset-2" style="text-align:center;margin-left:0px;">
+						<input name="submit" id="save_submit" class="btn btn-primary" type="submit" value="{:L(SAVE)}"/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div id="dialog-receivables-list" class="" style="" title="{:L('SELECT THE RECEIVABLES')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div id="dialog-role-list2" class="" style="" title="{:L('SELECT THE LEADER')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#save_submit').prop('disabled',false);
+	/*form表单验证*/
+	$("#form").validate({
+		submitHandler:function(form){
+            $('#save_submit').click(function(){
+				$('#save_submit').prop('disabled',true);
+			});
+            form.submit();
+        }    
+	});
+});
+
+$('#account_id').val({$info.bank_account_id});
+$('#account_id').change(function(){
+	var open_bank = $('#account_id :selected').attr('rel');
+	var company = $('#account_id :selected').attr('rel3');
+	if(open_bank){
+		$('#receipt_account').val(open_bank);
+		$('#company').val(company);
+	}
+});
+
+$('input[name="invoice"]').click(function(){
+	var invoice = $('input[name="invoice"]:checked').val();
+	if(invoice == 1){
+		$('.incoice_num').show();
+	}else if(invoice == 2){
+		$('.incoice_num').hide();
+		$('#invoice_num').val('');
+	}
+});
+
+$("#dialog-receivables-list").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 800,
+	maxHeight: 400,
+	buttons: {
+		"确定": function () {
+			var item = $('input:radio[name="receivables"]:checked').val();
+			var name = $('input:radio[name="receivables"]:checked').parent().parent().next().html();
+			if(item){
+				$('#receivables').val(name);
+				$('#receivables_id').val(item);
+			}
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+
+$("#dialog-role-list2").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 800,
+	maxHeight: 400,
+	buttons: {
+		"确定": function () {
+			var item = $('input:radio[name="owner"]:checked').val();
+			var name = $('input:radio[name="owner"]:checked').attr('rel');
+			if(item){
+				$('#owner_name').val(name);
+				$('#owner_role_id').val(item);
+			}
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+
+$(function(){
+	$("#receivables").click(
+		function(){
+			$('#dialog-receivables-list').dialog('open');
+			$('#dialog-receivables-list').load('{:U("finance/listdialog","t=receivables")}');
+		}
+	);
+	$("#owner_name").click(
+		function(){
+			$('#dialog-role-list2').dialog('open');
+			$('#dialog-role-list2').load('{:U("user/listDialog","by=all")}');
+		}
+	);
+});
+</script>
+<include file="Public:footer" />	

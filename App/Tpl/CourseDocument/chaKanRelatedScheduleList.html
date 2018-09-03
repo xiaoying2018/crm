@@ -1,0 +1,520 @@
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<link href="__PUBLIC__/css/page/leadsIndex.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<!-- nice-scroll -->
+<!-- <script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script> -->
+<script src="https://nicescroll.areaaperta.com/wp-content/plugins/jnicescroll/js/jquery.nicescroll.min.js?ver=1"></script>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/mxcrm_more.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="/Public/js/jqGrid/ui.jqgridffe4.css">
+<link rel="stylesheet" href="/Public/css/page/publicTable.css">
+<script src="/Public/js/jqGrid/i18n/grid.locale-cnffe4.js" type="text/javascript"></script>
+<script src="/Public/js/jqGrid/jquery.jqGrid.minffe4.js" type="text/javascript"></script>
+
+
+<link rel="stylesheet" href="http://www.bootcss.com/p/bootstrap-switch/static/stylesheets/bootstrapSwitch.css">
+<script src="http://www.bootcss.com/p/bootstrap-switch/static/js/bootstrapSwitch.js"></script>
+
+
+<style>
+    body{
+        overflow-y: hidden;
+    }
+    .option{padding-left:-30px;}
+    #oDivL_tab_Test3{background-color: #fff;border-right: 1px solid #ececec; z-index: 8 !important;}
+    .table{max-width: none;}
+    #tab_Test3{opacity: 1}
+    input[type=text],select{
+        appearance:none;
+        -moz-appearance:none;
+        -webkit-appearance:none;
+    }
+    .crm_status{
+        padding: 2px 3px;
+        border-radius: 3px;
+    }
+    /*跟进中*/
+    .status_ing{
+        border: 1px solid #00CE67;
+        background-color: none;
+        color: #00CE67;
+    }
+    /*作废*/
+    .status_no{
+        border: 1px solid #ccc;
+        background-color: #ccc;
+        color: #fff;
+    }
+    /*待跟进*/
+    .status_waning{
+        border: 1px solid #F9D10B;
+        background-color: none;
+        color: #F9D10B;
+    }
+    /*已转换*/
+    .status_tanseformed{
+        border: 1px solid #0080FF;
+        background-color: #0080FF;
+        color: #fff;
+    }
+    .has-switch{
+        min-width: 73px;
+    }
+</style>
+<div class="wrapper wrapper-content">
+    <include file="Public:alert" />
+    <div class="row" id="table_container">
+        <div class="col-md-12">
+            <div class="title-bar" style="position: relative;z-index: 99;">
+                <div class="row clearfix" id="title-hide1" style="display:none;">
+                    <ul class="breadcrum pull-left">
+                        <li>已选中&nbsp;<span id="icheck_num"></span>&nbsp;项</li>
+                        <if condition="$type eq 'guanlian'">
+                            <li><a  onclick="guanlianById()" id="guanlian_check" href="javascript:void(0)"><i class="fa fa-plus"></i>&nbsp;关联</a></li>
+                            <elseif condition="$type eq 'chakan'" />
+                            <li><a  onclick="DelguanlianById()"  href="javascript:void(0)"><i class="fa fa-minus"></i>&nbsp;删除关联课件</a></li>
+                            <else/>
+                            <li><a id="delete" href="javascript:void(0)"><i class="fa fa-times"></i>&nbsp;删除</a></li>
+                        </if>
+                        <li class="last_li"><big><a class="fa fa-times pull-right" id="back-show"></a></big></li>
+                    </ul>
+                </div>
+
+
+            </div>
+            <!--<div class="title-bar" style="position: relative;z-index: 99;">-->
+            <!--<div id="title-show1" class="clearfix">-->
+            <!--<ul class="searchpart">-->
+            <!--<a href="{:U('AbroadCourseCategory/add')}" class="btn btn-primary btn-sm pull-left" style="margin:2px 0 0 0; width: 100px;" onclick="course_add()">-->
+            <!--<i class="fa fa-plus-circle"></i>&nbsp; 新建分类-->
+            <!--</a>-->
+            <!--</ul>-->
+            <!--</div>-->
+            <!--</div>-->
+            <form id="form1" action="" method="post" style="position:relative;">
+                <div class="row" style="margin: 0">
+                    <div class="ibox-box" style="padding:0px;border:none;">
+                        <div class="table_vue">
+                            <table class="table" id="table_list_22"></table>
+                            <!-- 分页 -->
+                            <div id="gridpager"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cover"></div>
+                <div class="loader" id="loader">
+                    <div class="loader-inner pacman">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- 弹框 -->
+<div style="display:none" id="dialog-course-add" title="添加课程">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+        var type='{$type}'
+        var schedule_id='{$schedule_id}'
+
+        table();
+        $('#delete').click(function(){
+            var id_array = [];
+            for( i = 0; i < $(".cbox").length; i++){
+                if ($(".cbox").eq(i).prop('checked')) {
+                    id_array.push($(".cbox").eq(i).val())
+                }
+            }
+            console.log("xxx",id_array);
+            if(id_array.length == 0){
+                alert_crm('你没有选择任何数据！');
+                return false;
+            }
+            swal({
+                    title: "您确定要删除这条信息吗？",
+                    text: "删除后将无法恢复，请谨慎操作！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "是的，我要删除！",
+                    cancelButtonText:'让我再考虑一下…',
+                    closeOnConfirm:false,
+                    closeOnCancel:false
+                },
+                function(isConfirm){
+                    if (isConfirm) {
+                        $.ajax({
+                            type:'post',
+                            url: "{:U('CourseDocument/delete')}",
+                            data: {id:id_array},
+                            async: false,
+                            success: function (data) {
+                                if (data.status == 1) {
+                                    swal("删除成功！", "您已经永久删除了信息！", "success");
+                                    location.reload();
+                                }else{
+                                    swal({
+                                        title: "操作失败！",
+                                        text:data.info,
+                                        type: "error"
+                                    })
+                                    return false;
+                                }
+                            },
+                            dataType: 'json'
+                        });
+                    } else {
+                        swal("已取消","您取消了删除操作！","error");
+                    }
+                });
+        });
+        // 修改
+        $("#edit_category").click(function(){
+            window.location.href="{:U('AbroadCourseCategory/edit', 'cid=')}"+$(this).attr('rel');
+        });
+
+    });
+    //请求参数
+    var _requert = {};
+    var icheck_num = 0;
+
+
+    //table
+    function table(){
+        $("#table_list_22").clearGridData();
+
+        $.jgrid.defaults.styleUI = "Bootstrap";
+
+        var _height = $(window).height() - ($(".title-bar").outerHeight() + $("#gridpager").outerHeight() + $("#secondPart").height() + 260);
+
+        var icheck_num = 0;
+        var d_width = $(".table_vue").width() - 16;
+        var type='{$type}'
+        var schedule_id='{$schedule_id}'
+
+        var str='';
+        if(type && schedule_id){
+            str+='&type='+type+'&schedule_id='+schedule_id;
+        }
+        $("#table_list_22").jqGrid({
+            url:"{:U('CourseDocument/index')}"+str,
+            datatype: "JSON",
+            mtype: "post",
+            width: "100%",
+            postData: _requert,
+            height: _height,
+            autowidth: true,
+            forceFit: true,
+            autoScroll: true,
+            multiselect: true,
+            useColSpanStyle: true,
+            colNames: ["id","文件名称","文件大小","创建时间","创建者"],
+            colModel: [{
+                name: "id",
+                index: "id",
+                editable: false,
+                sorttype: "text",
+                search: true,
+                hidden:true
+            },{
+                name: "title",
+                index: "title",
+                editable: false,
+                sorttype: "text",
+                search: true,
+            },{
+                name: "size",
+                index: "size",
+                editable: false,
+                sorttype: "text",
+                search: true,
+            },{
+                name:"created_at",
+                index: "updated_at",
+                editable: false,
+                sorttype: "text",
+                search: true
+            },{
+                name:"name",
+                index: "name",
+                editable: false,
+                sorttype: "text",
+                search: true
+            }],
+            forceFit: true,
+            //分页
+            rowNum: 30,
+            rowList: [5, 10, 30],
+            pager: '#gridpager',
+            viewrecords: true,
+            jsonReader: {
+                repeatitems: false,
+                root: "lists",
+                records: "count",
+                total: "total"
+            },
+            hidegrid: false,
+            loadComplete: function (res) {
+                // console.log("res", res);
+            },
+            gridComplete: function () {
+                var rowIds = jQuery("#table_list_22").jqGrid('getDataIDs');
+                for(var k=0; k<rowIds.length; k++) {
+                    var curRowData = jQuery("#table_list_22").jqGrid('getRowData', rowIds[k]);
+                    console.log(curRowData)
+                    var curChk = $("#"+rowIds[k]+"").find("input");
+                    curChk.attr('value', curRowData['id']);   //给checkbox赋值
+                    console.log(curChk.attr('value'))
+                }
+                setWidthHeight();
+
+                $(".switch").bootstrapSwitch();
+                $('.switch').on('switch-change', function (e, data) {
+                    var $el = $(data.el)
+                        , value = data.value,
+                        status;
+                    var _id = $($el).attr("data-id");
+                    if (value == true){
+                        status = 1
+                    } else{
+                        status = 0
+                    }
+                    $.ajax({
+                        type: "post",
+                        url: "{:U('AbroadCourse/changeOnSale')}",
+                        data: {
+                            on_sale : status,
+                            id:_id
+                        },
+                        dataType: "json",
+                        success : function(result){
+                            if(result.status != 1){
+                                alert('跑神儿了,没有写入成功!');
+                            }else{
+                            }
+                        }
+                    });
+                });
+
+                $('.litebox_file').liteBox({
+                    revealSpeed: 400,
+                    background: 'rgba(0,0,0,.8)',
+                    overlayClose: true,
+                    escKey: true,
+                    navKey: true,
+                    errorMessage: '图片加载失败.'
+                });
+
+
+                //状态处理
+                // $("[aria-describedby='table_list_2_status']").attr("title","")
+                // $(".status_select2").select2({
+                //     minimumResultsForSearch: -1,
+                //     width:"100px"
+                // });
+                //操作状态
+                // $(".status_select2").on("select2:select",function(e){
+                //     changeStatus($(e.target).val(),$(e.target).attr("data-id"))
+                // });
+
+                $(".status_select2").change(function(){
+                    changeStatus($(this).val(),$(this).attr("data-id"))
+                })
+            },
+            onSelectRow: function (rowid, status) {
+                if (status) {
+                    icheck_num = icheck_num + 1;
+                } else {
+                    icheck_num = icheck_num - 1;
+                }
+
+                $("#icheck_num").text(icheck_num);
+                if (icheck_num <= 0) {
+                    $('#title-hide1').hide();
+                    $('#title-show1').show();
+                } else {
+                    $('#title-hide1').show();
+                    $('#title-show1').hide();
+                }
+                //处理单选时才有的操作
+                if (icheck_num == 1) {
+                    $(".single_btn").show().children().each(function () {
+                        $(this).attr('rel', $("input.cbox:checked").val());
+                        $(".edit_href").attr("href", "/case/edit?id=" + $("input.cbox:checked").val());
+                    })
+                } else {
+                    $(".single_btn").hide().children().each(function () {
+                        $(this).attr('rel', '');
+                    })
+                }
+            },
+            onSelectAll: function (s, sx) {
+                if (sx) {
+                    $('#title-hide1').show();
+                    $('#title-show1').hide();
+                    icheck_num = s.length
+                } else {
+                    $('#title-hide1').hide();
+                    $('#title-show1').show();
+                    icheck_num = 0
+                }
+                $("#icheck_num").text(icheck_num)
+            }
+        }).trigger("reloadGrid"); //重新载入
+
+
+        jQuery("#table_list_22").jqGrid('navGrid', '#gridpager', {edit: false, add: false, del: false, search: false}, {}, {}, {multipleSearch: true, multipleGroup: true});
+
+        $('.ui-jqgrid-bdiv').niceScroll({
+            cursorcolor: "#77B8FF",
+            cursoropacitymax: 1,
+            cursorwidth: "4px",
+            cursorborder: "0",
+            cursorborderradius: "0px",
+            autohidemode: false
+        });
+
+        $('.nicescroll-rails').eq(2).remove()
+
+        $(window).bind("resize", function () {
+            setWidthHeight();
+        })
+    }
+
+    function guanlian(cellvalue, options, cell){
+        var type='{$type}'
+        var schedule_id='{$schedule_id}'
+
+        if(schedule_id && type=='guanlian'){
+            return '<a class="btn btn-primary btn-sm" href="" onclick="guanlianById('+cell.id+')">关联</a>';
+        }else{
+            return '';
+        }
+    }
+    function guanlianById(id) {
+        var id_array = [];
+        if (!id){
+            for( i = 0; i < $(".cbox").length; i++){
+                if ($(".cbox").eq(i).prop('checked')) {
+                    id_array.push($(".cbox").eq(i).val())
+                }
+            }
+            console.log("关联数组",id_array);
+        }else{
+            id_array.push(id);
+            console.log("单个关联",id_array);
+        }
+
+        $.ajax({
+            type: "post",
+            url: "{:U('CourseDocument/relatedSchedule')}",
+            data: {
+                id:id_array,
+                schedule_id:'{$schedule_id}'
+            },
+            dataType: "json",
+            success : function(result){
+                console.log(result);
+                if(result.status != 1){
+                    alert('跑神儿了,没有写入成功!');
+                }else{
+                    alert('关联成功');
+                    $("#table_list_22").jqGrid().setGridParam({datatype:'json'}).trigger('reloadGrid');
+                }
+            }
+        });
+
+
+    }
+
+    function DelguanlianById(id){
+        var id_array = [];
+        if (!id){
+            for( i = 0; i < $(".cbox").length; i++){
+                if ($(".cbox").eq(i).prop('checked')) {
+                    id_array.push($(".cbox").eq(i).val())
+                }
+            }
+            console.log("关联数组",id_array);
+        }else{
+            id_array.push(id);
+            console.log("单个关联",id_array);
+        }
+
+        $.ajax({
+            type: "post",
+            url: "{:U('CourseDocument/DelRelatedSchedule')}",
+            data: {
+                id:id_array,
+                schedule_id:'{$schedule_id}'
+            },
+            dataType: "json",
+            success : function(result){
+                console.log(result);
+                if(result.status != 1){
+                    alert('跑神儿了,没有写入成功!');
+                }else{
+                    alert('删除关联成功');
+                    $("#table_list_22").jqGrid().setGridParam({datatype:'json'}).trigger('reloadGrid');
+                }
+            }
+        });
+
+    }
+    //设置table高度
+    function setWidthHeight(){
+        var _height,width;
+        _height = $(window).height() - ($(".title-bar").outerHeight() + $("#gridpager").outerHeight()) - 190;
+        width = $(".table_vue").width();
+        $("#table_list_22").setGridWidth(width)
+        $("#table_list_22").setGridHeight(_height)
+    }
+    //过滤成员属性
+    function member_format(cellvalue, options, cell){
+        if (cellvalue == 1) {
+            return '多成员'
+        }else{
+            return '单成员'
+        }
+    }
+
+    //课程名称
+    function name_format(cellvalue, options, cell){
+        return '<a class="a_name" href="/index.php?m=abroad_course&a=edit&id='+cell.id+'" >'+cellvalue+'</a>';
+    }
+    //图片预览
+    function img_format(cellvalue, options, cell){
+        return '<a href="'+cellvalue+'"  class="litebox_file" data-litebox-group="group-1">预览</a>';
+    }
+    //是否在售
+    function sale(cellvalue, options, cell){
+        var _flag = '';
+        if (cellvalue == 1){
+            _flag = 'checked'
+        }
+        return '<div class="switch"><input type="checkbox" '+_flag+' data-id="'+cell.id+'" /></div>';
+    }
+    //渲染表格最后一列...操作按钮
+    function btngroup(cellvalue, options, cell){
+        return '<a href="/index.php?m=abroad_course_category&a=add&cid='+cell.cid+'" class="btn btn-info btn-sm">添加子分类</a>'
+    }
+
+
+</script>

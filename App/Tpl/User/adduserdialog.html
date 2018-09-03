@@ -1,0 +1,23 @@
+
+<form id="dialog_form" class="form-horizontal" action="{:U('user/add')}" method="Post">
+	<input type="hidden" name="category_id" value="2"/>
+	<input type="hidden" name="position_id" value="{$position['position_id']}"/>
+	<div class="control-group">
+		<label class="control-label" for="name">岗位：</label>  
+		<div class="controls">
+			{$department['name']} —— {$position['name']}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="name">{:L('USER_NAME')}：</label>  
+		<div class="controls">
+			<input type="text" class="text-input" name="name" autocomplete="off"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="name">{:L('PASSWORD')}：</label>  
+		<div class="controls">
+			<input class="text-input" type="password" name="password" id="password" autocomplete="off"/>
+		</div>
+	</div>
+</form>

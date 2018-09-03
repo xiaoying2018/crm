@@ -1,0 +1,183 @@
+<include file="Public:header" />
+<!-- daterangepicker -->
+<link href="__PUBLIC__/css/daterangepicker.css" rel="stylesheet">
+<script src="__PUBLIC__/js/daterangepicker/daterangepicker.js"></script>
+<!--jQuery导出插件-->
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jquery.base64.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/tableExport.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jspdf/libs/sprintf.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jspdf/jspdf.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jspdf/libs/base64.js"></script>
+<!--jQuery导出插件-->
+<style>
+	body{
+		overflow-y: hidden;
+	}
+	.form-horizontal .form-group{margin-left:0px;margin-right:0px;}
+	.more_input {
+		width: 20%;
+		display: inline-block;
+	}
+</style>
+
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<include file="Public:analytics_left" />
+				<div class="col-lg-10">
+					<div class="ibox-content" style="padding-bottom:10px;border-bottom:none;">
+						<include file="Public:alert" />
+						<form id="user_form" method="post" class="form-group" style="margin-bottom: 0px;">
+							<div class="row" style="height: 45px;">
+								<div class="col-lg-4">
+									<div class="pull-left" >
+										<span style="font-size: 18px;">
+											<a href="{:U('call/record','content_id=3')}">员工电话分析</a>
+										</span>
+										<span style="font-size: 18px;color: #000;font-weight: bolder;">
+											| 电话统计分析
+										</span>
+									</div>
+								</div>
+								<div class="col-lg-8">
+									<div class="pull-right">
+										<div class="pull-right" style="margin-left: 15px;line-height: 40px;">
+											<span class="fa fa-download" style="color:#75899D;"></span>
+											<a style="color: #75899D;" onClick ="$('#tab_Test3').tableExport({type: 'excel', escape: 'false'});">导出</a>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row" >
+								<div class="col-lg-12">
+									时间：<input onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" id="start_date" value="{:date('Y-m-d').' 00:00'}" type="text"  class="form-control more_input Wdate"> - 
+									<input onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" id="end_date" value="{:date('Y-m-d H:i')}" type="text"  class="form-control more_input Wdate">
+									<button type="button" id="search" class="btn btn-primary">{:L('SEARCH')}</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="ibox-content" id="right_height" style="border-top: none;padding-top: 0px;overflow-y: auto;">
+						<div id="report_content" class="th_content" style="position:relative;">
+							<div id="table_div" class="nicescroll" style="left:0px;top:0px;">
+								<table class="table table-hover table-striped table_thead_fixed table-bordered" id="tab_Test3" style="background:#fff;margin-bottom:0px;">
+									<thead>
+										<tr class="tabTh" >
+											<th>分机号</th>
+											<th>总通话数（个）</th>
+											<th>接通数（个）</th>
+											<th>接通率（%）</th>
+											<th>总通话时长</th>
+											<th>最大通话时长</th>
+										</tr>
+									</thead>
+									<tbody>
+								
+									</tbody>
+									<tfoot>
+										<tr>
+											<td>总计</td>
+											<td id="total_count"></td>
+											<td id="total_answered"></td>
+											<td id="total_answered_rate"></td>
+											<td id="total_billable"></td>
+											<td id="total_max_billable"></td>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+							<div id="tfoot_div" class="clearfix">
+							</div>
+						</div>
+						<div id="source_content" class="hidden">
+							<div id="an_chart" class="">
+								<div id="canvas_resource" style="min-width: 500px; height: 500px;margin: 0 auto"></div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style type="text/css">
+	#box{
+		position:absolute;
+		top:0;
+		bottom:0;
+		left:0;
+		right:0;
+		background:#000;
+		opacity:0.7;
+		
+		padding-top: 200px;
+		padding-left: 45%;
+	}
+</style>
+<div id="box" style="display: block;"><img src="__PUBLIC__/img/loading.gif" width="50px"></div>
+
+<script type="text/javascript">
+	var agent_ip = "{:C('AGENT_IP')}";
+
+	$(document).ready(function(){
+		$('#box').show();
+		var start_date = $('#start_date').val(); 
+		var end_date = $('#end_date').val(); 
+		statistice(start_date, end_date);
+	});
+
+	//搜索功能
+	$(document).on('click', '#search', function(){
+		$('#box').show();
+		var start_date = $('#start_date').val();
+		var end_date = $('#end_date').val(); 
+		statistice(start_date, end_date);
+	});
+
+	function statistice(start_date, end_date){
+		$.ajax({
+			type:'get',
+			url: "http://"+agent_ip+"/agent/index.php/home/index/statistice",
+			data: {start_date:start_date, end_date:end_date},
+			timeout: 10000,
+			async:true,
+			success:function(data){
+				$('#box').hide();
+				if(data.status == 1){
+					if(data.list != null){
+						temp = '';
+						$.each(data.list, function(k, v){
+							temp += '<tr>\
+										<td>'+v.extid+'</td>\
+										<td>'+v.personal_count+'</td>\
+										<td>'+v.personal_answered+'</td>\
+										<td>'+v.personal_answered_rate+'</td>\
+										<td>'+v.personal_billable+'</td>\
+										<td>'+v.personal_max_billable+'</td>\
+									</tr>';
+						});
+						$('table tbody').html(temp);
+						$('#total_count').html(data.total.total_count);
+						$('#total_answered').html(data.total.total_answered);
+						$('#total_answered_rate').html(data.total.total_answered_rate);
+						$('#total_billable').html(data.total.total_billable);
+						$('#total_max_billable').html(data.total.total_max_billable);
+					} else {
+						$('table body').html('<tr><td colspan="6">-- 暂无数据 --</td></tr>');
+					}
+				} else {
+					alert(data.info);
+				}
+			},
+			error:function(){
+				$('#box').hide();
+				alert('响应失败，请联系管理员检查呼叫配置！');
+			},
+			dataType:'json'
+		});
+	}
+</script>
+<include file="Public:footer" />

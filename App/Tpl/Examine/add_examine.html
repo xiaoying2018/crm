@@ -1,0 +1,125 @@
+<form class="form-horizontal" id="form_check" enctype="multipart/form-data" action="{:U('examine/add_examine')}" method="post">	
+	<input type="hidden" name="type" value="{$type}">
+	<input type="hidden" name="examine_id" value="{$examine['examine_id']}">
+	<div class="col-md-11 add_body_form" >		
+		<div class="form-group">
+			<label class="col-md-3 control-label" style="color:#000;">审批意见：</label>
+			<div class="col-md-8">
+				<select class="form-control required" id="is_agree" name="is_agree">
+					<option value="1">同意</option>
+					<option value="2">拒绝</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group xianshi">
+			<label class="col-md-3 control-label" style="color:#000;">下一审批人：</label>
+			<div class="col-md-8">
+				<if condition="$option eq 1">
+					<input type="hidden" name="order_id" id="next_order_id" value="{$next_order_id}"/>
+					<if condition = "$next_role_info neq ''">
+						<div class="radio radio-info radio-inline" style="margin-left:20px;">
+							<input type="radio" name="examine_status" checked id="openrecycle2" class="openrecycle" value="1">
+							<label for="openrecycle2"></label>
+						</div>
+						<input type="hidden" name="examine_role_id" id="examine_role_id" value="{$next_role_info['role_id']}"/>
+						<input type="text" style="width:120px;padding:6px 12px;border: 1px solid #d8e3ef;" name="examine_role" disabled="true" value="{$next_role_info['full_name']}" />
+						<div class="radio radio-info radio-inline" style="margin-left:30px;">
+							<input type="radio" name="examine_status" id="openrecycle3" class="openrecycle" value="2">
+							<label for="openrecycle3">审批结束</label>&nbsp;
+						</div>
+					<else />
+						<input type="hidden" name="examine_status" value="2"/>
+						<span style="line-height: 30px;">审批结束</span>
+					</if>
+				<else/>
+					<div class="radio radio-info radio-inline" style="margin-left:20px;">
+						<input type="radio" name="examine_status" checked id="openrecycle2" class="openrecycle" value="1">
+						<label for="openrecycle2"></label>
+					</div>
+					<input type="hidden"  name="examine_role_id" id="examine_role_id" />
+					<input type="text" name="examine_role" style="width:120px;padding:6px 12px;border: 1px solid #d8e3ef;cursor:pointer;" id="examine_role" readonly="true" title="请点击选择" placeholder="请点击选择"/>
+					<div class="radio radio-info radio-inline" style="margin-left:30px;">
+						<input type="radio" name="examine_status" id="openrecycle3" class="openrecycle" value="2">
+						<label for="openrecycle3">审批结束</label>&nbsp;
+					</div>
+				</if>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label" style="color:#000;">备注：</label>
+			<div class="col-md-8">
+				<input type="text" class="form-control required" name="opinion" placeholder="填写理由(非必填)">
+			</div>
+		</div>
+		<div class="form-group xianshi">
+			<label class="col-md-3 control-label" style="color:#000;">通知方式：</label>
+			<div class="col-md-8">
+				<div class="checkbox checkbox-primary pull-left">
+					<input name="message_alert" type="checkbox" checked="checked" value="1"/>
+					<label for="">{:L('MESSAGE')}</label>
+				</div>
+				<div class="checkbox checkbox-primary pull-left" style="margin-left:15px;">
+					<input name="email_alert" type="checkbox" value="1"/>
+					<label for="">{:L('EMAIL')}</label>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<div style="display:none;" id="dialog-role-list2" title="下一审批人">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div> 
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$("#dialog-role-list2").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 800,
+	height:400,
+	position:["center",100],
+    buttons: { 
+        "保存": function () {
+			var item = $('input:radio[name="owner"]:checked').val();
+			var name = $('input:radio[name="owner"]:checked').attr('rel');
+			if(item) {
+				$('#examine_role_id').val(item);
+				$('#examine_role').val(name);
+			}
+            $(this).dialog("close"); 
+        },
+		"取消": function () {
+            $(this).dialog("close");
+        }
+    }
+});
+
+$('#examine_role').click(function(){
+	$('#dialog-role-list2').dialog('open');
+	$('#dialog-role-list2').load('{:U("user/listDialog","by=examine")}');
+});
+
+$('.openrecycle').click(function(){
+	var val = $('.openrecycle:checked').val();
+	if(val == 2){
+		$('#examine_role').attr('disabled',true);
+	}else{
+		$('#examine_role').attr('disabled',false);
+	}
+});
+
+$('#is_agree').change(function(){
+	var value = $(this).val();
+	if(value == 2){
+		$('.xianshi').hide();
+		$('#openrecycle3').prop('checked', true);
+	}else{
+		$('.xianshi').show();
+	}
+});
+
+</script>

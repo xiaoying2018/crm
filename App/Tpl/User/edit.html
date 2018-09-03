@@ -1,0 +1,657 @@
+<include file="Public:header" />
+<link type="text/css" href="__PUBLIC__/css/dynamic.css" rel="stylesheet" />
+<!-- <script src="__PUBLIC__/style/js/plugins/validate/form-validate-demo.min.js"></script> -->
+<link href="__PUBLIC__/style/css/plugins/cropper/cropper.min.css" rel="stylesheet">
+<script src="__PUBLIC__/style/js/plugins/cropper/cropper.min.js"></script>
+<script src="__PUBLIC__/js/jquery.base64.js"></script>
+<script src="__PUBLIC__/js/jquery.md5.js"></script>
+<!-- ladda -->
+<script src="__PUBLIC__/style/js/plugins/ladda/spin.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/ladda/ladda.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/ladda/ladda.jquery.min.js"></script>
+<link href="__PUBLIC__/style/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+<style>
+	body{overflow-y:hidden;}
+	.nav > li.active{border:0px;background-color: #fff;}
+	.nav>li>a{padding:0 0 0 10px;}
+	.nav > li > a{padding:0 0 0 10px;font-weight: 300;}
+	.nav.nav-tabs-left li{width:100%;}
+	.nav-tabs-left>li.active>a{
+		font-size: 14px;
+		background-color: #f5f5f5;
+	    padding-left: 10px;
+	    width: 100%;
+	    border-left: 2px solid #03a9f4;
+	    line-height: 32px;
+	    margin-bottom: 3px;
+	    color: #03a9f4;
+	    font-weight: 300;
+	}
+	.li_text{font-size:14px;padding-left:10px;width: 100%;float:left;line-height:32px;margin-bottom:3px;}
+	.li_text:hover{background-color:#f5f5f5;}
+	.li_text_active{float:left;background-color:#f5f5f5;padding-left:10px;width: 100%;border-left:2px solid #03a9f4;line-height:32px;margin-bottom:3px;color:#03a9f4;}
+	.table>tbody>tr>td{border-top:0px;}
+	.table>tfoot>tr>td{border-top:0px;}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content ">
+<include file="Public:alert" />
+    <div class="row">
+        <div class="col-sm-12">
+			<div class="col-sm-2 ibox-title" style="background-color:#fff;">
+				<ul class="nav nav-tabs-left" id="myTab">
+					<li class="li_text active">
+						<a data-toggle="tab" href="#tab-1">基本信息</a>
+					</li>
+					<if condition = "$user_id eq session('user_id') || $is_edit eq 1">
+						<li class="li_text">
+							<a data-toggle="tab" href="#tab-2">修改头像</a>
+						</li>
+						<li class="li_text">
+							<a data-toggle="tab" href="#tab-3">修改密码</a>
+						</li>
+					</if>
+				</ul>
+			</div>
+			<div class="col-sm-10" >
+				<div class="table-content clearfix ibox-title tab-content" style="padding-top:0px;">						
+					<div id="tab-1" class="tab-pane fade in active">
+						<div class="ibox-content" style="border: none;">
+							<div class="nav pull-left" >
+								<span style="font-weight:900;line-height:40px;">基本信息</span>
+							</div>
+						</div>
+						<form class="form-inline" action="{:U('user/edit')}" method="post" style="margin-top:10px;">
+							<input type="hidden" name="user_id" value="{$user.user_id}"/>
+							<input type="hidden" name="r_url" value="{$r_url}">
+							<div class="ibox-content add_body full-height-scroll" id="add_body" style="border-color: #e7eaec;border-width: 1px 0;">
+								<table class="table ">
+									<tbody>
+										<?php if(C('CALL_CENTER') == 1): ?>
+											<tr>
+												<td class="tdleft" style="width:150px;">坐席号：</td>
+												<td>
+													<select name="extid" class="form-control">
+														<option value="请选择">请选择</option>
+														<for start="C('EXTID_MIN')" end="C('EXTID_MAX')" comparison="elt" step="1" name="i" >
+															<option value="{$i}" <if condition="$user['extid'] eq $i">selected</if> >{$i}</option>
+														</for>
+													</select>
+													<span style="color: red;font-size: 11px;">
+														（注：修改坐席号后需要该用户重新登录系统，否则会造成通话记录混乱或无法呼叫）
+													</span>
+												</td>
+											</tr>
+										<?php endif; ?>
+										<tr>
+											<td class="tdleft" style="width:150px;">姓名</td>
+											<td><input type="text" class="form-control" name="full_name" value="{$user['full_name']}" style="width:280px;"></td>
+										</tr>
+										<tr>
+											<td class="tdleft" >登录账号</td>
+											<td>
+												<if condition = "$is_edit eq 1">
+													<input type="text" class="form-control" name="name" value="{$user['login_name']}" style="width:280px;">
+												<else />
+													{$user.login_name}
+												</if>
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft" style="width:150px;">员工编号</td>
+											<td>
+												<if condition = "$is_edit eq 1">
+													<div class="input-daterange input-group">
+														<span class="input-group-addon" style="background-color:#ccc;">{$user['prefixion']}</span>
+														<input type="text" id="number" name="number" rel="require" class="form-control" value="{$user['number']}"/>
+														<input type="hidden" name="prefixion" id="prefixion" value="{$user['prefixion']}">
+													</div>
+												<else/>
+													<input type="hidden" name="prefixion" value="{$user['prefixion']}"/>
+													<input type="hidden" name="number" value="{$user['number']}" />
+													{$user['prefixion']}{$user['number']}
+												</if>
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">{:L('ACCOUNT_STATUS')}</td>
+											<td>
+												<if condition = "$is_edit eq 1">
+													<select id="status" class="form-control" name="status" style="width:280px;">
+														<volist name="statuslist" id="temp" >
+															<option value="{$key}" <if condition="$key eq $user['status']">selected = "selected"</if>>{$temp}</option>
+														</volist>
+													</select>
+												<else />
+													{$statuslist[$user['status']]}
+												</if>
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">角色</td>
+											<td>
+												<if condition = "$is_edit eq 1">
+													<select id="type" class="form-control" name="type" style="width:280px;">
+														<option value="" >--员工角色--</option>
+														<volist name="user_type_list" key="key" id="vo">
+															<option value="{$key}" <if condition = "$user['type'] eq $key">selected</if>>{$vo}</option>
+														</volist>
+													</select>
+												<else />
+													{$user['type_name']}
+												</if>
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">{:L('SEX')}</td>
+											<td>
+												<div class="radio radio-info radio-inline">
+													<input type="radio" name="sex" value="1" id="sex_1" <if condition="$user['sex'] eq 1">checked="checked"</if>/>
+													<label for="sex_1">{:L('MALE')}&nbsp;</label>
+												</div>
+												<div class="radio radio-info radio-inline">
+													<input type="radio"  name="sex" value="2" id="sex_2" <if condition="$user['sex'] eq 2">checked="checked"</if>/>
+													<label for="sex_2">{:L('FEMALE')}</label>
+												</div>
+											</td>
+										</tr>
+										<if condition = "$is_edit eq 1">
+											<tr>
+												<td class="tdleft">{:L('DEPARTMENT')}&nbsp;<span style="color:red;">*</span></td>
+												<td>
+													<select id="department" class="form-control" name="department_id" onchange="changeRoleContent()" style="width:280px;">
+														<option value="">--请选择--</option>
+														<volist name="department_list" id="temp">
+															<option <if condition = "$user['department_id'] eq $temp['department_id']">selected</if> value="{$temp.department_id}">{$temp.name}</option>
+														</volist>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td class="tdleft">{:L('POSITION')}&nbsp;<span style="color:red;">*</span></td>
+												<td>
+													<select id="role" class="form-control" name="position_id" style="width:280px;">
+														<option value="">--请选择--</option>
+														<volist name="position_list" id="temp">
+															<option <if condition = "$user['position_id'] eq $temp['position_id']">selected</if> value="{$temp.position_id}">{$temp.name}</option>
+														</volist>
+													</select>
+												</td>
+											</tr>
+											<if condition="$customer_num eq 1">
+												<tr>
+													<td class="tdleft">客户数量：<span style="color:red;">*</span></td>
+													<td>
+														<input type="text" id="customer_num" name="customer_num" class="text-input small-input form-control" value="{$user['customer_num']}" style="width:280px;"/>
+													</td>
+												</tr>
+											</if>
+										<else />
+											<input type="hidden" name="position_id" value="{$_SESSION['position_id']}"/>
+											<tr>
+												<td class="tdleft">{:L('DEPARTMENT')}&nbsp;<span style="color:red;">*</span></td>
+												<td>{$user.department_name}</td>
+											</tr>
+											<tr>
+												<td class="tdleft">{:L('POSITION')}&nbsp;<span style="color:red;">*</span></td>
+												<td>{$user.role_name}</td>
+											</tr>
+											<if condition="$customer_num eq 1">
+												<tr>
+													<td class="tdleft">客户数量：<span style="color:red;">*</span></td>
+													<td>
+														{$user.customer_num}
+													</td>
+												</tr>
+											</if>
+										</if>
+										<tr>
+											<td class="tdleft">家乡</td>
+											<td><input class="text-input small-input form-control" name="hometown" id="hometown" type="text" value="{$user.hometown}" style="width:280px;"></td>
+										</tr>
+										<tr>
+											<td class="tdleft">出生日期</td>
+											<td><input class="Wdate text-input small-input form-control" name="birthday" id="birthday" type="text" value="{$user['birthday']}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:280px;" ></td>
+										</tr>
+										<tr>
+											<td class="tdleft">入职日期</td>
+											<td><input class="Wdate text-input small-input form-control" name="entry" id="entry" type="text" value="{$user['entry']}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:280px;"></td>
+										</tr>
+										<tr>
+											<td class="tdleft">自我介绍</td>
+											<td><textarea name="introduce" class="form-control" style="width:280px;">{$user.introduce}</textarea></td>
+										</tr>
+									</tbody>
+								</table>
+								<p style="line-height: 30px;font-weight: bold;">联系方式</p>
+								<table class="table">
+									<tbody>
+										<tr>
+											<td class="tdleft">手机号码</td>
+											<td><input class="text-input small-input form-control" name="telephone" id="telephone" type="text" value="{$user.telephone}" style="width:280px;"></td>
+										</tr>
+										<tr>
+											<td class="tdleft">办公电话</td>
+											<td><input class="text-input small-input form-control" name="office_tel" id="office_tel" type="text" value="{$user.office_tel}" style="width:280px;"></td>
+										</tr>
+										<tr>
+											<td class="tdleft">QQ/MSN</td>
+											<td><input class="text-input small-input form-control" name="qq" id="qq" type="text" value="{$user.qq}" style="width:280px;"></td>
+										</tr>
+										<tr>
+											<td class="tdleft" style="width:150px;">{:L('EMAIL')}</td>
+											<td><input class="text-input small-input form-control" name="email" type="text" value="{$user.email}" style="width:280px;"></td>
+										</tr>
+										<tr>
+											<td class="tdleft">{:L('ADDRESS')}</td>
+											<td><textarea name="address" class="form-control" style="width:280px;">{$user.address}</textarea></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div id="tfoot_div" class="clearfix">
+								<div class="clearfix" id="tfoot_page">
+									<div class="ibox-content" style="border: none;">
+										<div class="col-sm-offset-2">
+											<button class="ladda-button btn btn-primary" data-style="zoom-in" type="submit">
+												<span class="ladda-label">{:L('SAVE')}</span><span class="ladda-spinner"></span>
+											</button>
+											<!-- <input name="submit" class="btn btn-primary btn-sm" type="submit" value="{:L('SAVE')}"/> -->
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div id="tab-2" class="tab-pane fade">
+						<div class="ibox-content" style="border: none;">
+							<div class="nav pull-left" >
+								<span style="font-weight:900;line-height:40px;">个人头像</span>
+							</div>
+						</div>
+						<form id="form1" enctype="multipart/form-data" action="{:U('user/userimg')}" class="form-horizontal" method="post" style="margin-top:10px;">
+							<input type="hidden" name="user_id" value="{$_GET['id']}" />
+							<div class="ibox-content" style="border-color: #e7eaec;border-width: 1px 0;">
+								<div class="col-xs-10 col-sm-10 col-lg-9">
+									<p style="color: gray;">选择一张个人正面照片作为头像</p>
+								</div>
+								<div class="col-xs-10 col-sm-10 ">
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="image-crop" style="height:300px;width:300px;">
+												<img 
+													<if condition="$user['img'] neq ''"> src="{$user['img']}" 
+													<else/> src="__PUBLIC__/img/avatar_default.png"
+													</if>
+												/>
+											</div>
+										</div>
+										<div class="col-sm-6" style="margin-top:-35px;">
+											<h4 style="padding-bottom:10px;">图片预览：</h4>
+											<div class="img-preview img-preview-sm" style="height:200px;"></div>
+											<p style="margin-top:10px;">
+												你可以重新选择一张图片，然后上传裁剪后的图片
+											</p>
+											<div class="btn-group">
+												<label title="选择图片" for="inputImage" class="btn btn-primary">
+													<input type="file" accept="image/x-png,image/gif,image/jpeg" name="img" id="inputImage" class="hide">
+													选择图片
+												</label>
+												<label title="上传头像" id="download" class="btn btn-primary">提交头像</label>
+											</div>
+											<!-- <h4>图片操作</h4>
+											<div class="btn-group">
+												<button class="btn btn-white" id="zoomIn" type="button">放大</button>
+												<button class="btn btn-white" id="zoomOut" type="button">缩小</button>
+												<button class="btn btn-white" id="rotateRight" type="button">右旋转</button>
+												<button class="btn btn-white" id="rotateLeft" type="button">左旋转</button>
+												<button class="btn btn-warning" id="setDrag" type="button">裁剪</button>
+											</div> -->
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div id="tab-3" class="tab-pane fade">
+						<div class="ibox-content" style="border: none;">
+							<div class="nav pull-left" >
+								<span style="font-weight:900;line-height:40px;">修改密码</span>
+							</div>
+						</div>
+						<form class="form-inline" method="post" id="form3" style="margin-top:10px;">
+							<input type="hidden" name="user_id" value="{$user.user_id}"/>
+							<div class="ibox-content" style="border-color: #e7eaec;border-width: 1px 0;">
+							<table class="table">
+								<tfoot>
+									<tr>
+										<td>&nbsp;</td>
+										<td>
+											<button class="ladda-button btn btn-primary" data-style="zoom-in" id="submit_password" type="button">
+												<span class="ladda-label">确认修改</span><span class="ladda-spinner"></span>
+											</button>
+										</td>
+									</tr>
+								</tfoot>
+								<tbody>
+									<tr>
+										<td class="tdleft" style="width:100px;">旧密码</td>
+										<td>
+											<input type="password" required class="form-control" name="old_password" id="old_password" />
+										</td>
+									</tr>
+									<tr>
+										<td class="tdleft">新密码</td>
+										<td>
+											<input type="password" required class="form-control" name="new_password" id="new_password" /> &nbsp;密码规则：6-16位，可由字母、数字、下划线组成
+										</td>
+									</tr>
+									<tr>
+										<td class="tdleft">重复新密码</td>
+										<td><input type="password" required class="form-control" name="confirm_password" id="confirm_password" /></td>
+									</tr>
+								</tbody>
+							</table>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+// 清除浏览器记录的账户、密码
+// $('input[name=name]').val(null);
+//$('input[name=name]:-webkit-autofill').css('-webkit-box-shadow','0 0 0px 50px white inset');
+// $('input[name=password]').val(null);
+// $('input[name=password]:-webkit-autofill').css('-webkit-box-shadow','0 0 0px 50px white inset');
+$('#number').blur(function(){
+	var number = $(this).val();
+	var prefixion = $('#prefixion').val();
+	var user_id = "{$_GET['id']}";
+	$.ajax({
+		type: "post",
+		async:false,
+		url: "{:U('user/yanchong')}", 
+		data: {number:number,user_id:user_id,prefixion:prefixion},
+		dataType: "json",
+		success : function(result){
+			if(result.status != 1){
+				swal('员工编号不能重复！','',"error");
+				return false;
+			}else{
+				return true;
+			}
+		}
+	});
+});
+$(document).ready(function(){
+	/*form表单验证*/
+	$("#form").validate({
+	
+	});
+	//保存按钮loading
+	$( '.ladda-button' ).ladda( 'bind', { timeout: 2000 } );
+});
+
+$('#myTab a').click(function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+})
+
+/**
+ * 将以base64的图片url数据转换为Blob
+ * @param urlData
+ * 用url方式表示的base64图片数据
+ */
+function convertBase64UrlToBlob(urlData){
+	var bytes=window.atob(urlData.split(',')[1]);        //去掉url的头，并转换为byte
+	
+	//处理异常,将ascii码小于0的转换为大于0
+	var ab = new ArrayBuffer(bytes.length);
+	var ia = new Uint8Array(ab);
+	for (var i = 0; i < bytes.length; i++) {
+		ia[i] = bytes.charCodeAt(i);
+	}
+
+	return new Blob( [ab] , {type : 'image/png'});
+}
+$(function(){
+	var $image = $(".image-crop > img")
+	$($image).cropper({
+		aspectRatio: 1,
+		preview: ".img-preview",
+		done: function(data) {
+			// Output the result data for cropping image.
+		}
+	});
+
+	var $inputImage = $("#inputImage");
+	if (window.FileReader) {
+		$inputImage.change(function() {
+			var fileReader = new FileReader(),
+					files = this.files,
+					file;
+
+			if (!files.length) {
+				return;
+			}
+
+			file = files[0];
+
+			if (/^image\/\w+$/.test(file.type)) {
+				fileReader.readAsDataURL(file);
+				fileReader.onload = function () {
+					$inputImage.val("");
+					$image.cropper("reset", true).cropper("replace", this.result);
+				};
+			} else {
+				showMessage("请选择一张图片");
+			}
+		});
+	} else {
+		$inputImage.addClass("hide");
+	}
+
+	$("#download").click(function() {
+		// window.open($image.cropper("getDataURL"));
+		// alert($image.cropper("getDataURL"));
+		var form=document.forms[1];
+		var formData = new FormData(form);   
+		//这里连带form里的其他参数也一起提交了,如果不需要提交其他参数可以直接FormData无参数的构造函数
+		//convertBase64UrlToBlob函数是将base64编码转换为Blob
+		formData.append("blob",convertBase64UrlToBlob($image.cropper("getDataURL")), "image.png"); 
+		//append函数的第一个参数是后台获取数据的参数名,和html标签的input的name属性功能相同
+		//ajax 提交form
+		$.ajax({
+		   url : form.action,
+		   type : "POST",
+		   data : formData,
+		   dataType: "json",
+		   processData : false,         // 告诉jQuery不要去处理发送的数据
+		   contentType : false,        // 告诉jQuery不要去设置Content-Type请求头
+		   
+		   success:function(data){
+				if(data.status == 1){
+					swal(data.msg,'',"success");
+					location.reload();
+				}else{
+					swal(data.msg,'',"error");
+				}
+		   }
+		});
+	});
+
+	$("#zoomIn").click(function() {
+		$image.cropper("zoom", 0.1);
+	});
+
+	$("#zoomOut").click(function() {
+		$image.cropper("zoom", -0.1);
+	});
+
+	$("#rotateLeft").click(function() {
+		$image.cropper("rotate", 45);
+	});
+
+	$("#rotateRight").click(function() {
+		$image.cropper("rotate", -45);
+	});
+
+	$("#setDrag").click(function() {
+		$image.cropper("setDragMode", "crop");
+	});
+})
+var check_pwd = function (pwd) {
+	var filter = /^\w{6,}$/;
+	return filter.test(pwd) ? true : false;
+}
+var check_telephone = function (tel) {
+	var filter = /^(((1[3|4|5|7|8][0-9]{1}))+\d{8})$/;
+	return filter.test(tel) ? true : false;
+}
+
+$('#telephone').blur(function () {
+	var telephone = $(this).val();
+	if (!check_telephone(telephone)) {
+		swal({
+			title: "温馨提示",
+			text: "手机号码格式不正确！",
+			type: "warning"
+		})
+		return false;
+	}
+});
+
+$('#new_password').blur(function(){
+	var new_pass = $(this).val();
+	if(new_pass.length < 6 || new_pass.length > 16){
+		swal({
+			title: "温馨提示",
+			text: "密码长度应为6~16位字符！",
+			type: "warning"
+		})
+		return false;
+	}else{
+		return true;
+	}
+});
+$('#confirm_password').blur(function(){
+	var two_pass = $(this).val();
+	if(two_pass){
+		var new_pass = $('#new_password').val();
+		if(two_pass != new_pass){
+			swal({
+				title: "温馨提示",
+				text: "两次输入的密码不一致！",
+				type: "warning"
+			})
+			return false;
+		}
+	}
+});
+
+$('#submit_password').click(function() {
+	$.base64.utf8encode = true;
+	if($('#old_password').val() == ''){
+		swal({
+			title: "温馨提示",
+			text: "旧密码不能为空！",
+			type: "warning"
+		})
+		return false;
+	}
+	if($('#new_password').val() == ''){
+		swal({
+			title: "温馨提示",
+			text: "新密码不能为空！",
+			type: "warning"
+		})
+		return false;
+	}
+	if($('#confirm_password').val() == ''){
+		swal({
+			title: "温馨提示",
+			text: "重复新密码不能为空！",
+			type: "warning"
+		})
+		return false;
+	}
+	$('#old_password').val($.md5($('#old_password').val()));
+	$('#new_password').val($.md5($('#new_password').val()));
+	$('#confirm_password').val($.md5($('#confirm_password').val()));
+	$.ajax({
+		url : "{:U('user/editPassword')}",
+		type: "POST",
+		data:$("#form3").serialize(),
+		async: true,
+		success: function(data) {
+			if(data.status == 1){
+				swal({
+					title: "修改成功！",
+					text: "即将刷新页面!",
+					type: "success"
+				});
+				location.reload();
+				//window.location.href="{:U('user/index')}";
+			}else{
+				swal({
+					title: "操作失败!",
+					text: data.info,
+					type: "error"
+				});
+				$('#old_password').val('');
+				$('#new_password').val('');
+				$('#confirm_password').val('');
+				return false;
+			}
+		}
+	});
+	//$(this).submit();
+});
+
+function changeRoleContent(){
+	department_id = $('#department').val();
+	if(department_id == ''){
+		$("#role").html('');
+	}else{
+		$.ajax({
+			type:'get',
+			url:'index.php?m=user&a=getPositionlistByDepartment&id='+department_id,
+			async:false,
+			success:function(data){
+				options = '';
+				if(data.data){
+					$.each(data.data, function(k, v){
+						options += '<option value="'+v.position_id+'">'+v.name+'</option>';
+					});
+				}
+				$("#role").html(options);
+			},
+			dataType:'json'
+		});
+	}
+}
+$('#role').click(
+	function(){
+		department_id = $('#department').val();
+		if(department_id == ''){
+			swal({
+				title: "温馨提示",
+				text: "{:L('SELECT_DEPARTMENT_FIRST')}",
+				type: "warning"
+			})
+			return false;
+		}
+	}
+);
+</script>
+<include file="Public:footer" />

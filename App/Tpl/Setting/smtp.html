@@ -1,0 +1,106 @@
+<include file="Public:header" />
+<div class="wrapper wrapper-content">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-lg-12">
+			<include file="Setting:setting_left" />
+			<div class="col-lg-10 ">
+				<div class="table-content clearfix ibox-title" id="right_height" style="padding-top:0px">
+					<form class="form-horizontal" action="{:U('setting/smtp')}" method="post">
+						<table class="span6 table" style="margin-left:10px;border:none">
+							<tbody class="form-inline">
+								<tr>
+									<th colspan="2" style="border:none">
+										<span style="font-weight:900;line-height:40px;">{:L('SMTP_BASIC_SETTING')} :</span>
+									</th>
+								</tr>
+								<tr style="border:none">
+									<td class="tdleft" style="width:150px;">{:L('EMAIL_ADDRESS')} :</td>  
+									<td >
+										<input  class="form-control required" aria-required="true" name="address" id="address" type="text" value="{$smtp['MAIL_ADDRESS']}"/> <span style="color:red;">*</span>
+										<span >(此邮箱用于系统用户找回密码及系统发件人)</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="tdleft" style="border:none">{:L('SMTP_SERVER_ADDRESS')} :</td>  
+									<td style="border:none">
+										<input class="form-control required" aria-required="true" value="{$smtp['MAIL_SMTP']}" id="smtp" name="smtp" type="text"> <span style="color:red;">*</span>&nbsp;&nbsp;&nbsp;&nbsp;
+										<div class="checkbox checkbox-primary">
+											<input value="ssl" id="secure" name="secure" type="checkbox" <if condition="$smtp['MAIL_SECURE'] == 'ssl'">checked="checked"</if>>
+											<label for="">SSL</label>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="tdleft" style="border:none">smtp服务器端口号 :</td>  
+									<td style="border:none">
+										<input class="form-control required" aria-required="true" value="{$smtp['MAIL_PORT']|default=25}" id="port" name="port" type="text"> <span style="color:red;">*</span>
+									</td>
+								</tr>
+								<tr>
+									<td style="border:none" class="tdleft">登录名 :</td>  
+									<td style="border:none">
+										<input class="form-control required" aria-required="true" value="{$smtp['MAIL_LOGINNAME']}" id="loginName" name="loginName" type="text"/><span style="color:red;">*</span>
+									</td>
+								</tr>
+								<tr>
+									<td style="border:none" class="tdleft">密码 :</td>  
+									<td style="border:none">
+										<input class="form-control required" aria-required="true" value="{$smtp['MAIL_PASSWORD']}" id="password" name="password" type="password"><span style="color:red;">*</span>
+										<span >(请填写系统邮箱对应的密码)</span>
+									</td>
+								</tr>
+								<tr>
+									<td style="border:none" class="tdleft">{:L('TEST_EMAIL')} :</td>  
+									<td style="border:none">
+										<input class="form-control" name="test_email" id="test_email" type="text"/> &nbsp; 
+										<input class="btn btn-primary btn-sm" style="background:#fff;border:1px solid #e3e3e3;color:#000;" id="test" name="submit" type="button" value="{:L('TEST')}">
+										<span >(系统邮箱将会发送一封测试邮件到您的测试邮箱，如收到此邮件则配置成功)</span>
+									</td>
+								</tr>					
+								<tr>
+									<td style="border:none">&nbsp;</td>
+									<td style="border:none">
+										<input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">	
+	$('#test').click(
+		function(){
+			address = $('#address').val();
+			smtp = $('#smtp').val();
+			port = $('#port').val();
+			secure = $('#secure:checked').val();
+			name = $('#loginName').val();
+			pw = $('#password').val();
+			email = $('#test_email').val();
+			if(address !='' && smtp !='' && port !='' && name!='' && pw!='' && email!=''){
+				$.post('{:U("setting/smtp")}',
+				{   address:address,
+					smtp:smtp,
+					port:port,
+					secure:secure,
+					loginName:name,
+					password:pw,
+					test_email:email},
+				function(data){
+					alert_crm(data.info);
+				},
+				'json');
+			} else {
+				alert_crm('{:L("PLEASE_FILL_IN_COMPLETE_INFORMATION")}');
+			}
+		}
+	);
+	
+</script>
+<include file="Public:footer" />	

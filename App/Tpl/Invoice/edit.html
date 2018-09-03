@@ -1,0 +1,378 @@
+<include file="Public:header" />
+<style type="text/css">
+.add_body >div >.full-height-scroll{
+	border-right:1px dotted #ccc
+}
+.add_body_title{
+	margin:20px auto 20px auto;
+	padding-left: 25px;
+}
+.add_body_form{
+	padding-left: 38px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.form-control{
+	float:left;
+}
+.checkbox{float:left;}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn">
+	<form class="form-horizontal" id="form" role="form" action="{:U('invoice/edit')}" method="post">
+		<input type="hidden" name="id" value="{$invoice_info['invoice_id']}" />
+		<div class="ibox-content add_body" id="add_body" >
+			<div class="row">
+				<div class="col-md-6 add_body" >
+					<div class="full-height-scroll">
+						<div class="row" >
+							<div class="col-md-12 add_body_title">
+								<div class="all-inline">
+									<span class="sq-tag"></span>
+									<div class="text-tag">
+										<span>业务信息</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">发票编号：</label>
+									<div class="col-md-6">
+										<input class="form-control required valid" name="name" id="name" value="{$invoice_info['name']}" type="text" aria-required="true" aria-invalid="false" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开票合同：</label>
+									<div class="col-md-6">
+										<input type="hidden" name="contract_id" id="contract_id" value="{$invoice_info['contract_id']}"/>
+										<input type="hidden" id="contract_price" value="{$invoice_info['contract_info']['price']}" /> 
+										<input class="form-control required valid" name="" id="contract_num" value="{$invoice_info['contract_info']['number']}" type="text" aria-required="true" aria-invalid="false" placeholder="请点击选择" readonly="true" style="cursor:pointer;" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">客户名称：</label>
+									<div class="col-md-6">
+										<input type="hidden" name="customer_id" id="customer_id" value="{$invoice_info['customer_id']}" />
+										<input class="form-control required valid" name="" id="customer_name" value="{$invoice_info['customer_name']}" type="text" aria-required="true" aria-invalid="false" placeholder="请点击选择" readonly="true" style="cursor:pointer;" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开票时间：</label>
+									<div class="col-md-6">
+										<input class="form-control required Wdate" name="invoice_time" id="invoice_time" value="{$invoice_info['invoice_time']|date='Y-m-d',###}" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:'2038-01-01'})" aria-required="true" aria-invalid="false" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开票金额：</label>
+									<div class="col-md-6">
+										<input class="form-control required valid" name="price" id="invoice_price" value="{$invoice_info['price']}" type="text" aria-required="true" aria-invalid="false" onkeyup="num_input(this)" onblur="bu(this)" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开票类型：</label>
+									<div class="col-md-6">
+										<select name="billing_type" id="" class="form-control required valid" aria-required="true" aria-invalid="false">
+											<option value="">--请选择--</option>
+											<option value="1" <if condition = "$invoice_info['billing_type'] eq 1">selected="selected"</if>>增值税普通发票</option>
+											<option value="2" <if condition = "$invoice_info['billing_type'] eq 2">selected="selected"</if>>增值税专用发票</option>
+											<option value="3" <if condition = "$invoice_info['billing_type'] eq 3">selected="selected"</if>>收据</option>
+										</select>
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">发票号码：</label>
+									<div class="col-md-6">
+										<input class="form-control required valid" name="number" value="{$invoice_info['number']}" type="text" aria-required="true" aria-invalid="false" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">快递单号：</label>
+									<div class="col-md-6">
+										<input class="form-control" name="express" value="{$invoice_info['express']}" type="text"  />
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">备注：</label>
+									<div class="col-md-6">
+										<textarea name="description" class="form-control" cols="30" rows="3">{$invoice_info['description']}</textarea>
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 add_body" >
+					<div class="full-height-scroll">
+						<div class="row" >
+							<div class="col-md-12 add_body_title">
+								<div class="all-inline">
+									<span class="sq-tag"></span>
+									<div class="text-tag">
+										<span>发票信息</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开票抬头：</label>
+									<div class="col-md-6">
+										<input class="form-control required valid" name="invoice_header" id="invoice_header" value="{$invoice_info['invoice_header']}" type="text" aria-required="true" aria-invalid="false" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">纳税识别号：</label>
+									<div class="col-md-6">
+										<input class="form-control" name="taxes_num" id="taxes_num" value="{$invoice_info['taxes_num']}" type="text" />
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开户行：</label>
+									<div class="col-md-6">
+										<input class="form-control" name="opening_bank" id="opening_bank" value="{$invoice_info['opening_bank']}" type="text" />
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开户账号：</label>
+									<div class="col-md-6">
+										<input class="form-control" name="account_number" id="account_number" value="{$invoice_info['account_number']}" type="text" />
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开票地址：</label>
+									<div class="col-md-6">
+										<input class="form-control" name="billing_address" id="billing_address" value="{$invoice_info['billing_address']}" type="text" />
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">电话：</label>
+									<div class="col-md-6">
+										<input class="form-control" name="telephone" id="telephone" value="{$invoice_info['telephone']}" type="text" />
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="tfoot_div" class="clearfix">
+			<div class="clearfix" id="tfoot_page">
+				<div class="ibox-content" style="border-top: none;">
+					<div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><button type="submit" id="save_submit" class="btn btn-primary">保存</button></div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div id="dialog-contract-list" style="display:none;" title="选择合同">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-customer-list" title="选择客户">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-file" title="添加文件">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	$('#save_submit').prop('disabled',false);
+	/*form表单验证*/
+	$("#form").validate({
+		submitHandler:function(form){
+            $('#save_submit').click(function(){
+				$('#save_submit').prop('disabled',true);
+			});
+            form.submit();
+        }    
+	});
+});
+
+$(function(){
+	$("#contract_num").click(function(){
+		var customer_id = $('#customer_id').val();
+		$('#dialog-contract-list').dialog('open');
+		$('#dialog-contract-list').load('{:U("contract/listDialog","by=all&customer_id=")}'+customer_id+'&type=invoice');
+	});
+	$('#customer_name').click(function () {
+		var contract_id = $('#contract_id').val();
+		$('#dialog-customer-list').dialog('open');
+		$('#dialog-customer-list').load("{:U('Customer/listDialog','contract_id=')}"+contract_id);
+	});
+
+	//发票金额提示
+	$('#form').on('blur','#invoice_price',function(){
+		var contract_id = $('#contract_id').val();
+		var invoice_price = parseInt(parseFloat($('#invoice_price').val())*100);
+		var contract_price = parseInt(parseFloat($('#contract_price').val())*100);
+		if((contract_id != null && contract_id != '') && (contract_price != null && contract_price != '')){
+			$.ajax({
+				'type':'get',
+				'data': {'contract_id':contract_id},
+				'dataType':'json',
+				'url':'{:U("invoice/getContractInvoice")}',
+				'success':function(data){
+					if(data.status == 1){
+						var price = parseInt(parseFloat(data.data)*100);
+						var addprice = price+invoice_price;
+						if(addprice > contract_price){
+							alert_crm('开票金额已大于合同金额,是否继续添加?');
+						}
+					}
+				}
+			});
+		}
+	});
+});
+
+$('#dialog-customer-list').dialog({
+	autoOpen: false,
+	modal: true,
+	width: 700,
+	maxHeight: 400,
+	buttons: {
+		"{:L('CONFIRM')}": function () {
+			var item = $('input:radio[name="customer"]:checked').val();
+			var name = $('input:radio[name="customer"]:checked').parent().next().html();
+			$('#customer_name').val(name);
+			$('#customer_id').val(item);
+			$.ajax({
+                cache: true,
+                type: "POST",
+                url:'{:U("invoice/customer_invoice")}',
+                data:{'customer_id':item},
+                async: false,
+                success: function(data) {
+                    var result = data.data;
+                    if (result) {
+                    	$('#invoice_header').val(result.invoice_header);
+	                  	$('#taxes_num').val(result.taxes_num);
+	                  	$('#opening_bank').val(result.opening_bank);
+	                  	$('#account_number').val(result.account_number);
+	                  	$('#billing_address').val(result.billing_address);
+	                  	$('#telephone').val(result.telephone);
+                    }
+                }
+            });
+			$(this).dialog("close");
+		},
+		"{:L('CANCEL')}": function () {
+			$(this).dialog("close");
+		}
+	},
+	position:["center",100]
+});
+
+$("#dialog-contract-list").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 800,
+	maxHeight: 400,
+	buttons: {
+		"确定": function () {
+			var item = $('input:radio[name="contract"]:checked').val();
+			var name = $('input:radio[name="contract"]:checked').parent().parent().next().html();
+			var next_item = $('input:radio[name="contract"]:checked').parent().parent().next().next().html();
+			var next_name = $('input:radio[name="contract"]:checked').parent().parent().next().next().next().html();
+			var price = $('input:radio[name="contract"]:checked').parent().parent().next().next().next().next().html();
+			if(item){
+				$('#contract_num').val(name);
+				$('#contract_id').val(item);
+				$('#customer_id').val(next_item);
+				$('#customer_name').val(next_name);
+				$('#price').val(price);
+			}
+			$.ajax({
+                cache: true,
+                type: "POST",
+                url:'{:U("invoice/customer_invoice")}',
+                data:{'customer_id':next_item},
+                async: false,
+                success: function(data) {
+                    var result = data.data;
+                    if (result) {
+                    	$('#invoice_header').val(result.invoice_header);
+	                  	$('#taxes_num').val(result.taxes_num);
+	                  	$('#opening_bank').val(result.opening_bank);
+	                  	$('#account_number').val(result.account_number);
+	                  	$('#billing_address').val(result.billing_address);
+	                  	$('#telephone').val(result.telephone);
+                    }
+                }
+            });
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+</script>

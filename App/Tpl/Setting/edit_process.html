@@ -1,0 +1,243 @@
+<form action="{:U('setting/edit_process')}" method="post">
+	<input type="hidden" id="shenpi_id" name="process_id" value="{$data['id']}"/>
+	<table class="table table-hover table-striped table_thead_fixed sort-list" width="100%" border="0" cellspacing="1" cellpadding="0">
+		<thead>
+			<th>审批人</th>
+			<th>审批岗位</th>
+			<th>操作</th>
+		</thead>
+	  	<tbody class="process" id="process">
+			<volist name="step_list" id="vo">
+				<tr id="step_{$vo['step_id']}">
+					<input type="hidden" class="check_list" name="step_id[]" value="{$vo['step_id']}"/>
+					<td class="user_name" id="user_name_{$vo['step_id']}">{$vo['user_info']['user_name']}</td>
+					<td class="position_name" id="position_name_{$vo['step_id']}">{$vo['user_info']['department_name']}-{$vo['user_info']['role_name']}</td>
+					<td>
+						<a href="javascript:void(0);" class="edit_step" rel="{$vo['step_id']}">编辑</a>
+						<a href="javascript:void(0);" class="delete_step" rel="{$vo['step_id']}">删除</a>
+					</td> 
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div style="margin-left:5px;margin-top:15px;">
+		<a class="add_step" href="javascript:void(0)" rel="{$data['id']}">+ 添加审批人</a>
+	</div>
+	<div style="color:#ccc;margin-top:10px;">注：通过拖拽可以修改审批人流程顺序</div>
+</form>
+<div style="display:none;" id="dialog-edit-step" title="编辑审批人">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-add-step" title="增加审批人">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+	$("table tbody").sortable({
+		connectWith: "table tbody",
+		stop:function() {
+			position = [];
+			$.each($(".check_list"), function(i, item){position.push(item.value)});
+			$.get('{:U("setting/examinesort")}',{postion:position.join(',')}, function(data){
+				if (data.status == 1) {
+					$(".alert.alert-success").remove();
+					
+					$(".page-header").after('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">×</button>' + data.info + '</div>');
+				} else {
+					$(".alert.alert-error").remove();
+					swal({
+						title: "顺序保存失败!",
+						type: "error"
+					});
+					$(".page-header").after('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">×</button>' + data.info + '</div>');
+				}
+			}, 'json');
+		}
+	});
+
+	$("#dialog-edit-step").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 550,
+		height: 350,
+		resizable: false,
+		position:["center",100],
+		buttons: {
+			"保存": function () {
+				var department_id = $("#step_department_id").val();
+				if(department_id == ''){
+					alert('请选择部门');
+					$("#department_id").focus();
+					return false;
+				}
+				var position_id = $("#step_position_id").val();
+				if(position_id == ''){
+					alert('请选择岗位');
+					$("#position_id").focus();
+					return false;
+				}
+				var role_id = $("#step_role_id").val();
+				if(role_id == ''){
+					alert('请选择审批人');
+					$("#role_id").focus();
+					return false;
+				}
+				var step_id = $("#step_id").val();
+				$.post("{:U('examine/step')}",
+				{department_id:department_id,position_id:position_id,role_id:role_id,step_id:step_id},
+				function(data){
+					if(data.status == 1){	
+						//修改成功
+						$('#position_name_'+step_id).html(data.data.position_name);
+						$('#user_name_'+step_id).html(data.data.user_name);
+						swal({
+							title: data.info,
+							type: "success"
+						});
+					}else{
+						swal({
+							title: data.info,
+							type: "error"
+						});
+					}
+				});
+				$(this).dialog("close");
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+
+	$(document).on('click','.edit_step',function(){
+		var step_id = $(this).attr('rel');
+		$('#dialog-edit-step').dialog('open');
+		$('#dialog-edit-step').load("{:U('examine/step','step_id=')}"+step_id);
+	});
+
+	$("#dialog-add-step").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 580,
+		height: 350,
+		resizable: false,
+		position:["center",100],
+		buttons: {
+			"保存": function () {
+				var department_id = $("#step_department_id").val();
+				if(department_id == ''){
+					alert('请选择部门');
+					$("#department_id").focus();
+					return false;
+				}
+				var position_id = $("#step_position_id").val();
+				if(position_id == ''){
+					alert('请选择岗位');
+					$("#position_id").focus();
+					return false;
+				}
+				var role_id = $("#step_role_id").val();
+				if(role_id == ''){
+					alert('请选择审批人');
+					$("#role_id").focus();
+					return false;
+				}
+				var process_id = $("#process_id").val();
+				$.post("{:U('examine/step')}",
+				{department_id:department_id,position_id:position_id,role_id:role_id,process_id:process_id},
+				function(data){
+					if(data.status == 1){
+						//添加成功
+						var temp = '';
+						var temp = '<tr id="step_'+data.data.step_id+'">\
+										<input type="hidden" class="check_list" name="step_id[]" value="'+data.data.step_id+'"/>\
+										<td class="user_name" id="user_name_'+data.data.step_id+'">'+data.data.user_name+'</td>\
+										<td class="position_name" id="position_name_'+data.data.step_id+'">'+data.data.department_name+' - '+data.data.role_name+'</td>\
+										<td><a href="javascript:void(0);" class="edit_step" rel="'+data.data.step_id+'">编辑</a> <a href="javascript:void(0);" class="delete_step" rel="'+data.data.step_id+'">删除</a></td>\
+									</tr>';
+						$('#process').append(temp);
+						// $(".edit_step").click(function(){
+						// 	var step_id = $(this).attr('rel');
+						// 	$('#dialog-edit-step').dialog('open');
+						// 	$('#dialog-edit-step').load("{:U('examine/step','step_id=')}"+step_id);
+						// });
+					}else{
+						swal({
+							title: data.info,
+							type: "error"
+						});
+					}
+				});
+				$(this).dialog("close");
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+
+	$('.add_step').click(function(){
+		var process_id = $(this).attr('rel');
+		$('#dialog-add-step').dialog('open');
+		$('#dialog-add-step').load("{:U('examine/step','process_id=')}"+process_id);
+	});
+
+	$(document).on('click','.delete_step',function(){
+		var step_id = $(this).attr('rel');
+		swal({
+			title: "温馨提示",
+			text: "您确定要删除吗？",
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "是的，我要删除！",
+	        cancelButtonText:'让我再考虑一下…',
+	        closeOnConfirm:false,
+	        closeOnCancel:false
+		},
+		function(isConfirm){
+	    	if (isConfirm) {
+				$.ajax({
+					type:'get',
+					url:'index.php?m=examine&a=step_delete&step_id='+step_id,
+					async:false,
+					success:function(data){
+						if(data.status){
+							$('#step_'+step_id).remove();
+							swal({
+								title: data.info,
+								type: "success"
+							});
+						}else{
+							swal({
+								title: data.info,
+								type: "error"
+							});
+						}
+					},
+					dataType:'json'
+				});
+			} else {
+	            swal("已取消","您取消了删除操作！","error");
+	        }
+		});
+	});
+});
+</script>
+
+
+
+
+

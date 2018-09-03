@@ -1,0 +1,18 @@
+<form class="form-horizontal" id="status_form1" action="{:U('setting/logreplyadd')}" method="post">
+	<input type="hidden" name="status_id" value="{$_GET['status_id']}" />
+	<input type="hidden" name="type" value="1" />
+	<table class="table" style="border:none;">
+		<tr>
+			<td style="border:none;text-align:right">类型：</td>
+			<td style="border:none;">
+				{$status_name}
+			</td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">快捷回复：</td>
+			<td style="border:none;">
+				<textarea name="content" class="form-control" rows="3" style="width:100%;"></textarea>
+			</td>
+		</tr>
+	</table>
+</form>

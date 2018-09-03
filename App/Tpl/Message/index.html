@@ -1,0 +1,647 @@
+<include file="Public:header" />
+<style>
+	body{overflow-y: hidden;}
+	.img-circle{width:35px;height:35px;border-radius: 50%;padding-left:0px;}
+	.main_time {
+		width: 100%;
+		text-align: center; 
+		margin-bottom: 10px; 
+		padding-top: 10px;
+		clear: both;
+	}
+	.span_time {
+		font-size: 12px;
+		background: #ccc;
+		border-radius: 5px;
+    	padding: 1px 5px;
+	}
+	.receiver{width: 100%;float: left;height: auto;}
+	.receiver div:first-child img{width:30px;height:30px;border-radius: 15px;}
+	.img_con img{width:30px;height:30px;border-radius: 15px;}
+	.img_con{float:left;width: 95%;}
+	.text_con{float:left;width:70%;background-color:#fff;margin:0 10px 10px 40px;padding:5px;border-radius:5px;line-height: 30px;}
+	.p_name {    
+		font-size: 12px;
+    	position: relative;
+    	left: 10px;
+    	font-weight: 900;
+    }
+	.text_con span {word-break: break-all;}
+	.text_con a{color:#066AFF;}
+	.loading{width: 100%;height: 200px;float: left;}
+
+	/*任务相关*/
+	.dropdown, .dropup{
+		position: relative;
+	}
+	.dropdown-menu.bullet{
+		margin-top: 12px;
+	}
+	.dropdown-menu{
+		padding: 1px 0;
+	    margin-top: 3px;
+	    border-radius: 0;
+	    -webkit-box-shadow: 0 3px 12px rgba(0,0,0,.05);
+	    box-shadow: 0 3px 12px rgba(0,0,0,.05);
+	    -webkit-transition: .25s;
+	    -o-transition: .25s;
+	    transition: .25s;
+	    position: absolute;
+	    top: 100%;
+	    left: 0;
+	    z-index: 1200;
+	    display: none;
+	    float: left;
+	    min-width: 160px;
+	    padding: 5px 0;
+	    margin: 2px 0 0;
+	    font-size: 14px;
+	    text-align: left;
+	    list-style: none;
+	    background-color: #fff;
+	    -webkit-background-clip: padding-box;
+	    background-clip: padding-box;
+	    border: 1px solid #ccc;
+	    border: 1px solid #e4eaec;
+	    border-radius: 3px;
+	    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+	}
+	.dropdown-menu>li{
+		padding: 0 3px;
+    	margin: 2px 0;
+	}
+	.taskboard-stage-header .dropdown-menu>li>a{
+		padding: 6px 10px;
+	    -webkit-transition: background-color .25s;
+	    -o-transition: background-color .25s;
+	    transition: background-color .25s;
+	    display: block;
+	    padding: 3px 20px;
+	    clear: both;
+	    font-weight: 400;
+	    line-height: 1.6;
+	    color: #76838f;
+	    white-space: nowrap;
+	}
+	.dropdown-menu li .icon:first-child, .dropdown-menu li>a .icon:first-child{
+		width: 1em; 
+	    margin-right: .5em;
+	    text-align: center;
+	}
+
+	#right-sidebar-task{
+		width: 50% !important;
+		right: -60%;
+		background-color: #fff;
+	    overflow: hidden;
+	    position: fixed;
+	    top: 60px;
+	    z-index: 1009;
+	    bottom: 0;
+	    box-shadow: 0px 2px 1px #888888;
+	}
+	.agile-list li{
+		margin-bottom: -1px;
+		border:none;
+	}
+	.taskboard-stage{
+		height:90% !important;
+	}
+	.taskboard-stages{
+		overflow-y:hidden !important;
+	}
+
+	.color-selector>li{
+		position: relative;
+	    display: inline-block;
+	    width: 24px;
+	    height: 24px;
+	    margin: 0 5px 0 0;
+	    border-radius: 100%;
+	}
+	.bg-blue-600 label:before{
+		background-color: #62a8ea!important;
+	}
+	.bg-green-600 label:before{
+		background-color: #46be8a!important;
+	}
+	.bg-cyan-600 label:before{
+		background-color: #57c7d4!important;
+	}
+	.bg-orange-600 label:before{
+		background-color: #f2a654!important;
+	}
+	.bg-red-600 label:before{
+		background-color: #f96868!important;
+	}
+	.bg-blue-grey-600 label:before{
+		background-color: #526069!important;
+	}
+	.bg-purple-600 label:before{
+		background-color: #926dde!important;
+	}
+
+	.bg-blue-600 label:after{
+		background-color: #62a8ea!important;
+	}
+	.bg-green-600 label:after{
+		background-color: #46be8a!important;
+	}
+	.bg-cyan-600 label:after{
+		background-color: #57c7d4!important;
+	}
+	.bg-orange-600 label:after{
+		background-color: #f2a654!important;
+	}
+	.bg-red-600 label:after{
+		background-color: #f96868!important;
+	}
+	.bg-blue-grey-600 label:after{
+		background-color: #526069!important;
+	}
+	.bg-purple-600 label:after{
+		background-color: #926dde!important;
+	}
+	.radio label:before{
+		width:24px;
+		height:24px;
+	}
+	.radio label:after{
+		left:6px;
+		top: 4px;
+		font-family: "FontAwesome";
+    	content: "\f00c";
+    	color: #fff;
+	}
+	.img-circle{
+		margin-right:0px;
+	}
+	.list-group-item:hover{
+		background-color: #fafafb !important;
+	}
+	.taskboard-list .list-group-item .task-members{
+		float:left;
+	}
+	.action-wrap{
+		float:left;
+		width:100%;
+		height:10%;
+		min-height: 40px;
+		background-color: #fff;
+	}
+</style>
+<script>
+	$(function(){
+		var scroll_width = 5;
+		$(".message_left").height(window.innerHeight-$("#message_table").offset().top-10);
+		$(".message_div").height(window.innerHeight-$("#message_table").offset().top-$("#tfoot_div").height()-5);
+		$(window).resize(function(){
+			$(".message_left").height(window.innerHeight-$("#message_table").offset().top-10);
+			$(".message_div").height(window.innerHeight-$("#message_table").offset().top-$("#tfoot_div").height()-5);
+		})
+	});	
+</script>
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+	<include file="Public:alert" />
+	    <div class="col-lg-12">
+	    	<include file="Message:message_left" />
+			<div class="col-lg-9" style="padding-right: 0px;">
+				<div class="ibox-content clearfix" style="padding:0px;border: none;">
+					<div class="table-content clearfix" style="padding-top:0px;padding-left:0px;border: none;">	
+						<div class="ibox-title" style="min-height: 70px;">
+							<div class="nav pull-left">
+								<if condition = "$by eq 'index'">
+									<img src="__PUBLIC__/img/Messenger.png" alt="">&nbsp;
+									<span style="font-weight:900;line-height:40px;">小助手</span>
+								<elseif condition="$by eq 'announcement'"/>
+									<img src="__PUBLIC__/img/System.png" alt="">&nbsp;
+									<span style="font-weight:900;line-height:40px;">系统公告</span>
+								<elseif condition="$by eq 'remind'"/>
+									<img src="__PUBLIC__/img/Feedback.png" alt="">&nbsp;
+									<span style="font-weight:900;line-height:40px;">提醒助手</span>
+								</if>
+							</div>
+						</div>
+					</div>
+					<div class="ibox-content" id="message_table" style="padding:0px;border-width:0px 1px;">
+						<div class="message_div full-height-scroll" id="message_div">
+							<input type="hidden" id="message_type" value="{$by}" />
+							<input type="hidden" id="p" value="2" />
+							<input type="hidden" id="load" value="1" />
+							<div class="panel-body" id="list" style="margin-left:30px;margin-top:20px;">
+								<if condition = "$by eq 'index'">
+									<volist name="receive_list" id="vo" key="k">
+										<div class="receiver">
+											<div class="img_con">
+												<img width="70px" height="70px" class="yh_head" src="__PUBLIC__/img/Messenger.png"/>
+												<span class="p_name">小助手&nbsp;&nbsp;&nbsp;&nbsp;</span>
+												<span class="p_name" style="color: #aaa;font-weight: 300;">{$vo.send_time|date="m/d H:i",###}</span>
+											</div>
+											<div class="text_con">
+												<div class="right_triangle"></div>
+												<span>
+													<td>
+														<div id="content_{$vo['message_id']}" style="font-size:13px;<if condition = "$vo['is_mark'] eq 1">color: #a6a6a6;<else />color: #000;</if>">
+															<a href="javascript:void(0)" class="is_mark" id="is_mark_{$vo['message_id']}" rel="{$vo['message_id']}" rel1="{$vo['is_mark']}" style="color: #667b8f;" <if condition = "$vo['is_mark'] eq 1">title="标记为未读"<else />title="标记为已读"</if>>
+																<span id="mark_icon_{$vo['message_id']}">
+																	<if condition = "$vo['is_mark'] eq 1">
+																		<i class="fa fa-flag"></i>
+																	<else/>
+																		<i class="fa fa-flag-o"></i>
+																	</if>
+																</span>
+															</a>
+															{$vo.content}
+														</div>
+													</td>
+												</span>
+											</div>
+										</div>
+									</volist>
+								<elseif condition = "$by eq 'announcement'"/>
+									<volist name="announcement_list" id="vo" key="k">
+										<div class="receiver">
+											<div class="img_con">
+												<img width="70px" height="70px" class="yh_head" src="__PUBLIC__/img/System.png"/>
+												<span class="p_name">系统公告&nbsp;&nbsp;&nbsp;&nbsp;</span>
+												<span class="p_name" style="color: #aaa;font-weight: 300;">{$vo.create_time|date="m/d H:i",###}</span>
+												<span class="p_name" style="color: #aaa;font-weight: 300;margin-left:25px;"><if condition="$vo['read']">阅读时间 :  {$vo['read']['read_time']|date="Y-m-d",###}<else/><span style="color:red">未读</span></if></span>
+											</div>
+											<div class="text_con">
+												<div class="right_triangle"></div>
+												<span>
+													<td>
+														<div style="font-size:13px">
+															{$vo.content} 
+														</div>
+													</td>
+												</span>
+											</div>
+										</div>
+									</volist>
+								<elseif condition = "$by eq 'remind'"/>
+									<volist name="remind_list" id="vo" key="k">
+										<div class="receiver">
+											<div class="img_con">
+												<img width="70px" height="70px" class="yh_head" src="__PUBLIC__/img/Feedback.png"/>
+												<span class="p_name">提醒助手&nbsp;&nbsp;&nbsp;&nbsp;</span>
+												<span class="p_name" style="color: #aaa;font-weight: 300;">{$vo.remind_time|date="m/d H:i",###}</span>
+											</div>
+											<div class="text_con">
+												<div class="right_triangle"></div>
+												<span>
+													<td>
+														<div style="font-size:13px">
+															{$vo.content}
+														</div>
+													</td>
+												</span>
+											</div>
+										</div>
+									</volist>
+								</if>
+							</div>
+						</div>
+					</div>
+					<div style="clear: both;" id="clearfix"></div>
+					<div id="tfoot_div" class="clearfix">
+						<div class="clearfix" id="tfoot_page">
+							<div class="ibox-content">
+								<div class="col-sm-offset-2">&nbsp;</div>
+							</div>
+						</div>
+					</div>
+				</div>
+		    </div>
+		</div>
+	</div>
+</div>
+
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+
+<div style="display:none;" id="dialog-message-send" title="{:L('WRITE_LETTER_IN')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div id="dialog-role-list2" title="收件人">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-role-info" title="{:L('USER_INFO')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<script>
+	$(function(){
+		$('#to_role').click(function () {
+			$('#dialog-role-list2').dialog('open');
+			$('#dialog-role-list2').load('{:U("user/listDialog","by=message")}');
+			return false;
+		});
+		$("#dialog-role-list2").dialog({
+			autoOpen: false,
+			modal: true,
+			width: 800,
+			maxHeight: 400,
+			buttons: { 
+				"确定": function () {
+					var to_role_id = $('input:radio[name="owner"]:checked').val();
+					window.location.href = "{:U('message/message_view','to_role_id=')}"+to_role_id;
+					$(this).dialog("close"); 
+				},
+				"取消": function () {
+					$(this).dialog("close");
+				}
+			},
+			position: ["center", 100],
+			close:function(){
+				$(this).html('');
+			}
+		});
+	})
+</script>
+<script type="text/javascript">
+$(document).ready(function (){
+	var loading = false;  //状态标记
+	var deviation = 1; //事件偏移量
+	var nScrollHight = 0; //滚动距离总长(注意不是滚动条的长度)
+	var nScrollTop = 0;   //滚动到的当前位置
+	var nDivHight = $("#message_div").height();
+	var scrollTop = $("#message_div").scrollTop();
+	
+	$("#message_div").scroll(function(){
+		var type = $('#message_type').attr('value');
+		var p = $('#p').val();
+		var load = $('#load').val();
+		nScrollHight = $(this)[0].scrollHeight;
+		nScrollTop = $(this)[0].scrollTop;
+		if(loading){
+			return false;
+		}
+		if(nScrollTop + nDivHight + deviation >= nScrollHight && load == 1){
+			loading = true;
+			//alert("滚动条到底部了");
+			temp_loading = "";
+			temp_loading = "<div class='loading' id='loading'><div class='spiner-example'><div class='sk-spinner sk-spinner-three-bounce'><div class='sk-bounce1'></div><div class='sk-bounce2'></div><div class='sk-bounce3'></div></div></div></div>";
+			$("#message_div").scrollTop(nScrollTop + deviation + 200);
+			$("#list").append(temp_loading);
+			var temp = "";
+			var no_data = "";
+			$.ajax({
+				type:'get',
+				url:'index.php?m=message&a=index_data&p='+p+'&by='+type,
+				async : false,
+				success : function(data){
+					$('#no_data').remove();
+					if (data.status == 1) {
+						$.each(data.data, function(k, v){
+							var type_name = '小助手';
+							var type_img = '__PUBLIC__/img/Messenger.png';
+							if(v.message_type == 'announcement'){
+								type_img = '__PUBLIC__/img/System.png';
+								type_name = '系统公告';
+							}else if(v.message_type == 'remind'){
+								type_img = '__PUBLIC__/img/Feedback.png';
+								type_name = '提醒助手';
+							}
+							
+							if(v.message_type == 'index'){
+								temp += '<div class="receiver">\
+											<div class="img_con">\
+												<img width="70px" height="70px" class="yh_head" src="'+type_img+'"/>\
+												<span class="p_name">'+type_name+'&nbsp;&nbsp;&nbsp;&nbsp;'+v.message_time+'</span>\
+											</div>\
+											<div class="text_con">\
+												<div class="right_triangle"></div>\
+												<span>';
+								if(v.is_mark == 1){
+									temp += '<div id="content_'+v.message_id+'" style="font-size:13px;color: #a6a6a6;">';
+								}else{
+									temp += '<div id="content_'+v.message_id+'" style="font-size:13px;color: #000;">';
+								}
+
+								if(v.is_mark == 1){
+									temp += '<a href="javascript:void(0)" class="is_mark" id="is_mark_'+v.message_id+'" rel="'+v.message_id+'" rel1="'+v.is_mark+'" style="color: #667b8f;" title="标记为未读">';
+								}else{
+									temp += '<a href="javascript:void(0)" class="is_mark" rel="'+v.message_id+'" rel1="'+v.is_mark+'" style="color: #667b8f;" title="标记为已读">';
+								}
+								temp += '<span id="mark_icon_'+v.message_id+'">';
+								if(v.is_mark == 1){
+									temp += '<i class="fa fa-flag"></i>';
+								}else{
+									temp += '<i class="fa fa-flag-o"></i>';
+								}
+								temp += '</span>\
+												</a>\
+												'+v.content+'\
+											</div>\
+											</span>\
+											</div>\
+										</div>';
+							}else{
+								temp += "<div class='receiver'><div class='img_con'><img width='70px' height='70px' class='yh_head' src='"+type_img+"'/><span class='p_name'>"+type_name+"&nbsp;&nbsp;&nbsp;&nbsp;"+v.message_time+"</span></div><div class='text_con'><div class='right_triangle'></div><span><td><div style='font-size:13px'>"+v.content+"</div></td></span></div></div>";
+							}
+						})
+						p++;
+						$('#p').val(p);
+					} else {
+						no_data = "<p id='no_data' style='margin-top: 20px;text-align: center;'>没有更多数据</p>";
+                        $('#load').val('0');
+						// alert_crm(data.data);
+					}
+				}
+			});
+			if(no_data == ''){
+                setTimeout(function() {
+                    $("#message_div").scrollTop(nScrollTop + deviation - 200);
+					$('#loading').remove();
+					$("#list").append(temp);
+					loading = false;
+                }, 1500);   //模拟延迟
+            }else{
+				$('#loading').remove();
+				$("#list").append(no_data);
+				loading = false;
+            }
+		}
+		if (nScrollTop == 0) {  //滚动到头部执行事件
+			//alert("我到头部了");
+        }
+	});
+});
+$("#dialog-message-send").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 800,
+	maxHeight: 600,
+	position: ["center",100]
+});
+$("#dialog-role-info").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 600,
+	position: ["center",100]
+});
+$(function(){
+	$("#send").click(function(){
+		$('#dialog-message-send').dialog('open');
+		$('#dialog-message-send').load('{:U("message/send")}');
+	});
+	$('#delete_receive').click(function(){
+		if(confirm('{:L('ARE_YOU_DELETE')}')){
+			$("#form1").attr('action', '{:U("message/delete", "model=receive")}');
+			$("#form1").submit();
+		}
+	});
+	$('#delete_role').click(function(){
+		if(confirm('{:L('ARE_YOU_DELETE')}')){
+			$("#form2").attr('action', '{:U("message/message_delete")}');
+			$("#form2").submit();
+		}
+	});
+	$('#set_read_receive').click(function(){
+		if(confirm('{:L('CONFIRM_TO_SET_MESAAGE_READ')}')){
+			$("#form1").attr('action', '{:U("message/setRead")}');
+			$("#form1").submit();
+		}
+	});
+	$('#set_read_send').click(function(){
+		if(confirm('{:L('CONFIRM_TO_SET_MESAAGE_READ')}')){
+			$("#form2").attr('action', '{:U("message/setRead")}');
+			$("#form2").submit();
+		}
+	});
+	$(".role_info").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+});
+//状态标记,type=1已读，type=2未读
+// $('.is_mark').click(function(){
+$(document).on('click','.is_mark',function(){
+	var message_id = $(this).attr('rel');
+	var is_mark = $(this).attr('rel1');
+	$.ajax({
+        type:'get',
+        url: "{:U('message/message_mark','message_id=')}"+message_id,
+        async: false,
+        success: function (data) {
+			if (data.status == 1) {
+				// var temp = '';
+				if(is_mark == 1){
+					// 标记为未读
+					// $('#content_'+message_id).css('text-decoration','none');
+					$('#is_mark_'+message_id).attr('rel1','0');
+					$('#is_mark_'+message_id).attr('title','标记为已读');
+					$('#content_'+message_id).css('color','#000');
+					$('#mark_icon_'+message_id).html('<i class="fa fa-flag-o"></i>');
+				}else{
+					//标记为已读
+					// $('#content_'+message_id).css('text-decoration','line-through');
+					$(this).attr('rel1','1');
+					$(this).attr('title','标记为未读');
+					$('#content_'+message_id).css('color','#a6a6a6');
+					$('#mark_icon_'+message_id).html('<i class="fa fa-flag"></i>');
+				}
+				// swal("操作成功！", "站内信标记成功！", "success");
+			} else {
+				swal({
+					title: "操作失败！",
+					text:data.info,
+					type: "error"
+				})
+				return false;
+			}
+        },
+        dataType: 'json'
+    });
+});
+
+//任务
+/*任务详情 加载的圈圈效果*/
+var detail_html = '<div class="spiner-example">\
+					<div class="sk-spinner sk-spinner-fading-circle">\
+						<div class="sk-circle1 sk-circle"></div>\
+						<div class="sk-circle2 sk-circle"></div>\
+						<div class="sk-circle3 sk-circle"></div>\
+						<div class="sk-circle4 sk-circle"></div>\
+						<div class="sk-circle5 sk-circle"></div>\
+						<div class="sk-circle6 sk-circle"></div>\
+						<div class="sk-circle7 sk-circle"></div>\
+						<div class="sk-circle8 sk-circle"></div>\
+						<div class="sk-circle9 sk-circle"></div>\
+						<div class="sk-circle10 sk-circle"></div>\
+						<div class="sk-circle11 sk-circle"></div>\
+						<div class="sk-circle12 sk-circle"></div>\
+					</div>\
+				</div>';
+//鼠标点击空白处，隐藏右侧滑出
+document.onmousedown=function(event){
+	if($(".litebox-overlay").length > 0) return;
+	if($("#dialog_open").val() == 1) return;
+	if(event.target.className == 'right-sidebar-toggle-task') return;
+
+    var div = document.getElementById("right-sidebar-task");
+    var x=event.clientX;
+    var y=event.clientY;
+    var divx1 = div.offsetLeft;
+    var divy1 = div.offsetTop;
+    var divx2 = div.offsetLeft + div.offsetWidth;
+    var divy2 = div.offsetTop + div.offsetHeight;
+    if( x < divx1 || x > divx2 || y < divy1 || y > divy2){
+        if($("#right-sidebar-task").css('right') == '0px'){
+            $("#right-sidebar-task").animate({right:'-60%'}, 400);
+        }
+    }
+}
+//任务详情弹出
+$(document).on('click','.task_view',function(){
+	var task_id = $(this).attr('rel');
+	// var is_show = document.getElementById("is_show").value;
+	$(".emoji_container").remove();
+	if($("#right-sidebar-task").css('right') != '0px'){
+		$("#right-sidebar-task").animate({right:'0px'}, 600);
+	}
+		
+    $('#task-content').html(detail_html);
+    $('#sidebar-container').load("{:U('task/view','task_id=')}"+task_id);
+});
+</script>
+
+<include file="Public:footer" />
+<div id="right-sidebar-task">
+	<!--the css for jquery.mCustomScrollbar-->
+	<link rel="stylesheet" href="__PUBLIC__/emoji/css/jquery.mCustomScrollbar.min.css"/>
+	<!--the css for this plugin-->
+	<link rel="stylesheet" href="__PUBLIC__/emoji/css/jquery.emoji.css"/>
+	<!--(Optional) the js for jquery.mCustomScrollbar's addon-->
+	<script src="__PUBLIC__/emoji/js/jquery.mousewheel-3.0.6.min.js"></script>
+	<!--the js for jquery.mCustomScrollbar-->
+	<script src="__PUBLIC__/emoji/js/jquery.mCustomScrollbar.min.js"></script>
+	<!--the js for this plugin-->
+	<script src="__PUBLIC__/emoji/js/jquery.emoji.js"></script>
+
+	<div class="sidebar-container" id="sidebar-container">
+		
+	</div>
+</div>

@@ -1,0 +1,70 @@
+<style>
+	.active >a{height:38px;!important}
+</style>
+<form action="{:U('Customer/share')}" id="share_form" method="post">
+	<input type="hidden" name="customer_id" value="{$customer_id}"/>
+	<table type="hidden" class="table table-hover">
+		<tbody>
+			<if condition="$user_info['role_id'] gt 0">
+				<input type="hidden" name="to_role_id" value="{$user_info.role_id}" id="to_role_id"/>
+			<else />
+				<tr>
+					<td>
+						<div class="tabs-container">
+							<ul class="nav nav-tabs">
+								<volist name="departments_list" id="vo" key="k">
+									<li <if condition="$vo['department_id'] eq session('department_id')">class="active"</if>>
+										<a class="ta" rel="{$k}" data-toggle="tab">{$vo['name']}</a>
+									</li>
+								</volist>
+							</ul>
+							<div class="tab-content">
+								<volist name="departments_list" id="vo" key="k">
+									<div class="tab-pane <if condition="$vo['department_id'] eq session('department_id')">active</if>" id="ta{$k}" style="line-height: 30px;">
+										<input type="checkbox" class="check_all" rel="{$k}" style="width:13px;height:13px;"/>&nbsp;<span style="font-weight: bold;">{:L('SELECT_ALL')}</span><br/>
+										<volist  name="vo['user']" id="temp">
+											<span style="width:25%; float:left;">
+												<label>
+													<input type="checkbox" class="about_role_id muti_role_id{$k}" name="to_role_id[]" rel="{$temp['user_name']}" <if condition="$temp['is_checked'] eq 1">checked</if> value="{$temp.role_id}" />
+													{$temp['user_name']}【{$temp.role_name}】
+												</label>&nbsp; 
+											</span>
+										</volist>
+									</div>
+								</volist>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</if>
+		</tbody>
+	</table>
+</form>
+<div id="dialog-to-role-list" class="hide" title="{:L('SELECT_THE_RECIPIENT')}">loading...</div>
+<script type="text/javascript">
+$(function(){
+	// $("#ta1").addClass('active').removeClass('hide');
+	$('.ta').click(
+		function(){
+			var num = $(this).attr('rel');
+			var list = new Array();
+			<volist name="departments_list" id="vo" key="k">
+				list.push({$k});
+			</volist>
+			for (var i=0;i<list.length;i++){
+				if(num == list[i]){
+					$('#ta'+(i+1)).show().addClass('active').removeClass('hide');
+				}else{
+					$('#ta'+(i+1)).hide().removeClass('active').addClass('hide');
+				}
+			}
+		}
+	);
+	$('.check_all').click(
+		function(){
+			var k = $(this).attr('rel');
+			$("input.muti_role_id"+k).prop('checked', $(this).prop("checked"));
+		}
+	);
+});
+</script>

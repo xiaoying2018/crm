@@ -1,0 +1,416 @@
+<style>
+	.fn-clear input{
+		border-radius: 4px;
+		width: 115px;
+	}
+	.div-box {
+		border: 1px solid #ccc; 
+		width: 400px;
+		min-height: 52px;
+	}
+	.add-btn {
+		cursor: pointer;
+	    position: absolute;
+        right: 5px;
+    	top: 1px;
+	    font-size: 16px;
+	    color: #c1c1c1;
+	}
+
+	.p-choose-user {
+		background-color: #eee;
+	    border-radius: 3px;
+	    display: inline-block;
+	    margin-left: 10px;
+	    margin-top: 5px;
+	    width: 170px; 
+	    padding: 0 3px;
+	}
+	.p-remove-user {
+		float: right;
+		cursor: pointer;
+		color: #c1c1c1;
+	}
+</style>
+<form id="form-target" action="{:U('contract/set_target')}" method="post">
+	<input type="hidden" name="dep_per" value="{$_GET['rel']}">
+	<table>
+		<tr style="height: 50px;">
+			<switch name="Think.get.rel">
+				<case value="1">
+					<td width="120px"><span style="color: red;">*&nbsp;&nbsp;&nbsp;&nbsp;</span>部门</td>
+					<td>
+						<select class="form-control input-sm select2" style="min-width:165px;max-width: 165px;height: 0px;" name="department_id">
+							<volist name="departmentList" id="vo">
+								<option value="{$vo.department_id}">{$vo.name}</option>
+							</volist>
+						</select>
+					</td>
+				</case>
+				<case value="2">
+					<td width="120px"><span style="color: red;">*&nbsp;&nbsp;&nbsp;&nbsp;</span>员工</td>
+					<td style="position: relative;">
+						<div class="div-box"></div>
+						<div class="add-btn" title="点击添加员工"><i class="fa fa-plus"></i></div>
+					</td>
+				</case>
+				<case value="3">
+					<td width="120px"><span style="color: red;">*&nbsp;&nbsp;&nbsp;&nbsp;</span>部门</td>
+					<td>
+						{$target.name}
+						<input type="hidden" name="department_id" value="{$target['id']}">
+					</td>
+				</case>
+				<case value="4">
+					<td width="120px"><span style="color: red;">*&nbsp;&nbsp;&nbsp;&nbsp;</span>员工</td>
+					<td>
+						{$target.name}
+						<input type="hidden" name="role_ids[]" value="{$target['id']}">
+					</td>
+				</case>
+				<default />
+			</switch>
+		</tr>
+		<tr style="height: 50px;">
+			<td>考核指标</td>
+			<td>
+				<select class="form-control input-sm" name="target_type" >
+					<option value="1" <if condition="$_GET['target_type'] eq 1">selected</if> >销售额</option>
+					<option value="2" <if condition="$_GET['target_type'] eq 2">selected</if> >回款金额</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+	<div class="crm-salestarget-setting-container"> 
+		<div class="crm-salestarget-setting-total-container fn-clear">
+			<span class="crm-salestarget-setting-year">
+				<select name="year" class="select_years">
+					<volist name="year_list" id="vo">
+						<option value="{$vo}" <if condition="$vo eq ($_GET['year'] ? $_GET['year'] : date('Y'))">selected</if> >{$vo}</option>
+					</volist>
+				</select>
+			</span>
+			年度业务目标是 ¥&nbsp;
+			<input class="crm-salestarget-setting-input crm-salestarget-setting-total year" id="all_year_moneys" name="total" onkeyup="value=value.replace(/[^\d.]/g,'')" value="{$target['total']}"/>&nbsp;元
+
+			<if condition="$_GET['rel'] == 3 || $_GET['rel'] == 4">
+				<a class="btn btn-danger btn-right" href="{:U('contract/target_del','target_id='.$target['target_id'])}" onclick="return confirm('确认删除该业务目标！！！')">删除</a>
+			</if>
+
+			<a class="btn btn-primary btn-right" id="equal_division">平均分配到月</a>
+		</div>
+		<div class="crm-salestarget-setting-table fn-clear">
+			<div class="crm-salestarget-setting-table-container fn-left fn-clear">
+				<table>
+					<thead>
+						<tr>
+							<th>第一季度</th>
+							<th>
+								<input class="firstSeason firstseason" name="one_quarter" disabled="true" id="first_quarter" value="{$target['month1'] + $target['month2'] + $target['month3']}"/>
+							</th>
+						</tr>
+						</thead>
+							<tbody>
+								<tr>
+								<td>一月份</td>
+								<td>
+									<input onkeyup="value=value.replace(/[^\d.]/g,'');calculate(1);" name="month1" class="month_moneys" id="january" value="{$target['month1']}" />
+								</td>
+							</tr>
+							<tr>
+								<td>二月份</td>
+								<td>
+									<input name="month2" onkeyup="value=value.replace(/[^\d.]/g,'');calculate(1)" class="month_moneys" id="february" value="{$target['month2']}"/>
+								</td>
+							</tr>
+							<tr>
+								<td>三月份</td>
+								<td>
+									<input onkeyup="value=value.replace(/[^\d.]/g,'');calculate(1)" class="month_moneys" name="month3" id="march" value="{$target['month3']}"/>
+								</td>
+							</tr>
+						</tbody>
+				</table>
+			</div>
+			<div class="crm-salestarget-setting-table-container fn-left fn-clear">
+				<table>
+					<thead>
+						<tr>
+							<th>第二季度</th>
+							<th>
+								<input id="second_quarter" name="two_quarter" disabled="true" class="secondSeason secondseason" value="{$target['month4'] + $target['month5'] + $target['month6']}"/>
+							</th>
+						</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>四月份</td>
+								<td>
+									<input class="month_moneys2" onkeyup="value=value.replace(/[^\d.]/g,'');calculate(2)" name="month4" id="april" value="{$target['month4']}"/>
+								</td>
+							</tr>
+							<tr>
+								<td>五月份</td>
+								<td>
+									<input class="month_moneys2" onkeyup="value=value.replace(/[^\d.]/g,'');calculate(2)" name="month5" id="may" value="{$target['month5']}"/>
+								</td>
+							</tr>
+							<tr>
+								<td>六月份</td>
+								<td>
+									<input class="month_moneys2" onkeyup="value=value.replace(/[^\d.]/g,'');calculate(2)" name="month6" id="june" value="{$target['month6']}"/>
+								</td>
+							</tr>
+						</tbody>
+				</table>
+			</div>
+			<div class="crm-salestarget-setting-table-container fn-left">
+				<table>
+					<thead>
+						<tr>
+							<th>第三季度</th>
+							<th>
+								<input id="third_quarter" name="three_quarter" disabled="true" class="thirdSeason thirdseason" value="{$target['month7'] + $target['month8'] + $target['month9']}"/>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>七月份</td>
+							<td>
+								<input class="month_moneys3" onkeyup="value=value.replace(/[^\d.]/g,'');calculate(3)"name="month7" id="july" value="{$target['month7']}"/>
+							</td>
+						</tr>
+						<tr>
+							<td>八月份</td>
+							<td>
+								<input class="month_moneys3" onkeyup="value=value.replace(/[^\d.]/g,'');calculate(3)" name="month8" id="august" value="{$target['month8']}"/>
+							</td>
+						</tr>
+						<tr>
+							<td>九月份</td>
+							<td>
+								<input class="month_moneys3" onkeyup="value=value.replace(/[^\d.]/g,'');calculate(3)" name="month9" id="september" value="{$target['month9']}"/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="crm-salestarget-setting-table-container crm-salestarget-setting-table-container-last fn-left">
+				<table>
+					<thead>
+						<tr>
+							<th>第四季度</th>
+							<th>
+								<input id="forth_quarter" name="four_quarter" disabled="true" class="fourthSeason fourthseason" value="{$target['month10'] + $target['month11'] + $target['month12']}"/>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>十月份</td>
+							<td>
+								<input class="month_moneys4" onkeyup="value=value.replace(/[^\d.]/g,'');calculate(4)" name="month10" id="october" value="{$target['month10']}"/>
+							</td>
+						</tr>
+						<tr>
+							<td>十一月份</td>
+							<td>
+								<input class="month_moneys4" onkeyup="value=value.replace(/[^\d.]/g,'');calculate(4)" name="month11" id="november" value="{$target['month11']}"/>
+							</td>
+						</tr>
+						<tr>
+							<td>十二月份</td>
+							<td>
+								<input class="month_moneys4" onkeyup="value=value.replace(/[^\d.]/g,'');calculate(4)" name="month12" id="december" value="{$target['month12']}"/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div style="clear:both"></div>
+	</div>
+</form>
+
+<div style="display:none;" id="dialog-choose" title="选择部门/员工">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	$(".select2").select2({
+        placeholder: "--请选择--",
+        // allowClear: true,
+    });
+
+	$("#dialog-choose").dialog({
+		autoOpen: false,
+		//modal: true,
+		width: 600,
+		height: 542,
+		position: ["center",100],
+		buttons: { 
+			"确定": function () {
+				$(this).dialog("close");
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+    $('.add-btn').click(function(){
+    	$('#dialog-choose').dialog('open');
+		$('#dialog-choose').load('{:U("contract/choose")}');
+    });
+
+
+    //删除已选中的选项
+    $(document).on('click','.p-remove-user',function(){
+    	role_id = $(this).parent().attr('role_id');
+    	$('.p-choose-user[role_id='+role_id+']').remove();
+    });
+
+
+	/**
+	 ** 加法函数，用来得到精确的加法结果
+	 ** 说明：javascript的加法结果会有误差，在两个浮点数相加的时候会比较明显。这个函数返回较为精确的加法结果。
+	 ** 调用：accAdd(arg1,arg2)
+	 ** 返回值：arg1加上arg2的精确结果
+	 **/
+	function accAdd(arg1,arg2) {
+		var r1, r2, m, c;
+		try {
+			r1 = arg1.toString().split(".")[1].length;
+		}
+		catch (e) {
+			r1 = 0;
+		}
+		try {
+			r2 = arg2.toString().split(".")[1].length;
+		}
+		catch (e) {
+			r2 = 0;
+		}
+		c = Math.abs(r1 - r2);
+		m = Math.pow(10, Math.max(r1, r2));
+		if (c > 0) {
+			var cm = Math.pow(10, c);
+			if (r1 > r2) {
+				arg1 = Number(arg1.toString().replace(".", ""));
+				arg2 = Number(arg2.toString().replace(".", "")) * cm;
+			} else {
+				arg1 = Number(arg1.toString().replace(".", "")) * cm;
+				arg2 = Number(arg2.toString().replace(".", ""));
+			}
+		} else {
+			arg1 = Number(arg1.toString().replace(".", ""));
+			arg2 = Number(arg2.toString().replace(".", ""));
+		}
+		return (arg1 + arg2) / m;
+	}
+
+	//给Number类型增加一个add方法，调用起来更加方便。
+	Number.prototype.add = function (arg) {
+		return accAdd(arg, this);
+	};
+
+	$("#equal_division").click(function(){
+		var all_year_moneys = $("#all_year_moneys").val();
+		var quarter_moneys = (all_year_moneys/4).toFixed(2);
+		var month_moneys = (all_year_moneys/12).toFixed(2);
+		$("#first_quarter").val(quarter_moneys);
+		$("#second_quarter").val(quarter_moneys);
+		$("#third_quarter").val(quarter_moneys);
+		$("#forth_quarter").val(quarter_moneys);
+		$("#january").val(month_moneys);
+		$("#february").val(month_moneys);
+		$("#march").val(month_moneys);
+		$("#april").val(month_moneys);
+		$("#may").val(month_moneys);
+		$("#june").val(month_moneys);
+		$("#july").val(month_moneys);
+		$("#august").val(month_moneys);
+		$("#september").val(month_moneys);
+		$("#october").val(month_moneys);
+		$("#november").val(month_moneys);
+		$("#december").val(month_moneys);
+	});
+	function calculate(point){
+		if(point == 1){
+			var first_total_discount = 0;
+			//第一季度
+			$('.month_moneys').each(function(k, v){
+				//合计
+				if($(v).val() != '' &&  $(v).val() != '0' && $(v).val() != '0.00' && !isNaN($(v).val())){
+					first_total_discount = parseFloat(accAdd(parseFloat(first_total_discount),parseFloat($(v).val())));
+				}
+			});
+			$("#first_quarter").val(first_total_discount);
+		}
+		if(point == 2){
+		//第二季度
+			var second_total_discount = 0;
+			$('.month_moneys2').each(function(k, v){
+				//合计
+				if($(v).val() != '' &&  $(v).val() != '0' && $(v).val() != '0.00' && !isNaN($(v).val())){
+					second_total_discount = parseFloat(accAdd(parseFloat(second_total_discount),parseFloat($(v).val())));
+				}
+			});
+			$("#second_quarter").val(second_total_discount);
+		}
+		if(point == 3){
+			//第三季度
+			var third_total_discount = 0;
+			$('.month_moneys3').each(function(k, v){
+				//合计
+				if($(v).val() != '' &&  $(v).val() != '0' && $(v).val() != '0.00' && !isNaN($(v).val())){
+					third_total_discount = parseFloat(accAdd(parseFloat(third_total_discount),parseFloat($(v).val())));
+				}
+			});
+			$("#third_quarter").val(third_total_discount);
+		}
+		if(point == 4){
+			//第四季度
+			var fouth_total_discount = 0;
+			$('.month_moneys4').each(function(k, v){
+				//合计
+				if($(v).val() != '' &&  $(v).val() != '0' && $(v).val() != '0.00' && !isNaN($(v).val())){
+					fouth_total_discount = parseFloat(accAdd(parseFloat(fouth_total_discount),parseFloat($(v).val())));
+				}
+			});
+			$("#forth_quarter").val(fouth_total_discount);
+		}
+		var a = parseFloat($("#first_quarter").val());
+		if(a != '' &&  a != '0' && a != '0.00' && !isNaN(a)){
+			var first_quarter_val = parseFloat($("#first_quarter").val());
+		}else{
+			var first_quarter_val = 0;
+		}
+		var b = parseFloat($("#second_quarter").val());
+		if(b != '' &&  b != '0' && b != '0.00' && !isNaN(b)){
+			var second_quarter_val = parseFloat($("#second_quarter").val());
+		}else{
+			var second_quarter_val = 0;
+		}
+		var c = parseFloat($("#third_quarter").val());
+		if(c != '' &&  c != '0' && c != '0.00' && !isNaN(c)){
+			var third_quarter_val = parseFloat($("#third_quarter").val());
+		}else{
+			var third_quarter_val = 0;
+		}
+		var d = parseFloat($("#forth_quarter").val());
+		if(d != '' &&  d != '0' && d != '0.00' && !isNaN(d)){
+			var forth_quarter_val = parseFloat($("#forth_quarter").val());
+		}else{
+			var forth_quarter_val = 0;
+		}
+		var all_moneys = accAdd(first_quarter_val,accAdd(second_quarter_val,accAdd(third_quarter_val,forth_quarter_val)));
+		$("#all_year_moneys").val(all_moneys);
+	}
+</script>

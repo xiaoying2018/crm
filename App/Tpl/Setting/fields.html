@@ -1,0 +1,292 @@
+<include file="Public:header" />
+<style>
+	body{overflow-y: hidden;}
+</style>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jscolor/jscolor.js"></script>
+<script>
+$(function(){
+	var scroll_width = 5;
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-10);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-10);
+		$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+	})
+	$("#tab_Test3").FrozenTable(1,0,0);
+	$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width).width($("#oTableLH_tab_Test3").width());
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+})
+</script>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<include file="Public:alert" />
+		<div class="col-md-12">
+			<include file="Setting:setting_left" />
+			<div class="col-lg-10">
+				<div class="table-content" id="table_container" style="padding-bottom:10px">
+					<div class="ibox-content" style="border-bottom: none;">
+						<div class="row " style="margin-left: 5px;">
+							<div class="nav pull-left" >
+								<span style="font-weight:900;line-height:40px;">自定义字段</span>
+							</div>
+							<div class="nav pull-right" >
+								<button class="btn btn-primary" type="button" id="add">&nbsp; 添加自定义字段</button>
+							</div>
+						</div>
+					</div>
+					<div class="ibox-content" style="background-color:#FFFAF0;">
+						<span >拖拽可以设置字段显示位置</span>
+					</div>
+					<form action="{:U('setting/fielddelete')}" method="post" onSubmit="return checkForm()">
+						<div class="col-sm-12 ibox-content" style="border-top: none;padding:0px 2px;">
+							<div id="table_div" class="full-height-scroll" style="left:0px;top:0px;">
+								<table class="table table-hover table-striped table_thead_fixed sort-list" id="tab_Test3">
+									<notempty name="fields">
+										<thead>
+											<tr colspan="6" class="tabTh" style="background-color:#f3f3f3;line-height:42px;height:42px;">
+												<td width="10%">&nbsp;</td>
+												<td width="20%">{:L('LABEL_NAME')}</td>
+												<td width="20%">{:L('FIELDS_TYPE')}</td>
+												<td width="10%">是否必填</td>
+												<td width="20%">列表显示</td>
+												<td width="20%">{:L('OPERATING')}</td>
+											</tr>
+										</thead>
+										<tbody>
+										<volist name="fields" id="vo">
+											<tr class="controls_tr">
+												<td><input type="hidden" class="check_list" name="field_id[]" value="{$vo.field_id}"/></td>
+												<td>{$vo.name}</td>
+												<td>
+													<if condition="$vo['form_type'] == 'box'">{:L('SELECTED')}
+													<elseif condition="$vo['form_type'] == 'editor'" />{:L('THE_EDITOR')}
+													<elseif condition="$vo['form_type'] == 'text'" />{:L('SINGLE_LINE_TEXT')}
+													<elseif condition="$vo['form_type'] == 'textarea'" />{:L('MULTILINE_TEXT')}
+													<elseif condition="$vo['form_type'] == 'datetime'" />{:L('DATE')}
+													<elseif condition="$vo['form_type'] == 'number'" />{:L('NUMBER')}
+													<elseif condition="$vo['form_type'] == 'floatnumber'" />{:L('NUMBER')}
+													<elseif condition="$vo['form_type'] == 'user'" />{:L('USERS')}
+													<elseif condition="$vo['form_type'] == 'address'" />{:L('ADDRESS')}
+													<elseif condition="$vo['form_type'] == 'phone'" />{:L('TELEPHONE')}
+													<elseif condition="$vo['form_type'] == 'mobile'" />{:L('PHONE')}
+													<elseif condition="$vo['form_type'] == 'email'" />{:L('EMAIL')}
+													<else /><span style="color:red;">{:L('SPECIAL_FIELD_ACCESS_IS_LIMITED')}</span>
+													</if>
+												</td>
+												<td>{$vo['is_null']}</td>
+												<td>
+													<if condition="$vo['form_type'] != 'user'">
+														<div class="radio radio-info radio-inline">
+															<input type="radio" class="indexShow" name="in_index_{$vo['field_id']}" id="{$vo.field}_1" rel="{$vo.field_id}" <if condition = "$vo['in_index'] == 1">checked</if> /><label for="{$vo.field}_1">是&nbsp;&nbsp;</label>
+														</div>
+														<div class="radio radio-info radio-inline" style="margin-left: 0px;padding-left: 10px;">
+															<input type="radio" class="indexShow" name="in_index_{$vo['field_id']}" id="{$vo.field}_0" rel="{$vo.field_id}" <if condition = "$vo['in_index'] == 0">checked</if> />&nbsp;&nbsp;<label for="{$vo.field}_0">否</label>
+														</div>
+													</if>												
+												</td>
+												<td>
+													<if condition="$vo['operating'] == 0 or $vo['operating'] == 1 ">
+														<a class="edit" href="javascript:void(0)" rel="{$vo.field_id}">
+															<i class="fa fa-pencil" style="color:#707070;"></i>
+														</a>
+													<else />
+														<i class="fa fa-pencil" style="color:#ccc;"></i>
+													</if> &nbsp;
+													<if condition="$vo['operating'] == 0 or $vo['operating'] == 3 ">
+														<a class="delete" href="javascript:void(0)" rel="{$vo.field_id}">
+															<i class="fa fa-times" style="color:#707070;"></i>
+														</a>
+													<else />
+														<i class="fa fa-times" style="color:#ccc;"></i>
+													</if> &nbsp;
+													<if condition="$vo['form_type'] == 'b_box'">
+														<a href="{:U('setting/businesstype')}">{:L('SPECIAL_SETTING')}</a>
+													</if>
+													<if condition="$vo['model'] eq 'contacts' && ($vo['field'] eq 'name' || $vo['field'] eq 'telephone')">
+														<if condition="$vo['is_show'] eq 0">
+															<a href="{:U('setting/customeshow','id=1&field_id='.$vo['field_id'])}" title="客户列表显示" ><span class="fa fa-toggle-off" style="color:#ccc;"></span></a>
+														<else/>
+															<a href="{:U('setting/customeshow','id=2&field_id='.$vo['field_id'])}" title="客户列表不显示" ><span class="fa fa-toggle-on" style="color:#ccc;"></span></a>
+														</if>
+													</if>
+												</td>
+											</tr>
+										</volist>
+										</tbody>
+									<else />
+										<tr>
+											<td>{:L('EMPTY_TPL_DATA')}</td>
+										</tr>
+									</notempty>
+								</table>
+								</div>
+							</div>
+						</div> 
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="" style="display:none;" id="dialog_field_add" title="{:L('ADD_FIELDS')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div class="" style="display:none;" id="dialog_field_edit" title="{:L('EDIT_FIELDS')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$("#dialog_field_add").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 900,
+	maxHeight: 450,
+	position: ["center",100],
+	buttons: {
+		"{:L('OK')}": function () {
+			$('#form1').submit();
+			$(this).dialog("close");
+		},
+		"{:L('CANCEL')}": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$("#dialog_field_edit").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 450,
+	position: ["center",100],
+	buttons: {
+		"{:L('OK')}": function () {
+			$('#form1').submit();
+			$(this).dialog("close");
+		},
+		"{:L('CANCEL')}": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+//列表显示
+//if ( $.support) {
+	$('.indexShow').change(function(){
+		var fleid_id = $(this).attr('rel');
+		$.ajax({
+			type:'get',
+			url:'index.php?m=setting&a=indexShow&field_id='+fleid_id,
+			async: true,
+			success: function(data) {
+				if(data.status == 1){
+					//swal({
+					//	title: "",
+					//	text: data.info,
+					//})
+				}else{
+					swal({
+						title: "",
+						text: data.info,
+					})
+				}
+			}
+		});
+	})
+//}
+
+$("table tbody").sortable({
+	connectWith: "table tbody",
+	stop:function() {
+		position = [];
+		$.each($(".check_list"), function(i, item){position.push(item.value)});
+		$.get('{:U("setting/fieldsort")}',{postion:position.join(',')}, function(data){
+			if (data.status == 1) {
+				$(".alert.alert-success").remove();
+				
+				$(".page-header").after('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">×</button>' + data.info + '</div>');
+			} else {
+				$(".alert.alert-error").remove();
+				swal({
+					title: "顺序保存失败!",
+					type: "error"
+				});
+				$(".page-header").after('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">×</button>' + data.info + '</div>');
+			}
+		}, 'json');
+		
+	}
+});
+function checkForm(){
+	if(confirm('{:L('DELETE_THE_SELECTED_FIELDS_OPERATION_CANNOT_BE_RESTORED')}')){
+		return true;
+	}else{
+		return false;
+	}
+}
+$(function(){
+	// $("#check_all").click(function(){
+	// 	$("input[class='list']").prop('checked', $(this).prop("checked"));
+	// });
+	$("#add").click(function(){
+		$("#dialog_field_add").dialog('open');
+		$("#dialog_field_add").load('{:U("setting/fieldadd","model=$model")}');
+	});
+	$(".edit").click(function(){
+		var id = $(this).attr('rel');
+		$("#dialog_field_edit").dialog('open');
+		$("#dialog_field_edit").load('{:U("setting/fieldedit","field_id")}'+id);
+	});
+
+	$('.delete').click(function(){
+		var id = $(this).attr('rel');
+		swal({
+			title: "您确定要删除该字段？",
+   			text: "删除后将无法恢复，请谨慎操作！",
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "是的，我要删除！",
+	        cancelButtonText:'让我再考虑一下…',
+	        closeOnConfirm:false,
+	        closeOnCancel:false
+		},
+		function(isConfirm){
+	        if (isConfirm) {
+	        	$.ajax({
+		            type:'GET',
+		            url: "{:U('setting/fielddelete','field_id=')}"+id,
+		            async: false,
+		            success: function (data) {
+						if (data.status == 1) {
+							swal("删除成功！", "您已经永久删除了信息！", "success");
+							location.reload();
+						}else{
+							swal({
+								title: "操作失败！",
+								text:data.info,
+								type: "error"
+							})
+							return false;
+						}
+		            },
+		            dataType: 'json'
+		        });
+	        } else {
+	            swal("已取消","您取消了删除操作！","error");
+	        }
+	    });
+	});
+});
+</script>
+<include file="Public:footer" />

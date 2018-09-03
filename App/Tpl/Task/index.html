@@ -1,0 +1,684 @@
+<include file="Public:header"/>
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/css/taskboard.css"/>
+<style>
+	body{
+		overflow-y: hidden;
+	}
+	.dropdown, .dropup{
+		position: relative;
+	}
+	.dropdown-menu.bullet{
+		margin-top: 12px;
+	}
+	.dropdown-menu{
+		padding: 1px 0;
+	    margin-top: 3px;
+	    border-radius: 0;
+	    -webkit-box-shadow: 0 3px 12px rgba(0,0,0,.05);
+	    box-shadow: 0 3px 12px rgba(0,0,0,.05);
+	    -webkit-transition: .25s;
+	    -o-transition: .25s;
+	    transition: .25s;
+	    position: absolute;
+	    top: 100%;
+	    left: 0;
+	    z-index: 1200;
+	    display: none;
+	    float: left;
+	    min-width: 160px;
+	    padding: 5px 0;
+	    margin: 2px 0 0;
+	    font-size: 14px;
+	    text-align: left;
+	    list-style: none;
+	    background-color: #fff;
+	    -webkit-background-clip: padding-box;
+	    background-clip: padding-box;
+	    border: 1px solid #ccc;
+	    border: 1px solid #e4eaec;
+	    border-radius: 3px;
+	    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+	}
+	.dropdown-menu>li{
+		padding: 0 3px;
+    	margin: 2px 0;
+	}
+	.taskboard-stage-header .dropdown-menu>li>a{
+		padding: 6px 10px;
+	    -webkit-transition: background-color .25s;
+	    -o-transition: background-color .25s;
+	    transition: background-color .25s;
+	    display: block;
+	    padding: 3px 20px;
+	    clear: both;
+	    font-weight: 400;
+	    line-height: 1.6;
+	    color: #76838f;
+	    white-space: nowrap;
+	}
+	.dropdown-menu li .icon:first-child, .dropdown-menu li>a .icon:first-child{
+		width: 1em; 
+	    margin-right: .5em;
+	    text-align: center;
+	}
+
+	#right-sidebar-task{
+		width: 50% !important;
+		right: -60%;
+		background-color: #fff;
+	    overflow: hidden;
+	    position: fixed;
+	    top: 60px;
+	    z-index: 1009;
+	    bottom: 0;
+	    box-shadow: 0px 2px 1px #888888;
+	}
+	.agile-list li{
+		margin-bottom: -1px;
+		border:none;
+	}
+	.taskboard-stage{
+		height:85% !important;
+	}
+	.taskboard-stages{
+		overflow-y:hidden !important;
+	}
+
+	.color-selector>li{
+		position: relative;
+	    display: inline-block;
+	    width: 24px;
+	    height: 24px;
+	    margin: 0 5px 0 0;
+	    border-radius: 100%;
+	}
+	.bg-blue-600 label:before{
+		background-color: #62a8ea!important;
+	}
+	.bg-green-600 label:before{
+		background-color: #46be8a!important;
+	}
+	.bg-cyan-600 label:before{
+		background-color: #57c7d4!important;
+	}
+	.bg-orange-600 label:before{
+		background-color: #f2a654!important;
+	}
+	.bg-red-600 label:before{
+		background-color: #f96868!important;
+	}
+	.bg-blue-grey-600 label:before{
+		background-color: #526069!important;
+	}
+	.bg-purple-600 label:before{
+		background-color: #926dde!important;
+	}
+
+	.bg-blue-600 label:after{
+		background-color: #62a8ea!important;
+	}
+	.bg-green-600 label:after{
+		background-color: #46be8a!important;
+	}
+	.bg-cyan-600 label:after{
+		background-color: #57c7d4!important;
+	}
+	.bg-orange-600 label:after{
+		background-color: #f2a654!important;
+	}
+	.bg-red-600 label:after{
+		background-color: #f96868!important;
+	}
+	.bg-blue-grey-600 label:after{
+		background-color: #526069!important;
+	}
+	.bg-purple-600 label:after{
+		background-color: #926dde!important;
+	}
+	.radio label:before{
+		width:24px;
+		height:24px;
+	}
+	.radio label:after{
+		left:6px;
+		top: 4px;
+		font-family: "FontAwesome";
+    	content: "\f00c";
+    	color: #fff;
+	}
+	.img-circle{
+		margin-right:0px;
+	}
+	.list-group-item:hover{
+		background-color: #fafafb !important;
+	}
+	.taskboard-list .list-group-item .task-members{
+		float:left;
+	}
+	.action-wrap{
+		float:left;
+		width:100%;
+		height:10%;
+		min-height: 40px;
+		background-color: #fff;
+	}
+</style>
+<script>
+$(function(){
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-10);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-10);
+	});
+});
+</script>
+<div class="wrapper wrapper-content">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-md-12">
+        	<div class="ibox float-e-margins">
+	       		<div class="title-bar">
+					<div class="row" id="title-show">
+						<ul class="nav pull-left" style="margin:2px 0 0 15px;">
+							<div class="btn-group ">
+                                <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" aria-expanded="false">操作 <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <if condition = "checkPerByAction('task','index')">
+										<li><a id="add_task" class="link" href="javascript:void(0);">&nbsp;新建任务</a></li>
+									</if>
+									<if condition = "checkPerByAction('task','index')">
+										<li><a href="javascript:void(0);" id="add_type">&nbsp;新建列表</a></li>
+									</if>
+									<li><a href="{:U('task/archive')}">&nbsp;查看归档任务</a></li>
+                                </ul>
+                            </div>
+						</ul>
+						<form class="form-inline" id="" action="" method="get">
+							<ul class="breadcrum pull-right" style="margin-bottom: 0px">
+								<li>
+									搜索任务：
+									<div class="input-group">
+										<input type="hidden" name="m" value="task"/>
+										<input type="hidden" name="a" value="index"/>
+										<input type="hidden" name="field" value="subject"/>
+										<input type="hidden" name="condition" value="contains"/>
+										<input type="hidden" name="by" value="{$_GET['by']}"/>
+										<input id="short_search" type="text" style="width:160px;" placeholder="请输入任务主题" onkeydown='if(event.keyCode==13) {$("#short_search_btn").trigger("click");return false;}' class="form-control input-sm" name="search" <if condition = "$_GET['field'] eq 'subject'">value="{$_GET['search']}"</if>/>
+										<span class="input-group-btn">
+											<button class="btn btn-default btn-search" id="short_search_btn" type="submit"><i class="fa fa-search"></i></button>
+										</span>
+									</div>&nbsp;&nbsp;
+									<div class="input-group" style="margin-left: 10px;">
+										<select class="form-control" onchange="window.open(this.options[this.selectedIndex].value,target='_self')" >
+											<option value="{:U('task/index','field='.$_GET['field'].'&condition=contains&search='.$_GET['search'])}" <if condition = "$_GET['by'] eq ''">selected="selected"</if>>全部</option>
+											<option value="{:U('task/index','by=own'.'&field='.$_GET['field'].'&condition=contains&search='.$_GET['search'])}" <if condition = "$_GET['by'] eq 'own'">selected="selected"</if>>我负责的</option>
+											<option value="{:U('task/index','by=about'.'&field='.$_GET['field'].'&condition=contains&search='.$_GET['search'])}" <if condition = "$_GET['by'] eq 'about'">selected="selected"</if>>我关注的</option>
+										</select>
+									</div>
+								</li>
+							</ul>
+						</form>
+					</div>
+				</div>
+				<div class="row" style="margin: 0">
+					<div class="ibox-content" style="padding:0px;background:rgb(230, 233, 240);border:none;">
+						<div class="page-content" id="table_div" style="padding:0px;">
+							<ul class="taskboard-stages taskboard-list sortable-list connectList agile-list task_type" id="task_type">
+								<volist name="type_list" id="vo">
+									<li class="list-group-item taskboard-stage" id="type_li_{$vo['id']}" style="padding:0px;margin-right: 15px;border:1px solid #e4eaec;">
+										<input type="hidden" class="type_list" name="type_id[]" value="{$vo.id}"/>
+						        		<header class="taskboard-stage-header ui-sortable-handle type_header" rel="{$vo['id']}" id="type_header_{$vo['id']}" style="">
+						        			<div class="taskboard-stage-actions pull-right">
+							        			<div class="dropdown" id="dropdown_{$vo['id']}">
+							        				<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+							        					<i class="fa fa-angle-down" aria-hidden="true" style="font-size: 20px;"></i>
+							        				</a>
+							        				<ul class="dropdown-menu bullet" role="menu">
+							        					<li role="presentation" class="taskboard-li taskboard-stage-rename">
+							        						<a href="javascript:;" role="menuitem" class="rename" rel="{$vo['id']}"><i class="icon wb-pencil" aria-hidden="true"></i>重命名</a>
+							        					</li>
+							        					<li role="presentation" class="taskboard-li taskboard-stage-delete">
+							        						<a href="javascript:;" class="del_type" rel="{$vo['id']}" role="menuitem"><i class="icon wb-trash" aria-hidden="true"></i>归档</a>
+							        					</li>
+							        				</ul>
+							        			</div>
+						        			</div>
+						        			<h4 class="taskboard-stage-title" id="type_name_{$vo['id']}" style="font-weight: 100;" title="{$vo['name']}">{$vo['name']|msubstr=###,0,10}</h4>
+						        		</header>
+						        		<header class="taskboard-stage-header ui-sortable-handle" id="edit_header_{$vo['id']}" style="display:none;float:left;background-color: #eeece8 !important;border-bottom: none;width:100%;">
+						        			<form id="form_header_{$vo['id']}">
+						        				<input type="hidden" name="type_id" value="{$vo['id']}" />
+						        				<div class="taskboard-stage-rename-w">
+					        						<div class="form-group">
+					        							<input class="form-control taskboard-stage-rename-input" type="text" value="{$vo['name']}" name="name">
+					        						</div>
+					        						<div class="form-group">
+					        							<div class="col-sm-6">
+					        								<button class="btn btn-primary btn-block type_save" rel="{$vo['id']}" type="button">保存</button>
+					        							</div>
+					        							<div class="col-sm-6">
+					        								<button class="btn btn-block btn-white type_cancel" rel="{$vo['id']}" type="button">取消</button>
+					        							</div>
+					        						</div>
+					        					</div>
+						        			</form>
+				        				</header>
+						        		<div class="taskboard-stage-content" style="float: left;width:100%;height: 80%;">
+						        			<div class="full-height-scroll">
+							        			<ul class="taskboard-stage sortable-task-list sortable-list taskconnectList agile-list task_content " rel="{$vo['id']}" id="ul_{$vo['id']}" style="padding-top: 0px;">
+								        			<if condition = "$vo['task_list']">
+							        					<volist name="vo['task_list']" id="vo1">
+								        					<li class="list-group-item {$vo1['priority_class']}" id="task_li_{$vo1['task_id']}" rel="{$vo1['task_id']}" style="padding:5px 10px 15px 10px;">
+								        						<input type="hidden" class="task_list" name="task_id[]" value="{$vo1['task_id']}"/>
+								        						<a class="right-sidebar-toggle-task" href="javascript:void(0)" rel="{$vo1['task_id']}" title="点击查看详情" style="color:#000;">
+											        				<div class="checkbox-custom checkbox checkbox-primary">
+											        					<input type="checkbox" name="checkbox" id="checkbox_{$vo1['task_id']}" rel="{$vo1['task_id']}" <if condition = "$vo1['status'] eq '完成'">checked="true"</if>>
+											        					<label class="task-title" id="task-title-{$vo1['task_id']}" <if condition = "$vo1['status'] eq '完成'">style="text-decoration:line-through;color:#999;";</if>>{$vo1['subject']|msubstr=###,0,15}</label>
+											        				</div>
+											        				<div class="agile-detail" style="color:#a3afb7;font-size:13px;">
+											        					<if condition ="$vo1['sub_count']">
+											        						<i class="fa fa-list"></i><span id="done_count" style="padding:0px 5px;">{$vo1['done_count']}/{$vo1['sub_count']}</span>
+											        					</if>
+											        					<if condition ="$vo1['file_count']">
+											        						<i class="fa fa-paperclip"></i><span style="padding:0px 5px;">{$vo1['file_count']}</span>
+											        					</if>
+											        					<if condition ="$vo1['talk_count']">
+											        						<i class="fa fa-commenting"></i><span style="padding:0px 5px;">{$vo1['talk_count']}</span>
+											        					</if>
+											        				</div>
+										        				</a>
+										        				<ul class="task-members" id="task-members-{$vo1['task_id']}">
+										        					<volist name="vo1['about_roles']" id="vo2">
+										        						<li style="padding:0px;float:left;">
+											        						<a class="role_info" id="about_role_index_{$vo1['task_id']}_{$vo2['role_id']}" rel="{$vo2['role_id']}" href="javascript:void(0)" title="{$vo2['user_name']}">
+																				<img class="img-circle" style="width:32px;height:32px;" <if condition = "$vo2['thumb_path']">src="{$vo2['thumb_path']}"<else />src="__PUBLIC__/img/avatar_default.png"</if> />
+																			</a>
+																		</li>
+										        					</volist>
+										        				</ul>
+									        				</li>
+								        				</volist>
+							        				</if>
+							        			</ul>
+							        			<div class="action-wrap"></div>
+						        			</div>
+						        		</div>
+						        		<div class="action-wrap" >
+					        				<a class="add-item-toggle" id="toggle_{$vo['id']}" rel="{$vo['id']}" href="javascript:void(0);">
+					        					<i class="fa fa-plus"></i>&nbsp;&nbsp;添加任务
+					        				</a>
+					        				<div class="add-item-wrap" id="wrap_{$vo['id']}" style="display: none;">
+					        					<form class="add-item" role="form" id="form_{$vo['id']}" method="post" style="margin-top:15px;">
+					        						<input type="hidden" name="type_id" value="{$vo['id']}" />
+						        					<div class="form-group">
+						        						<input class="form-control" type="text" id="task_subject_{$vo['id']}" placeholder="任务名称" name="subject" style="width:80%;margin-left:10%;" />
+						        					</div>
+						        					<div class="form-group text-right">
+						        						<a class="btn btn-sm btn-white add-item-cancel" rel="{$vo['id']}" href="javascript:void(0);">取消</a>
+						        						<button type="button" class="btn btn-primary add-item-add add_task" rel="{$vo['id']}" style="margin-right:10%;">添加</button>
+						        					</div>
+					        					</form>
+					        				</div>
+					        			</div>
+						        	</li>
+								</volist>
+							</ul>
+					    </div>
+					</div>
+				</div>
+			</div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal fade" id="addNewType" aria-hidden="true" aria-labelledby="addNewType" role="dialog" tabindex="-1" style="overflow:auto; border:1px solid #000000;">
+    <div class="modal-dialog">
+        <div class="modal-content" id="type_modal">
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal fade" id="addNewTask" aria-hidden="true" aria-labelledby="addNewTask" role="dialog" style="overflow:auto; border:1px solid #000000;">
+    <div class="modal-dialog" style="width:750px;">
+    	<div class="modal-content" id="task_modal">
+            
+        </div>
+    </div>
+</div>
+
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+
+<div style="display:none;" id="dialog-import" title="{:L('IMPORT_DATA')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" id="dialog-role-info" title="{:L('DIALOG_USER_INFO')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+//添加分类
+$(document).on('click','#add_type',function(){
+	var url = "{:U('task/addType')}";
+	$('#addNewType').modal('show');
+	$('#type_modal').load(url);
+});
+//添加任务
+$(document).on('click','#add_task',function(){
+	var url = "{:U('task/add')}";
+	$('#addNewTask').modal('show');
+    $('#task_modal').load(url);
+});
+
+$(document).ready(function(){
+    $(".task_type").sortable({
+        connectWith: ".connectList"
+    }).disableSelection();
+    $(".task_content").sortable({
+        connectWith: ".taskconnectList"
+    }).disableSelection();
+});
+
+$(document).on('click','.add-item-toggle',function(){
+	var rel = $(this).attr('rel');
+	$(this).hide();
+	$('#wrap_'+rel).show();
+});
+$(document).on('click','.add-item-cancel',function(){
+	var rel = $(this).attr('rel');
+	$('#wrap_'+rel).hide();
+	$('#toggle_'+rel).show();
+});
+
+//任务列表重命名
+$(document).on('click','.rename',function(){
+	var type_id = $(this).attr('rel');
+	$('#type_header_'+type_id).hide();
+	$('#edit_header_'+type_id).show();
+});
+
+$(document).on('click','.type_save',function(){
+	var type_id = $(this).attr('rel');
+	$.ajax({
+        type: "POST",
+        url: "{:U('task/editTypeAjax')}",
+        data:$('#form_header_'+type_id).serialize(),
+        async: true,
+        success: function(data) {
+            if(data.status == 1){
+                $('#type_header_'+type_id).show();
+				$('#edit_header_'+type_id).hide();
+				$('#type_name_'+type_id).html(data.data.name);
+            }else{
+				swal({
+                    title: "操作失败!",
+                    text: data.info,
+                    type: "error"
+                });
+            }
+        }
+    });
+});
+
+$(document).on('click','.type_cancel',function(){
+	var type_id = $(this).attr('rel');
+	$('#type_header_'+type_id).show();
+	$('#edit_header_'+type_id).hide();
+});
+
+//任务列表归档
+$(document).on('click','.del_type',function(){
+	var type_id = $(this).attr('rel');
+	swal({
+		title: "您确定要归档该任务列表吗？",
+		text: "归档后可在任务归档列表还原，请谨慎操作！",
+		type: "warning",   
+		showCancelButton: true,   
+		confirmButtonColor: "#DD6B55",   
+		confirmButtonText: "是的，我要归档！",
+        cancelButtonText:'让我再考虑一下…',
+        closeOnConfirm:false,
+        closeOnCancel:false
+	},
+	function(isConfirm){
+	    if (isConfirm) {
+			$.ajax({
+		        type: "POST",
+		        url: "{:U('task/delTypeAjax')}",
+		        data:{type_id:type_id},
+		        async: true,
+		        success: function(data) {
+		            if(data.status == 1){
+		                swal("归档成功！", "您已经归档了该任务！", "success");
+		                $('#type_li_'+type_id).remove();
+		            }else{
+						swal({
+		                    title: "操作失败!",
+		                    text: data.info,
+		                    type: "error"
+		                });
+		            }
+		        }
+		    });
+	    } else {
+            swal("已取消","您取消了归档操作！","error");
+        }
+    });
+});
+
+//拖动排序
+$(".sortable-task-list").sortable({
+	connectWith: "table tbody",
+	opacity: 0.8,
+	revert: true,
+	update:function() {
+		type_id = $(this).attr('rel');
+		position = [];
+		$.each($("#ul_"+type_id).find('.task_list'), function(i, item){position.push(item.value)});
+		$.get('{:U("task/tasksort")}',{postion:position.join(','),type_id:type_id}, function(data){
+			if (data.status == 1) {
+
+			} else {
+				// swal({
+				// 	title: "顺序保存失败!",
+				// 	type: "error"
+				// });
+			}
+		}, 'json');
+	}
+});
+
+//任务列表拖动排序
+$(".taskboard-list").sortable({
+	connectWith: "table tbody",
+	opacity: 0.8,
+	revert: true,
+	stop:function() {
+		position = [];
+		$.each($(".type_list"), function(i, item){position.push(item.value)});
+		$.get('{:U("task/typesort")}',{postion:position.join(',')}, function(data){
+			if (data.status == 1) {
+
+			} else {
+				// swal({
+				// 	title: "顺序保存失败!",
+				// 	type: "error"
+				// });
+			}
+		}, 'json');
+	}
+});
+
+$("[name='checkbox']").click(function(){
+	var task_id = $(this).attr('rel');
+	if($(this).prop('checked')){
+		var status = '完成';
+		var check = 1;
+	}else{
+		var status = '进行中';
+		var check = 2;
+	}
+	$.ajax({
+        type: "POST",
+        url: "{:U('task/edit')}",
+        data:{task_id:task_id,status:status},
+        async: true,
+        success: function(data) {
+            if(data.status == 1){
+            	if(check == 1){
+ 					$('#task-title-'+task_id).css({'text-decoration':'line-through','color':'#999'});
+            	}else{
+					$('#task-title-'+task_id).css({'text-decoration':'none','color':'#000'});
+            	}
+            }else{
+                swal({
+                    title: "操作失败!",
+                    text: data.info,
+                    type: "error"
+                });
+            }
+        }
+    });
+});
+
+/*任务详情 加载的圈圈效果*/
+var detail_html = '<div class="spiner-example">\
+					<div class="sk-spinner sk-spinner-fading-circle">\
+						<div class="sk-circle1 sk-circle"></div>\
+						<div class="sk-circle2 sk-circle"></div>\
+						<div class="sk-circle3 sk-circle"></div>\
+						<div class="sk-circle4 sk-circle"></div>\
+						<div class="sk-circle5 sk-circle"></div>\
+						<div class="sk-circle6 sk-circle"></div>\
+						<div class="sk-circle7 sk-circle"></div>\
+						<div class="sk-circle8 sk-circle"></div>\
+						<div class="sk-circle9 sk-circle"></div>\
+						<div class="sk-circle10 sk-circle"></div>\
+						<div class="sk-circle11 sk-circle"></div>\
+						<div class="sk-circle12 sk-circle"></div>\
+					</div>\
+				</div>';
+
+//任务快速创建
+$(document).on('click','.add_task',function(){
+	var task_type = $(this).attr('rel');
+	if(task_type){
+		$.ajax({
+			type: "POST",
+			url: "{:U('task/add')}",
+			data:$("#form_"+task_type).serialize(),
+			async: true,
+			success: function(data) {
+				if(data.status == 1){
+					//追加
+					var temp = '';
+					temp = '<li class="list-group-item success-element" id="task_li_'+data.data.task_id+'" rel="'+data.data.task_id+'" style="padding:5px 10px 15px 10px;">\
+	        					<a class="right-sidebar-toggle-task" href="javascript:void(0)" rel="'+data.data.task_id+'" style="color:#000;">\
+			        				<div class="checkbox-custom checkbox checkbox-primary">\
+			        					<input type="checkbox" name="checkbox" id="checkbox_'+data.data.task_id+'" rel="'+data.data.task_id+'">\
+			        					<label class="task-title" id="task-title-'+data.data.task_id+'">'+data.data.subject+'</label>\
+			        				</div>\
+			        				<div class="task-badges">\
+			        				</div>\
+			        				<ul class="task-members" id="task-members-'+data.data.task_id+'">\
+			        					\
+			        				</ul>\
+		        				</a>\
+	        				</li>';
+					$('#ul_'+task_type).append(temp);
+					$('#task_subject_'+task_type).val('');
+				}else{
+					swal({
+						title: "操作失败!",
+						text: data.info,
+						type: "error"
+					});
+				}
+			}
+		}); 
+	}else{
+		swal({
+			title: "操作失败!",
+			text: "参数错误！",
+			type: "error"
+		});
+	}
+});
+
+$("#dialog-role-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 700,
+	maxHeight: 600,
+	position: ["center",100]
+});
+
+$(function(){
+	$(".role_info").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+});
+
+//鼠标点击空白处，隐藏右侧滑出
+document.onmousedown=function(event){
+	if($(".litebox-overlay").length > 0) return;
+	if($("#dialog_open").val() == 1) return;
+	if(event.target.className == 'right-sidebar-toggle-task') return;
+
+    var div = document.getElementById("right-sidebar-task");
+    var x=event.clientX;
+    var y=event.clientY;
+    var divx1 = div.offsetLeft;
+    var divy1 = div.offsetTop;
+    var divx2 = div.offsetLeft + div.offsetWidth;
+    var divy2 = div.offsetTop + div.offsetHeight;
+    if( x < divx1 || x > divx2 || y < divy1 || y > divy2){
+        if($("#right-sidebar-task").css('right') == '0px'){
+            $("#right-sidebar-task").animate({right:'-60%'}, 200);
+        }
+    }
+}
+
+//任务详情弹出
+$(document).on('click','.right-sidebar-toggle-task',function(){
+	var task_id = $(this).attr('rel');
+	// var is_show = document.getElementById("is_show").value;
+	$(".emoji_container").remove();
+	if($("#right-sidebar-task").css('right') != '0px'){
+		$("#right-sidebar-task").animate({right:'0px'}, 600);
+	}	
+    $('#task-content').html(detail_html);
+    $('#sidebar-container').load("{:U('task/view','task_id=')}"+task_id);
+});
+</script>
+<include file="Public:footer" />
+<div id="right-sidebar-task">
+	<!--the css for jquery.mCustomScrollbar-->
+	<link rel="stylesheet" href="__PUBLIC__/emoji/css/jquery.mCustomScrollbar.min.css"/>
+	<!--the css for this plugin-->
+	<link rel="stylesheet" href="__PUBLIC__/emoji/css/jquery.emoji.css"/>
+	<!--(Optional) the js for jquery.mCustomScrollbar's addon-->
+	<script src="__PUBLIC__/emoji/js/jquery.mousewheel-3.0.6.min.js"></script>
+	<!--the js for jquery.mCustomScrollbar-->
+	<script src="__PUBLIC__/emoji/js/jquery.mCustomScrollbar.min.js"></script>
+	<!--the js for this plugin-->
+	<script src="__PUBLIC__/emoji/js/jquery.emoji.js"></script>
+
+	<div class="sidebar-container" id="sidebar-container">
+		
+	</div>
+</div>

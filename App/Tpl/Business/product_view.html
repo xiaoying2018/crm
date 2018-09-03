@@ -1,0 +1,32 @@
+<table class="table select-table">
+    <thead>
+        <tr style="background-color:#FFFFFF;text-align:center;">
+            <td style="background-color:#F9FaFC;padding:14px;color:#999">产品名称</td>
+            <td style="background-color:#F9FaFC;padding:14px;color:#999">价格(元)</td>
+            <td style="background-color:#F9FaFC;padding:14px;color:#999">折扣(%)</td>
+            <td style="background-color:#F9FaFC;padding:14px;color:#999">销售单价(元)</td>
+            <td style="background-color:#F9FaFC;padding:14px;color:#999">数量</td>
+            <td style="background-color:#F9FaFC;padding:14px;color:#999">单位</td>
+            <td style="background-color:#F9FaFC;padding:14px;color:#999">小计</td>
+        </tr>
+    </thead>
+    <tbody>
+        <volist name="business_product" id="vo">
+        <tr>
+            <td style="text-align:center;padding:14px;color:#666">{$vo['name']}</td>
+            <td style="text-align:center;padding:14px;color:#666">{$vo['ori_price']}</td>
+            <td style="text-align:center;padding:14px;color:#666">{$vo['discount_rate']}</td>
+            <td style="text-align:center;padding:14px;color:#666">{$vo['unit_price']}</td>
+            <td style="text-align:center;padding:14px;color:#666">{$vo['amount']}</td>
+            <td style="text-align:center;padding:14px;color:#666">{$vo['unit']}</td>
+            <td style="text-align:center;padding:14px;color:#666">{$vo['subtotal']}</td>
+        </tr>
+        </volist>
+    </tbody>
+</table>
+	<div style="text-align:center;margin-top:15px;float:right;margin-bottom:15px;clear: both;">
+    <div class="pull-right">产品合计(元):<span style="color:#999;">&nbsp;{$business_info['total_subtotal_val']}&nbsp;</span></div>
+    <div class="pull-right">整单折扣(%):<span style="color:#999;">&nbsp;{$business_info['final_discount_rate']}&nbsp;</span></div>
+    <div class="pull-right">销售订单金额(元):<span style="color:#999;">&nbsp;{$business_info['final_price']}&nbsp;</span></div>
+     <div class="pull-right"><i class="fa fa-bookmark"></i>&nbsp;相关商机:<span style="color:#999;">&nbsp;{$business_info['code']}&nbsp;</span></div>
+</div>

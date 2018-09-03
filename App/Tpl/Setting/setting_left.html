@@ -1,0 +1,131 @@
+<style>
+	body{
+		overflow-y: hidden;
+	}
+	table tbody tr{cursor:move;}
+	.active {color: #000;}
+	.nav.nav-tabs-left li{width:100%;}
+	.nav-tabs-left>li.active>a{border-top:white;color: #19aa8d !important;background-color:#fff;}
+	
+	/*主要样式*/
+	.subNavBox{width:100%;margin-top:0px;margin-bottom:50px;}
+	.subNav{
+		cursor:pointer;
+		font-size:14px;
+		color:#000;
+		line-height:40px;
+		padding-left:10px;
+	}
+	.subNav_text{
+		cursor:pointer;
+		font-size:14px;
+		color:#000;
+		line-height:40px;
+		padding-left:10px;
+	}
+	subNavBox ul{margin-bottom:18px;}
+	.subNav:hover{color:#375264;}
+	/*.currentDt{background-image:url(__PUBLIC__/img/jiantou.jpg);}*/
+	.navContent{list-style: none;display: none;padding-left: 13px;}
+	.navContent li a{display:block;width:100%;height:32px;text-align:left;font-size:14px;line-height:32px;color:#000;}
+	.li_text{padding-left:10px;width: 100%;float:left;line-height:32px;margin-bottom:3px;}
+	.li_text:hover{background-color:#f5f5f5;}
+	.li_text_active{float:left;background-color:#f5f5f5;padding-left:10px;width: 100%;border-left:2px solid #03a9f4;line-height:32px;margin-bottom:3px;color:#03a9f4;}
+</style>
+<script type="text/javascript">
+$(function(){
+	$("#left_height").height(window.innerHeight-$("#left_height").offset().top-32);
+	$(window).resize(function(){
+		$("#left_height").height(window.innerHeight-$("#left_height").offset().top-32);
+	});
+})
+</script>
+<div class="col-sm-2 ibox-title" style="background-color:#fff;padding-bottom:5px;" id="left_height">
+	<div class="full-height-scroll">
+		<div class="subNavBox">
+
+			<if condition="session('?admin') || session('?person')">
+				<div class="subNav currentDd currentDt">线索区管理</div>
+				<ul class="navContent" style="display:block">
+					<if condition="session('?admin')">
+						<li >
+							<a href="{:U('clueblock/index')}" >
+								<span
+									<?php if( $module_name == 'clueblock' && $action_name == 'index' ): ?>
+										class="li_text_active"
+									<?php else:?>
+										class="li_text"
+									<?php endif;?>
+								>
+									负责人管理
+								</span>
+							</a>
+						</li>
+					</if>
+					<if condition="session('?person')">
+						<li >
+							<a href="{:U('clueblock/cate_index')}" >
+								<span
+									<?php if( $module_name == 'clueblock' && $action_name == 'cate' ): ?>
+										class="li_text_active"
+									<?php else:?>
+										class="li_text"
+									<?php endif;?>
+								>线索分类管理</span>
+							</a>
+						</li>
+					</if>
+				</ul>
+			</if>
+
+			<div class="subNav currentDd currentDt">用户和权限</div>
+			<ul class="navContent" style="display:block">
+				<if condition = "session('?admin')">
+				<li >
+					<a href="{:U('user/department')}" ><span <if condition = "$module_name == 'user' && $action_name == 'department'">class="li_text_active"<else />class="li_text"</if>>组织架构管理</span></a>
+				</li>
+				</if>
+				<if condition = "checkPerByAction('user','index')">
+				<li >
+					<a href="{:U('user/index')}" ><span <if condition = "$module_name == 'user' && $action_name == 'index'">class="li_text_active"<else />class="li_text"</if>>用户管理</span></a>
+				</li>
+				</if>
+			</ul>
+
+			<if condition = "session('?admin')">
+				<div class="subNav currentDd currentDt">自定义字段设置</div>
+				<ul class="navContent" style="display:block">
+					<li ><a href="{:U('setting/fields', 'model=leads')}" ><span <if condition="$_GET['model'] eq 'leads'">class="li_text_active"<else />class="li_text"</if>>线索</span></a></li>
+					<li ><a href="{:U('setting/fields', 'model=customer')}" ><span <if condition="$_GET['model'] eq 'customer'">class="li_text_active"<else />class="li_text"</if>>客户</span></a></li>
+					<li ><a href="{:U('setting/fields', 'model=contacts')}" >
+					<span <if condition="$_GET['model'] eq 'contacts'">class="li_text_active"<else />class="li_text"</if>>联系人</span></a></li>
+					<li ><a href="{:U('setting/fields', 'model=business')}" >
+					<span <if condition="$_GET['model'] eq 'business'">class="li_text_active"<else />class="li_text"</if>>商机</span></a></li>
+					<li ><a href="{:U('setting/fields', 'model=product')}" ><span <if condition="$_GET['model'] eq 'product'">class="li_text_active"<else />class="li_text"</if>>产品</span></a></li>
+					<li ><a href="{:U('setting/fields', 'model=contract')}" ><span <if condition="$_GET['model'] eq 'contract'">class="li_text_active"<else />class="li_text"</if>>合同</span></a></li>
+				</ul>
+				<div class="subNav currentDd currentDt">业务参数设置</div>
+				<ul class="navContent" style="display:block">
+					<li ><a href="{:U('setting/setup')}" ><span <if condition="$module_name eq 'setting' && $action_name == 'setup'">class="li_text_active"<else />class="li_text"</if> >基本参数</span></a></li>
+					<li ><a href="{:U('setting/examine')}" ><span <if condition="$module_name eq 'setting' && ($action_name == 'examine' || $action_name == 'examinetype')">class="li_text_active"<else />class="li_text"</if> >审批设置</span></a></li>
+					<li ><a href="{:U('contract/examine')}" ><span <if condition="$module_name eq 'contract' && $action_name == 'examine'">class="li_text_active"<else />class="li_text"</if> >合同审批流</span></a></li>
+					<li ><a href="{:U('product/category')}" ><span <if condition="$module_name eq 'product' && $action_name == 'category'">class="li_text_active"<else />class="li_text"</if>>产品分类</span></a></li>
+					<li ><a href="{:U('knowledge/category')}" ><span <if condition="$module_name eq 'knowledge' && $action_name == 'category'">class="li_text_active"<else />class="li_text"</if>>{:L('KNOWLEDGE_CATEGORY')}</span></a></li>
+					<li ><a href="{:U('setting/businesstype')}" ><span <if condition="$module_name eq 'setting' && ($action_name == 'businessstatus' || $action_name == 'businesstype')">class="li_text_active"<else />class="li_text"</if>>商机状态组</span></a></li>
+					<li ><a href="{:U('setting/category')}" ><span <if condition="$module_name eq 'setting' && $action_name == 'category'">class="li_text_active"<else />class="li_text"</if>>银行账户</span></a></li>
+					<li ><a href="{:U('setting/logstatus')}" ><span <if condition="$module_name eq 'setting' && ($action_name == 'logstatus' || $action_name == 'logreply')">class="li_text_active"<else />class="li_text"</if>>沟通类型</span></a></li>
+					<li ><a href="{:U('setting/finance','field=payables')}" ><span <if condition="$module_name eq 'setting' && ($action_name == 'finance')">class="li_text_active"<else />class="li_text"</if>>应付款类型</span></a></li>
+				</ul>
+			</if>
+
+			<if condition = "session('?admin')">
+				<div class="subNav currentDd currentDt">系统设置</div>
+				<ul class="navContent" style="display:block">
+					<li ><a href="{:U('setting/defaultinfo')}" ><span <if condition="$module_name eq 'setting' && $action_name == 'defaultinfo'">class="li_text_active"<else />class="li_text"</if> >基本设置</span></a></li>
+					<li ><a href="{:U('setting/smtp')}" ><span <if condition="$module_name eq 'setting' && $action_name == 'smtp'">class="li_text_active"<else />class="li_text"</if>>SMTP设置</span></a></li>
+					<!-- <li ><a href="{:U('setting/sms')}" ><span <if condition="$module_name eq 'setting' && $action_name == 'sms'">class="li_text_active"<else />class="li_text"</if> >短信设置</span></a></li> -->
+				</ul>
+			</if>
+		</div>
+	</div>
+</div>

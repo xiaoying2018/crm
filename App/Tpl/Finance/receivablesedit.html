@@ -1,0 +1,267 @@
+<include file="Public:header" />
+<style type="text/css">
+.add_body >div >.full-height-scroll {
+	border-right:1px dotted #ccc
+}
+.add_body_title{
+	margin:15px auto 30px auto;
+	padding-left: 14px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.form-control{
+	float:left;
+}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+				<div class="title-bar" style="">
+					<div class="row" id="title-show">
+						<ul class="nav pull-left" style="margin:0px 10px 0px 20px;">
+							<span><img src="__PUBLIC__/img/receive_view_icon.png" style="margin-bottom:9px;" alt=""></span><span style="font-size:21px;margin-left:5px">&nbsp;&nbsp;&nbsp;{$info.name}</span>&nbsp;&nbsp; 
+						</ul>
+					</div>
+				</div>
+				<div class="tabs-container" >
+					<form class="form-horizontal" id="form" role="form" action="{:U('finance/edit','t=receivables')}" method="post" enctype="multipart/form-data">
+						<input type='hidden' name="id" value="{$info['receivables_id']}"/>
+						<input type='hidden' name="refer_url" value="{$refer_url}"/>
+						<div class="ibox-content " id="add_body" >
+							<div class="row">
+								<div class="col-md-12 add_body">
+									<div class="full-height-scroll">
+										<div class="row" >
+											<div class="col-md-12 add_body_title" style="margin:20px 0 0 0px;">
+												<div class="all-inline">
+													<span class="sq-tag"></span>
+													<div class="text-tag">
+														<span>基本信息</span>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+												<div class="form-group">
+													<label class="col-md-4 control-label">相关合同：</label>
+													<div class="col-md-6">
+														<input type="hidden" name="contract_id" id="contract_id" value="{$info.contract_id}"/>
+														<input class="form-control" readonly="readonly" type="text" name="contract_name" id="contract_name" value="{$info.contract_number}" placeholder="请点击选择" readonly="true" style="cursor:pointer;"/>
+													</div>
+													<div class="col-md-2"><span style="color:red">*</span></div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-4 control-label">相关客户：</label>
+													<div class="col-md-6">
+														<input name="customer_id" id="customer_id" type="hidden" value="{$info['customer_id']}" />
+														<input name="customer" readonly="readonly" id="customer_name" class="form-control required" aria-required="true" type="text" value="{$info['customer_name']}" placeholder="请点击选择" readonly="true" style="cursor:pointer;"/>
+													</div>
+													<div class="col-md-2"><span style="color:red">*</span></div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-4 control-label">应收款编号：</label>
+													<div class="col-md-6">
+														<input name="name" id="name" class="form-control required" aria-required="true" type="text" value="{$info['name']}" readonly="true" />
+													</div> 
+													<div class="col-md-2"><span style="color:red">*</span></div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-4 control-label">收款金额：</label>
+													<div class="col-md-6">
+														<input class="form-control required" aria-required="true" id="price" name="price" type="text" value="{$info['price']}" onblur="bu(this)" onkeyup="num_input(this)"/>
+													</div>
+													<div class="col-md-2"><span style="color:red">*</span></div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-4 control-label">收款时间：</label>
+													<div class="col-md-6">
+														<input onclick="WdatePicker()" class="form-control required Wdate" aria-required="true" type="text" id="pay_time" name="pay_time" <if condition = "$info['pay_time'] neq '0'"> value="{$info['pay_time']|date='Y-m-d',###}"</if> />
+													</div>
+													<div class="col-md-2"><span style="color:red">*</span></div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-4 control-label">收款人：</label>
+													<div class="col-md-6">
+														<input type="hidden" id="owner_role_id" name="owner_role_id" value="{$info['owner_role_id']}" />
+														<input class="form-control required" aria-required="true" id="owner_name" name="owner_name" type="text" value="{$info['owner_name']}" readonly="true" style="cursor:pointer;" title="请点击选择"/>
+													</div>
+													<div class="col-md-2"><span style="color:red">*</span></div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-4 control-label">{:L('DESCRIPTION')}：</label>
+													<div class="col-md-8">
+														<textarea class="form-control required" rows="5" name="description" id="description">{$info['description']}</textarea>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-2 pull-right">
+												
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div id="tfoot_div" class="clearfix">
+							<div class="clearfix" id="tfoot_page">
+								<div class="ibox-content" style="border-top: none;">
+									<div class="col-sm-offset-2" style="text-align:center;margin-left:0px;">
+										<input name="submit" id="save_submit" class="btn btn-primary" type="submit" value="{:L(SAVE)}"/>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="dialog-contract-list" style="display:none;" title="{:L('SELECT THE CONTRACT')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-role-list2" title="{:L('SELECT THE LEADER')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div id="dialog-customer-list" style="display:none" title="选择客户">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+if ("{:C('isMobile')}" == "1") {
+	width = $('.container').width() * 0.9;
+} else {
+	width = 800;
+}
+$(document).ready(function(){
+	$('#save_submit').prop('disabled',false); 
+	/*form表单验证*/
+	$("#form").validate({
+		submitHandler:function(form){
+            $('#save_submit').click(function(){
+				$('#save_submit').prop('disabled',true);
+			});
+            form.submit();
+        }    
+	});
+});
+
+$("#dialog-role-list2").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	buttons: {
+		"确定": function () {
+			var item = $('input:radio[name="owner"]:checked').val();
+			var name = $('input:radio[name="owner"]:checked').attr('rel');
+			if(item){
+				$('#owner_name').val(name);
+				$('#owner_role_id').val(item);
+			}
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+
+$("#dialog-contract-list").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	buttons: {
+		"确定": function () {
+			var item = $('input:radio[name="contract"]:checked').val();
+			var name = $('input:radio[name="contract"]:checked').parent().parent().next().html();
+			var next_item = $('input:radio[name="contract"]:checked').parent().parent().next().next().html();
+			var next_name = $('input:radio[name="contract"]:checked').parent().parent().next().next().next().html();
+			var price = $('input:radio[name="contract"]:checked').parent().parent().next().next().next().next().html();
+			if(item){
+				$('#contract_name').val(name);
+				$('#name').val(name);
+				$('#contract_id').val(item);
+				$('#customer_id').val(next_item);
+				$('#customer').val(next_name);
+				$('#price').val(price);
+			}
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+
+$("#dialog-customer-list").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	buttons: {
+		"{:L('AFFIRM')}": function () {
+			var item = $('input:radio[name="customer"]:checked').val();
+			var name = $('input:radio[name="customer"]:checked').parent().next().html();
+			if(item){
+				$('#customer_name').val(name);
+				$('#customer_id').val(item);
+			}
+			$(this).dialog("close");
+		},
+		"{:L('CANCEL')}": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+$(function(){
+	$("#contract_name").click(function(){
+		var customer_id = $('#customer_id').val();
+		$('#dialog-contract-list').dialog('open');
+		$('#dialog-contract-list').load('{:U("contract/listDialog","by=all&type=receivables&customer_id=")}'+customer_id);
+	});
+	$("#owner_name").click(function(){
+		$('#dialog-role-list2').dialog('open');
+		$('#dialog-role-list2').load('{:U("user/listDialog","by=all")}');
+	});
+	$("#customer_name").click(function(){
+		var contract_id = $('#contract_id').val();
+		$('#dialog-customer-list').dialog('open');
+		$('#dialog-customer-list').load('{:U("customer/listDialog","contract_id=")}'+contract_id);
+	});
+});
+</script>
+<include file="Public:footer" />	

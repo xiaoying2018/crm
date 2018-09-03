@@ -1,0 +1,271 @@
+<include file="Public:header" />
+<!-- nice-scroll -->
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/chart/highcharts.js"></script>
+<script src="__PUBLIC__/js/chart/modules/exporting.js"></script>
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<!-- daterangepicker -->
+<link href="__PUBLIC__/css/daterangepicker.css" rel="stylesheet">
+<script src="__PUBLIC__/js/daterangepicker/daterangepicker.js"></script>
+<style>
+	body{
+		overflow-y: hidden;
+	}
+	table tr td{min-width: 50px;}
+	table tr {height: 50px;}
+	#oDivL_tab_Test3{background-color: #fff;z-index: inherit !important;}
+	.table{max-width: none;}
+	.tabTh{background-color: #fff;}
+
+	#right-sidebar-log{
+		width: 50% !important;
+		right: -60%;
+		background-color: #fff;
+	    overflow: hidden;
+	    position: fixed;
+	    top: 60px;
+	    z-index: 1009;
+	    bottom: 0;
+	    box-shadow: 0px 2px 1px #888888;
+	}
+	.ibox-span{
+		float: left;
+		line-height: 30px;
+	}
+</style>
+
+<script>
+$(function(){
+	var scroll_width = 10;
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-20);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-20);
+		$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+	});
+	$(".nicescroll").niceScroll({
+		cursorcolor: "#999",//#CC0071 光标颜色 
+	    cursoropacitymax: 0.4, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0 
+	    touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备 
+	    cursorwidth: scroll_width+"px", //像素光标的宽度 
+	    cursorborder: "0", //     游标边框css定义 
+	    cursorborderradius: "3px",//以像素为光标边界半径 
+	    autohidemode: false, //是否隐藏滚动条 
+	    zindex:100,
+	    background:"#F3F3F5",//滚动条背景色
+	});
+	$("#tab_Test3").FrozenTable(1,0,1);
+	$("#oDivL_tab_Test3").height($("#table_div").height()).width($("#oTableLH_tab_Test3").width());
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width());
+})
+
+</script>
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<include file="Public:analytics_left" />
+				<div class="col-lg-10">
+					<div class="ibox-content" style="padding-bottom:10px;border-bottom: none;">
+						<include file="Public:alert" />
+						<div class="row">
+							<div class="col-lg-2">
+								<div class="pull-left" >
+									<span style="font-size: 18px;color: #000;">
+										考勤记录
+									</span>
+								</div>
+							</div>
+							<div class="col-lg-10 pull-left">
+								<form id="" class="form-group" method="get" style="margin-bottom: 0px;">
+									<input type="hidden" name="m" value="kaoqin">
+									<input type="hidden" name="a" value="record">
+									<div class="col-lg-12" >
+										<div class="nav pull-left" style="margin:2px 0 0 0;">
+											<div class="input-group">
+												<input type="text" name="daka_time" id="reservation" class="form-control" style="width:300px;"/>
+												<i class="glyphicon glyphicon-calendar fa fa-calendar" style="position: absolute;bottom: 10px;right: 24px;top: auto;cursor: pointer;"></i>
+											</div>
+										</div>
+										<div class="nav pull-left" style="margin:2px 0 0 15px;width: 165px;">
+											<div class="input-group">
+												<select class="form-control select2" style="min-width:165px;max-width: 165px;height: 0px;" name="department" id="department" onchange="changeRole()">
+													<option class="all" value="all">{:L('ALL')}</option>
+													<volist name="departmentList" id="vo">
+														<option value="{$vo.department_id}" <if condition="$_GET['department'] eq $vo['department_id']">selected</if>>{$vo.name}</option>
+													</volist>
+												</select>
+											</div>
+										</div>
+										<div class="nav pull-left" style="margin:2px 0 0 15px;width: 165px;">
+											<div class="input-group">
+												<select class="form-control select2" style="min-width:165px;max-width: 165px;height: 0px;" name="role" id="role" onchange="changeCondition()">
+													<option class="all" value="all">{:L('ALL')}</option>
+													<volist name="roleList" id="vo">
+														<option value="{$vo.role_id}" <if condition="$_GET['role'] eq $vo['role_id']">selected</if>>{$vo.role_name}-{$vo.user_name}</option>
+													</volist>
+												</select>
+											</div>
+										</div>
+										<div class="pull-left" style="margin-left: 20px;">
+											<button type="submit" id="analytics_search" class="btn btn-primary">{:L('SEARCH')}</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="ibox-content " id="right_height" style="border-top: none;">
+						<div class="th_content" style="position:relative;">
+							<div id="table_div" class="nicescroll">
+								<table class="table table-hover table-striped table_thead_fixed table-bordered" id="tab_Test3" >
+									<tr class="tabTh">
+										<td>部门</td>
+										<td>员工姓名</td>
+										<td>打卡日期</td>
+										<td>打卡时间</td>
+										<td>打卡地点/wifi</td>
+										<td>打卡状态</td>
+										<td>备注</td>
+									</tr>
+									<tbody>
+										<volist name="list" id="vo">
+											<tr>
+												<td>{$vo['user']['department_name']}</td>
+												<td style="padding-left: 15px;min-width:170px;">
+													<a class="role_info" rel="{$vo.user.role_id}" href="javascript:void(0)">
+														<if condition="$vo['user']['thumb_path']">
+															<img class="img-circle" style="width:32px;height:32px;" src="{$vo['user']['thumb_path']}"/>
+														<else/>
+															<img class="img-circle" style="width:32px;height:32px;" src="__PUBLIC__/img/avatar_default.png"/>
+														</if>
+														<span>{$vo['user']['user_name']}</span>
+													</a>
+												</td>
+												<td>{$vo['date']}&nbsp;&nbsp;{$vo['week']}</td>
+												<td>{$vo['time']}</td>
+												<td>{$vo['address']}</td>
+												<td>{$vo['status_name']}</td>
+												<td>{$vo['remark']}</td>
+											</tr>
+										</volist>
+									</tbody>
+								</table>
+							</div>
+							<div id="tfoot_div" class="clearfix">
+								<div class="clearfix" id="tfoot_page">
+									{$page}<include file="Public:listrows" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="" style="display:none;" id="dialog-role-info" title="{:L('USER_INFO')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div class="" style="display:none;" id="dialog-commun_list" title="沟通记录">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+	//时间插件  
+    $('#reservation').daterangepicker({
+        startDate: '{$start_date}', 
+        endDate: '{$end_date}',  
+        //minDate: '01/01/2012',    //最小时间  
+        maxDate : moment(), //最大时间
+        showDropdowns : true,  
+        showWeekNumbers : false, //是否显示第几周  
+        // timePicker : true, //是否显示小时和分钟  
+        // timePickerIncrement : 60, //时间的增量，单位为分钟  
+        timePicker12Hour : false, //是否使用12小时制来显示时间  
+        ranges : {  
+            //'最近1小时': [moment().subtract('hours',1), moment()],  
+            '今日': [moment().startOf('day'), moment()],  
+            '昨日': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')], 
+            '上月': [moment().subtract('days', '{$daterange[0][start_day]}'), moment().subtract('days', '{$daterange[0][end_day]}')],
+            '本月': [moment().subtract('days', '{$daterange[1][start_day]}'), moment()], 
+            '上季度': [moment().subtract('days', '{$daterange[2][start_day]}'), moment().subtract('days', '{$daterange[2][end_day]}')],
+            '本季度': [moment().subtract('days', '{$daterange[3][start_day]}'), moment()], 
+            '上一年': [moment().subtract('days', '{$daterange[4][start_day]}'), moment().subtract('days', '{$daterange[4][end_day]}')],
+            '本年': [moment().subtract('days', '{$daterange[5][start_day]}'), moment()], 
+            // '最近7日': [moment().subtract('days', 6), moment()],  
+            // '最近30日': [moment().subtract('days', 29), moment()]  
+        },   
+        opens : 'right', //日期选择框的弹出位置  
+        buttonClasses : [ 'btn btn-default' ],  
+        applyClass : 'btn-small btn-primary blue',  
+        cancelClass : 'btn-small', 
+        separator : ' to ',  
+        locale : {  
+            applyLabel : '确定',  
+            cancelLabel : '取消',  
+            fromLabel : '起始时间',  
+            toLabel : '结束时间',  
+            customRangeLabel : '自定义',  
+            daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],  
+            monthNames: ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"],
+            firstDay : 1 ,
+            format : 'YYYY-MM-DD', //控件中from和to 显示的日期格式
+        },
+        "alwaysShowCalendars": true,
+        function(start, end, label) {
+        	//回调
+        	$('#reservation').val(start.format('YYYY-MM-DD HH:mm:ss') + ' - ' + end.format('YYYY-MM-DD HH:mm:ss'))
+  			// console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+    	}
+    });
+	
+	$(".search_time").change(function(){
+		var search_year = $('#search_year').val();
+		var search_month = $('#search_month').val();
+		var role = $('#role').val();
+		window.location.href="{:U('kaoqin/analytics','&search_year=')}"+search_year+'&search_month='+search_month+'&content_id=2&department=all'+'&role='+role;
+	});
+
+	$("#dialog-role-info").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 600,
+		maxHeight: 550,
+		position: ["center",100]
+	});
+	
+	$(".role_info").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+
+	$("#dialog-commun_list").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 600,
+		maxHeight: 550,
+		position: ["center",100]
+	});
+
+	$(".commun_list").click(function(){
+		var role_id = $(this).attr('rel');
+		var sdate = $(this).attr('rel1');
+		$('#dialog-commun_list').dialog('open');
+		$('#dialog-commun_list').load('{:U("log/commun_list","role_id=")}'+role_id+'&search_time='+sdate);
+	});
+</script>
+<include file="Public:footer" />

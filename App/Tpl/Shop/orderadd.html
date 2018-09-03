@@ -1,0 +1,257 @@
+<include file='Shop:header_shoping' title='京东购物商城' />
+
+<div class="main">
+	<div class="row row-narrow">
+		<div class="clearfix">
+			<div class="col-xs-5 page-breadcrumbs pull-left">
+				<h5>
+					复核并确认订单信息
+				</h5>
+			</div>
+			<div class="col-xs-7 page-breadcrumbs pull-right">
+				<ol class="breadcrumb type-sans">
+					<li class="active">
+						快速购买3步走
+					</li>
+					<li class="active">
+						<a href="ware.html">
+							1.挑选产品
+						</a>
+					</li>
+					<li class="active">
+						<a href="dact.html">
+							2.填写配送地址
+						</a>
+					</li>
+					<li class="active">
+						<a href="place.html" class="on">
+							3.提交订单并支付
+						</a>
+					</li>
+				</ol>
+			</div>
+		</div>
+		<div class="page-contain">
+			<div class="col-xs-8  ">
+				<div class="product-cade">
+					<div class="page-car">
+						<h4>
+							我的订单
+						</h4>
+					</div>
+					<div id="order_list">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-4  panel panel-default panel-product">
+			<div class="panel-body">
+				<div class="product-badges">
+					<h4>
+						我的订单
+					</h4>
+				</div>
+			</div>
+			<div class="panel-dress">
+				<if condition = "$address_info['id']">
+                    <div class="row row-narrow">
+                        <div class="col-xs-6 product-Distribution">
+                            <span>
+                                配送地址
+                                <br/>
+                                <a href="javascript:void(0)" onclick="addAddress(this)">
+                                    <!-- <img src="__PUBLIC__/img/shoping/tj.png"> -->
+                                    更换配送地址
+                                </a>
+                            </span>
+                        </div>
+                        <input type="hidden" id="address_id" value="{$address_info['id']}" />
+                        <div class="col-xs-6 product-details" id="address_content">
+                            <p>
+                                {$address_info['address']}
+                            </p>
+                        </div>
+                    </div>
+                <else />
+                    <div class="product-bades">
+                        <input type="hidden" id="address_id" value="{$address_info['id']}" />
+                        <a href="javascript:void(0)" onclick="addAddress(this)">
+                            <img src="__PUBLIC__/img/shoping/tj.png">
+                            选择配送地址
+                        </a>
+                    </div>
+                </if>
+			</div>
+			<div class="panel-total">
+				<div class="row row-narrow">
+					<div class="col-xs-6 product-control">
+						<p>
+							总计:
+						</p>
+					</div>
+					<div class="col-xs-6 product-details">
+						<div class="product-cost">
+                            <input type="hidden" id="total_price_val" />
+                            <span class="starting-price" id="total_price"></span>
+                        </div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-parety">
+				<label class="panel_rode" for="name">
+					支付方式
+				</label>
+				<div class="panel_checkbox">
+					<label class="checkbox-inline">
+						<input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="option1"
+						checked>
+						现金
+					</label>
+					<label class="checkbox-inline">
+						<input type="radio" name="optionsRadiosinline" id="optionsRadios4" value="option2">
+						在线支付
+						<img src="__PUBLIC__/img/shoping/zf.png?">
+					</label>
+				</div>
+			</div>
+			<div class="panel-Immediate">
+				<div class="product-immediate">
+					<a href="javascript:void(0);" id="payment">
+						立即结账
+					</a>
+				</div>
+				<div class="panel-review">
+					<a href="place.html">
+						<img src="__PUBLIC__/img/shoping/sanjiao.png?">
+						复核订单信息
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 模态框 -->
+<div class="modal inmodal fade" id="Modal" tabindex="-1"  style=" overflow:auto; border:1px solid #000000;" role="dialog" >
+    <div class="modal-dialog modal-md" style="width:700px;">
+        <div class="modal-content" id="address_modal">
+
+        </div>
+    </div>
+</div>
+<div class="modal inmodal fade" id="Modal1" tabindex="-1"  style=" overflow:auto; border:1px solid #000000;" role="dialog" >
+    <div class="modal-dialog modal-md" style="width:700px;">
+        <div class="modal-content" id="login_modal">
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+//地址
+function addAddress(obj){
+	var address_id = $('#address_id').val();
+    $.ajax({
+        type: "POST",
+        url: "{:U('shop/selAddress')}",
+        async: true,
+        success: function(data) {
+            if(data.status == 2){
+                $("#login_modal").parent().removeClass("modal-lg").addClass("modal-md");
+                $url = "{:U('shop/login_ajax')}";
+                $('#Modal1').modal('show');
+                $('#login_modal').load($url);
+            }else{
+                 $("#address_modal").parent().removeClass("modal-lg").addClass("modal-md");
+                $url = "{:U('shop/selAddress','id=')}"+address_id;
+                $('#Modal').modal('show');
+                $('#address_modal').load($url);
+            }
+        }
+    });
+}
+$(document).on('click','#payment',function(){
+	var product_id_array = new Array();
+	
+	$(".cproduct_id").each(function(k){  
+		// product_id_array.push($(this).val());
+		// count_array.push($(this).attr('rel'));
+		var product_id = new Array();
+		product_id.push($(this).val());
+		product_id.push($(this).attr('rel'));
+		product_id_array.push(product_id);
+	});
+	if(product_id_array.length == 0){
+		alert('您的购物车为空！');
+		return false;
+	}
+	var total_price = $('#total_price_val').val();
+	$.ajax({
+        type: "POST",
+        url: "{:U('shop/orderadd')}",
+        data: {
+            total_price:total_price,
+            product_ids:product_id_array
+        },
+        async: true,
+        success: function(data) {
+            if(data.status == 1){
+                alert('操作成功！');
+            }else if(data.status == 2){
+            	$("#login_modal").parent().removeClass("modal-lg").addClass("modal-md");
+			    $url = "{:U('shop/login_ajax')}";
+			    $('#Modal1').modal('show');
+			    $('#login_modal').load($url);
+            }else{
+            	alert(data.info);
+            	// window.location.reload();
+                return false;
+            }
+        }
+    });
+});
+//判断cookie
+$(document).ready(function(){
+    var cookie_val = '';
+    var now_rows = 0;
+    cookie_val = Read();
+    // console.log(cookie_val.Items);
+    if(cookie_val.Count != 0 && cookie_val.Items != ''){
+        var temp = '';
+        $.each(cookie_val.Items,function(k, v){
+        	now_rows += 1;
+            temp += '<div class="page-order">'+
+						'<div class="row row-narrow">'+
+							'<div class="col-xs-10 row-mone">'+
+								'<ul class="mone-list">'+
+									'<li>'+
+										'<img src="'+v.Img+'">'+
+										'<input type="hidden" name="product['+now_rows+'][product_id]" rel="'+v.Count+'" id="product_id_'+now_rows+'" class="cproduct_id" value="'+v.Id+'" />'+
+									'</li>'+
+									'<li>'+
+										'<h5>'+v.Name+'</h5>'+
+										'<p>'+v.Sketch+'</p>'+
+									'</li>'+
+								'</ul>'+
+							'</div>'+
+							'<div class="col-xs-2 mone-link">'+
+								'<span>￥'+v.Price+'</span>'+
+								'<br/>'+
+								'<span class="link-number">x'+v.Count+'</span>'+
+							'</div>'+
+						'</div>'+
+					'</div>';
+        });
+        $('#order_list').append(temp);
+        //计算价格
+        //合计小计
+        var total_subtotal = 0.00;
+        $('.cproduct_subtotal').each(function(k, v){
+            if($(v).val() != '' ||  $(v).val() != '0'){
+                total_subtotal += new Number($(v).val());
+            }
+        });
+        $('#total_price').text('￥'+total_subtotal.toFixed(2));  
+        $('#total_price_val').val(total_subtotal.toFixed(2));
+    }
+});
+</script>
+<include file='Shop:footer_shoping' />

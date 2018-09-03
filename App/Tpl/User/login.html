@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8">
+	<title>{:L('LOGIN_TITLE')}</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<meta name="description" content=""/>
+	<meta name="author" content="{:L('AUTHOR')}"/>
+	<link rel="shortcut icon" href="__PUBLIC__/ico/favicon.png"/>
+	<link href="__PUBLIC__/style/css/bootstrap.min.css" rel="stylesheet">
+	<link type="text/css" href="__PUBLIC__/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/style/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="__PUBLIC__/css/baseuser.css"/> 
+	<script src="__PUBLIC__/style/js/jquery-2.1.1.js"></script>
+    <script src="__PUBLIC__/style/js/bootstrap.min.js"></script>
+    <!-- <script src="__PUBLIC__/style/js/plugins/iCheck/icheck.min.js"></script> -->
+    <script src="__PUBLIC__/style/js/plugins/toastr/toastr.min.js"></script>
+    <script src="__PUBLIC__/js/jquery.base64.js"></script>
+	<script src="__PUBLIC__/js/jquery.md5.js"></script>
+    <!-- ladda -->
+	<script src="__PUBLIC__/style/js/plugins/ladda/spin.min.js"></script>
+	<script src="__PUBLIC__/style/js/plugins/ladda/ladda.min.js"></script>
+	<script src="__PUBLIC__/style/js/plugins/ladda/ladda.jquery.min.js"></script>
+	<link href="__PUBLIC__/style/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+</head>
+<style>
+	.errorInput {border:1px solid red;}
+</style>
+<body>
+<include file="Public:alert" />
+<div class="content-login">
+    <div class="imgdefault" style="background:url(__PUBLIC__/img/default.jpg)no-repeat; width:100%; height:100%; background-size:100% 100%; position:absolute; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='__PUBLIC__/img/default.jpg',sizingMethod='scale');  " >
+
+    </div>
+    <div class="logininfo">
+	    <div class="logininfowidth">
+	        <div class="loginrq ">
+	            <a href="javascript:;">
+	               	<?php if ( $_SERVER['HTTP_HOST'] == 'liuxuecrm.net' || $_SERVER['HTTP_HOST'] == 'www.liuxuecrm.net' ): ?>
+						<img src= "__PUBLIC__/img/outer-crm.svg" style="width: 234px;" />
+					<?php else: ?>
+						<img <if condition ="$logo">src= "{$logo}"<else />src= "__PUBLIC__/img/mx.png"</if> style="width: 234px;" />
+					<?php endif; ?>
+	            </a>
+	        </div>
+		    <form action="" class="formtheme" method="post" id="login_form">
+			    <div class="logininputList logininputListUser">
+			        <input value="{$Think.cookie.remb_un|base64_decode}" type="text" class="inputinfo" name="name" id="name" placeholder="账号" value="" autofocus="autofocus">
+			     </div>
+			    <div class="logininputList logininputListPwd">
+			 		<input value="{$Think.cookie.remb_up|base64_decode}" type="password" class="inputinfo" name="password" id="password" value="" placeholder="密码">
+			    </div>
+			    <div class="logininputList logininputListRemember">
+					<input type="hidden" name="remb_up" id="remb_up">
+					<input type="checkbox" name="remember" checked> 记住密码
+				</div>
+			    <div class="logininputList" style="margin-top:-12px;margin-bottom: 10px;">
+					<button class="ladda-button loginBtninfo" id="loginsub" data-style="zoom-in" type="submit">
+						<span class="ladda-label">登 录</span><span class="ladda-spinner"></span>
+					</button>
+			    </div>
+			    <p class="logininputList" style="padding-top: 30px;"><a style="margin-right: 15px;" href="{:U('user/lostpw')}">忘记密码?</a></p>
+		    </form>
+		    <p style="text-align: center;top:180px;position: relative;">
+		    	<?php if ( $_SERVER['HTTP_HOST'] == 'liuxuecrm.net' || $_SERVER['HTTP_HOST'] == 'www.liuxuecrm.net' ): ?>
+					<a><small>&copy;<?php echo date('Y',time());?> 留学CRM</small></a>
+				<?php else: ?>
+					<a><small>&copy;<?php echo date('Y',time());?> 小莺出国</small></a>
+				<?php endif; ?>
+		 	</p>
+	    </div>     
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+	// $('body').keydown(function(event){
+	//     if(event.keyCode == "13"){
+	//         $('#loginsub').click();
+	//     }
+	// });
+	$('#loginsub').click(function() {
+		$.base64.utf8encode = true;
+		if($('#name').val() == ''){
+			$('#name').focus();
+			return false;
+		}
+		if($('#password').val() == ''){
+			$('#password').focus();
+			return false;
+		}
+		if($('#password').val()){
+			$('#remb_up').val($.trim($('#password').val()));
+			$('#password').val($.md5($.trim($('#password').val())));
+		}
+	});
+	//保存按钮loading
+	$( '.ladda-button' ).ladda( 'bind', { timeout: 2000 } );
+</script>
+</html>

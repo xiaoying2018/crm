@@ -1,0 +1,262 @@
+<include file="Public:header" />
+<style>
+	.nav.nav-tabs-left li{width:100%;}
+	.nav-tabs-left>li.active>a{border-top:white;color: #19aa8d !important;background-color:#fff;}
+	.Wdate{width:200px;}
+	.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{
+		color:#667b8f;
+	}
+</style>
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-90);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-90);
+	});
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-lg-12">
+			<include file="Setting:setting_left" />
+			<form class="form-horizontal" enctype="multipart/form-data" action="{:U('kaoqin/setting')}" method="post">
+			<if condition = "$config_info">
+				<input type="hidden" name="id" value="{$config_info['id']}"/>
+			</if>
+			<div class="col-sm-10" >
+				<div class="ibox-content" id="add_body">
+					<div class="row">
+						<div class="ibox-content" style="background-color:#FFFAF0;padding-top:5px;">
+							<span>考勤路由和考勤位置满足其一即可，如两项都不设置，则不能打卡</span>
+						</div>
+						<div class="col-md-12 add_body" style="margin-top:10px;">
+							<div class="full-height-scroll">
+								<div class="row">
+									<div class="col-md-12 add_body_title">
+										<div class="all-inline">
+											<span class="sq-tag"></span>
+											<div class="text-tag">
+												<span>上班时间</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-11" style="margin-top:10px;">
+										<div class="form-group">
+											<label class="col-md-2 control-label">上班时间：</label>
+											<div class="col-md-3">
+												<input class="form-control required Wdate valid" aria-required="true" type="text" id="shangban_time" name="shangban_time" onfocus="WdatePicker({dateFmt:'HH:mm', maxDate:&quot;#F{'2038-01-01'}&quot;})" value="{$config_info['shangban_time']}" aria-invalid="false"/>
+											</div>
+											<label class="col-md-2 control-label">下班时间：</label>
+											<div class="col-md-3">
+												<input class="form-control required Wdate valid" aria-required="true" type="text" id="xiaban_time" name="xiaban_time" onfocus="WdatePicker({dateFmt:'HH:mm', maxDate:&quot;#F{'2038-01-01'}&quot;})" value="{$config_info['xiaban_time']}" aria-invalid="false" />
+											</div>
+											<div class="col-md-2"></div>
+										</div>
+									</div>
+									<div class="col-md-12 add_body_title" style="margin-top:20px;">
+										<div class="all-inline">
+											<span class="sq-tag" style="float:left;line-height: 25px;"></span>
+											<div class="text-tag col-md-2">
+												<span>&nbsp;考勤路由</span>
+											</div>
+											<div class="col-md-2">
+												<a id="add"><i class="fa fa-plus-circle"></i>&nbsp;添加路由</a>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-11" style="margin-top:10px;">
+										<table class="table table-hover table-striped table_thead_fixed table-bordered">
+											<thead>
+												<tr>
+													<th>wifi名称</th>
+													<th>Mac地址</th>
+													<th>操作</th>
+												</tr>
+											</thead>
+											<tbody id="route_list">
+												<volist name="route_list" id="vo">
+													<tr id="tr_{$vo.id}">
+														<input type="hidden" name="route[{$vo['id']}][wifi_name]" value="{$vo['wifi_name']}" />
+														<input type="hidden" name="route[{$vo['id']}][mac_address]" value="{$vo['mac_address']}" />
+														<td>{$vo.wifi_name}</td>
+														<td>{$vo.mac_address}</td>
+														<td>
+															<a class="delete"  href="javascript:void(0)" rel="{$vo.id}">删除</a>
+														</td>
+													</tr>
+												</volist>
+											</tbody>
+										</table>
+									</div>
+									<div class="col-md-12 add_body_title" style="margin-top:20px;">
+										<div class="all-inline">
+											<span class="sq-tag"></span>
+											<div class="text-tag">
+												<span>考勤位置</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-11" style="margin-top:10px;">
+										<div class="form-group">
+											<label class="col-md-2 control-label">考勤半径：</label>
+											<div class="col-md-3">
+												<input type="text" class="form-control" name="radius" id="radius" value="{$config_info.radius}" placeholder="自动生成半径" readonly="true" style="width:200px;float: left;" /><span style="line-height: 30px;">&nbsp;米</span>
+											</div>
+											<div class="col-md-7"></div>
+										</div>
+									</div>
+									<div class="col-md-11" style="margin-top:10px;">
+										<div class="form-group">
+											<label class="col-md-2 control-label">出勤地点：</label>
+											<div class="col-md-8">
+												<input type="hidden" class="form-control" name="attendance_address" id="attendance_address" value="{$config_info.attendance_address}" />
+												<input type="text" class="form-control" name="reg_address" id="reg_address" value="{$config_info.reg_address}" placeholder="自动生成地点" readonly="true" style="width:95%;" />
+											</div>
+											<div class="col-md-2"><div class="btn btn-primary" id="clear_map">清除位置信息</div></div>
+										</div>
+									</div>
+									<div class="clearfix"></div>
+									<div class="col-md-1">
+										<span>&nbsp;</span>
+									</div>
+									<div class="col-md-10" style="margin-top:20px;border:1px solid #ddd;">
+										<iframe src="{:U('kaoqin/set_map')}" frameborder="0" width="95%" height="400px"></iframe>
+									</div>
+									<div class="col-md-1 pull-right">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="tfoot_div" class="clearfix">
+					<div class="clearfix" id="tfoot_page">
+						<div class="ibox-content" style="border-top:none;">
+							<div class="col-sm-offset-5"><input type="submit" class="btn btn-primary" value="保存设置" /></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			</form>
+			<div style="clear:both;" ></div>
+		</div>
+	</div>
+</div>
+<input type="hidden" name="" id="y" value="{$config_info.y}">
+<input type="hidden" name="" id="x" value="{$config_info.x}">
+<div class="" style="display:none;" id="dialog-add" title="添加路由">
+	<form class="form-horizontal" method="get">
+		<table class="table" style="border:none;">
+			<tr>
+				<td style="border:none;text-align:right">Wifi名称：</td>
+				<td style="border:none;">
+					<input type="text" id="wifi_name" class="form-control"/>
+				</td>
+			</tr>
+			<tr>
+				<td style="border:none;text-align:right">Mac地址：</td>
+				<td style="border:none;">
+					<input type="text" id="mac_address" class="form-control"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" ><a class="pull-right" target="_blank" href="https://jingyan.baidu.com/article/54b6b9c0fb63082d583b47ae.html">如何查看MAC地址?</a></td>
+			</tr>
+		</table>
+	</form>
+</div>
+<script type="text/javascript">
+var m = {$max_id|default=0};
+$("#dialog-add").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 450,
+	maxHeight: 450,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+			var wifi_name = $('#wifi_name').val();
+			var mac_address = $('#mac_address').val();
+			if (wifi_name == '') {
+				alert_crm('请填写Wifi名称');
+				$('#wifi_name').focus();
+				return false;
+			}
+			if (mac_address == '') {
+				alert_crm('请填写Mac地址');
+				$('#mac_address').focus();
+				return false;
+			}
+			m += 1;
+			var temp = '';
+			temp = '<tr id="tr_'+m+'" >\
+						<td>'+wifi_name+'</td><input type="hidden" name="route['+m+'][wifi_name]" value="'+wifi_name+'" />\
+						<td>'+mac_address+'</td><input type="hidden" name="route['+m+'][mac_address]" value="'+mac_address+'" />\
+						<td>\
+							<a class="delete" href="javascript:void(0)" rel="'+m+'">删除</a>\
+						</td>\
+					</tr>';
+			$('#route_list').append(temp);
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+
+$("#add").click(function(){
+	$('#dialog-add').dialog('open');
+	$('#wifi_name').val('');
+	$('#mac_address').val('');
+});
+
+$('#route_list').on('click','.delete',function(){
+	var id = $(this).attr('rel');
+	if(id == 0){
+		swal({
+			title: "温馨提示",
+			text: "参数错误！",
+			type: "warning"
+		})
+		return false;
+	}else{
+		swal({
+			title: "温馨提示",
+   			text: "您确定要删除该路由吗？",
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "是的，我要删除！",
+	        cancelButtonText:'让我再考虑一下…',
+	        closeOnConfirm:true,
+	        closeOnCancel:true
+		},
+		function(isConfirm){
+	        if (isConfirm) {
+				$('#tr_'+id).remove();
+
+			} else {
+	            swal("已取消","您取消了删除操作！","error");
+	        }
+	    });
+	}
+});
+//获取地理位置
+function reg_address(address){
+    $("#reg_address").val(address); 
+}
+//父页面接收经纬度并赋值
+function setShippingResult(attendance_address,radius) {
+    $("#attendance_address").val(attendance_address);
+    $("#radius").val(radius); 
+}
+$('#clear_map').click(function(){
+	$('#radius').val('');
+	$('#attendance_address').val('');
+	$('#reg_address').val('');
+});
+</script>
+<include file="Public:footer" />	

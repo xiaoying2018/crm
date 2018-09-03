@@ -1,0 +1,216 @@
+<form class="form-inline" id="searchFormDialog" action="" method="post">
+	<input type="hidden" name="m" value="system"/>
+	<input type="hidden" name="a" value="scene_edit"/>
+	<input type="hidden" name="module" value="{$module_name}"/>
+	<input type="hidden" name="id" id="scene_id" value="{$scene_info['id']}"/>
+	<div class="pull-left col-sm-12">
+		<label class="control-label col-sm-3" for="name" style="width:110px;"><span style="color:#FF0011;">*</span>场景名称：</label>
+	</div>
+	<div class="pull-left col-sm-12">
+		<div class="col-sm-12" style="margin-top:10px;">
+			<input type="text" class="form-control" name="scene_name" value="{$scene_info['name']}" style="width:500px;" />
+		</div>
+	</div>
+	<div class="pull-left col-sm-12" style="margin-top:10px;">
+		<label class="control-label col-sm-3" for="name" style="width:110px;"><span style="color:#FF0011;">*</span>筛选条件：</label>
+	</div>
+	<div class="pull-left col-sm-12" style="margin-top:10px;">
+		<div class="col-sm-12">
+			<div id="search_edit_dialog" style="width:650px;float:left;">
+				<empty name="scene_info['data']">
+					<div id="con_search_1" style="float:left;width:650px;margin-left:34px;">
+						<ul class="nav pull-left" style="width:650px;">
+							<li class="pull-left">
+								<select id="field_1" style="width:auto" class="form-control input-sm field_name_dialog new-select" onchange="changeCondition(1)" name="data[1][field]" >
+									<option class="" value="name">--{:L('PLEASE_SELECT_A_FILTER_CONDITION')}--</option>
+									<volist name="field_list" id="v">
+										<if condition="$v['field'] neq 'customer_owner_id'">
+										<option class="{$v['form_type']}" value="{$v[field]}" rel="customer" <if condition = "$_GET['field'] eq '' && $v['field'] eq 'name'">selected="selected"</if>>{$v[name]}</option>
+										</if>
+									</volist>
+									<if condition="$Think.get.content neq 'resource'">
+										<option class="role" value="owner_role_id">{:L('PRINCIPAL')}</option>
+									</if>
+									<option class="date" value="create_time">{:L('CREATION_TIME')}</option>
+									<option class="date" value="update_time">{:L('MODIFICATION_TIME')}</option>
+									<option class="text" value="contacts_name">首要联系人姓名</option>
+									<option class="mobile" value="contacts_telephone">首要联系人电话</option>
+								</select>&nbsp;&nbsp;
+							</li>
+							<li class="pull-left" id="conditionContent_1">
+								<select id="condition_1" style="width:auto" class="form-control input-sm new-select" onchange="changeSearch()" name="name[condition]">
+									<option value="contains">{:L('INCLUDE')}</option>
+									<option value="not_contain">{:L('EXCLUSIVE')}</option>
+									<option value="is">{:L('YES')}</option>
+									<option value="isnot">{:L('ISNOT')}</option>						
+									<option value="start_with">{:L('BEGINNING_CHARACTER')}</option>
+									<option value="end_with">{:L('TERMINATION_CHARACTER')}</option>
+									<option value="is_empty">{:L('MANDATORY')}</option>
+									<option value="is_not_empty">{:L('ISNOTEMPTY')}</option>
+								</select>&nbsp;&nbsp;
+							</li>
+							<li class="pull-left" id="searchContent_1">
+								<input id="search_1" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name="name[value]"/>&nbsp;&nbsp;
+							</li>
+						</ul>
+					</div>
+					<?php $max_key = 1;?>
+				<else />
+				<volist name="scene_info['data']" key="key1" id="vo">
+					<div id="con_search_{$key1+1}" style="float:left;width:650px;margin:10px 10px 0 0px;">
+						<div id="rem_{$key1+1}" class="pull-left" style="line-height:30px;"><a href="javascript:void(0);" class="rem_search" rel="{$key1+1}" title="移除"><span class="fa fa-times-circle"></span></a></div>&nbsp;
+						<ul class="nav pull-left" style="margin:0px 0 0 5px;width:620px;">
+							<li class="pull-left">
+								<select id="field_{$key1+1}" style="width:160px" class="form-control input-sm field_name_dialog" onchange="changeCondition({$key1+1})" name="data[{$key1+1}][field]" >
+									<option class="" value="name">--{:L('PLEASE_SELECT_A_FILTER_CONDITION')}--</option>
+									<volist name="field_list" key="key2" id="v">
+										<if condition="$v['field'] neq 'customer_owner_id'">
+											<option class="{$v['form_type']}" value="{$v['field']}" rel="customer" <if condition = "$vo['field'] eq $v['field']">selected="selected"</if>>{$v[name]}
+											</option>
+										</if>
+									</volist>
+									<if condition="$_GET['content'] neq 'resource'">
+										<option class="role" value="owner_role_id" <if condition = "$vo['field'] eq 'owner_role_id'">selected="selected"</if>>{:L('PRINCIPAL')}</option>
+									</if>
+									<option class="date" value="create_time" <if condition = "$vo['field'] eq 'create_time'">selected="selected"</if>>{:L('CREATION_TIME')}</option>
+									<option class="date" value="update_time" <if condition = "$vo['field'] eq 'update_time'">selected="selected"</if>>{:L('MODIFICATION_TIME')}</option>
+									<option class="text" value="contacts_name" <if condition = "$vo['field'] eq 'contacts_name'">selected="selected"</if>>首要联系人姓名</option>
+									<option class="mobile" value="contacts_telephone" <if condition = "$vo['field'] eq 'contacts_telephone'">selected="selected"</if>>首要联系人电话</option>
+								</select>&nbsp;&nbsp;
+							</li>
+							<li class="pull-left" id="conditionContent_{$key1+1}">
+								<if condition="$vo.form_type eq 'number'">
+									<select style="width:100px;" class="form-control input-sm" name="{$vo['field']}[condition]">
+										<option value="gt" <if condition="$vo['condition'] eq 'gt'">selected="selected"</if>>{:L('GT')}</option>
+										<option value="lt" <if condition="$vo['condition'] eq 'lt'">selected="selected"</if>>{:L('LT')}</option>
+										<option value="eq" <if condition="$vo['condition'] eq 'eq'">selected="selected"</if>>{:L('EQ')}</option>
+										<option value="neq" <if condition="$vo['condition'] eq 'neq'">selected="selected"</if>>{:L('NEQ')}</option>
+									</select>
+								<elseif condition="$vo.field eq 'owner_role_id' || $vo.field eq 'status_id' || $vo.form_type eq 'datetime'"/>
+								<elseif condition="$vo.form_type eq 'box'" />
+									<span id="{$vo['field']}_scene">{$vo.value}</span>
+									<script type="text/javascript">							
+										var b = '{$vo[field]}';
+										var c = 'customer';
+										var value_str = $("#{$vo['field']}_scene").html();
+										$.ajax({
+											type:'get',
+											url:'index.php?m=setting&a=boxfield&model='+c+'&field='+b,
+											async:false,
+											success:function(data){
+												options = '';
+												$.each(data.data, function(k, v){
+													if(value_str == v){
+														select = 'selected';
+													}else{
+														select = '';
+													}
+													options += "<option value='"+v+"' "+select+">"+v+"</option>";
+												});
+												$("#{$vo['field']}"+'_scene').html('<select class="{$vo["field"]} form-control input-sm" style="width:auto" name="{$vo["field"]}[value]" ><option value="">--请选择--</option>' + options + '</select>&nbsp;&nbsp;');	
+											},
+											dataType:'json'
+										});
+										//$(".{$vo['field']} option[value='{$vo['value']}']").attr('selected','selected');
+									</script>	
+								<elseif condition="$vo.form_type eq 'address'" />
+									<select style="width:auto;margin-top: 13px;" class="form-control input-sm" name="{$vo['field']}[condition]">
+										<option value="contains" <if condition="$vo['condition'] eq 'contains'">selected="selected"</if>>{:L('IN')}</option>
+										<option value="not_contain" <if condition="$vo['condition'] eq 'not_contain'">selected="selected"</if>>{:L('NOTIN')}</option>
+									</select>
+									<select name="{$vo['field']}[state_scene]" class="form-control input-sm" id="state" style="width:135px;margin-top: 13px;"></select>
+									<select name="{$vo['field']}[city_scene]" class="form-control input-sm" id="city" style="width:110px;margin-top: 13px;"></select>
+									<select name="{$vo['field']}[area_scene]" class="form-control input-sm" id="area" style="width:110px;margin-top: 13px;"></select>
+									<input type="text" id="search" name="{$vo['field']}[value]" value="{$vo['value']}" class="form-control input-sm" style="margin-top: 13px;" placeholder="{:L('THE_STREET_INFORMATION')}" class="input-large">
+									<script type="text/javascript">
+										 new PCAS("{$vo['field']}[state_scene]","{$vo['field']}[city_scene]","{$vo['field']}[area_scene]","<php>echo $vo['state'];</php>","<php>echo $vo[city];</php>","<php>echo $vo[area];</php>");
+									</script>
+								<else />
+									<select style="width:auto" class="form-control input-sm" name="{$vo['field']}[condition]">
+										<option value="contains" <if condition="$vo[condition] eq 'contains'">selected="selected"</if>>{:L('INCLUDE')}</option>
+										<option value="not_contain" <if condition="$vo[condition] eq 'not_contain'">selected="selected"</if>>{:L('EXCLUSIVE')}</option>
+										<option value="is" <if condition="$vo[condition] eq 'is'">selected="selected"</if>>{:L('YES')}</option>
+										<option value="isnot" <if condition="$vo[condition] eq 'isnot'">selected="selected"</if>>{:L('NO')}</option>					
+										<option value="start_with" <if condition="$vo[condition] eq 'start_with'">selected="selected"</if>>{:L('BEGINNING_CHARACTER')}</option>
+										<option value="end_with" <if condition="$vo[condition] eq 'end_with'">selected="selected"</if>>{:L('TERMINATION_CHARACTER')}</option>
+										<option value="is_empty" <if condition="$vo[condition] eq 'is_empty'">selected="selected"</if>>{:L('MANDATORY')}</option>
+										<option value="is_not_empty" <if condition="$vo[condition] eq 'is_not_empty'">selected="selected"</if>>{:L('ISNOTEMPTY')}</option>
+									</select>
+								</if>
+							</li>
+							<li class="pull-left" id="searchContent_{$key1+1}" style="margin-left:5px;">
+								<if condition="$vo['form_type'] neq 'box' && $vo['form_type'] neq 'address'">
+									<if condition="$vo['form_type'] eq 'datetime'">
+										<input id="start_{$vo['field']}" type="text" class="form-control input-sm search-query" name="{$vo['field']}[start]" onclick="WdatePicker()" value="{$vo['start']}"/> 至 <input id="end_{$vo['field']}" type="text" class="form-control input-sm search-query" name="{$vo['field']}[end]" onclick="WdatePicker()" value="{$vo['end']}" rel="customer"/>
+									<elseif condition="$vo['field'] eq 'owner_role_id'"/>
+										<input type="hidden" id="owner_role_search" rel="{$key1+1}" rel1="{$vo['field']}[value]" rel2="{$vo['value']}"/>
+										<script type="text/javascript">
+											var key_id = $('#owner_role_search').attr('rel');
+											var search_owner_role_id = $('#owner_role_search').attr('rel1');
+											var owner_roleid = $('#owner_role_search').attr('rel2');
+											$.ajax({
+												type:'get',
+												url:'index.php?m=user&a=getrolelist&module=customer&action=index',
+												async:false,
+												success:function(data){
+													options = '';
+													$.each(data.data, function(k, v){
+														options += '<option value="'+v.role_id+'" checkedit>'+v.user_name+' ['+v.department_name+'-'+v.role_name+'] </option>';
+													});
+													$("#searchContent_"+key_id+"").html('<select class=" show-tick form-control input-sm" data-live-search="true" id="search_'+key_id+'" name="'+search_owner_role_id+'" style="width:auto">' + options + '</select>');
+													$('#search_'+key_id+' option[value='+owner_roleid +']').prop('selected',true);
+												},
+												dataType:'json'
+											});		
+										</script>		
+									<else/>	
+										<input name="{$vo['field']}[value]" type="text" class="form-control input-sm search-query" class="{$vo['form_type']}" value="{$vo['value']}" rel="customer">
+									</if>
+								</if>
+							</li>
+						</ul>
+					</div>
+					<?php $max_key = $key1+1;?>
+				</volist>
+				</empty>
+			</div>
+			<div class="clearfix"></div>
+			<div style="margin-left: 35px;margin-top:10px;"><a href="javascript:void(0);" style="display: -moz-stack;margin: 30px 0px 0px; font-size: 12px; color: rgb(62, 133, 233);" id="add_btn_dialog">+添加筛选条件</a>
+			</div>
+		</div>
+	</div>
+</form>
+<script>
+/*添加筛选条件*/
+var m = {$max_key};
+$('#searchFormDialog').on('click','#add_btn_dialog',function(){
+	m += 1;
+	$('#search_edit_dialog').append('<div id="con_search_'+m+'" style="float:left;width:650px;padding-top:10px;margin:0px 10px 0 0px;"><div  id="rem_'+m+'" class="pull-left" style="line-height:30px;"><a href="javascript:void(0);" class="rem_search" rel="'+m+'" title="移除"><span class="fa fa-times-circle"></span></a></div>&nbsp;<ul class="nav pull-left" style="margin:0px 0 0 5px;width:620px"><li class="pull-left"><select id="field_'+m+'"  style="width:auto" class="form-control input-sm field_name_dialog new-select" onchange="changeCondition('+m+')" name="data['+m+'][field]"><option class="" value="name">--{:L('PLEASE_SELECT_A_FILTER_CONDITION')}--</option><volist name="field_list" id="v"><if condition="$v[field] neq 'customer_owner_id'"><option class="{$v['form_type']}" value="{$v[field]}" rel="customer">{$v[name]}</option></if></volist><if condition="$Think.get.content neq 'resource'"><option class="role" value="owner_role_id">{:L('PRINCIPAL')}</option></if><option class="date" value="create_time">{:L('CREATION_TIME')}</option><option class="date" value="update_time">{:L('MODIFICATION_TIME')}</option><option class="text" value="contacts_name">首要联系人姓名</option><option class="mobile" value="contacts_telephone">首要联系人电话</option></select>&nbsp;&nbsp;</li><li class="pull-left" id="conditionContent_'+m+'"><select id="condition_'+m+'" style="width:99px" class="form-control input-sm new-select" name="data['+m+'][data][1]" onchange="changeSearch()"><option value="contains">{:L('INCLUDE')}</option><option value="not_contain">{:L('EXCLUSIVE')}</option><option value="is">{:L('YES')}</option><option value="isnot">{:L('ISNOT')}</option><option value="start_with">{:L('BEGINNING_CHARACTER')}</option><option value="end_with">{:L('TERMINATION_CHARACTER')}</option><option value="is_empty">{:L('Mandatory')}</option><option value="is_not_empty">{:L('ISNOTEMPTY')}</option></select>&nbsp;&nbsp;</li><li class="pull-left" id="searchContent_'+m+'"><input id="search_'+m+'" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name="data['+m+'][data][2]"/>&nbsp;&nbsp;</li></ul></div>');  
+});
+$('#searchFormDialog').on('click','.rem_search',function(){
+	var num = $(this).attr('rel');
+	$('#con_search_'+num).remove();
+});
+
+// 筛选重复判断
+var dosearchDialog = 1;
+function dohDialog(){
+	var aryDialog = new Array();
+	var field_name_dialog = '';
+	var is_submit_dialog = 1;
+	$('.field_name_dialog').each(function(k, v){
+		field_name_dialog = $(this).find("option:selected").val();
+		if(jQuery.inArray(field_name_dialog,aryDialog) >= 0){
+			is_submit_dialog = 0;
+			swal({
+				title: "筛选条件中有重复项！",
+				text: "",
+				type: "error"
+			});
+			dosearchDialog = 0;
+			return false;
+		}
+		aryDialog[k] = field_name_dialog;
+	});
+}
+</script>

@@ -1,0 +1,802 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/chart/highcharts.js"></script>
+<script src="__PUBLIC__/js/chart/modules/exporting.js"></script>
+<script src="__PUBLIC__/js/chart/modules/funnel.js"></script>
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+
+<!-- echarts -->
+<script type="text/javascript" src="__PUBLIC__/js/echarts/echarts.js"></script>
+<!-- daterangepicker -->
+<link href="__PUBLIC__/css/daterangepicker.css" rel="stylesheet">
+<script src="__PUBLIC__/js/daterangepicker/daterangepicker.js"></script>
+<!--jQuery导出插件-->
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jquery.base64.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/tableExport.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jspdf/libs/sprintf.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jspdf/jspdf.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jspdf/libs/base64.js"></script>
+<!--jQuery导出插件-->
+<style>
+body{
+	overflow-y: hidden;
+}
+</style>
+<script>
+$(function(){
+	<if condition = "$_GET['content_id'] eq '' || $_GET['content_id'] eq 1">
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-30);
+		$(window).resize(function(){
+			$("#table_div").height(window.innerHeight-$("#table_div").offset().top-30);
+			$("#oDivL_tab_Test3").height($("#table_div").height()).width($("#oTableLH_tab_Test3").width());
+			$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width());
+		});
+		var scroll_width = 7;
+		$(".nicescroll").niceScroll({
+			cursorcolor: "#999",//#CC0071 光标颜色 
+		    cursoropacitymax: 0.4, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0 
+		    touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备 
+		    cursorwidth: scroll_width+"px", //像素光标的宽度 
+		    cursorborder: "0", //     游标边框css定义 
+		    cursorborderradius: "3px",//以像素为光标边界半径 
+		    autohidemode: false, //是否隐藏滚动条 
+		    zindex:100,
+		    background:"#F3F3F5",//滚动条背景色
+		});
+		$("#tab_Test3").FrozenTable(1,0,1);
+		$("#oDivL_tab_Test3").height($("#table_div").height()).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width());
+	</if>
+})
+
+</script>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<include file="Public:analytics_left" />
+				<input type="hidden" id="content_id" value="{$content_id}">
+				<div class="col-lg-10">
+					<div class="ibox-content" style="padding-bottom:10px;border-bottom: none;">
+						<include file="Public:alert" />
+						<form id="" class="form-group" method="get" style="margin-bottom: 0px;">
+							<input type="hidden" name="m" value="business" />
+							<input type="hidden" name="a" value="analytics" />
+							<div class="row" style="height: 45px;">
+								<div class="col-lg-4">
+									<div class="pull-left" >
+										<span style="font-size: 18px;color: #000;">
+											<?php
+												switch($_GET['content_id']){
+													case 1:$content_name = '员工商机分析';break;
+													case 2:$content_name = '销售漏斗分析';break;
+													case 3:$content_name = '商机金额分布统计';break;
+													case 4:$content_name = '商机趋势分析(日)';break;
+													case 5:$content_name = '商机趋势分析(周)';break;
+													case 6:$content_name = '商机趋势分析(月)';break;
+													default : $content_name = '员工商机分析';break;
+												}
+												echo $content_name;
+											?>
+										</span>
+									</div>
+								</div>
+								<div class="col-lg-5">
+								</div>
+								<div class="col-lg-3">
+									<div class="pull-right" >
+										<if condition = "$_GET['content_id'] eq 2">
+											<div class="pull-left" >
+												<a class="pull-right" style="margin-right:18px;font-size:13px;color:#75899D;line-height: 40px;" href="javascript:void(0)" id="addduibi" title=""><i class="fa fa-plus"></i> 对比</a>
+											</div>
+										</if>
+										<div class="pull-left" style="line-height: 40px;">
+											<if condition = "$_GET['content_id'] eq 1">
+												<span class="fa fa-download" style="color:#75899D;"></span>
+												<a style="color: #75899D;" onClick ="$('#tab_Test3').tableExport({type: 'excel', escape: 'false'});">导出</a>
+											<elseif condition = "$_GET['content_id'] eq 2 && $_GET['dbname'] eq ''" />
+												<span class="fa fa-download" style="color:#75899D;"></span>
+												<a style="color: #75899D;" onClick ="$('#export').tableExport({type: 'excel', escape: 'false'});">导出</a>
+											</if>
+										</div>
+									</div>
+									<if condition = "$_GET['content_id'] eq 1">
+										<div class="pull-right" style="margin-right: 15px;">
+											<div class="checkbox checkbox-primary">
+												<input name="user_type" id="user_type" type="checkbox" <if condition="$_GET['user_type'] eq ''">checked="true" value=""<else />value="1"</if> />
+												<label for="user_type">仅显示销售岗数据</label>
+											</div>
+										</div>
+									</if>
+								</div>
+							</div>
+							<if condition = "$_GET['content_id'] lt 4">
+								<input type="hidden" name="dbname" id="dbname" value="{$dbname}" />
+								<input type="hidden" name="select_type" value="{$select_type}" />
+								<input type="hidden" name="content_id" value="{$_GET['content_id']}" />
+								<div class="row">
+									<div class="col-lg-12" >
+										<div class="nav pull-left" style="margin:2px 0 0 0;">
+											<div class="input-group">
+												<input type="text" name="between_date" id="reservation" class="form-control" style="width:300px;"/>
+												<i class="glyphicon glyphicon-calendar fa fa-calendar" style="position: absolute;bottom: 10px;right: 24px;top: auto;cursor: pointer;"></i>
+											</div>
+										</div>
+										<if condition = "$_GET['dbname'] eq ''">
+											<div class="nav pull-left" style="margin:2px 0 0 15px;width: 165px;">
+												<div class="input-group">
+													<select class="form-control select2" style="min-width:165px;max-width: 165px;height: 0px;" name="department" id="department" onchange="changeRole()">
+														<option class="all" value="all">{:L('ALL')}</option>
+														<volist name="departmentList" id="vo">
+															<option value="{$vo.department_id}" <if condition="$_GET['department'] eq $vo['department_id']">selected</if>>{$vo.name}</option>
+														</volist>
+													</select>
+												</div>
+											</div>
+											<div class="nav pull-left" style="margin:2px 0 0 15px;width: 165px;">
+												<div class="input-group">
+													<select class="form-control select2" style="min-width:165px;max-width: 165px;height: 0px;" name="role" id="role" onchange="changeCondition()">
+														<option class="all" value="all">{:L('ALL')}</option>
+														<volist name="roleList" id="vo">
+															<option value="{$vo.role_id}" <if condition="$_GET['role'] eq $vo['role_id']">selected</if>>{$vo.role_name}-{$vo.user_name}</option>
+														</volist>
+													</select>
+												</div>
+											</div>
+										</if>
+										<if condition = "$_GET['content_id'] eq 2">
+											<div class="nav pull-left" style="margin:2px 0 0 15px;width: 165px;">
+												<div class="input-group">
+													<select class="form-control" style="min-width:165px;max-width: 165px;line-height: 35px;" name="status_type_id" id="status_type_id" >
+														<volist name="type_list" id="vo">
+															<option value="{$vo.id}" <if condition="$_GET['status_type_id'] eq $vo['id']">selected</if>>{$vo.name}</option>
+														</volist>
+													</select>
+												</div>
+											</div>
+										</if>
+										<div class="pull-left" style="margin-left: 20px;">
+											<button type="submit" id="analytics_search" class="btn btn-primary">{:L('SEARCH')}</button>
+										</div>
+									</div>
+								</div>
+							</if>
+						</form>
+					</div>
+					<div class="ibox-content clearfix" id="right_height" style="border-top: none;">
+						<if condition = "$_GET['content_id'] eq '' || $_GET['content_id'] eq 1 || $_GET['content_id'] gt 6">
+							<div id="content_1" class="th_content" style="position:relative;">
+								<div id="table_div" class="nicescroll" >
+									<table class="table table-hover table-striped table_thead_fixed table-bordered" id="tab_Test3" style="background:#fff;margin-bottom:0px;">
+										<tr class="tabTh">
+											<td>员工姓名</td>
+											<td>员工编号</td>
+											<td>商机数</td>
+											<td>跟进中</td>
+											<td>已成交</td>
+											<td>已失败</td>
+											<td>商机赢单率</td>
+											<td>商机赢单金额</td>
+											<td>平均商机赢单金额</td>
+											<td>回款金额</td>
+											<td>未回款金额</td>
+											<td>回款比例</td>
+										</tr>
+										<tbody>
+											<volist name="reportList" id="vo">
+												<tr>
+													<td><a class="role_info" rel="{$vo.user.role_id}" href="javascript:void(0)">{$vo.user.user_name}</a></td>
+													<td>{$vo['user']['number']}</td>
+													<!-- <td><a href="{:U('business/index')}&field=owner_role_id&search={$vo.user.role_id}&by=me">{$vo.own_count}</a></td> -->
+													<td>{$vo.own_count}</td>
+													<td>{$vo.follow_count}</td>
+													<td>{$vo.success_count}</td>
+													<td>{$vo.deal_count}</td>
+													<td>{$vo.business_rate}%</td>
+													<td>{$vo.contract_price}</td>
+													<td>{$vo.contract_average}</td>
+													<td>{$vo.receivingorder_price}</td>
+													<td>{$vo.un_receivingorder_price}</td>
+													<td>{$vo.receivingorder_rate}%</td>
+												</tr>
+											</volist>
+											<tr style="background: #70B4E8;color: #fff;font-size: 13px;">
+												<td style="color:#fff;">{:L('SUM_TO')}</td>
+												<td style="color:#fff;"></td>
+												<td style="color:#fff;">{$total_report['own_count_total']}</td>
+												<td style="color:#fff;">{$total_report['follow_count_total']}</td>
+												<td style="color:#fff;">{$total_report['success_count_total']}</td>
+												<td style="color:#fff;">{$total_report['deal_count_total']}</td>
+												<td style="color:#fff;">{$total_report['business_rate_total']}%</td>
+												<td style="color:#fff;">{$total_report['contract_price_total']}</td>
+												<td style="color:#fff;">{$total_report['contract_average_total']}</td>
+												<td style="color:#fff;">{$total_report['receivingorder_price_total']}</td>
+												<td style="color:#fff;">{$total_report['un_receivingorder_price_total']}</td>
+												<td style="color:#fff;">{$total_report['receivingorder_rate_total']}%</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</if>
+						<if condition = "$_GET['content_id'] eq 2">
+							<div id="content_2" class=" th_content full-height-scroll">
+								<if condition = "$_GET['select_type'] gt 0">
+									<div id="canvas_status_duibi" class="col-sm-12 sort-list ui-sortable " style="min-width:100%;margin:0 auto;">
+										<volist name="duibi_array" key="key" id="vo">
+											<div class="col-sm-6 sort-item" rel="{$key}" style="padding:0px;height: 400px;margin-top: 20px;">
+												<div class="dash-border" style="margin:20px;">
+													<div class="dash-title" style="padding:15px;width:80%;margin:0px 10%;">
+														<img src="__PUBLIC__/img/chart.png" style="width:17.5px;" />&nbsp;&nbsp;&nbsp;
+														<span>
+															{$vo['user']['user_name']}
+														</span>
+													</div>
+													<div class="content-chart" id="sales_funnel_{$key}" style="font-size: 12px;width:80%;height: 350px;margin:0px 10%;">
+														<div class="ibox-content">
+											                <div class="spiner-example" style="padding-top: 0px;">
+											                    <div class="sk-spinner sk-spinner-three-bounce">
+											                        <div class="sk-bounce1"></div>
+											                        <div class="sk-bounce2"></div>
+											                        <div class="sk-bounce3"></div>
+											                    </div>
+											                </div>
+											            </div>
+													</div>
+												</div>
+											</div>
+										</volist>
+									</div>
+								<else />
+									<div id="an_chart" class="col-lg-6" style="margin-left: 5px;">
+										<div id="canvas_status" style="max-width:inherit;min-width:90%; height: 350px;margin:0 auto;">{:L('TEMPORARILY_NO_DATA')}</div>
+									</div>
+									<div class="col-lg-5" style="margin-left: 5px;">
+										<div class="full-height-scroll" style="left:0px;top:0px;">
+											<table class="table table-hover" id="export" style="margin-top: 20px;border:1px solid #ccc;background-color: #f9f9f9;">
+												<tr style="background-color: #F4F4F4;">
+													<td style="border-top: none;">阶段</td>
+													<td style="border-top: none;">金额(元)</td>
+													<td style="border-top: none;">商机数</td>
+												</tr>
+												<volist name="status_count_list" id="vo">
+													<tr>
+														<td>{$vo['name']}</td>
+														<td>{$vo['money']}</td>
+														<td>{$vo['num']}</td>
+													</tr>
+												</volist>	
+											</table>
+										</div>
+									</div>
+								</if>
+							</div>
+						</if>
+						<if condition = "$_GET['content_id'] eq 3">
+							<div id="content_3" class="th_content full-height-scroll">
+								<div id="canvas_money" style="max-width:inherit;min-width:100%; height: 450px;">
+									<div style="background-color:#fff;"><include file="Public:nodata" /></div>
+								</div>
+							</div>
+						</if>
+						<if condition = "$_GET['content_id'] eq 4">
+							<div id="content_4" class="th_content full-height-scroll">
+								<div id="canvas_day" style="max-width:inherit;min-width:100%; height: 450px;">
+									<div style="background-color:#fff;"><include file="Public:nodata" /></div>
+								</div>
+							</div>
+						</if>
+						<if condition = "$_GET['content_id'] eq 5">
+							<div id="content_5" class="th_content full-height-scroll">
+								<div id="canvas_week" style="max-width:inherit;min-width:100%; height: 450px;">
+									<div style="background-color:#fff;"><include file="Public:nodata" /></div>
+								</div>
+							</div>
+						</if>
+						<if condition = "$_GET['content_id'] eq 6">
+							<div id="content_6" class="th_content full-height-scroll">
+								<div id="canvas_month" style="max-width:inherit;min-width:100%; height: 450px;">
+									<div style="background-color:#fff;"><include file="Public:nodata" /></div>
+								</div>
+							</div>
+						</if>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="hide" id="dialog-import" title="{:L('IMPORT_DATA')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display: none;" id="dialog-role-info" title="员工信息">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-addduibi" title="添加对比">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+	//时间插件  
+    $('#reservation').daterangepicker({
+        startDate: '{$start_date}', 
+        endDate: '{$end_date}',  
+        //minDate: '01/01/2012',    //最小时间  
+        maxDate : moment(), //最大时间
+        showDropdowns : true,  
+        showWeekNumbers : false, //是否显示第几周  
+        // timePicker : true, //是否显示小时和分钟  
+        // timePickerIncrement : 60, //时间的增量，单位为分钟  
+        timePicker12Hour : false, //是否使用12小时制来显示时间  
+        ranges : {  
+            //'最近1小时': [moment().subtract('hours',1), moment()],  
+            '今日': [moment().startOf('day'), moment()],  
+            '昨日': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')], 
+            '上月': [moment().subtract('days', '{$daterange[0][start_day]}'), moment().subtract('days', '{$daterange[0][end_day]}')],
+            '本月': [moment().subtract('days', '{$daterange[1][start_day]}'), moment()], 
+            '上季度': [moment().subtract('days', '{$daterange[2][start_day]}'), moment().subtract('days', '{$daterange[2][end_day]}')],
+            '本季度': [moment().subtract('days', '{$daterange[3][start_day]}'), moment()], 
+            '上一年': [moment().subtract('days', '{$daterange[4][start_day]}'), moment().subtract('days', '{$daterange[4][end_day]}')],
+            '本年': [moment().subtract('days', '{$daterange[5][start_day]}'), moment()], 
+            // '最近7日': [moment().subtract('days', 6), moment()],  
+            // '最近30日': [moment().subtract('days', 29), moment()]  
+        },   
+        opens : 'right', //日期选择框的弹出位置  
+        buttonClasses : [ 'btn btn-default' ],  
+        applyClass : 'btn-small btn-primary blue',  
+        cancelClass : 'btn-small', 
+        separator : ' to ',  
+        locale : {  
+            applyLabel : '确定',  
+            cancelLabel : '取消',  
+            fromLabel : '起始时间',  
+            toLabel : '结束时间',  
+            customRangeLabel : '自定义',  
+            daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],  
+            monthNames: ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"],
+            firstDay : 1 ,
+            format : 'YYYY-MM-DD', //控件中from和to 显示的日期格式
+        },
+        "alwaysShowCalendars": true,
+        function(start, end, label) {
+        	//回调
+        	$('#reservation').val(start.format('YYYY-MM-DD HH:mm:ss') + ' - ' + end.format('YYYY-MM-DD HH:mm:ss'))
+  			// console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+    	}
+    });
+	
+	$("#dialog-addduibi").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 600,
+		maxHeight: 450,
+		position: ["center",100],
+		buttons: {
+			"确定": function () {
+				var select_role = 0;
+				var arys = new Array();
+				var type_id = $('#type_id').val();
+				var content_id = $('#content_id').val();
+				$('#types_id').val(type_id);
+				$('#contents_id').val(content_id);
+				$('.duibi_role_id').each(function(k, v){
+					duibi_id = $(this).find("option:selected").val();
+					if(duibi_id){
+						if(jQuery.inArray(duibi_id,arys) >= 0){
+							swal({
+								title: "对比员工不能重复！",
+								type: "error"
+							});
+							return false;
+						}
+						arys[k] = duibi_id;
+						select_role +=1;
+					}
+				})
+				var select_type = $('#select_type').val();
+				if(select_role < 2){
+					swal({
+						title: "对比员工至少2位!",
+						type: "error"
+					});
+					return false;
+				}else if(select_type == '' || select_type == 0){
+					swal({
+						title: "对比时间不能为空！",
+						type: "error"
+					});
+					return false;
+				}else{
+					$('#remind_form').submit();
+					return true;
+				}
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+	
+	$("#addduibi").click(function(){
+		var mokuai_id = $('#type_id').val();
+		var content_id = $('#content_id').val();
+		var dbname = $('#dbname').val();
+		var select_type = $('#select_type').val();
+		$('#dialog-addduibi').dialog('open');
+		$('#dialog-addduibi').load('{:U("business/addduibi","content_id=")}'+content_id +'&dbname='+dbname+'&select_type='+select_type);
+	});
+	
+	$("#dialog-role-info").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 600,
+		maxHeight: 550,
+		position: ["center",100]
+	});
+	
+	$(".role_info").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+	$(function () {
+		var canvas_width = $('#an_chart').width();
+		var canvas_height = $('#an_chart').height();
+		$('#canvas_status').css({width:canvas_width*0.6});
+		$('#canvas_money').css({width:canvas_width});
+		$('#canvas_week').css({width:canvas_width});
+		$('#canvas_month').css({width:canvas_width});
+		$('#canvas_day').css({width:canvas_width});
+		var chart1;
+		$(document).ready(function () {
+			<if condition="$business_add_count gt 0">
+			
+			var chart2;
+			// Build the chart2
+			$('#canvas_money').highcharts({
+				chart2: {
+					plotBackgroundColor: null,
+					plotBorderWidth: null,
+					plotShadow: false
+				},
+				title: {
+					text: '{:L('AMOUNT_OF_BUSINESS_STATISTICS_SUM_TO',array($total_report['add_count']))}'
+				},
+				tooltip: {
+					pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>',
+					percentageDecimals: 1
+				},	
+				plotOptions: {
+					pie: {
+						allowPointSelect: true,
+						cursor: 'pointer',
+						dataLabels: {
+							enabled: false
+						},
+						showInLegend: true
+					}
+				},
+				series: [{
+					type: 'pie',
+					name: '{:L('THE_AMOUNT_OF')}',
+					data: [
+						{$money_count}
+					]
+				}]
+			});
+			
+			var chart3;
+			// Build the chart3
+			$('#canvas_day').highcharts({
+				chart3: {
+					plotBackgroundColor: null,
+					plotBorderWidth: null,
+					plotShadow: false
+				},
+                title: {
+                    text: '{:L('TREND_ANALYSIS_BY_THE_DAY')}'
+                },
+                xAxis: {
+                    categories: [{$day_count}],
+                    labels: { 
+                      rotation:60,
+                      y:40,
+                      x:15,
+                      step:3
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: null
+                    },
+                    min: 0,
+                },
+                legend: {
+                    align: 'left',
+                    verticalAlign: 'top',
+                    y: 0,
+                    floating: true,
+                    borderWidth: 0
+                },
+                tooltip: {
+                    shared: true,
+                    crosshairs: true
+                },			
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        point: {
+                            events: {
+                                click: function() {
+                                    hs.htmlExpand(null, {
+                                        pageOrigin: {
+                                            x: this.pageX,
+                                            y: this.pageY
+                                        },
+                                        headingText: this.series.name,
+                                        maincontentText: Highcharts.dateFormat('%A, %b %e, %Y', this.x) +':<br/> '+
+                                            this.y +' visits',
+                                        width: 200
+                                    });
+                                }
+                            }
+                        },
+                        marker: {
+                            lineWidth: 1
+                        }
+                    }
+                },			
+                series: [{
+                    name: '{:L('CREATE_BUSINESS_OPPORTUNITIES')}',
+                    data: [{$day_create_count}],
+                }, {
+                    name: '{:L('TO_WIN_A_SINGLE_BUSINESS')}',
+                    data: [{$day_success_count}],
+                }]
+            });
+
+			// var chart;
+			$('#canvas_status').highcharts({
+				chart: {
+					type: 'funnel',
+					marginRight: 100
+				},
+				title: {
+					// text: '{:L('SALES_FUNNEL_SUM_TO',array($total_report['add_count']))}',
+					text: '',
+					x: -50
+				},
+				plotOptions: {
+					series: {
+						dataLabels: {
+							enabled: true,
+							format: '<b>{point.name}</b> ({point.y:,.0f})',
+							color: 'black',
+							softConnector: true
+						},
+						neckWidth: '30%',
+						neckHeight: '25%'
+					}
+				},
+				legend: {
+					enabled: false
+				},
+				series: [{
+					name: '{:L('STAGE_OPPORTUNITIES_FOR')}',
+					data: [
+						{$status_count}
+					]
+				}]
+			});
+			
+            $('#canvas_week').highcharts({
+                chart_week: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    inverted:true,
+                },
+                title: {
+                    text: '{:L('TREND_ANALYSIS_BY_THE_WEEK')}'
+                },
+                xAxis: {
+                    categories: [{$week_count}],
+                    labels: { 
+                      rotation:60,
+                      y:40,
+                      x:15,
+                      step:3
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: null
+                    },
+                    min: 0
+                },
+                legend: {
+                    align: 'left',
+                    verticalAlign: 'top',
+                    y: 0,
+                    floating: true,
+                    borderWidth: 0
+                },
+                tooltip: {
+                    shared: true,
+                    crosshairs: true
+                },			
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        point: {
+                            events: {
+                                click: function() {
+                                    hs.htmlExpand(null, {
+                                        pageOrigin: {
+                                            x: this.pageX,
+                                            y: this.pageY
+                                        },
+                                        headingText: this.series.name,
+                                        maincontentText: Highcharts.dateFormat('%A, %b %e, %Y', this.x) +':<br/> '+
+                                            this.y +' visits',
+                                        width: 200
+                                    });
+                                }
+                            }
+                        },
+                        marker: {
+                            lineWidth: 1
+                        }
+                    }
+                },			
+                series: [{
+                    name: '{:L('CREATE_BUSINESS_OPPORTUNITIES')}',
+                    data: [{$week_create_count}],
+                }, {
+                    name: '{:L('TO_WIN_A_SINGLE_BUSINESS')}',
+                    data: [{$week_success_count}],
+                }]
+            });
+            $('#canvas_month').highcharts({
+                chart_month: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: '{:L('TREND_ANALYSIS_BY_THE_MONTH')}'
+                },
+                xAxis: {
+                    categories: [{$month_count}],
+                    labels: { 
+                      rotation:60,
+                      y:40,
+                      x:15,
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: null
+                    },
+                    min: 0
+                },
+                legend: {
+                    align: 'left',
+                    verticalAlign: 'top',
+                    y: 0,
+                    floating: true,
+                    borderWidth: 0
+                },
+                tooltip: {
+                    shared: true,
+                    crosshairs: true
+                },			
+                plotOptions: {
+                    series: {
+                        cursor: 'pointer',
+                        point: {
+                            events: {
+                                click: function() {
+                                    hs.htmlExpand(null, {
+                                        pageOrigin: {
+                                            x: this.pageX,
+                                            y: this.pageY
+                                        },
+                                        headingText: this.series.name,
+                                        maincontentText: Highcharts.dateFormat('%A, %b %e, %Y', this.x) +':<br/> '+
+                                            this.y +' visits',
+                                        width: 200
+                                    });
+                                }
+                            }
+                        },
+                        marker: {
+                            lineWidth: 1
+                        }
+                    }
+                },			
+                series: [{
+                    name: '{:L('CREATE_BUSINESS_OPPORTUNITIES')}',
+                    data: [{$month_create_count}],
+                }, {
+                    name: '{:L('TO_WIN_A_SINGLE_BUSINESS')}',
+                    data: [{$month_success_count}],
+                }]
+            });
+			</if>
+		});
+	});
+
+	//商机漏斗对比
+	$(function () {
+		<volist name="duibi_array" key="k" id="vo">
+
+			$('#sales_funnel_{$k}').highcharts({
+				chart: {
+					type: 'funnel',
+					marginRight: 100
+				},
+				title: {
+					text: '',
+					x: -50
+				},
+				plotOptions: {
+					series: {
+						dataLabels: {
+							enabled: true,
+							format: '<b>{point.name}</b> ({point.y:,.0f})',
+							color: 'black',
+							softConnector: true
+						},
+						neckWidth: '30%',
+						neckHeight: '25%'
+					}
+				},
+				legend: {
+					enabled: false
+				},
+				series: [{
+					name: '{:L('STAGE_OPPORTUNITIES_FOR')}',
+					data: [{$vo['status_count_array']}]
+				}]
+			});
+		</volist>
+	});
+
+	// 搜索
+	$(".select_time_a").click(function(){
+		var select_time = $(this).attr('rel');
+		var type_id = "{$_GET['type_id']}";
+		var content_id = "{$_GET['content_id']}";  
+		window.location.href="{:U('business/analytics','&type_id=')}"+type_id+'&content_id='+content_id+'&select_type='+select_time+'&department=all&role=all';
+	});
+
+	$("#user_type").click(function(){
+		var user_type = $(this).is(':checked');
+		var between_date = $('#reservation').val();
+		if(user_type == true){
+			window.location.href = "{:U('business/analytics','content_id=1'.'&between_date=')}"+between_date;
+		}else{
+			window.location.href = "{:U('business/analytics','&content_id=1'.'&between_date=')}"+between_date+'&user_type=1';
+		}
+	});
+</script>
+<include file="Public:footer" />

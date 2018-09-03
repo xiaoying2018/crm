@@ -1,0 +1,123 @@
+<include file="Public:header" />
+<style type="text/css">
+    .add_title{
+        padding-bottom:10px;
+        height: 60px;
+        margin-bottom:15px;
+    }
+    .add_title>span{
+        border-bottom: 2px solid #1ab394;
+        font-size: 24px;
+    }
+    .add_body >div >.full-height-scroll{
+        border-right:1px dotted #ccc
+    }
+    .add_body_title{
+        margin:15px auto 30px auto;
+        padding-left: 14px;
+    }
+    .add_body_form>form>.form-group{
+        margin-bottom: 25px;
+    }
+    body{overflow-y:hidden;}
+    .form-control{
+        float:left;
+    }
+    .select2-container--default .select2-selection--single {
+        border-radius: 0px !important;
+        border: 1px solid #d8e3ef !important;
+    }
+    .select2-container .select2-selection--single{
+        height: 35px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow{
+        height: 35px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered{
+        line-height: 35px !important;
+    }
+</style>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<script>
+    $(function(){
+        $(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+        $(window).resize(function(){
+            $(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+        })
+    })
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+    <form class="form-horizontal" id="form" role="form" action="{:U('materials/materialsEdit')}" method="post" enctype="multipart/form-data">
+        <div class="ibox-content " id="add_body" >
+            <div class="row">
+                <div class="col-md-12 add_body">
+                    <div class="full-height-scroll">
+                        <div class="row" >
+                            <div class="col-md-12 add_body_title" style="margin:20px 0 0 0px;">
+                                <div class="all-inline">
+                                    <span class="sq-tag"></span>
+                                    <div class="text-tag">
+                                        <span>基础信息</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+                                <!-- 名称 -->
+                                <div class="form-group" >
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 材料名</label>
+                                    <div class="col-md-6">
+                                        <input value="{$info.name}" class="form-control " type="text" name="name" id="name" aria-required="true" value="" placeholder="请输入材料名"/>
+                                    </div>
+                                </div>
+                                <!-- 样本文件 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 上传样本</label>
+                                    <div class="col-md-4">
+                                        {/*
+                                            编辑时'隐藏'file类型input的默认提示
+                                            用户选择(改变)文件后,'显示'默认提示
+                                        */}
+                                        <input type="file" name="file" id="file" value="{$info.file}" style="color: #fff;" onchange='$("#file").css("color","black")'/>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tfoot_div" class="clearfix">
+            <div class="clearfix" id="tfoot_page">
+                <div class="ibox-content" style="border-top: none;">
+                    <input type="hidden" name="id" value="{$info.id}">
+                    <input type="hidden" name="project_id" value="{$project_id}">
+                    <div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><a href="javascript:void(0)" id="submit" class="btn btn-primary">确认修改</a></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript" src="__PUBLIC__/js/uploadPreview.js"></script>
+<script type="text/javascript">
+
+    if ("{:C('isMobile')}" == "1") {
+        width = $('.container').width() * 0.9;
+    } else {
+        width = 800;
+    }
+
+    $(document).ready(function(){
+        /*form表单验证*/
+        $("#form").validate({
+
+        });
+    });
+
+    $("#submit").click(function(){
+        $('#form').submit();
+    });
+
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,107 @@
+<style>
+	#data tr{cursor : pointer;}
+</style>
+<div class="clearfix">
+	<ul class="nav pull-left">
+		<li class="pull-left">
+			<select style="width:auto" class="form-control input-sm" name="field" id="field" onchange="changeCondition()">
+				<option class="word" value="name" <if condition = "$search_field['field'] eq 'name'">selected</if>>{:L('RECEIVABLES NAME')}</option>
+				<option class="contract" value="contract_id" <if condition = "$search_field['field'] eq 'contract_id'">selected</if>>{:L('CONTRACT NUMBER')}</option>
+				<option class="word" value="customer_id" <if condition = "$search_field['field'] eq 'customer_id'">selected</if>>{:L('CUSTOMER')}</option>
+				<option class="number" value="price" <if condition = "$search_field['field'] eq 'price'">selected</if>>{:L('AMOUNT OF RECEIVING')}</option>
+				<option class="date" value="pay_time" <if condition = "$search_field['field'] eq 'pay_time'">selected</if>>{:L('RECEIVING TIME')}</option>
+				<option class="receivables_status" value="status" <if condition = "$search_field['field'] eq 'receivables_status'">selected</if>>{:L('STATUS')}</option>
+				<option class="word" value="description" <if condition = "$search_field['field'] eq 'description'">selected</if>>{:L('DESCRIPTION')}</option>
+				<option class="role" value="owner_role_id" <if condition = "$search_field['field'] eq 'owner_role_id'">selected</if>>{:L('OWNER_ROLE')}</option>
+				<option class="role" value="creator_role_id" <if condition = "$search_field['field'] eq 'creator_role_id'">selected</if>>{:L('CREATOR_ROLE')}</option>						
+				<option class="date" value="create_time" <if condition = "$search_field['field'] eq 'create_time'">selected</if>>{:L('CREATE_TIME')}</option>
+				<option class="date" value="update_time" <if condition = "$search_field['field'] eq 'update_time'">selected</if>>{:L('UPDATE_TIME')}</option>	
+			</select>&nbsp;&nbsp;
+		</li>
+		<li id="conditionContent" class="pull-left">
+			<select id="condition" class="form-control input-sm" style="width:auto" name="condition" onchange="changeSearch()">
+				<option value="contains" <if condition = "$search_field['condition'] eq 'contains'">selected</if>>{:L('CONTAINS')}</option>
+				<option value="not_contain" <if condition = "$search_field['condition'] eq 'not_contain'">selected</if>>{:L('NOT_CONTAIN')}</option>
+				<option value="is" <if condition = "$search_field['condition'] eq 'is'">selected</if>>{:L('IS')}</option>
+				<option value="isnot" <if condition = "$search_field['condition'] eq 'isnot'">selected</if>>{:L('ISNOT')}</option>						
+				<option value="start_with" <if condition = "$search_field['condition'] eq 'start_with'">selected</if>>{:L('START_WITH')}</option>
+				<option value="end_with" <if condition = "$search_field['condition'] eq 'end_with'">selected</if>>{:L('END_WITH')}</option>
+				<option value="is_empty" <if condition = "$search_field['condition'] eq 'is_empty'">selected</if>>{:L('IS_EMPTY')}</option>
+				<option value="is_not_empty" <if condition = "$search_field['condition'] eq 'is_not_empty'">selected</if>>{:L('IS_NOT_EMPTY')}</option>
+			</select>&nbsp;&nbsp;
+		</li>
+		<li id="searchContent" class="pull-left">
+			<input id="search" type="text" class="form-control input-sm search-query" name="search" value="{$search_field['search']}" onkeydown="if(event.keyCode==13)d_changeCondition(0)"/>
+		</li>
+		<li class="pull-left">
+			&nbsp;&nbsp;<input type="hidden" name="m" value="finance"/>
+			<input type="hidden" name="t" value="receivables"/>
+			<button type="button" class="btn btn-primary btn-sm" onclick="d_changeCondition(0)">{:L('SEARCH')}</button>
+		</li>
+	</ul>
+</div>
+<empty name="receivablesList">
+	<div class="alert">{:L('EMPTY_TPL_DATA')}</div>
+<else/>
+	<table class="table table-hover">
+		<thead>
+			<tr> 
+				<th></th>
+				<th>{:L('RECEIVABLES')}</th>
+				<th>{:L('CUSTOMER')}</th>
+				<th>{:L('AMOUNT OF RECEIVING')}</th>
+				<th>{:L('RECEIVING TIME')}</th>
+			</tr>
+		</thead> 
+		<tfoot id="footers">
+			<tr>
+				<td colspan="5">
+					{$page}
+				</td>
+			</tr>
+		</tfoot>
+		<tbody id="data">
+			<volist name="receivablesList" id="vo">
+				<tr>
+					<td>
+						<div class="radio radio-info radio-inline" style="margin-left:15px;">
+							<input type="radio" class="receivables_id" name="receivables" value="{$vo.receivables_id}"><label for="openrecycle"></label>
+						</div>
+					</td>
+					<td>{$vo.name}</td>
+					<td>{$vo.customer_name}</td>
+					<td>{$vo.price}</td>
+					<td>{$vo.pay_time|date="Y-m-d",###}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+</empty>
+<script type="text/javascript">
+	$('#go_page').change(function(){
+		var sel = $(this).val();
+		$('#dialog-receivables-list').load(sel,function(){
+			changeCondition();
+		});
+		return false;
+	});
+	$(function(){
+		$('#footers a').click(function(){ 
+			var rel = $(this).attr('href'); 
+			$('#dialog-receivables-list').load(rel);   
+			return false;
+		});
+	});
+	$("#data tr").click(function(){
+		$(this).find('td:first-child .receivables_id').prop('checked', true);
+	});
+	function d_changeCondition(p){
+		var field = $('#field option:selected').val();
+		var condition = $('#condition option:selected').val();
+		var search = $('#search').val();
+		var url = "{:U('finance/listdialog','t=receivables&field=')}"+field+'&condition='+condition+'&search='+search;
+		$('#dialog-receivables-list').load(url,function(){
+			changeCondition();
+		});
+	}
+</script>

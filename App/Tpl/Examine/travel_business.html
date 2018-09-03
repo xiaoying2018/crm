@@ -1,0 +1,61 @@
+<table class="table table-bordered" style="margin-top:10px;" width="95%" border="0" cellspacing="1" cellpadding="0">
+	<tbody id="row_{$now_rows}">
+		<tr >
+			<td colspan='3' style="font-weight:700">事项{$now_rows}</td>
+			<td class="pull-right" style="border: none;"><a href="javascript:void(0);" class="reduce_one" rel="{$now_rows}">删除</a></td>
+		</tr>
+		<tr >
+			<td style="width:17%;color:#999;">
+				出发地               
+			</td>                                     
+			<td >
+				<input class="form-control required" id="start_address" name="travel[{$now_rows}][start_address]" aria-required="true" type="text" />
+			</td>                                     
+			<td style="width:17%;color:#999;">
+				出发时间            
+			</td>                                    
+			<td ><input class="form-control required Wdate" aria-required="true" type="text" name="travel[{$now_rows}][start_time]" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="<?php echo date('Y-m-d', time());?>" /></td>
+		</tr>
+		<tr >
+			<td style="width:17%;color:#999;">
+				目的地                   
+			</td>                                     
+			<td >
+				<input class="form-control required" name="travel[{$now_rows}][end_address]" aria-required="true" type="text" /></td>                                     
+			<td style="width:17%;color:#999;">
+				到达时间             
+			</td>                                    
+			<td ><input class="form-control required Wdate" aria-required="true" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" name="travel[{$now_rows}][end_time]" /></td>
+		</tr>
+		<tr >
+			<td style="width:17%;color:#999;">
+				交通工具               
+			</td>                                     
+			<td >
+				<select class="form-control required" aria-required="true" name="travel[{$now_rows}][vehicle]">
+					<option value="">-请选择-</option>
+					<option value="飞机">飞机</option>
+					<option value="汽车">汽车</option>
+					<option value="火车">火车</option>
+					<option value="高铁">高铁</option>
+					<option value="轮船">轮船</option>
+					<option value="其他">其他</option>
+				</select>
+			</td>                                     
+			<td style="width:17%;color:#999;">
+				住宿(天)            
+			</td>                                    
+			<td ><input class="form-control" name="travel[{$now_rows}][duration]" type="text" /></td>
+		</tr>
+		<tr >
+			<td style="width:17%;color:#999;">
+				金额(元)                  
+			</td>                                     
+			<td ><input class="form-control required bx_money" onkeyup="calculate()" name="travel[{$now_rows}][money]" aria-required="true" type="text" /></td>                                     
+			<td style="width:17%;color:#999;">
+				备注             
+			</td>                                    
+			<td ><input class="form-control" name="travel[{$now_rows}][description]" type="text" /></td>
+		</tr>
+	</tbody>
+</table>

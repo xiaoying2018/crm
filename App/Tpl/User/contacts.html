@@ -1,0 +1,198 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<style>
+    #page-wrapper{background-color: #fff;}
+    .contact-box{border: 1px solid #ddd;}
+    .select2-container .select2-selection--single{height: 32px;line-height: 32px;}
+    .select2-container--default .select2-selection--single .select2-selection__rendered{color: #999;}
+    #oDivH_tab_Test3{left:16px;}
+    /*body{overflow-y: hidden;}*/
+</style>
+<script>
+$(function(){
+    var scroll_width = 5;
+    $("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+    $(window).resize(function(){
+        $("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+        $("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+        $("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+    })
+    $("#tab_Test3").FrozenTable(1,0,3);
+    $("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width).width($("#oTableLH_tab_Test3").width());
+    $("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+    $("#oDivH_tab_Test3").css({'left':'16px','top':'1px'});
+})
+</script>
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins" style="margin-bottom: 0px;">
+                <div class="title-bar">
+                    <div class="row ">
+						<include file="Public:alert" />
+                        <form class="form-inline" id="searchForm" onsubmit="return checkSearchForm();" action="" method="get">
+                            <ul class="breadcrum pull-right" style="margin-bottom: 0px">
+                                <if condition = "$_GET['type'] neq 1">
+                                    <li>
+                                        搜索：
+                                        <div class="input-group">
+                                            <input type="hidden" name="m" value="user"/>
+                                            <input type="hidden" name="a" value="contacts"/>
+                                            <input id="short_search" type="text" style="width:160px;" placeholder="请输入员工名称" onkeydown='if(event.keyCode==13) {$("#short_search_btn").trigger("click");return false;}' class="form-control input-sm" name="search"value="{$_GET['search']}"/>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default btn-search" id="short_search_btn" type="submit"><i class="fa fa-search"></i></button>
+                                            </span>
+                                        </div>
+                                    </li>
+                                <else />
+                                    <li class="pull-left">
+                                        部门： 
+                                        <select style="width:auto;min-width:220px;height: 32px;" class="form-control input-sm select2" name="department_id"  onchange="window.open(this.options[this.selectedIndex].value,target='_self')" >
+                                            <option class="all" value="{:U('user/contacts','type=1')}">{:L('ALL')}</option>
+                                            <volist name="all_department_list" id="vo">
+                                                <option <if condition="$_GET['department_id'] eq $vo['department_id']">selected</if> value="{:U('user/contacts','department_id='.$vo['department_id'].'&type=1')}">{$vo.name}</option>
+                                            </volist>
+                                        </select>
+                                    </li>
+                                </if>
+                                <li>
+                                    <a href="{:U('user/contacts')}" class="btn btn-white btn-bitbucket" title="按员工查看"><i class="fa fa-user" <if condition = "$_GET['type'] eq ''">style="color: ##23527c;"<else />style="color: #D8E3EF;"</if> ></i></a>
+                                    <a href="{:U('user/contacts','type=1')}" class="btn btn-white btn-bitbucket" title="按部门查看"><i class="fa fa-th-large" <if condition = "$_GET['type'] eq '1'">style="color: ##23527c;"<else />style="color: #D8E3EF;"</if>></i></a>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <if condition = "$_GET['type'] eq 1">
+                        <volist name="department_list" id="vo">
+                            <div class="col-lg-4">
+                                <div class="ibox" style="height: 232px;margin-bottom: 0px;">
+                                    <div class="ibox-title" style="border-width:3px 1px 0px 1px; ">
+                                        <a href="{:U('user/contacts','department_id='.$vo['department_id'])}" style="width: 100%;height: 100%;">
+                                            <span class="label label-primary pull-right">查看</span>
+                                        </a>
+                                        <h5>{$vo['name']}&nbsp;(共{$vo['role_count']}人)</h5>
+                                    </div>
+                                    <div class="ibox-content" style="height: 160px;">
+                                        <div class="team-members">
+                                            <volist name="vo['department_role_list']" id="vo1">
+                                                <a href="{:U('user/view','id='.$vo1['role_id'])}" title="{$vo1['user_name']}">
+                                                    <if condition = "$vo1['thumb_path'] neq ''">
+                                                        <img alt="{$vo1['user_name']}" class="img-circle" src="{$vo1['thumb_path']}">
+                                                    <else />
+                                                        <img alt="{$vo1['user_name']}" class="img-circle" src="__PUBLIC__/img/avatar_default.png">
+                                                    </if>
+                                                </a>
+                                            </volist>
+                                        </div>
+                                        <h4>部门简介</h4>
+                                        <p title="{$vo['description']}">
+                                            <if condition = "$vo['description']">
+                                            {$vo['description']|msubstr=###,0,40}...
+                                            </if>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </volist>
+                    <elseif condition = "$_GET['type'] eq 2" />
+                        <volist name="role_list" id="vo">
+                            <div class="col-lg-4" style="height: 210px;">
+                                <div class="contact-box" style="height: 190px;">
+                                    <a href="{:U('user/view','id='.$vo['user_id'])}">
+                                        <div class="col-sm-4">
+                                            <div class="text-center">
+    											<div style="width:80px;height:80px;margin:auto;">
+    												<if condition = "$vo['thumb_path'] eq ''">
+    													<img alt="image" style="width:80px;height:80px;text-align:center;" class="img-circle m-t-xs img-responsive" src="__PUBLIC__/img/avatar_default.png" />
+    												<else />
+    													<img alt="image" style="width:80px;height:80px;text-align:center;" class="img-circle m-t-xs img-responsive" src="{$vo['thumb_path']}" />
+    												</if>
+    											</div>
+                                                <div class="m-t-xs font-bold">{$vo['role_name']}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <h3><strong>{$vo['user_name']}</strong></h3>
+                                            <p><i class="fa fa-map-marker"></i>&nbsp;&nbsp;{$vo['address']}</p>
+                                            <address>
+                                                <strong>{$vo['department_name']}</strong><br>
+                                                E-mail:&nbsp;&nbsp;{$vo['email']}<br>
+                                                <!-- San Francisco, CA 94107<br> -->
+                                                <abbr title="Phone">Tel:&nbsp;&nbsp;</abbr>{$vo['telephone']}
+                                            </address>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        </volist>
+                    <else />
+                        <div class="col-md-12">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-content" style="padding:0px;">
+                                    <div class="ibox-content clearfix" id="table_container" style="padding:0px;border: none;">
+                                        <div id="table_div" class="full-height-scroll" style="left:0px;top:0px;">
+                                            <table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
+                                                <if condition="$role_list eq null">
+                                                    <include file="Public:nodata" />
+                                                <else/>
+                                                    <tr colspan="5" class="tabTh">
+                                                        <td style="width:170px;"><span style="margin-left:30px;">员工</span></td>
+                                                        <td>手机号</td>
+                                                        <td>邮箱</td>                             
+                                                        <td>部门</td>
+                                                        <td>职位</td>
+                                                    </tr>
+                                                    <volist name="role_list" id="vo">
+                                                    <tr>
+                                                        <td style="padding-left: 20px;">
+                                                            <a href="{:U('user/view','id='.$vo['user_id'])}">
+                                                            <if condition="$vo['thumb_path']">
+                                                                <img class="img-circle" style="width:32px;height:32px;" src="{$vo.thumb_path}"/>
+                                                            <else/>
+                                                                <img class="img-circle" style="width:32px;height:32px;" src="__PUBLIC__/img/avatar_default.png"/>
+                                                            </if>
+                                                            <if condition="$vo['category_id'] == 1">
+                                                                {$vo.full_name}
+                                                                <span><img src="__PUBLIC__/img/admin.png" /></span>
+                                                            <else />
+                                                                {$vo.full_name}
+                                                                <span style="width:11px;display: inline-block;"></span>
+                                                            </if>
+                                                            </a>
+                                                        </td>
+                                                        <td><if condition="C('ismobile') eq 1"><a href="tel:{$vo.telephone}">{$vo.telephone}</a><else />{$vo.telephone}</if></td>
+                                                        <td>{$vo.email}</td>
+                                                        <td>{$vo['department_name']}</td>
+                                                        <td>{$vo['role_name']}</td>
+                                                    </tr>
+                                                    </volist>
+                                                </if>
+                                            </table>
+                                        </div>
+                                        <div id="tfoot_div" class="clearfix">
+                                            <tr>
+                                                <div class="clearfix" id="tfoot_page">              
+                                                    {$page}<include file="Public:listrows" />
+                                                </div>
+                                            </tr>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </if>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script> -->
+<!-- Custom and plugin javascript -->
+<script>
+    // 放大效果 
+    // $(document).ready(function(){$(".contact-box").each(function(){animationHover(this,"pulse")})});
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,261 @@
+<include file="Public:header" />
+<style type="text/css">
+.add_body_title{
+	margin:15px auto 30px auto;
+	padding-left: 14px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+.form-control{
+	float:left;
+}
+body{
+	overflow-y: hidden;
+}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn">
+	<div class="ibox-content add_body" id="add_body" style="padding:0px;" >
+		<div class="col-md-12  add_body" style="padding-left:0px;padding-right:0px;">
+			<include file="Public:alert" />
+				<form id="form1" action="{:U('setting/sendsms')}" method="post">
+					<div >
+						<div class="pull-left" style="width:20%">
+							<div class="col-md-12 add_body_title" style="padding:18px 15px 13px;margin:0px;background:#FAFAFA;border-left:1px solid #e3e3e3;border-right:1px solid #e3e3e3">
+								<div class="all-inline">
+									<div class="text-tag">
+										<img style="margin-top:-3px;" src="__PUBLIC__/img/sms_img.png"></img>
+										<span style="font-weight:400;font-size:15px;">选择收件人</span>
+									</div>
+									<a class="pull-right" style="color:#337ab7" href="javascript:void(0);" id="add_contracts"><i class="fa fa-plus"></i>&nbsp;联系人</a>
+								</div>
+							</div>
+						</div>
+						<div class="pull-left" style="width:80%">
+							<div class="col-md-12 add_body_title" style="padding:18px 15px 3px;margin:0px;background:#fff;border-bottom:1px solid #e3e3e3;border-right:1px solid #e3e3e3">
+								<div class="all-inline">
+									<div class="text-tag" >
+										<span class="pull-left" style="margin-left:23px;font-weight:700;font-size:13px;">剩余短信：</span>
+										<span class="pull-left" style="margin-left:10px;font-weight:700;font-size:13px;">
+											<if condition="$current_sms_num gt 0"><span style="color:#32CD00" id="sms_count">{$current_sms_num}</span><else/><span style="color:red" id="sms_count">0</span></if>
+										</span>
+										<span class="pull-left" style="margin-left:20px;font-size:13px;color:#CBCCCD">
+											(如需充值请联系官方进行充值)
+										</span>
+										<span class="pull-left" style="margin-left:30px;">
+											<select name="template" id="template" class="form-control" style="width:auto;font-size:12px;margin-top:-3px;" onchange="changeContent()">
+												<option>{:L('SELECT_SMS_TPL')}</option>
+												<volist name="templateList" id="v">
+													<option value="{$v['template_id']}" rel="{$v['content']}">{$v['subject']}</option>
+												</volist>
+											</select>
+										</span>
+										<span class="pull-left" style="margin-left:10px;">
+											<a href="{:U('sms/index')}" >{:L('SETTING')}</a>
+										</span>
+										<div style="clear:both"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div style="clear:both"></div>
+					</div>
+					<div class="pull-left" style="width:20%;background:#FAFAFA;padding-bottom:10px;border:1px solid #e3e3e3;border-left: none;">
+						<div class="col-md-12 add_body_title" style="padding:18px 15px 15px;margin:0px;background:#F3F5F7;border-bottom:1px solid #e3e3e3;">
+							<div class="all-inline">
+								<span style="color:#CBCCCD">温馨提示：请阅读发送规则</span>
+								<a id="shuoming" class="pull-right" href="javascript:void(0);" style="font-weight:700;font-size:20px;color:#e3e3e3;margin-top:-4px;"><i class="fa fa-question-circle"></i></a>
+							</div>
+						</div>
+						<div style="clear:both"></div>
+						<div style="margin:10px;">
+							<textarea id="phonenum" name="phoneNum"  class="form-control" style="min-height: 375px;width:100%;resize:none;">
+								<notempty name="contacts">
+									<volist name="contacts" id="vo">
+										<if condition="is_phone($vo['telephone'])">
+											{$vo['telephone']|trim},{$vo['name']}{$vo['post']},{$vo['customer_name']}<?php echo chr(10);?>
+										</if>
+									</volist>
+								</notempty>
+							</textarea>
+						</div>
+					</div> 
+					<div class="pull-left" style="width:80%">
+						<div class="col-md-12 nicescroll add_body">
+							<div class="col-md-8 add_body_form" style="padding:5px 0 0 21px;">
+								<div class="form-group" style="margin-top:10px;">
+									<div class="pull-left" style="width:90%;margin-left:2px;">
+										<div class="col-md-12 add_body_title" style="padding:13px 10px 12px;margin:0px;background:#FAFAFA;border-right:1px solid #e3e3e3;border-top:1px solid #e3e3e3">
+											<div class="all-inline">
+												<!-- <a id="add_blname_help" class="pull-right" href="javascript:void(0);" style="font-weight:700;font-size:20px;color:#e3e3e3;"><i class="fa fa-question-circle"></i></a> -->
+												<a id="add_blname" class="btn btn-primary pull-right" href="javascript:void(0);" style="font-size:14px;margin-right:5px;background:#469bf0;border:#469bf0;">插入变量联系人</a>
+											</div>
+										</div>
+										<textarea id="smsContent" name="smsContent" class="form-control" placeholder="如有疑问请阅使用说明！" style="height: 300px;resize:none;margin-bottom:10px;"></textarea>
+										<p>{:L('LEFT_CHARACTER')} <span id="contentCount" style="color:red;">55</span> {:L('LEFT_CHARACTER_TIPS')}</p>
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+								<div style="clear:both"></div>
+								<div class="form-group" style="margin-top:10px;">
+									<div class="pull-left" style="width:80%;margin-left:2px;">
+										<input type="submit" name="submit" style="margin-top:10px;" class="btn btn-primary" value="{:L('SEND')}"/> &nbsp; 
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-4 pull-right">
+								<div style="margin-top:15px;">
+									<h4>使用说明：</h4>
+									<div style="margin-bottom:15px;">（您使用本系统发送短信，就表明您同意并接受以下内容）</div>
+									<div style="margin-bottom:15px;">1.不得发送包含以下内容、文字的短信息内容： 非法的、骚扰性的、中伤他人的、辱骂性 的、恐吓性的、伤害性的、庸俗的、淫秽 的信息；教唆他人构成犯罪行为的信息、 危害国家安全的信息；及任何不符合国家 法律、国际惯例、地方法律规定的信息。</div>
+									<div style="margin-bottom:15px;">2.不能违反运营商规定，不得发送竞争对手产 品的广告，不能按手机号段形式进行广告 业务的宣传等，不能发送与本行业无关和 移动运营商限制和禁止发送的短信内容， 特别是广告类信息，群发短信等，对违反 此声明产生的一切后果由发送者及其单位 承担。</div>
+									<div style="margin-bottom:15px;">3.最好不要在晚22:00至早7:00时段发送短信， 以免引起客户反感。</div>		
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-contacts-list" title="选择联系人">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-tishi-info" title="操作提示">
+	<div >1、群发短信时，以换行间隔每个客户，如 </div>
+	<div style="margin-left:20px;">15088888888</div>
+	<div style="margin-left:20px;">15099999999</div>
+	<div style="margin-top:10px;">2、如需在邮件内容中加入联系人姓名信息，请按照“手机号，联系人姓名”格式进行填写。如下所示 </div>
+	<div style="margin-left:20px;">15088888888,王经理</div>
+	<div style="margin-left:20px;">15099999999,张经理</div>
+	<div style="margin-top:10px;">3、请不要在邮件内容中填写特殊字符,包括换行符。</div> 
+	<div style="margin-top:10px;">4、短信内容不能多于65个字（其中空格 数字 字母 汉字均为一个字）</div> 
+	<div style="margin-top:10px;">5、同一手机号间隔发送时间不得少于20秒</div>
+	<div style="margin-top:10px;margin-bottom:20px;">6、请仔细阅读页面右方的使用说明，请严格按照系统设定标准格式发送短信</div>
+</div>
+<script type="text/javascript">
+$('input[name="submit"]').click(function(){
+	var sms_num = $('#sms_count').html();
+	if(sms_num <= 0){
+		swal("短信余额不足请充值后再发送！");
+		return false;
+	}
+});
+$("#dialog-tishi-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 500,
+	maxHeight: 400,
+	position: ["center",100]
+});
+$('#shuoming').click(function(){
+	$('#dialog-tishi-info').dialog('open');
+});
+$('#add_contracts').click(function(){
+	$('#dialog-contacts-list').dialog('open');
+	$('#dialog-contacts-list').load('{:U("contacts/listdialog")}');
+});
+$("#dialog-contacts-list").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 800,
+	maxHeight: 400,
+	buttons: { 
+		"确认": function () {
+			var temp = $('#phonenum').val();
+			$(".contacts_ch").each(function(){
+				var subordinates = $(this).is(':checked');
+				if(subordinates){
+					var name = $(this).attr('rel');
+					var customer_name = $(this).attr('rel2');
+					var phone = $(this).attr('rel4');
+					temp += phone+","+name+","+customer_name+"\n";
+				}
+			});
+			$('#phonenum').val(temp);
+			$(this).dialog("close"); 
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	position:["center",100],
+	close:function(){
+		$(this).html('');
+	}
+});
+$('#add_blname').click(function(){
+	var content_value = $('#smsContent').val();
+	var new_value = content_value + '{'+'name'+'}';
+	$('#smsContent').val(new_value);
+	var curLength=$("#smsContent").val().length;
+	if(curLength == 55){
+		alert("{:L('SEND_SPLIT_TIPS')}" );
+		$("#contentCount").hide();
+	}else if(curLength < 55){
+		$("#contentCount").html(55-$("#smsContent").val().length);
+		$("#contentCount").show();
+	}else{
+		$("#contentCount").hide();
+	}
+});
+$(document).ready(function(){
+    $("#smsContent").keydown(function(){
+        var curLength=$("#smsContent").val().length;
+        if(curLength == 55){
+            alert("{:L('SEND_SPLIT_TIPS')}" );
+			$("#contentCount").hide();
+        }else if(curLength < 55){
+            $("#contentCount").html(55-$("#smsContent").val().length);
+			$("#contentCount").show();
+        }else{
+			$("#contentCount").hide();
+		}
+    })
+})
+$("#settime").click(
+	function() {
+		if ($("#settime").prop("checked")==true) {
+			$("#selecttime").show();
+		}else{
+			$("#selecttime").hide();
+		}
+	}	
+);
+
+function changeContent(){
+	var a = $('#template option:selected').attr('rel');
+	if(a){
+		$('#smsContent').html(a);
+	}else{
+		$('#smsContent').html('');
+	}
+	var curLength=$("#smsContent").val().length;
+	if(curLength == 55){
+		alert("{:L('SEND_SPLIT_TIPS')}" );
+		$("#contentCount").hide();
+	}else if(curLength < 55){
+		$("#contentCount").html(55-$("#smsContent").val().length);
+		$("#contentCount").show();
+	}else{
+		$("#contentCount").hide();
+	}
+}
+</script>
+<include file="Public:footer" />	

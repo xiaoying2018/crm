@@ -1,0 +1,102 @@
+<style>
+	#datas tr{cursor : pointer;}
+</style>
+<div class="clearfix form-inline">
+	<!-- <form class="form-inline" id="dd"> -->
+		<ul class="nav pull-left">
+			<li class="pull-left">
+				<select style="width:auto" class="form-control" id="field" name="field" onchange="changeCondition()">
+					<option class="word" value="name" <if condition = "$search_field['field'] eq 'name'">selected</if>>{:L('NAME')}</option>
+					<option class="word" value="customer_id" <if condition = "$search_field['field'] eq 'customer_id'">selected</if>>客户名称</option>
+					<option class="word" value="telephone" <if condition = "$search_field['field'] eq 'telephone'">selected</if>>{:L('PHONE')}</option>
+					<option class="word" value="email" <if condition = "$search_field['field'] eq 'email'">selected</if>>{:L('EMAIL')}</option>
+					<option class="word" value="post" <if condition = "$search_field['field'] eq 'post'">selected</if>>{:L('POSITION')}</option>
+				</select>&nbsp;&nbsp;
+			</li>
+			<li id="conditionContent" class="pull-left">
+				<select id="condition" class="form-control" style="width:auto" name="condition" onchange="changeSearch()">
+					<option value="contains" <if condition = "$search_field['condition'] eq 'contains'">selected</if>>{:L('CONTAINS')}</option>
+					<option value="not_contain" <if condition = "$search_field['condition'] eq 'not_contain'">selected</if>>{:L('NOT_CONTAIN')}</option>
+					<option value="is" <if condition = "$search_field['condition'] eq 'is'">selected</if>>{:L('IS')}</option>
+					<option value="isnot" <if condition = "$search_field['condition'] eq 'isnot'">selected</if>>{:L('ISNOT')}</option>						
+					<option value="start_with" <if condition = "$search_field['condition'] eq 'start_with'">selected</if>>{:L('START_WITH')}</option>
+					<option value="end_with" <if condition = "$search_field['condition'] eq 'end_with'">selected</if>>{:L('END_WITH')}</option>
+					<option value="is_empty" <if condition = "$search_field['condition'] eq 'is_empty'">selected</if>>{:L('IS_EMPTY')}</option>
+					<option value="is_not_empty" <if condition = "$search_field['condition'] eq 'is_not_empty'">selected</if>>{:L('IS_NOT_EMPTY')}</option>
+				</select>&nbsp;&nbsp;
+			</li>
+			<li id="searchContent" class="pull-left">
+				<input id="search" type="text" class="input-medium form-control search-query" name="search" value="{$search_field['search']}" onkeydown="if(event.keyCode==13)d_changeContent(0)"/>&nbsp;&nbsp;
+			</li>
+			<li class="pull-left">
+				<input type="button" onclick="changeCondition1()" class="btn btn-primary" value="{:L('SEARCH')}"/>
+			</li>
+		</ul>
+	<!-- </form> -->
+</div>
+<empty name="contactsList">
+	<div class="alert">{:L('EMPTY_TPL_DATA')}</div>
+<else/>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th><input type="checkbox" class="check_all" style="width: 13px;height: 13px;"/></th>
+			<th width="25%">{:L('NAME')}</th>
+			<th width="25%">{:L('BELONGS TO THE CUSTOMER')}</th>
+			<th width="15%">{:L('PHONE')}</th>
+			<th width="15%">{:L('EMAIL')}</th>	
+			<th width="20%">{:L('POSITION')}</th>
+		</tr>
+	</thead>
+	<tfoot id="footers">
+		<tr>
+			<td colspan="6">
+				{$page}
+			</td>
+		</tr>
+	</tfoot>
+	<tbody id="datas">
+		<volist name="contactsList" id="vo">
+			<tr>
+				<td><input type="checkbox" class="contacts_ch" name="contacts_id[]" rel="{$vo.name}" rel2="{$vo.customer_name}" rel3="{$vo.email}" rel4="{$vo.telephone}" value="{$vo.contacts_id}"/></td>
+				<td>{$vo.name}</td>
+				<td>{$vo.customer_name}</td>
+				<td>{$vo.telephone}</td>
+				<td>{$vo.email}</td>		
+				<td>{$vo.post}</td>
+			</tr>
+		</volist>
+	</tbody>
+</table>
+<script type="text/javascript">
+	$('#go_page').change(function(){
+		var sel = $(this).val();
+		$('#dialog-contacts-list').load(sel,function(){
+			changeCondition();
+		});
+		return false;
+	});
+	$(".check_all").click(function(){
+		$("input[class='contacts_ch']").prop('checked', $(this).prop("checked"));
+	});
+	$("#datas tr").click(function(){
+		$(this).find('td:first-child .contacts_ch').prop('checked', !$(this).find('td:first-child .contacts_ch').prop('checked'));
+	});
+	$(function(){
+		$('#footers a').click(function(){ 
+			var rel = $(this).attr('href'); 
+			$('#dialog-contacts-list').load(rel);    
+			return false;
+		});
+	}); 
+	function changeCondition1(){
+		var field = $('#field option:selected').val();
+		var condition = $('#condition option:selected').val();
+		var search = $('#search').val();
+		var url = "{:U('contacts/listdialog','field=')}"+field+'&condition='+condition+'&search='+search;
+		$('#dialog-contacts-list').load(url,function(){
+			changeCondition();
+		});
+	}	
+</script>
+</empty>

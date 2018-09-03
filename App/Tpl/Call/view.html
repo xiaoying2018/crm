@@ -1,0 +1,806 @@
+<script src="__PUBLIC__/style/js/jquery-2.1.1.js"></script>
+<link type="text/css" href="__PUBLIC__/css/jquery-ui-1.10.0.custom.css" rel="stylesheet" />
+<link type="text/css" href="__PUBLIC__/css/bootstrap-responsive.min.css" rel="stylesheet">
+<link href="__PUBLIC__/style/css/bootstrap.min.css" rel="stylesheet">
+<link href="__PUBLIC__/style/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="__PUBLIC__/css/font-awesome.min.css" rel="stylesheet">
+
+<link href="__PUBLIC__/style/css/style.css" rel="stylesheet">
+<link href="__PUBLIC__/style/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+<!-- Mainly scripts -->
+<script src="__PUBLIC__/style/js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/style/js/jquery.form.js" type="text/javascript"></script>
+<!-- <script src="__PUBLIC__/style/js/plugins/metisMenu/jquery.metisMenu.js"></script> -->
+<script src="__PUBLIC__/style/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="__PUBLIC__/js/mxcrm_zh-cn.js" type="text/javascript"></script>
+<!-- jQuery UI -->
+<script src="__PUBLIC__/js/jquery-ui-1.10.0.custom.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/WdatePicker.js" type="text/javascript"></script>
+<!-- Jquery Validate -->
+<script src="__PUBLIC__/style/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/validate/messages_zh.min.js"></script>
+<script src="__PUBLIC__/js/bootstrap-tooltip.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/PCASClass.js" ></script>
+<link href="__PUBLIC__/css/new.css">
+<!-- nice-scroll -->
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<!-- select2 -->
+<link href="__PUBLIC__/style/css/plugins/select2/select2.min.css" rel="stylesheet">
+<script src="__PUBLIC__/style/js/plugins/select2/select2.full.min.js"></script>
+<style>
+    body{
+        overflow-y: hidden;
+    }
+    .form-horizontal .form-group{
+        margin-left:0px;
+        margin-right:0px;
+    }
+    .business_table tbody tr td{border:none;padding:2px;}
+    .business_table{
+        font-size:12px;
+    }
+    .wrapper{padding:0px;}
+    .wrapper-content{padding:0px;}
+    .title-bar{margin-bottom:0px;border:none;}
+    .ibox-content{padding:10px 0px;border-width:0px 1px 0 0;}
+    .tabs-container .panel-body{padding:5px 25px;}
+</style>
+<script>
+    $(function(){
+        var scroll_width = 5;
+        $("#table_content").height(window.innerHeight-$("#table_content").offset().top-25);
+        $("#right_content").height(window.innerHeight-$("#right_content").offset().top-30);
+        $(window).resize(function(){
+            $("#table_content").height(window.innerHeight-$("#table_content").offset().top-25);
+            $("#right_content").height(window.innerHeight-$("#right_content").offset().top-30);
+        });
+        $(".nicescroll").niceScroll({
+            cursorcolor: "#999",//#CC0071 光标颜色 
+            cursoropacitymax: 0.4, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0 
+            touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备 
+            cursorwidth: scroll_width+"px", //像素光标的宽度 
+            cursorborder: "0", //     游标边框css定义 
+            cursorborderradius: "3px",//以像素为光标边界半径 
+            autohidemode: false, //是否隐藏滚动条 
+            zindex:100,
+            background:"#F3F3F5",//滚动条背景色
+        });
+    });
+    /*alert 显示优化*/
+    function alert_crm(msg){
+        swal({
+            title: "温馨提示",
+            text: msg,
+            type: "warning",
+            // showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确认",
+            // cancelButtonText: "取消",
+            closeOnConfirm: true
+        });
+        return false;
+    }
+</script>
+<div class="wrapper wrapper-content animated fadeIn" style="height: 100%;">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="title-bar">
+                <div class="row " id="title-show">
+                    <ul class="nav pull-left" style="margin:0px 10px 0px 20px;">
+                        <span>
+                            <img src="__PUBLIC__/img/contract_view_icon.png" style="margin-bottom:9px;" alt="">
+                        </span>
+                        <span style="font-size:21px;margin-left:5px">&nbsp;&nbsp;&nbsp;{$info.name}</span>&nbsp;&nbsp; 
+                        <span class="badge badge-warning" style="color:#fff;padding:5px 20px;margin-top:-8px;background:#F5CA00;">接听中：</span>
+                    </ul>
+                </div>
+            </div>
+            <if condition = "$model eq 'customer'">
+            <div class="tabs-container">
+                <div class="pull-left" style="width:60%;" >
+                    <div style="height:1px;background-color:#ccc;width:90%;margin:0 auto;margin-top:-1px;"></div>
+                    <div id="table_content" class="ibox-content nicescroll" style="overflow-y: hidden;">
+                        <input type="hidden" id="contacts_id" value="{$info['contacts_id']}" />
+                        <form role="form" class="form-horizontal view-group" method="post">
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">客户名称</label>
+                                <div class="col-lg-4">
+                                    <p class="form-p">
+                                        <a target="_parent _blank" href="{:U('customer/view','id='.$info['customer_id'])}"><span >{$info['name']}</span></a>
+                                    </p>
+                                </div>
+                                <div class="col-lg-3 hide">
+                                    <input type="text" class="form-control" name="name" value="{$info['name']}" id="customer_name">
+                                </div>
+                                <div class="col-lg-1 hide"></div>
+                                <label class="col-lg-2 control-label">联系人姓名</label>
+                                <div class="col-lg-4">
+                                    <p class="form-p">
+                                        <a target="_parent _blank" href="{:U('contacts/view','id='.$info['contacts_id'])}"><span >{$info['contacts_name']}</span></a>
+                                    </p>
+                                </div>
+                                <div class="col-lg-3 hide">
+                                    <input type="text" class="form-control" name="contacts_name" value="{$info['contacts_name']}" id="">
+                                </div>
+                                <div class="col-lg-1 hide"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">客户编号</label>
+                                <div class="col-lg-4">
+                                    <p class="form-p">
+                                        <span >{$info['customer_code']}</span>
+                                    </p>
+                                </div>
+                                <div class="col-lg-3 hide">
+                                    <input type="text" class="form-control" name="customer_code" value="{$info['customer_code']}" id="">
+                                </div>
+                                <div class="col-lg-1 hide"></div>
+
+                                <label class="col-lg-2 control-label">联系电话</label>
+                                <div class="col-lg-4">
+                                    <p class="form-p">
+                                        <span >{$info['contacts_telephone']}</span>
+                                    </p>
+                                </div>
+                                <div class="col-lg-3 hide">
+                                    <input type="text" class="form-control" name="contacts_phone" value="{$info['first_contacts_info']['telephone']}" id="" />
+                                </div>
+                                <div class="col-lg-1 hide"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">客户等级</label>
+                                <div class="col-lg-4">
+                                    <p class="form-p">
+                                        <!-- 星星 -->
+                                        <?php $start = $info['grade']+1; $end = 6-$info['grade']; ?>
+                                        <span style="cursor:pointer;color:#D0D0D0;">
+                                            <for start="1" end="$start">
+                                            <i class="fa fa-star star-orange"></i>&nbsp;
+                                            </for><for start="1" end="$end">
+                                            <i class="fa fa-star"></i>&nbsp;
+                                            </for>
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="col-lg-3 hide">
+                                    <select name="grade" class="form-control" id="edit-grade">
+                                        <option value="1">一星</option>
+                                        <option value="2">二星</option>
+                                        <option value="3">三星</option>
+                                        <option value="4">四星</option>
+                                        <option value="5">五星</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-1 hide"></div>
+                                <label class="col-lg-2 control-label">尊称</label>
+                                <div class="col-lg-4">
+                                    <p class="form-p">
+                                        <span >{$info['contacts_saltname']}</span>
+                                        
+                                    </p>
+                                </div>
+                                <div class="col-lg-3 hide">
+                                    <div class="radio radio-info radio-inline" style="margin-left: 20px;">
+                                        <input type="radio" name="contacts_saltname" id="saltname" <if condition = "$info['contacts_saltname'] eq '先生'">checked</if> value="先生">
+                                        <label for="saltname">先生</label>
+                                    </div> &nbsp; 
+                                    <div class="radio radio-info radio-inline">
+                                        <input type="radio" name="contacts_saltname" id="saltname1" <if condition = "$info['contacts_saltname'] eq '女士'">checked</if> value="女士">
+                                        <label for="saltname1">女士</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 hide"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">客户负责人</label>
+                                <div class="col-lg-4">
+                                    <p class="form-p-owner" style="margin-bottom: 0px;">
+                                        <a class="role_info" rel="{$info['owner']['role_id']}" href="javascript:void(0)">{$info['owner']['full_name']}</a>
+                                    </p>
+                                </div>
+                                <label class="col-lg-2 control-label">创建时间</label>
+                                <div class="col-lg-4">
+                                    <p class="form-p-owner" style="margin-bottom: 0px;">{$info['create_time']|date="Y-m-d H:i:s",###}</p>
+                                </div>
+                            </div>
+                            <?php $tag = 0; ?>
+                            <volist name="field_list" id="vo">
+                                <if condition="$vo['form_type'] == 'textarea'">
+                                    <if condition="$tag%2 neq 0">
+                                        </div>
+                                    </if>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$vo.name}</label>
+                                        <div class="col-sm-10">
+                                            <p class="form-p">
+                                                <span style="color:#{$vo['color']}">{$info[$vo['field']]}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <?php $tag = 0; ?>
+                                <else/>
+                                    <if condition="$tag%2 eq 0">
+                                        <div class="form-group">
+                                    </if>
+                                    <label class="col-sm-2 control-label">{$vo.name}</label>
+                                    <div class="col-sm-4">
+                                        <p class="form-p">
+                                            <span style="color:#{$vo['color']}">
+                                                <if condition="$vo['form_type'] eq 'datetime'">
+                                                    <if condition="$info[$vo['field']] neq '0'">{:newTimeDate($info[$vo['field']])}</if>
+                                                <elseif condition="$vo['form_type'] eq 'address'" />
+                                                    {$info[$vo['field']]}
+                                                    <a href="javascript:void(0);" class="getMap" rel="{$info[$vo['field']]}">
+                                                        <span class="fa fa-map-marker" style="font-size:16px;"></span>
+                                                    </a>
+                                                <else />
+                                                    {$info[$vo['field']]}
+                                                </if>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <if condition="$tag%2 neq 0">
+                                        </div>
+                                    </if>
+                                    <?php $tag += 1; ?>
+                                </if>
+                            </volist>
+                        </form>
+                    </div>
+                </div>
+                <div class="pull-right" style="width:40%;margin-left:0px;margin-bottom: 10px;">
+                    <div class="panel-body nicescroll" id="right_content">
+                        <div id="form-div">
+                            <form id="add-form" action="{:U('Log/add')}" method="post">
+                                <input type='hidden' name="r" id="r" value="rCustomerLog"/>
+                                <input type='hidden' name="module" id="module" value="customer"/> 
+                                <input type='hidden' id="model_id" name="id" value="{$model_id}"/>
+                                <textarea name="content" placeholder="添加跟进记录" id="log-text" style="resize:none;" class="form-control" cols="30" rows="2"></textarea>
+                                <table class="table business_table" style="border:none;margin-top:15px;display:none;margin-bottom: 0px;" id="business_table">
+                                    <tr >
+                                        <td class="tdleft" style="width:120px;">跟进类型：</td>
+                                        <td style="width:120px;">
+                                            <select name="status_id" id="status_id" class="form-control" onchange="selectStatus()">
+                                                <option value="">--请选择--</option>
+                                                <volist name="status_list" id="vo">
+                                                    <option value="{$vo['id']}">{$vo['name']}</option>
+                                                </volist>
+                                            </select>
+                                        </td>
+                                        <td>&nbsp;&nbsp;</td>
+                                        <td class="tdleft" style="width:120px;">快捷添加：</td>
+                                        <td style="width:300px;">
+                                            <select id="replay_list" class="form-control select2" onchange="selectReply()" style="width:80%;float:left;">
+                                                <option value="">--请选择--</option>
+                                                <volist name="reply_list" id="vo">
+                                                    <option value="{$vo['content']}" rel="{$vo['status_id']}">{$vo['str_content']}</option>
+                                                </volist>
+                                            </select>&nbsp;&nbsp;
+                                            <a href="javascript:void(0)" id="setting_reply_dialog" title="管理快捷跟进模板" style="line-height: 30px;margin-left:10px;"><i class="fa fa-cog" style="color:#999;"></i></a>
+                                        </td>
+                                        <td>&nbsp;&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tdleft" style="width:120px;">下次联系时间：</td>
+                                        <td style="width:120px;">
+                                            <input type="text" value="" id="nextstep_time_log" class="form-control Wdate" name="nextstep_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 170px;">
+                                        </td>
+                                        <td>&nbsp;&nbsp;</td>
+                                        <td class="tdleft" style="width:120px;">保存为跟进模板：</td>
+                                        <td style="width:120px;">
+                                            <div class="checkbox checkbox-primary">
+                                                <input type="hidden" name="type" value="2" />
+                                                <input name="save_reply" class="select_list" id="save_reply" type="checkbox" value="1"/>
+                                                <label for=""></label>
+                                            </div>
+                                        </td>
+                                        <td>&nbsp;&nbsp;</td>
+                                    </tr>
+                                </table>
+                                <div class="text-right" id="log-btn" style="padding-top:0px;display:none;"><button class="btn btn-primary" id="add_log" type="button">添加</button>&nbsp;</div>
+                            </form>
+                        </div>
+                        <div id="log-list" style="margin-top: 10px;">
+                            <volist name="log_list" id="vo">
+                                <div class="ibox-content gray-log" log-rel="{$vo['log_id']}" style="padding:10px; border-width:1px;margin-bottom:8px;">
+                                    <div class="social-feed-separated clearfix">
+                                        <div class="social-feed-box">
+                                            <if condition="$vo['sign'] eq '0' && $vo['role_id'] eq session('role_id')">
+                                                <div class="pull-right social-action dropdown">
+                                                    <span data-toggle="dropdown" class="dropdown-toggle">
+                                                        <i style="font-size:20px;cursor:pointer" class="fa fa-angle-down"></i>
+                                                    </span>
+                                                    <ul class="dropdown-menu m-t-xs" >
+                                                        <li><a rel="{$vo['log_id']}" href="javascript:void(0);" type="{$vo['log_type']}" onclick="del_confirm(this);">{:L('DELETE')}</a></li>
+                                                    </ul>
+                                                </div>
+                                            </if>
+                                            <if condition = "$vo['sign'] eq 1">
+                                                <div class="social-avatar">
+                                                    <img alt="image" style="width:35px;height:35px;" class="img-circle" src="{$vo['owner']['thumb_path']}">
+                                                    <a class="role_info name-colors"  rel="{$vo['owner']['role_id']}" href="javascript:void(0);">{$vo['owner']['full_name']}</a>&nbsp;&nbsp;
+                                                    <span class="text-muted">发布了一条签到记录</span>&nbsp;&nbsp;&nbsp;
+                                                    <span class="text-muted" >{$vo['create_date']|date="Y-m-d H:i",###}</span>
+                                                    <div class="text-muted" style="padding:0 15px 0 50px;">
+                                                        <div class="conent0" style="width:100%;">
+                                                            <img style="width:15px;height:15px;vertical-align:text-bottom;" src="__PUBLIC__/img/location.png"/>
+                                                            <span style="color:#666">{$vo['sign_info']['address']}</span>
+                                                            <input class="longitude" type="hidden" rel="{$vo['sign_info']['y']}"/>
+                                                            <!-- <a href="javascript:void(0);" style="font-size:12px;" class="map" >显示地图</a> -->
+                                                            <div id="allmap{$vo['log_id']}" rel="allmap{$vo['log_id']}" class="allmap"></div>
+                                                            <input class="latitude" type="hidden" rel="{$vo['sign_info']['x']}"/>
+                                                        </div>
+                                                        <div class="conent0">
+                                                            <span style="color:#000">签到说明：{$vo['sign_info']['log']}</span>
+                                                        </div>
+                                                        <div class="conent0">
+                                                            <div style="color:#000">现场照片：</div>
+                                                            <volist name="vo['sign_img']" id="v">
+                                                                <div class="box-secondary" rel="{$vo.img_id}" style="width:100px;height:100px;float:left;margin-left:5px;">
+                                                                    <a href="{$v.path}" target="_self" class="litebox_file" data-litebox-group="group-{$vo['log_id']}">
+                                                                        <img src="{$v.path}" class="thumbnail thumb100" style="width:100%;height:100%;">
+                                                                    </a>
+                                                                </div>
+                                                            </volist>
+                                                            <div style="clear:both;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <else />
+                                                <div class="social-avatar">
+                                                    <img alt="image" style="width:35px;height:35px;" class="img-circle" src="{$vo['owner']['thumb_path']}">
+                                                    <a class="role_info name-colors"  rel="{$vo.owner.role_id}" href="javascript:void(0);">{$vo['owner']['full_name']}</a>&nbsp;&nbsp;
+                                                    <span class="text-muted">发布了一条快速记录</span>&nbsp;&nbsp;&nbsp;
+                                                    <span class="text-muted" >{$vo.create_date|date="Y-m-d H:i",###}&nbsp;&nbsp;<a title="沟通类型" href="javascript:void(0);">{$vo['status_name']}</a></span>
+                                                </div>
+                                                <div class="social-body">
+                                                    <span style="word-wrap:break-word;line-height: 21px;color: #000;">{$vo['content']}</span>
+                                                    <if condition = "$vo['business_info']">
+                                                        <div class="log-relation"><i class="fa fa-bookmark"></i>&nbsp;<span>相关商机 : <a target="_parent _blank" href="{:U('business/view','id='.$vo['business_info']['business_id'])}">{$vo['business_info']['code']}</a></span></div>
+                                                    </if>
+                                                    <if condition = "$vo['nextstep_time']">
+                                                        <div class="social-avatar" style="padding-top:10px;">
+                                                            <span class="text-muted pull-right">下次联系时间：{$vo['nextstep_time']|date="Y-m-d H:i",###}</span>
+                                                        </div>
+                                                    </if>
+                                                </div>
+                                            </if>
+                                        </div>
+                                    </div>
+                                </div>
+                            </volist>
+                        </div>
+                    </div>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+            <elseif condition = "$model eq 'leads'" />
+            <div class="tabs-container">
+                <div class="pull-left" style="width:60%;" >
+                    <div style="height:1px;background-color:#ccc;width:90%;margin:0 auto;margin-top:-1px;"></div>
+                    <div id="table_content" class="ibox-content nicescroll" style="overflow-y: hidden;">
+                        <input type="hidden" id="contacts_id" value="{$info['contacts_id']}" />
+                        <form role="form" class="form-horizontal view-group" method="post">
+                            <?php $tag = 0; ?>
+                            <volist name="field_list" id="vo">
+                                <if condition="$vo['form_type'] == 'textarea'">
+                                    <if condition="$tag%2 neq 0">
+                                        </div>
+                                    </if>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">{$vo.name}</label>
+                                        <div class="col-sm-10">
+                                            <p class="form-p">
+                                                <span style="color:#{$vo['color']}">{$info[$vo['field']]}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <?php $tag = 0; ?>
+                                <else/>
+                                    <if condition="$tag%2 eq 0">
+                                        <div class="form-group">
+                                    </if>
+                                    <label class="col-sm-2 control-label">{$vo.name}</label>
+                                    <div class="col-sm-4">
+                                        <p class="form-p">
+                                            <span style="color:#{$vo['color']}">
+                                                <if condition = "$vo['field'] eq 'name'">
+                                                    <a target="_parent _blank" href="{:U('leads/view','id='.$info['leads_id'])}" title="查看详情">{$info['name']}</a>
+                                                <elseif condition="$vo['form_type'] eq 'datetime'" />
+                                                    <if condition="$info[$vo['field']] neq '0'">{:newTimeDate($info[$vo['field']])}</if>
+                                                <elseif condition="$vo['form_type'] eq 'address'" />
+                                                    {$info[$vo['field']]}
+                                                    <a href="javascript:void(0);" class="getMap" rel="{$info[$vo['field']]}">
+                                                        <span class="fa fa-map-marker" style="font-size:16px;"></span>
+                                                    </a>
+                                                <else />
+                                                    {$info[$vo['field']]}
+                                                </if>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <if condition="$tag%2 neq 0">
+                                        </div>
+                                    </if>
+                                    <?php $tag += 1; ?>
+                                </if>
+                            </volist>
+                        </form>
+                    </div>
+                </div>
+                <div class="pull-right" style="width:40%;margin-left:0px;margin-bottom: 10px;">
+                    <div class="panel-body nicescroll" id="right_content">
+                        <div id="form-div">
+                            <form id="add-form" action="{:U('Log/add')}" method="post">
+                                <input type='hidden' name="r" id="r" value="rLeadsLog"/>
+                                <input type='hidden' name="module" id="module" value="leads"/> 
+                                <input type='hidden' name="id" id="id" value="{$model_id}"/>
+                                <textarea name="content" placeholder="添加跟进记录" id="log-text" style="resize:none;" class="form-control" cols="30" rows="2"></textarea>
+                                <table class="table business_table" style="border:none;margin-top:15px;display:none;margin-bottom: 0px;" id="business_table">
+                                    <tr >
+                                        <td class="tdleft" style="width:120px;">跟进类型：</td>
+                                        <td style="width:120px;">
+                                            <select name="status_id" id="status_id" class="form-control" onchange="selectStatus()">
+                                                <option value="">--请选择--</option>
+                                                <volist name="status_list" id="vo">
+                                                    <option value="{$vo['id']}">{$vo['name']}</option>
+                                                </volist>
+                                            </select>
+                                        </td>
+                                        <td>&nbsp;&nbsp;</td>
+                                        <td class="tdleft" style="width:120px;">快捷添加：</td>
+                                        <td style="width:300px;">
+                                            <select id="replay_list" class="form-control select2" onchange="selectReply()" style="width:80%;float:left;">
+                                                <option value="">--请选择--</option>
+                                                <volist name="reply_list" id="vo">
+                                                    <option value="{$vo['content']}" rel="{$vo['status_id']}">{$vo['str_content']}</option>
+                                                </volist>
+                                            </select>&nbsp;&nbsp;
+                                            <a href="javascript:void(0)" id="setting_reply_dialog" title="管理快捷跟进模板" style="line-height: 30px;margin-left:10px;"><i class="fa fa-cog" style="color:#999;"></i></a>
+                                        </td>
+                                        <td>&nbsp;&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tdleft" style="width:120px;">下次联系时间：</td>
+                                        <td style="width:120px;">
+                                            <input type="text" value="" id="nextstep_time_log" class="form-control Wdate" name="nextstep_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 170px;">
+                                        </td>
+                                        <td>&nbsp;&nbsp;</td>
+                                        <td class="tdleft" style="width:120px;">保存为跟进模板：</td>
+                                        <td style="width:120px;">
+                                            <div class="checkbox checkbox-primary">
+                                                <input type="hidden" name="type" value="2" />
+                                                <input name="save_reply" class="select_list" id="save_reply" type="checkbox" value="1"/>
+                                                <label for=""></label>
+                                            </div>
+                                        </td>
+                                        <td>&nbsp;&nbsp;</td>
+                                    </tr>
+                                </table>
+                                <div class="text-right" id="log-btn" style="padding-top:0px;display:none;"><button class="btn btn-primary" id="add_log" type="button">添加</button>&nbsp;</div>
+                            </form>
+                        </div>
+                        <div id="log-list" style="margin-top: 10px;">
+                            <volist name="log_list" id="vo">
+                                <div class="ibox-content gray-log" log-rel="{$vo['log_id']}" style="padding:10px; border-width:1px;margin-bottom:8px;">
+                                    <div class="social-feed-separated clearfix">
+                                        <div class="social-feed-box">
+                                            <if condition="$vo['sign'] eq '0' && $vo['role_id'] eq session('role_id')">
+                                                <div class="pull-right social-action dropdown">
+                                                    <span data-toggle="dropdown" class="dropdown-toggle">
+                                                        <i style="font-size:20px;cursor:pointer" class="fa fa-angle-down"></i>
+                                                    </span>
+                                                    <ul class="dropdown-menu m-t-xs" >
+                                                        <li><a rel="{$vo['log_id']}" href="javascript:void(0);" type="{$vo['log_type']}" onclick="del_confirm(this);">{:L('DELETE')}</a></li>
+                                                    </ul>
+                                                </div>
+                                            </if>
+                                            <if condition = "$vo['sign'] eq 1">
+                                                <div class="social-avatar">
+                                                    <img alt="image" style="width:35px;height:35px;" class="img-circle" src="{$vo['owner']['thumb_path']}">
+                                                    <a class="role_info name-colors"  rel="{$vo['owner']['role_id']}" href="javascript:void(0);">{$vo['owner']['full_name']}</a>&nbsp;&nbsp;
+                                                    <span class="text-muted">发布了一条签到记录</span>&nbsp;&nbsp;&nbsp;
+                                                    <span class="text-muted" >{$vo['create_date']|date="Y-m-d H:i",###}</span>
+                                                    <div class="text-muted" style="padding:0 15px 0 50px;">
+                                                        <div class="conent0" style="width:100%;">
+                                                            <img style="width:15px;height:15px;vertical-align:text-bottom;" src="__PUBLIC__/img/location.png"/>
+                                                            <span style="color:#666">{$vo['sign_info']['address']}</span>
+                                                            <input class="longitude" type="hidden" rel="{$vo['sign_info']['y']}"/>
+                                                            <!-- <a href="javascript:void(0);" style="font-size:12px;" class="map" >显示地图</a> -->
+                                                            <div id="allmap{$vo['log_id']}" rel="allmap{$vo['log_id']}" class="allmap"></div>
+                                                            <input class="latitude" type="hidden" rel="{$vo['sign_info']['x']}"/>
+                                                        </div>
+                                                        <div class="conent0">
+                                                            <span style="color:#000">签到说明：{$vo['sign_info']['log']}</span>
+                                                        </div>
+                                                        <div class="conent0">
+                                                            <div style="color:#000">现场照片：</div>
+                                                            <volist name="vo['sign_img']" id="v">
+                                                                <div class="box-secondary" rel="{$vo.img_id}" style="width:100px;height:100px;float:left;margin-left:5px;">
+                                                                    <a href="{$v.path}" target="_self" class="litebox_file" data-litebox-group="group-{$vo['log_id']}">
+                                                                        <img src="{$v.path}" class="thumbnail thumb100" style="width:100%;height:100%;">
+                                                                    </a>
+                                                                </div>
+                                                            </volist>
+                                                            <div style="clear:both;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <else />
+                                                <div class="social-avatar">
+                                                    <img alt="image" style="width:35px;height:35px;" class="img-circle" src="{$vo['owner']['thumb_path']}">
+                                                    <a class="role_info name-colors"  rel="{$vo.owner.role_id}" href="javascript:void(0);">{$vo['owner']['full_name']}</a>&nbsp;&nbsp;
+                                                    <span class="text-muted">发布了一条快速记录</span>&nbsp;&nbsp;&nbsp;
+                                                    <span class="text-muted" >{$vo.create_date|date="Y-m-d H:i",###}&nbsp;&nbsp;<a title="沟通类型" href="javascript:void(0);">{$vo['status_name']}</a></span>
+                                                </div>
+                                                <div class="social-body">
+                                                    <span style="word-wrap:break-word;line-height: 21px;color: #000;">{$vo['content']}</span>
+                                                    <if condition = "$vo['nextstep_time']">
+                                                        <div class="social-avatar" style="padding-top:10px;">
+                                                            <span class="text-muted pull-right">下次联系时间：{$vo['nextstep_time']|date="Y-m-d H:i",###}</span>
+                                                        </div>
+                                                    </if>
+                                                </div>
+                                            </if>
+                                        </div>
+                                    </div>
+                                </div>
+                            </volist>
+                        </div>
+                    </div>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+            </if>
+        </div>
+    </div>
+</div>
+<div style="display:none" id="dialog-role-info" title="{:L('EMPLOYEE_INFORMATION')}">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none" id="dialog-setting_reply" title="管理快捷沟通">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+<script>
+/**
+* 附件 如果是图片时 双击可查看大图
+*/
+$('.litebox_file').liteBox({
+    revealSpeed: 400,
+    background: 'rgba(0,0,0,.8)',
+    overlayClose: true,
+    escKey: true,
+    navKey: true,
+    errorMessage: '图片加载失败.'
+});
+$(".role_info").click(function(){
+    $role_id = $(this).attr('rel');
+    $('#dialog-role-info').dialog('open');
+    $('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+});
+
+$("#dialog-role-info").dialog({
+    autoOpen: false,
+    modal: true,
+    width: 600,
+    maxHeight: 550,
+    position: ["center",100]
+});
+
+/*跟进记录*/
+function btnHide(){
+    $('#log-text').attr('rows',1);
+    $('#log-btn').hide();
+    $('#business_table').hide();
+    $('#log-text').val('');
+}
+$('#log-text').focus(function(){
+    $(this).attr('rows',4);
+    $('#log-btn').show();
+    $('#business_table').show();
+    $('#add_log').prop('disabled',false);
+});
+$('#log-text').focusout(function(){
+    var code_id = $("input[name='id']:checked").val();
+    if($(this).val() == '' && code_id == ''){
+        btnHide();
+    }
+});
+$('#quxiao').click(function(){
+    btnHide();
+    return false;
+});
+/*ajax 提交记录*/
+
+$('#add_log').click(function(){
+    var log_content = $.trim($('#log-text').val());
+    if(log_content == ''){
+        alert_crm('沟通日志内容不能为空！');
+        return false;
+    }
+    //跟进类型
+    // var status_id = $('#status_id option:selected').val();
+    // if (status_id == '') {
+    //     alert_crm('跟进类型不能为空！');
+    //     $('#add_log').prop('disabled',false);
+    // }
+
+    var radio_id = $('#product-radio input:radio:checked').val();
+    var code = $('#product-radio input:radio:checked').attr('code');
+    var html_code = "<div class='log-relation'><i class='fa fa-bookmark'></i>&nbsp;<span>相关商机:"+code+"</span></div>";
+    html_code = '';
+    //console.log(radio_id);
+    // var log_type = 'rBusinessLog';
+    
+    var status_name = '';
+    if ($('#status_id option:selected').text() !== '--请选择--') {
+        status_name = $('#status_id option:selected').text();
+    }
+    var nextstep_time_log = '';
+    if ($('#nextstep_time_log').val() !== '') {
+        nextstep_time_log = $('#nextstep_time_log').val();
+    }
+    
+    // if(radio_id == null || radio_id == 0){
+    //     var html_code = '';
+    //     $("#business_id").val(business_id);
+
+    //     if(business_id == null || business_id == 0){
+    //         $("[name='r']").val('RCustomerLog');
+    //         $("[name='module']").val('customer');
+    //         $("#business_id").val("{$model_id}");
+    //         log_type = 'rCustomerLog';
+    //     }
+    // }
+    var log_type = $('#r').val();
+
+    $(this).prop('disabled',true);
+    $.post("{:U('Log/add')}", $("#add-form").serialize(), function(data){
+        if(data.status == 1){
+            var content = $('#log-text').val().replace('&nbsp','&NBSP');
+            var log_html = "<div class='ibox-content gray-bg' log-rel='"+data.data.log_id+"' style='padding:10px; border-width:1px;margin-bottom:8px;'><div class='social-feed-separated clearfix'><div class='social-feed-box'><div class='pull-right social-action dropdown'><span data-toggle='dropdown' class='dropdown-toggle'><i style='font-size:20px;cursor:pointer' class='fa fa-angle-down'></i></span><ul class='dropdown-menu m-t-xs' ><li><a  rel='"+data.data.log_id+"' href='javascript:void(0);' type='"+log_type+"' onclick='del_confirm(this);'>{:L('DELETE')}</a></li></ul></div><div class='social-avatar'><img alt='image' style='width:35px;height:35px;' class='img-circle' src='"+data.data.owner.thumb_path+"'><a class='role_info name-colors'  rel='"+data.data.owner.role_id+"' href='javascript:void(0)'>"+data.data.owner.full_name+"</a>&nbsp;&nbsp;<span class='text-muted'>添加了一条快速记录</span>&nbsp;&nbsp;<span class='text-muted' >"+data.data.date+"&nbsp;&nbsp;<a title='沟通类型' href='javascript:void(0);'>"+status_name+"</a></span></div><div class='social-body'><span style='word-wrap:break-word;line-height: 21px;color: #000;'>"+content+"</span>"+html_code+"</div>";
+            if (nextstep_time_log !== '1970-01-01 08:00') {
+                log_html += "<div class='social-avatar' style='padding-top:10px;''><span class='text-muted pull-right'>下次联系时间："+nextstep_time_log+"</span></div>";
+            }
+            log_html += "</div></div></div>";
+
+            $('#log-list').prepend(log_html);
+            btnHide();
+        }else{
+            alert_crm('添加失败, 请重试');
+        }
+        // $("[name='r']").val('rBusinessLog');
+        // $("[name='module']").val('business');
+        // $("#business_id").val(business_id);
+    });
+});
+
+$("#dialog-setting_reply").dialog({
+    autoOpen: false,
+    // modal: true,
+    width: 550,
+    maxHeight: 450,
+    position: ["center",100],
+    close:function(){
+        selectStatus();//更新
+        $(this).html("");
+    },
+    buttons: {
+        "确定": function () {
+            $('#status_form1').submit();
+            $(this).dialog("close");
+        },
+        "取消": function () {
+            selectStatus();//更新
+            $(this).dialog("close");
+        }
+    }
+});
+
+$("#setting_reply_dialog").click(function(){
+    $('#dialog-setting_reply').dialog('open');
+    $('#dialog-setting_reply').load('{:U("setting/replyList")}');
+});
+
+function selectStatus(){
+    var status_id = $("#status_id option:selected").val();
+    var temp = '<option value="">--请选择--</option>';
+    $.ajax({
+        type:'post',
+        url: "{:U('setting/getReplyByStatus')}",
+        data: {status_id: status_id},
+        async: false,
+        success: function (data) {
+            $.each(data.data, function(k, v){
+                temp += '<option value="'+v.content+'">'+v.str_content+'</option>';
+            });
+        },
+        dataType: 'json'
+    });
+    $('#replay_list').html(temp);
+}
+
+function selectReply(){
+    var replay_content = $("#replay_list option:selected").val();
+    var status_id = $("#replay_list option:selected").attr('rel');
+    //修改跟进类型
+    $("#status_id option[value="+status_id+"]").attr('selected',true);
+    //判断是否替换
+    var log_content = $('#log-text').val();
+    if (log_content !== '') {
+        swal({
+            title: '',
+            text: '已填写沟通日志内容，确定要替换吗？',
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确认",
+            cancelButtonText: "取消",
+            closeOnConfirm: true,
+            closeOnCancel:  true}, function(isConfirm){
+            if (isConfirm) {
+                $('#log-text').val(replay_content);
+            } else {
+                return false;
+            } 
+        });
+    } else {
+        $('#log-text').val(replay_content);
+    }
+}
+
+/*删除日志*/
+function del_confirm(e){
+    swal({
+        title: "确定要删除沟通日志吗？",
+        text: "删除后将无法恢复，请谨慎操作！",
+        type: "warning",   
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "是的，我要删除！",
+        cancelButtonText:'让我再考虑一下…',
+        closeOnConfirm:false,
+        closeOnCancel:false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+            var log_id = $(e).attr('rel');
+            var type = $(e).attr('type');
+            $.get("{:U('log/delete')}", {r:type, id:log_id}, function(data){
+                if(data != 0){
+                    swal({
+                        title: "删除成功！",
+                        text: "",
+                        type: "success"
+                    });
+                    $("[log-rel='"+log_id+"']").remove();
+                }else{
+                    swal({
+                        title: "操作失败！",
+                        text:data.info,
+                        type: "error"
+                    })
+                    return false;
+                }
+            });
+        } else {
+            swal("已取消","您取消了删除操作！","error");
+        }
+    });
+};
+</script>

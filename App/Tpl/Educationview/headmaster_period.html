@@ -1,0 +1,361 @@
+<include file="Public:header" />
+<style>
+    .group_item {
+        margin: 5px 0;
+    }
+    .title-bar{
+        padding: 0 15px;
+        background: none;
+        border:none;
+    }
+    #title-show{
+        padding-top: 10px;
+        background: #fff;
+    }
+    td{
+        background-color:#f9fafc;
+        padding:14px;
+        color:#999;
+        text-align:center;
+        color:#666;
+        border-right: 1px solid #e7eaec;
+    }
+    td a{
+        color: #5C8FFC !important;
+    }
+</style>
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<div class="wrapper wrapper-content animated fadeIn templete_Detail">
+    <div class="row">
+        <div class="title-bar col-lg-12">
+            <div id="title-show" class="clearfix">
+                <ul class="nav pull-left" style="margin:0px 10px 0px 20px;">
+                <span>
+					<img src="/Public/img/contract_view_icon.png" style="margin-bottom:9px;" alt="">
+				</span>
+                    <span style="font-size:21px;margin-left:5px">&nbsp;&nbsp;&nbsp;{{detail.period_name}} ({{detail.course_name}}) </span>&nbsp;&nbsp;
+                </ul>
+        </div>
+        <div class="col-lg-12">
+            <div class="tabs-container">
+                <div style="padding: 20px 20px; background: rgb(255, 255, 255); min-height: 492.48px;" id="left-content">
+                    <ul class="nav nav-tabs" id="left_list" style="height:40px;">
+                        <li><a href="#tab1" data-toggle="tab" type="tab1">基本信息</a></li>
+                        <li><a href="#tab2" data-toggle="tab" type="tab2">排课信息({{count.section}})</a></li>
+                        <li><a href="#tab3" data-toggle="tab" type="tab3">学员列表({{count.subStudent}})</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane" id="tab1">
+                            <div class="panel-body">
+
+                                <div class="form-horizontal view-group ">
+                                    <div class="form-group">
+                                        <div class="clearfix group_item col-lg-6">
+                                            <label class="col-lg-2">班级名称</label>
+                                            <div class="col-lg-4"><p>{{detail.period_name}}</p></div>
+                                        </div>
+                                        <div class="clearfix group_item col-lg-6">
+                                            <label class="col-lg-2">所属课程</label>
+                                            <div class="col-lg-4">
+                                                <p>
+                                                    <a target="_blank" :href="'{:U('educationview/course_detail')}&id='+detail.course_id">
+                                                        {{detail.course_name}}
+                                                    </a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix group_item col-lg-6">
+                                            <label class="col-lg-2">课程时长</label>
+                                            <div class="col-lg-4"><p>{{detail.time_long}}</p></div>
+                                        </div>
+                                        <div class="clearfix group_item col-lg-6">
+                                            <label class="col-lg-2">成员类型</label>
+                                            <div class="col-lg-4">
+                                                <p v-if="detail.member_type == 1">一对多</p>
+                                                <p v-else>一对一</p>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix group_item col-lg-6">
+                                            <label class="col-lg-2">班主任</label>
+                                            <div class="col-lg-4"><p>{{detail.headmaster}}</p></div>
+                                        </div>
+                                        <div class="clearfix group_item col-lg-6">
+                                            <label class="col-lg-2">添加人</label>
+                                            <div class="col-lg-4"><p>{{detail.creator_name}}</p></div>
+                                        </div>
+                                        <div class="clearfix group_item col-lg-6">
+                                            <label class="col-lg-2">添加时间</label>
+                                            <div class="col-lg-4"><p>{{detail.create_at}}</p></div>
+                                        </div>
+                                        <div class="clearfix group_item col-lg-6">
+                                            <label class="col-lg-2">修改人</label>
+                                            <div class="col-lg-4"><p>{{detail.updator_name}}</p></div>
+                                        </div>
+                                        <div class="clearfix group_item col-lg-6">
+                                            <label class="col-lg-2">修改时间</label>
+                                            <div class="col-lg-4"><p>{{detail.update_at}}</p></div>
+                                        </div>
+                                        <div class="clearfix group_item col-lg-6">
+                                            <label class="col-lg-2">课程图片</label>
+                                            <div class="col-lg-4">
+                                                <p v-if="detail.pic"><img :src="detail.pic" alt=""></p>
+                                                <p v-else>无图片</p>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix group_item col-lg-12">
+                                            <label class="col-lg-2">课程详情</label>
+                                            <div class="col-lg-4"><p>{{detail.course_detail}}</p></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab2">
+                            <div class="panel-body">
+                                <table class="table select-table table-bordered">
+                                    <thead>
+                                    <tr style="background-color:#f9fafc;text-align:center;">
+                                        <td style="">课时名称</td>
+                                        <td style="">课时编号</td>
+                                        <td style="">课时标题</td>
+                                        <td style="">课时时长</td>
+                                        <td style="">授课老师</td>
+                                        <td style="">开始时间</td>
+                                        <td style="">结束时间</td>
+                                        <td style="">创建人</td>
+                                        <td style="">创建时间</td>
+                                        <td style="">操作</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="s in scheduleYet" :data-id="s.schedule_id">
+                                        <td style="">{{s.section_name}}</td>
+                                        <td style="">{{s.node}}</td>
+                                        <td style="">{{s.title}}</td>
+                                        <td style="">{{s.duration}}</td>
+                                        <td style="">{{s.teacher_name}}</td>
+                                        <td style="">{{s.start_time}}</td>
+                                        <td style="">{{s.end_time}}</td>
+                                        <td style="">{{s.creator_name}}</td>
+                                        <td style="">{{s.create_at}}</td>
+                                        <td style="text-align:center;padding:14px;color:#666">
+                                            <template v-if="s.schedule_status == 1">
+                                                <button class="btn btn-info btn-sm" onclick="notifyTeacher()">提醒授课老师</button>
+                                            </template>
+                                            <template v-else>
+                                                <button class="btn btn-success btn-sm" onclick="scheduleSignIn(this)">学员签到管理</button>
+                                            </template>
+
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab3">
+                            <div class="panel-body">
+                                <table class="table select-table table-bordered">
+                                    <thead>
+                                    <tr style="background-color:#f9fafc;text-align:center;">
+                                        <td style="">学员姓名</td>
+                                        <td style="">学员电话</td>
+                                        <td style="">学员邮件</td>
+                                        <td style="">操作</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="s in subStudent" :data-id="s.id">
+                                        <td style="">{{s.realname}}</td>
+                                        <td style="">{{s.mobile}}</td>
+                                        <td style="">{{s.email}}</td>
+                                        <td style="text-align:center;padding:14px;color:#666">
+                                            <button class="btn btn-info btn-sm" onclick="notifyStudent()">发消息</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 弹框模板定义 -->
+<div style="display:none" id="dialog-schedule-signin" title="学员签到管理">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+<include file="Public:footer" />
+<script>
+    $(function() {
+        var templete_Detail = new Vue({
+            el: '.templete_Detail',
+            data: {
+                detail:{},
+                count:{},
+                scheduleYet:{},
+                subStudent:{},
+            },
+            methods:{
+                getCourseDetail:function(){
+                    var id          =   getQueryString('id');
+                    dd(id)
+                    if( !id )   return ;
+                    var _this       =   this;
+                    $.ajax({
+                        url:"/index.php?m=education&a=period_detail",
+                        data:{id:id},
+                        dataType:"JSON",
+                        type:"POST",
+                        success:function (res) {
+                            if( res.result == true ){
+                                _this.detail        =   res.detail;
+                                _this.count         =   res.count;
+                                _this.scheduleYet   =   res.scheduleYet;
+                                _this.subStudent    =   res.subStudent;
+                            }else{
+                                layer.msg( 'ERROR '+res.error );
+                            }
+                        }
+                    });
+                },
+                section_del:function(btn){
+                    var parent          =   $(btn.target).parent().parent(),
+                        section_id      =   parent.data('id'),
+                        _this           =   this;
+                    if( !section_id )   return ;
+
+                    layer.confirm('确定删除课时吗?', {icon: 3, title:'提示'}, function(index){
+                        // 删除
+                        $.ajax({
+                            url:"/index.php?m=education&a=section_del",
+                            data:{id:section_id},
+                            dataType:"JSON",
+                            type:"POST",
+                            success:function (res) {
+                                dd(res);
+                                if( res.result ){
+                                    _this.getCourseDetail();
+                                    layer.msg('删除成功！');
+                                }else{
+                                    alert(res.error);
+                                }
+                            }
+                        });
+                        layer.close(index);
+                    });
+                },
+                period_del:function(btn){
+                    var parent          =   $(btn.target).parent().parent(),
+                        period_id       =   parent.data('id'),
+                        _this           =   this;
+                    if( !period_id )   return ;
+                    layer.confirm('确定删除课期(班级)吗?', {icon: 3, title:'提示'}, function(index){
+                        // 删除
+                        $.ajax({
+                            url:"/index.php?m=education&a=period_del",
+                            data:{id:period_id},
+                            dataType:"JSON",
+                            type:"POST",
+                            success:function (res) {
+                                dd(res);
+                                if( res.result ){
+                                    _this.getCourseDetail();
+                                    layer.msg('删除成功！');
+                                }else{
+                                    layer.msg("ERROR "+res.error);
+                                }
+                            }
+                        });
+                        layer.close(index);
+                    });
+                },
+                PC_del:function(btn){
+                    var parent          =   $(btn.target).parent().parent(),
+                        ral_id          =   parent.data('id'),
+                        _this           =   this;
+                    if( !ral_id )   return ;
+                    layer.confirm('确定删除产品关联吗?', {icon: 3, title:'提示'}, function(index){
+                        // 删除
+                        $.ajax({
+                            url:"/index.php?m=education&a=courseproduct_del",
+                            data:{id:ral_id},
+                            dataType:"JSON",
+                            type:"POST",
+                            success:function (res) {
+                                dd(res);
+                                if( res.result ){
+                                    _this.getCourseDetail();
+                                    layer.msg('删除成功！');
+                                }else{
+                                    layer.msg("ERROR "+res.error);
+                                }
+                            }
+                        });
+                        layer.close(index);
+                    });
+                },
+
+
+                gotoProductDetail:function(product_id){
+                    if( !product_id )   return ;
+
+                    window.open('/index.php?m=product&a=view&id='+product_id);
+                }
+            },
+            mounted: function() {
+                $("[type='tab1']").click();
+                // 获取详情
+                this.getCourseDetail();
+            }
+        });
+
+
+
+        function dd(data) {
+            console.log(data)
+        }
+    });
+
+    function notifyTeacher(){
+        layer.msg('ERROR 开发中');
+    }
+
+    function notifyStudent(){
+        layer.msg('ERROR 开发中');
+    }
+
+    $("#dialog-schedule-signin").dialog({
+        autoOpen: false,
+        modal: true,
+        width: '70%',
+        maxHeight: 600,
+        position: ["center",100],
+        buttons:{
+            '关闭':function(){
+                $(this).dialog('close');
+            }
+        },
+        close:function(){
+            $(this).html('');
+        }
+    });
+
+    function scheduleSignIn(btn) {
+        var schedule_id     =   $(btn).parent().parent().attr('data-id');
+        if( !schedule_id ){
+            layer.msg('ERROR 参数缺失');return ;
+        }
+        $('#dialog-schedule-signin').dialog('open');
+        $('#dialog-schedule-signin').load('{:U("educationview/headmaster_studentsignin")}&id='+schedule_id);
+    }
+
+</script>

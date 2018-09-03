@@ -1,0 +1,297 @@
+<include file="Public:header" />
+<!-- daterangepicker -->
+<link href="__PUBLIC__/css/daterangepicker.css" rel="stylesheet">
+<script src="__PUBLIC__/js/daterangepicker/daterangepicker.js"></script>
+<style>
+	body{
+		overflow-y: hidden;
+	}
+	#container{
+	    height: 100%;
+	    margin: 0px;
+	}
+	.option{padding-left:-30px;}
+
+	.info {
+		border-radius: 3%;
+        box-shadow: 5px 5px 2px #ddd;
+        border: 1px solid #eee;
+    }
+    div.info-top {
+        position: relative;
+        background: none repeat scroll 0 0 #F9F9F9;
+        border-radius: 5px 5px 0 0;
+    }
+    div.info-top div {
+    	width:100%;
+        display: inline-block;
+        color: #333333;
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 31px;
+        padding: 10px 20px 0px 20px;
+    }
+    div.info-top img {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        transition-duration: 0.25s;
+    }
+    div.info-top img:hover {
+        box-shadow: 0px 0px 5px #000;
+    }
+    div.info-middle {
+    	float:left;
+    	width:100%;
+        font-size: 12px;
+        padding: 6px;
+        line-height: 20px;
+    }
+    div.info-bottom {
+        height: 0px;
+        width: 100%;
+        clear: both;
+        text-align: center;
+    }
+    div.info-bottom img {
+        position: relative;
+        z-index: 104;
+    }
+    .info-middle img {
+        float: left;
+        margin-right: 6px;
+    }
+
+    .amap-icon img{width: 30px;height: 30px;border-radius: 30px;}
+    .sign_content{width:100%;height: 100%;float:left;background-color: #fff;padding:10px 20px;}
+</style>
+<script>
+	$(function(){
+		$(".table_container").height(window.innerHeight-$(".table_container").offset().top-10);
+	});
+	$(window).resize(function(){
+		$(".table_container").height(window.innerHeight-$(".table_container").offset().top-10);
+	});
+</script>
+<div class="wrapper wrapper-content">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins"> 
+				<div class="title-bar">
+					<div class="row" id="title-show">
+						<form class="form-inline" id="" action="" method="get">
+							<ul class="breadcrum pull-right" style="margin-bottom: 0px">
+								<li>
+									<!-- 搜索员工： -->
+									<select class="form-control select2" name="role_id" id="role_id" >
+										<option value="">--请选择--</option>
+										<volist name="role_list" id="vo">
+											<option value="{$vo['role_id']}" <if condition = "$_GET['role_id'] eq $vo['role_id']">selected</if>>{$vo['full_name']}</option>
+										</volist>	
+									</select>
+									搜索：
+									<div class="input-group">
+										<input type="hidden" name="m" value="sign"/>
+										<input type="hidden" name="a" value="index"/>
+										<input type="text" name="sign_time" id="reservation" class="form-control" style="width:300px;"/>
+										<i class="glyphicon glyphicon-calendar fa fa-calendar" style="position: absolute;bottom: 10px;right: 24px;top: auto;cursor: pointer;"></i>
+										<!-- <input class="form-control required Wdate" aria-required="true" type="text" id="sign_time" name="sign_time" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" <if condition = "$sign_time">value="{$sign_time}"<else />value="<?php echo date('Y-m-d', time());?>"</if> /> -->
+										<span class="input-group-btn">
+											<button class="btn btn-default btn-search" id="short_search_btn" type="submit"><i class="fa fa-search"></i></button>
+										</span>
+									</div>
+								</li>
+							</ul>
+						</form>
+					</div>
+				</div>
+				<div class="row" style="margin: 0">
+					<div class="pull-left" style="width:26.222%;margin-bottom: 10px;">
+						<div class="ibox-content table_container full-height-scroll" style="padding:0px;">
+							<empty name="sign_list">
+								<div style="background-color:#fff;"><include file="Public:nodata" /></div>
+							<else />
+								<volist name="sign_list" id="vo">
+									<div class="ibox-content sign-list" rel="{$vo['role_id']}" rel1="{$vo['sign_id']}" style="padding:0px;width: 100%;cursor:pointer;border:none;float:left;">
+										<div class="social-feed-separated clearfix" style="margin:0 auto;width:90%;border-bottom:1px dashed #ccc;">
+								            <div class="social-feed-box" style="padding:10px;">
+								                <div class="social-avatar">
+								                    <notempty name="vo['user_info']['user_name']">
+								                    	<if condition = "$vo['user_info']['thumb_path']">
+									                    	<img alt="image" style="width:50px;height:50px;" class="img-circle" src="{$vo['user_info']['thumb_path']}">
+									                    <else />
+									                    	<img alt="image" style="width:50px;height:50px;" class="img-circle" src="__PUBLIC__/img/avatar_default.png">
+									                    </if>
+									                    <a class="role_info name-colors"  rel="{$vo['user_info']['role_id']}" href="javascript:void(0);">{$vo['user_info']['user_name']}</a>&nbsp;&nbsp;
+									                    <span class="text-muted">{$vo['user_info']['department_name']}-{$vo['user_info']['role_name']}</span>&nbsp;&nbsp;&nbsp;
+									                    <span class="text-muted"></span>
+								                    </notempty>
+								                </div>
+								                <div class="social-body" style="padding:10px 15px 0 0;">
+								                	<if condition = "$vo['customer_info']">
+								                		<span >相关客户：</span>
+									                    <a href="{:U('customer/view','id='.$vo['customer_id'])}" target="_blank">
+									                    	<span style="word-wrap:break-word;line-height: 21px;">{$vo['customer_info']['name']}</span>
+									                    </a>
+									                </if>
+								                    <div class="log-relation"><i class="fa fa-map-pin"></i>&nbsp;<span>{$vo['address']}{$vo['title']}</span></div>
+								                    <div class="log-relation"><i class="fa fa-clock-o"></i>&nbsp;<span>{$vo.create_time|date="Y-m-d  H:i",###}</span></div>
+								                </div>
+								            </div>
+								        </div>
+							        </div>
+								</volist>
+							</empty>	
+							
+						</div>
+					</div>
+					<div class="pull-right" style="width:72.7%;margin-bottom: 10px;">
+						<div class="ibox-content table_container" id="sign_content" style="padding:0px;">
+						</div>
+					</div>
+				</div>
+    		</div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=84a2c54ee72a8b73dac2d010e50ff1cd"></script>
+<script type="text/javascript">
+	//时间插件  
+    $('#reservation').daterangepicker({
+        startDate: '{$start_date}', 
+        endDate: '{$end_date}',   
+        //minDate: '01/01/2012',    //最小时间  
+        maxDate : moment(), //最大时间
+        showDropdowns : true,  
+        showWeekNumbers : false, //是否显示第几周  
+        // timePicker : true, //是否显示小时和分钟  
+        // timePickerIncrement : 60, //时间的增量，单位为分钟  
+        timePicker12Hour : false, //是否使用12小时制来显示时间  
+        ranges : {  
+            //'最近1小时': [moment().subtract('hours',1), moment()],  
+            '今日': [moment().startOf('day'), moment()],  
+            '昨日': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')], 
+            '上月': [moment().subtract('days', '{$daterange[0][start_day]}'), moment().subtract('days', '{$daterange[0][end_day]}')],
+            '本月': [moment().subtract('days', '{$daterange[1][start_day]}'), moment()], 
+            '上季度': [moment().subtract('days', '{$daterange[2][start_day]}'), moment().subtract('days', '{$daterange[2][end_day]}')],
+            '本季度': [moment().subtract('days', '{$daterange[3][start_day]}'), moment()], 
+            '上一年': [moment().subtract('days', '{$daterange[4][start_day]}'), moment().subtract('days', '{$daterange[4][end_day]}')],
+            '本年': [moment().subtract('days', '{$daterange[5][start_day]}'), moment()], 
+            // '最近7日': [moment().subtract('days', 6), moment()],  
+            // '最近30日': [moment().subtract('days', 29), moment()]  
+        },  
+        opens : 'left', //日期选择框的弹出位置  
+        buttonClasses : [ 'btn btn-default' ],  
+        applyClass : 'btn-small btn-primary blue',  
+        cancelClass : 'btn-small', 
+        separator : ' to ',  
+        locale : {  
+            applyLabel : '确定',  
+            cancelLabel : '取消',  
+            fromLabel : '起始时间',  
+            toLabel : '结束时间',  
+            customRangeLabel : '自定义',  
+            daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],  
+            monthNames: ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"],
+            firstDay : 1 ,
+            format : 'YYYY-MM-DD', //控件中from和to 显示的日期格式
+        },
+        "alwaysShowCalendars": true,
+        function(start, end, label) {
+        	//回调
+        	$('#reservation').val(start.format('YYYY-MM-DD HH:mm:ss') + ' - ' + end.format('YYYY-MM-DD HH:mm:ss'))
+  			// console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+    	}
+    });
+	/*签到详情 加载的圈圈效果*/
+	var detail_html = '<div class="spiner-example">\
+							<div class="sk-spinner sk-spinner-fading-circle">\
+								<div class="sk-circle1 sk-circle"></div>\
+								<div class="sk-circle2 sk-circle"></div>\
+								<div class="sk-circle3 sk-circle"></div>\
+								<div class="sk-circle4 sk-circle"></div>\
+								<div class="sk-circle5 sk-circle"></div>\
+								<div class="sk-circle6 sk-circle"></div>\
+								<div class="sk-circle7 sk-circle"></div>\
+								<div class="sk-circle8 sk-circle"></div>\
+								<div class="sk-circle9 sk-circle"></div>\
+								<div class="sk-circle10 sk-circle"></div>\
+								<div class="sk-circle11 sk-circle"></div>\
+								<div class="sk-circle12 sk-circle"></div>\
+							</div>\
+						</div>';
+	$('.sign-list').click(function(){
+	    var rel = $(this);
+	    sign_detail(rel);
+	});
+
+	var sign_role_id = "{$role_id}";
+	var start_date = "{$start_date}";
+	var end_date = "{$end_date}";
+	$('#sign_content').html(detail_html);
+    $('#sign_content').load("{:U('sign/view','role_id=')}"+sign_role_id+'&start_date='+start_date+'&end_date='+end_date);
+
+	function sign_detail(e,obj){
+	    var role_id = $(e).attr('rel');
+	    var sign_id = $(e).attr('rel1');
+	    var sign_time = '{$sign_time}';
+	    $('#sign_content').html(detail_html);
+	    if(sign_id != ''){
+			$('#sign_content').load("{:U('sign/view')}", {sign_id: sign_id}, function(){
+		        $(obj).trigger('click');
+		    });
+	    }else{
+	    	$('#sign_content').load("{:U('sign/view')}", {role_id: role_id,sign_time:sign_time}, function(){
+		        $(obj).trigger('click');
+		    });
+	    }
+	}
+
+	//构建自定义信息窗体
+    function createInfoWindow(title, content) {
+        var info = document.createElement("div");
+        info.className = "info";
+
+        //可以通过下面的方式修改自定义窗体的宽高
+        info.style.width = "400px";
+        // 定义顶部标题
+        var top = document.createElement("div");
+        var titleD = document.createElement("div");
+        var closeX = document.createElement("img");
+        top.className = "info-top";
+        titleD.innerHTML = title;
+        closeX.src = "http://webapi.amap.com/images/close2.gif";
+        closeX.onclick = closeInfoWindow;
+
+        top.appendChild(titleD);
+        top.appendChild(closeX);
+        info.appendChild(top);
+
+        // 定义中部内容
+        var middle = document.createElement("div");
+        middle.className = "info-middle";
+        middle.style.backgroundColor = 'white';
+        middle.innerHTML = content;
+        info.appendChild(middle);
+
+        // 定义底部内容
+        var bottom = document.createElement("div");
+        bottom.className = "info-bottom";
+        bottom.style.position = 'relative';
+        bottom.style.top = '0px';
+        bottom.style.margin = '0 auto';
+        var sharp = document.createElement("img");
+        sharp.src = "http://webapi.amap.com/images/sharp.png";
+        bottom.appendChild(sharp);
+        info.appendChild(bottom);
+        return info;
+    }
+
+    //关闭信息窗体
+    function closeInfoWindow() {
+        map.clearInfoWindow();
+    }
+</script>
+<include file="Public:footer" />	

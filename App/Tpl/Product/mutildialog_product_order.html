@@ -1,0 +1,251 @@
+<div class="ibox" style="overflow-x: hidden;margin-bottom: 10px;">
+	<div class="row">
+		<div class="col-md-4">
+			批量操作: <button type="button" id="all-delete" class="btn btn-default btn-sm">删除</button>
+		</div>
+		<div class="col-md-3"></div>
+		<div class="col-md-3" style="padding-top: 9px;">
+			<!-- 共选择<span id="total_amount_val">{$business['total_amount']}</span>个产品 -->
+		</div>
+		<div class="col-md-2">
+			<input type="button" class="btn btn-primary btn-sm" onclick="loadDialog()" value="+选择产品">
+		</div>
+	</div>
+</div>
+<form id="addbusiness_form" action="{:U('order/edit_product')}" method="post">
+<input type="hidden" name="order_id" value="{$order_info['order_id']}">
+
+<div style="max-height:350px;">
+	<table style="margin-bottom:0px" class="table select-table" id="no-input-border" border="0" cellspacing="1" cellpadding="0">
+		<thead>
+			<tr style="text-align:center;">
+				<td><input type="checkbox" id="all-select"></td>
+				<td style="width: 22%">产品名称</td>
+				<td>价格(元)</td>
+				<td>销售单价(元)</td>
+				<td style="width: 10%">数量</td>
+				<td style="width: 5%">规格</td>
+				<td style="width: 20%">小计(元)</td>
+			</tr>
+		</thead>
+		<?php $max_key = 1;?>
+		<if condition="$order_info['product']">
+			<tbody class="form-inline" id="exit-product">
+			<volist name="order_info['product']" id="vo">
+				<tr id="row_{$key+1}">
+					<td style="text-align:center;">
+						<input class="reduce_one" type="checkbox" id="">
+					</td>
+					<td>
+						<input type="hidden" name="order[product][{$key+1}][product_id]" id="product_id_{$key+1}" class="cproduct_id" value="{$vo.product_id}"/>
+						<input type="hidden" name="order[product][{$key+1}]['r_id']" value="{$vo['id']}" />
+						<input type="text" class="form-control" id="product_name_{$key+1}" style="border:none;!important" readonly="true" value="{$vo.product_name}"/>
+					</td>
+					<td>
+						<!-- 售价 -->
+						<input type="text" id="product_ori_price_{$key+1}" name="order[product][{$key+1}][ori_price]" class="form-control" style="border:none;!important" readonly="readonly"  value="{$vo.ori_price}" />
+					</td>
+					<td>
+						<input type="text" class="form-control" name="order[product][{$key+1}][unit_price]" id="product_unit_price_{$key+1}" onkeyup="calculate({$key+1})" value="{$vo.unit_price}" />
+					</td>
+					<td>
+						<!-- 商品数量 -->
+						<input type="text" class="form-control amount" name="order[product][{$key+1}][amount]" id="product_amount_{$key+1}" onkeyup="calculate({$key+1})" value="{$vo.amount}"/>
+					</td>
+					<td>
+						<input type="text" style="border:none;!important" name="order[product][{$key+1}][unit]" readonly="readonly" class="form-control" value="{$vo.unit}"/>
+					</td>
+					<td >
+						<!-- 小计 -->
+						<input type="text" style="border:none;!important" name="order[product][{$key+1}][subtotal]" id="product_subtotal_{$key+1}" class="form-control subtotal" value="{$vo.subtotal}" readonly="readonly" rel="{$key+1}"/>
+					</td>
+				</tr>
+				<?php $max_key = ++$key;?>
+			</volist>
+			</tbody>
+		<else/>
+			<tbody class="form-inline" id="view_row">
+				<tr ><td colspan="7" style="text-align:center"><span >暂无产品信息，请添加产品！</span></td></tr>
+			</tbody>
+		</if>
+		<tbody class="form-inline" id="add_products">
+			<input type="hidden" id="now_rows" <if condition = "$now_rows neq ''">value="{$now_rows}"<else />value="0"</if>/>
+		</tbody>
+	</table>
+	<input type="hidden" name="total_amount" id="total_amount" value="{$order_info['total_amount']}">
+</div>
+<div class="ibox" style="overflow-x: hidden;margin: 20px 5px 0px;">
+	<div class="row" style="margin: 20px 5px 0px;">
+		<div class="col-md-8">&nbsp;</div>
+		<div class="col-md-4" style="padding-top:9px">销售订单金额(元):&nbsp;<span id="final-price">{$order_info['price']}</span><input type="hidden" value="{$order_info['price']}" name="price"></div>
+	</div>
+</div>
+</form>
+<div style="display:none;" id="dialog-product-list" title="商品列表">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script>
+var order_open = '{$order_info["order_id"]}';
+$(document).ready(function(){
+	//alert(open);
+	if(!order_open){
+		loadDialog();
+	}
+});
+function final_price_sum(){
+	var total_subtotal_val = $('[name="total_subtotal_val"]').val();
+	var final_price = parseFloat(total_subtotal_val).toFixed(2);
+	$('#final-price').text(final_price);
+	$('[name="price"]').val(final_price);
+}
+function loadDialog(){
+	$("#dialog-product-list").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 900,
+		maxHeight: 500,
+		position: ["center",100],
+		buttons:{
+			'{:L("OK")}':function(){
+				var now_rows = parseInt($('#now_rows').val());
+				$(".se_product").each(function(){
+					now_rows += 1;
+					$('#now_rows').val(now_rows);
+					var product_name = $(this).text();
+					$('#view_row').remove();
+					var product_id = $(this).attr('rel');
+					var muns = 0;
+					$('.cproduct_id').each(function(k, v){
+						if($(v).val() == product_id){
+							alert_crm('此产品已经存在，如需添加请直接修改数量!');
+							muns += 1;
+						}
+					});
+					if(muns == 0){
+						var unit_price = $(this).children("input:first-child").val();
+						// var category_name = $(this).children("input:first-child").next().next().next().val();
+						var unit = $(this).children("input:first-child").next().val();
+						var ori_price = $(this).children("input:first-child").next().next().val();
+						if(product_id != null){
+							$('#product_name_'+now_rows).val(product_name);
+							$('#add_products').append("<tr id='row_"+now_rows+"'><td style='text-align:center;'><input class='reduce_one' type='checkbox' id=''></td><td><input type='hidden' name='order[product]["+now_rows+"][product_id]' id='product_id_"+now_rows+"' class='cproduct_id' value='"+product_id+"' /><input type='text' class='form-control' readonly='true' id='product_name_"+now_rows+"' style='border:none;!important' readonly='readonly' value='"+product_name+"'/></td><td><input type='text' id='product_ori_price_"+now_rows+"' name='order[product]["+now_rows+"][ori_price]' class='form-control' style='border:none;!important' readonly='readonly'  value='"+unit_price+"' /></td><td><input type='text' class='form-control' name='order[product]["+now_rows+"][unit_price]' id='product_unit_price_"+now_rows+"' onkeyup='calculate("+now_rows+")' value='"+unit_price+"' /></td><td><input type='text' class='form-control amount' name='order[product]["+now_rows+"][amount]' id='product_amount_"+now_rows+"' onkeyup='calculate("+now_rows+")' value='1'/></td><td><input type='text' style='border:none;!important' name='order[product]["+now_rows+"][unit]' readonly='readonly' class='form-control' value='"+unit+"'/></td><td><input type='text' class='form-control subtotal' name='order[product]["+now_rows+"][subtotal]' id='product_subtotal_"+now_rows+"' style='border:none;!important' readonly='readonly' rel='"+now_rows+"'/></td></tr>");
+							calculate(now_rows);
+						}
+					}
+				});
+				if(!order_open){
+	        		$('#dialog-addproduct').dialog('open');
+				}
+				$(this).dialog('close');
+			},
+			'{:L("CANCEL")}':function(){
+				$(this).dialog('close');
+			}
+		},
+        close: function() {
+       		$(this).empty();
+        }
+	});
+	$('#dialog-product-list').dialog('open');
+	$('#dialog-product-list').load('{:U("product/mutildialog")}');
+}
+
+var now_rows =  '{$max_key}';
+var total_row_id = '{$max_key}';
+$('#all-delete').click(function(){
+	var row_id = $(this).parent().parent().attr('id');
+	var num = $('.reduce_one:checked').parent().parent().length;
+	if(num > 0){
+		swal({
+			title: "温馨提示",
+			text: "您确定要移除该商品吗?",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#DD6B55",
+			confirmButtonText: "是的，我要移除！",
+       		cancelButtonText:'让我再考虑一下…',
+			closeOnConfirm:false,
+        	closeOnCancel:false
+        }, 
+        function(isConfirm){
+			if (isConfirm) {
+				$('.reduce_one:checked').parent().parent().remove();
+				calculate(total_row_id);
+				// now_rows = now_rows-num;
+				swal("移除成功！", "您已经移除了该商品信息！", "success");
+			} else {
+				swal("已取消","您取消了移除操作！","error");
+			} 
+		});
+	}else{
+		alert_crm('请至少选中一个商品！');
+	}
+});
+
+$('#all-select').click(function(){
+	$('.reduce_one').prop('checked', $(this).prop('checked'));
+});
+
+<!-- 根据选项计算价格 -->
+function calculate(param,par){
+	par = par || 0;
+	if($('#product_id_'+param).val() != '' && $('#product_id_'+param).val() != '0'){
+		//先对当前Row进行计算
+		var amount = $('#product_amount_'+param).val();//数量
+		var ori_price = $('#product_ori_price_'+param).val();
+		var unit_price = $('#product_unit_price_'+param).val();
+		var product_discount = cal_discount_money(unit_price, amount);//折扣额	
+		var unit_val = 0.00;
+		if(par == 0){
+			unit_val = unit_price;
+			var subtotal = parseFloat(unit_val*amount).toFixed(2); //小计
+		}else{
+			var unit_val = parseFloat(ori_price).toFixed(2);
+			$('#product_unit_price_'+param).val(unit_val);
+			var subtotal = parseFloat(unit_val*amount).toFixed(2); //小计
+		}
+		$('#product_subtotal_'+param).val(subtotal);
+		$('#product_discount_'+param).val(product_discount);
+		//合计数量
+		var total_amount = 0;
+		$('.amount').each(function(k, v){
+			if($(v).val() != '' ||  $(v).val() != '0'){
+				total_amount += new Number($(v).val());
+			}
+		});
+		$('#total_amount_val').html(total_amount);
+		$('#total_amount').val(total_amount);
+		
+		//合计小计
+		var total_subtotal = 0.00;
+		$('.subtotal').each(function(k, v){
+			if($(v).val() != '' ||  $(v).val() != '0'){
+				total_subtotal += new Number($(v).val());
+			}
+		});
+		$('#total_subtotal').val(total_subtotal.toFixed(2));
+		$('#final-price').text(total_subtotal.toFixed(2));
+		$('[name="price"]').val(total_subtotal.toFixed(2));
+		// final_price_sum();
+	}else{
+		return false;
+	}
+}
+<!-- 根据选项计算价格 END-->
+
+function cal_discount_money(unit_price, amount, discount_rate){
+	var product_discount = 0;
+	if(discount_rate == 0){
+		product_discount = 0;
+	}else{
+		product_discount = (unit_price * amount) * (discount_rate/100);
+	}
+	return parseFloat(product_discount).toFixed(2);
+}
+</script>

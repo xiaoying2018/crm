@@ -1,0 +1,227 @@
+<include file="Public:header" />
+<link href="__PUBLIC__/css/step.css" rel="stylesheet">
+<style>
+    .a{
+        display:block;
+    }
+    .form-p{line-height: 25px;height: 25px;}
+    .form-p-owner{line-height: 25px;height: 25px;padding-top: 5px;font-size: 14px;color: #000;}
+    .product-a-line{border-left: 3px solid #19aa8d !important;}
+    .product-list:hover{background-color: #f3f3f4;}
+    .all_business{background-color: #fff;color: #00aaef;}
+    .all_business_a{background-color: #00aaef;color: #fff !important;}
+    .form-horizontal .control-label{color: #999;}
+    /*step*/
+    .nav > li.active {background: none;}
+
+</style>
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="ibox-content" style="padding-top:9px;padding-bottom:4px;">
+        <include file="Public:alert" />
+        <div class="row border-bottom">
+            <div class="col-md-9">
+                <div class="all-inline">
+                    <input type="hidden" id="business_id" value="{$business_info['business_id']}" />
+                    <input type="hidden" id="module_business_id" value="{$business_info['business_id']}" />
+                    <span><img src="__PUBLIC__/img/customer_view_icon.png" style="margin-bottom:9px;" alt=""></span>
+                    <h2 class="h2-customer-name" style="font-weight:400;color: #000;">{$business_info['name']}</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <a href="{:U('business/edit','id='.$business_info['business_id'])}" class="btn btn-outline btn-default pull-right" style="margin-right: 15px;"><i class="fa fa-pencil"></i>&nbsp;&nbsp;编辑</a> 
+            </div>
+        </div>
+        <div class="row" style="padding-top: 20px">
+            <div class="col-md-9">
+                <div class="form-horizontal view-group " style="margin-left:-10px;">
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">商机名称</label>
+                        <div class="col-lg-4">
+                            <p class="form-p color-a-edit">
+                                <span>{$business_info['name']}</span>
+                            </p>
+                        </div>
+                        <label class="col-lg-2 control-label">商机编号</label>
+                        <div class="col-lg-4">
+                            <p class="form-p">
+                                <span>{$business_info['code']}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <?php $tag = 0; ?>
+                    <volist name="field_list" id="vo">
+                        <if condition="$vo['form_type'] == 'textarea'">
+                            <if condition="$tag%2 neq 0">
+                                </div>
+                            </if>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">{$vo.name}</label>
+                                <div class="col-sm-10">
+                                    <p class="form-p color-a-edit">
+                                        <span style="color:#{$vo['color']}">{$business_info[$vo['field']]}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <?php $tag = 0; ?>
+                        <else/>
+                            <if condition="$tag%2 eq 0">
+                                <div class="form-group">
+                            </if>
+                            <label class="col-sm-2 control-label">{$vo.name}</label>
+                            <div class="col-sm-4">
+                                <p class="form-p">
+                                    <span style="color:#{$vo['color']}">
+                                        <if condition="$vo['form_type'] eq 'datetime'">
+                                            <if condition="$business_info[$vo['field']] neq '0'">{:newTimeDate($business_info[$vo['field']])}</if>
+                                        <elseif condition="$vo['form_type'] eq 'address'" />
+                                            {$business_info[$vo['field']]}
+                                            <a href="javascript:void(0);" class="getMap" rel="{$business_info[$vo['field']]}">
+                                                <span class="fa fa-map-marker" style="font-size:16px;"></span>
+                                            </a>
+                                        <elseif condition="$vo['field'] eq 'customer_id'" />
+                                            <a href="{:U('customer/view','id='.$business_info['customer_id'])}">{$business_info['customer_info']['name']}</a>
+                                        <elseif condition="$vo['field'] eq 'contacts_id'" />
+                                            <a href="{:U('contacts/view','id='.$business_info['contacts_id'])}">{$business_info['contacts_info']['name']}</a>
+                                        <else />
+                                            {$business_info[$vo['field']]}
+                                        </if>
+                                    </span>
+                                </p>
+                            </div>
+                            <if condition="$tag%2 neq 0">
+                                </div>
+                            </if>
+                            <?php $tag += 1; ?>
+                        </if>
+                    </volist>
+                </div>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeIn" style="padding-top:10px;">
+    <div class="ibox-content" style="padding-top:9px;padding-bottom:4px;">
+        <ul class="nav nav-pills nav-justified step step-arrow">
+            <volist name="status_list" id="vo">
+                <li <if condition = "$vo['order_id'] elt $business_info['status_order_id']">class="active"</if>>
+                    <a class="business_step" rel="{$vo['status_id']}" rel1="{$vo['name']}" href="javascript:void(0);" title="点击推进商机状态">{$vo['name']}</a>
+                </li>
+            </volist>
+        </ul>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeIn" style="padding-top:10px;">
+     <div class="ibox-content" id="business_view" style="padding-top:9px;padding-bottom:4px;">
+        <div class="tabs-container ibox-content product-content" style="min-height:608px;border: none;">
+        </div>
+    </div>
+</div>
+<div style="display:none" id="dialog-editproduct" title="编辑产品">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" language="javascript" >
+/*商机详情 加载的圈圈效果*/
+var detail_html = '<div class="spiner-example">\
+                        <div class="sk-spinner sk-spinner-fading-circle">\
+                            <div class="sk-circle1 sk-circle"></div>\
+                            <div class="sk-circle2 sk-circle"></div>\
+                            <div class="sk-circle3 sk-circle"></div>\
+                            <div class="sk-circle4 sk-circle"></div>\
+                            <div class="sk-circle5 sk-circle"></div>\
+                            <div class="sk-circle6 sk-circle"></div>\
+                            <div class="sk-circle7 sk-circle"></div>\
+                            <div class="sk-circle8 sk-circle"></div>\
+                            <div class="sk-circle9 sk-circle"></div>\
+                            <div class="sk-circle10 sk-circle"></div>\
+                            <div class="sk-circle11 sk-circle"></div>\
+                            <div class="sk-circle12 sk-circle"></div>\
+                        </div>\
+                    </div>';
+/*单个商机*///obj为要打开的标签页
+product_detail();
+function product_detail(){
+    var business_id = $('#business_id').val();
+    $('.product-content').load("{:U('business/view_ajax')}", {id: business_id});
+}
+
+$(".editproduct").click(function(){
+    var business_id = $(this).attr('rel');
+    $('#dialog-editproduct').dialog('open');
+    $('#dialog-editproduct').load('{:U("product/mutildialog_product","business_id=")}'+business_id);
+});
+/*编辑商机*/
+$("#dialog-editproduct").dialog({
+    autoOpen: false,
+    modal: true,
+    minWidth: 850,
+    maxHeight: 400,
+    position: ["center",100],
+    buttons: {
+        "确定": function () {
+            var is_product = $('.cproduct_id').val();
+            if(is_product == 'undefined' || is_product == '0'){
+                alert_crm('请至少选择一个产品！');
+            }else{
+                $('#addbusiness_form').submit();
+                $(this).dialog("close");
+            }
+        },
+        "取消": function () {
+            $(this).html('');
+            $(this).dialog("close");
+        }
+    },
+    close: function() {
+        /*关闭清空数据*/
+    $(this).empty();
+    }
+});
+
+//商机推进
+$('.business_step').click(function(){
+    var business_id = $('#business_id').val();
+    var status_id = $(this).attr('rel');
+    var status_name = $(this).attr('rel1');
+    swal({
+        title: "温馨提示",
+        text: "确认要推进商机状态为"+'‘'+status_name+'’？',
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "是的，我要推进！",
+        cancelButtonText:'让我再考虑一下…',
+        closeOnConfirm:false,
+        closeOnCancel:false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+            $.ajax({
+                cache: true,
+                type: "POST",
+                url:'{:U("business/advance","business_id=")}'+business_id+'&status_id='+status_id,
+                async: false,
+                success: function(data) {
+                    if(data.status == 1){
+                        swal("温馨提示！", "商机状态推进成功！", "success");
+                        location.reload();
+                    }else{
+                        swal("温馨提示！", "商机状态推进失败，请重试！", "error");
+                        return false;
+                    }
+                }
+            });
+        }else{
+            swal("已取消","您取消了推进操作！","error");
+        }
+    });
+});
+</script>
+<include file="Public:footer" />

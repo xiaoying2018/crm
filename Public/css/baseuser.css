@@ -1,0 +1,226 @@
+@charset "utf-8";
+html,body{
+	height: 100%; 
+	width: 100%;
+	font-family: '微软雅黑';
+	overflow: hidden;
+}
+.content-login{
+	width: 100%; 
+	min-width: 1200px; 
+	height: 100%; 
+	min-height: 500px;
+	font-size: 14px; 
+	color: #909090;
+}
+.imgdefault{
+	float: left; 
+	position: relative; 
+	width: 65%; 
+	height: 100%; 
+}
+.bancontent{
+	width: 700px; 
+	height: 500px;
+	position: absolute; 
+	left: 50%; 
+	top: 50%; 
+	margin-top: -250px;
+	margin-left: -350px;
+}
+.bancontent a{
+	display: block; 
+	width: 100%; 
+	height: 100%;
+}
+.logininfo{
+	float: right; 
+	position: relative; 
+	width: 35%; 
+	height: 100%; 
+	background: #fff;
+}
+.logininfowidth{
+	width: 80%;
+	margin-left: 10%;
+	height: 500px;
+	position: absolute;
+	top: 50%;
+	margin-top: -200px;
+}
+.loginrq{
+	width: 250px; 
+	height: 85px; 
+	margin: 0 auto;
+}
+.formtheme{
+	width: 100%; 
+	padding-top: 40px; 
+	margin: 0 auto;
+}
+.logininputList{
+	/*position: relative; */
+	height: 35px; 
+	line-height: 35px; 
+	width: 100%; 
+	padding: 2px 18px 2px 32px;
+	margin-bottom: 16px;left:-60px;
+}
+.logininputList .loginText{
+	height: 24px; 
+	line-height: 24px; 
+	padding: 7px 0; 
+	width: 100%;
+	color: #606060; 
+	border: 0 none;
+}
+.logininputList label{
+	position: absolute;
+	left: 2px; 
+	top: 10px; 
+	width: 20px; 
+	height: 24px;
+}
+.logininputListUser label{
+	background-position: -58px -4px;
+}
+.logininputListPwd label{
+	background-position: -28px -3px;
+}
+.logininputListCode label{
+	background-position: -3px -3px;
+}
+.errorTips{
+	display: -none; 
+	font-size: 12px; 
+	color: #fe514a; 
+	height: 20px; 
+	line-height: 20px; 
+	position: absolute; 
+	left: 310px; 
+	top: 10px; 
+	min-width: 100px;
+	white-space:nowrap;
+}
+p.logininputList{
+	text-align: right; 
+	width: 100%; 
+	padding: 0; 
+	font-size: 13px;
+	margin-bottom:0;
+	height: 16px; 
+	line-height: 16px;
+	border: 0 none;
+	left: 18px;
+}
+p.logininputList a,a:hover{
+	color: #00AAEF;
+	text-decoration: none;
+}
+.loginBtninfo{
+	width: 100%; 
+	height: 38px; 
+	line-height: 38px; 
+	margin-top: 20px;
+	background: #00AAEF; 
+	border-radius: 2px; 
+	color: #fff; 
+	border: 0 none; 
+	letter-spacing:4px; 
+	font-size:16px;
+	/*margin-left: -28px;*/
+}
+.loginBtninfo:hover{
+	background: #04bff7;
+}
+@media only screen and (max-width: 1360px){
+	.loginrq{
+		width: 346px;
+		text-align: center;
+	}
+	.formtheme{
+		width: 346px;
+	}
+	.logininputList{
+		width: 346px;
+	}
+	.logininputList .loginText{
+		width: 346px;
+	}
+	.errorTips{
+		left: 346px;
+	}
+}
+@media only screen and (max-width: 600px){
+	.loginrq{
+		text-align: center; 
+		width: 100%;
+	}
+	.content-login{
+		width: 100%;
+		min-width: 100%;
+	}
+	.imgdefault{
+		display: none;
+	}
+	.logininfo{
+		width: 100%;
+	}
+	.logininfowidth{
+		width: 100%; 
+		left: 0; 
+		margin-left: 0;
+	}
+	.errorTips{
+		left: 30px; 
+		top: auto; 
+		bottom: -22px; 
+		z-index: 1;
+	}
+
+	.formtheme{
+		width: 100%; 
+		padding: 0 20px; 
+		margin-top: 40px; 
+		box-sizing: border-box; 
+		-webkit-box-sizing: border-box;
+	}
+	.logininputList{
+		width: 100%; 
+		height: 43px; 
+		line-height: 43px; 
+		box-sizing: border-box; 
+		-webkit-box-sizing: border-box;
+	}
+	.logininputList .loginText{
+		position: relative; 
+		top: -3px; 
+		height: 42px; 
+		line-height: 42px; 
+		padding: 7px 0; 
+		width: 90%; 
+		box-sizing: border-box; 
+		-webkit-box-sizing: border-box;
+	}
+}
+.inputinfo{
+	border: 1px solid #ccc;
+    border-radius: 2px;
+    height: 35px;
+    width: 100%;
+    padding-left: 5px;
+}
+.inputsub{
+	background: #00a7f2;
+    border-radius: 5px;
+    color: #FFF;
+    border: none;
+}
+.cor_footer{
+    margin-top: 222px;
+    text-align: center;
+}
+.cor_footer a:hover{
+	text-decoration: none;
+	cursor: pointer;
+}

@@ -1,0 +1,87 @@
+<include file="Public:header" />
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>查看</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{:U('Dynamic/index')}">首页</a>
+            </li>
+            <li>
+                <a>短消息</a>
+            </li>
+            <li class="active">
+                <strong>查看</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+<div class="wrapper wrapper-content " style="padding-top:12px">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-lg-12">
+			<div class="ibox-content clearfix" style="padding-top:10px">
+				<h3 class="pull-left">{:L('SHORT_MESSAGE')}</h3>
+				<div class="pull-right" style="padding-bottom:10px">
+					<if condition="session('role_id')==$info['to_role_id'] || $info['to_role_id'] = 0" ><a class="btn btn-primary btn-sm" id="reply" href="javascript:void(0);"/><i class="fa fa-plus"></i> {:L('REPLY')}</a>&nbsp;</if>
+					<a class="btn btn-primary btn-sm del_confirm" href="{:U('message/delete', 'id='.$info['message_id'])}"/><i class="fa fa-remove"></i> {:L('DELETE')}</a> &nbsp;
+					<a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="javascript:history.go(-1)"><i class="fa fa-arrow-left"></i> {:L('RETURN')}</a>
+				</div>
+				<table class="table table-hover">
+
+					<tbody>
+
+						<tr> 
+							<td class="tdleft" width="15%">{:L('THE_SENDERS')}</td>
+							<td width="35%"><notempty name="info.from_role_id">{$info.from_name}<else />{:L('SYSTEM_ADMINISTRATOR')}</notempty></td>
+							<if condition="C('ismobile') eq 1"></tr><tr></if>
+							<td class="tdleft" width="15%">{:L('SEND_TIMES')}</td>
+							<td width="35%">{$info.send_time|date='Y-m-d H:i:s',###}</td>
+						</tr>
+						<tr>
+							<td class="tdleft" width="15%">{:L('CONTENTSS')}</td>
+							<td <if condition="C('ismobile') neq 1">colspan="3"</if>><pre>{$info.content}</pre></td>
+						</tr>
+						<tr>
+							<td <if condition="C('ismobile') eq 1">colspan="2"<else />colspan="4"</if>></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="" style="display:none;" id="dialog-send" title="{:L('WRITE_LETTER')}">loading...</div>
+<div class="" style="display:none;" id="dialog-role-info" title="{:L('DIALOG_USER_INFO')}">loading...</div>
+<script type="text/javascript">
+<if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else/>width=800;</if> 
+$("#dialog-role-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 600,
+	maxHeight: 400,
+	position: ["center",100]
+});
+$("#dialog-send").dialog({
+    autoOpen: false,
+    modal: true,
+	width: width,
+	maxHeight: 400,
+	position: ["center",100]
+});
+$(function(){
+	$("#reply").click(function(){
+		$('#dialog-send').dialog('open');
+		$('#dialog-send').load('{:U("message/send")}&from_role_id='+{$info.from_role_id});
+	});
+	$(".role_info").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+});
+</script>
+<include file="Public:footer" />	

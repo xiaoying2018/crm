@@ -1,0 +1,382 @@
+<script src="__PUBLIC__/style/js/jquery-2.1.1.js"></script>
+<link type="text/css" href="__PUBLIC__/css/jquery-ui-1.10.0.custom.css" rel="stylesheet" />
+<link type="text/css" href="__PUBLIC__/css/bootstrap-responsive.min.css" rel="stylesheet">
+<link href="__PUBLIC__/style/css/bootstrap.min.css" rel="stylesheet">
+<link href="__PUBLIC__/style/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="__PUBLIC__/css/font-awesome.min.css" rel="stylesheet">
+
+<!-- Toastr style -->
+<link href="__PUBLIC__/style/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+<!-- Sweet Alert -->
+<link href="__PUBLIC__/style/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<link href="__PUBLIC__/style/css/style.css" rel="stylesheet">
+<link href="__PUBLIC__/style/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+<!-- Mainly scripts -->
+<script src="__PUBLIC__/style/js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/js/daterangepicker/moment.min.js"></script>
+<script src="__PUBLIC__/style/js/jquery.form.js" type="text/javascript"></script>
+<!-- <script src="__PUBLIC__/style/js/plugins/metisMenu/jquery.metisMenu.js"></script> -->
+<script src="__PUBLIC__/style/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- Toastr -->
+<script src="__PUBLIC__/style/js/plugins/toastr/toastr.min.js"></script>
+<!-- Custom and plugin javascript -->
+<script src="__PUBLIC__/style/js/plugins/pace/pace.min.js"></script>
+<script src="__PUBLIC__/style/js/inspinia.js"></script>
+<script src="__PUBLIC__/js/mxcrm_zh-cn.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/mxcrm.js" type="text/javascript"></script>
+<!-- jQuery UI -->
+<script src="__PUBLIC__/js/jquery-ui-1.10.0.custom.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/WdatePicker.js" type="text/javascript"></script>
+<!-- Sweet alert -->
+<script src="__PUBLIC__/style/js/plugins/sweetalert/sweetalert.min.js"></script>
+<!-- Jquery Validate -->
+<script src="__PUBLIC__/style/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/validate/messages_zh.min.js"></script>
+<script src="__PUBLIC__/js/bootstrap-tooltip.js"></script>
+<!-- 下拉筛选 -->
+<link rel="stylesheet" href="__PUBLIC__/css/bootstrap-select.css">
+<script type="text/javascript" src="__PUBLIC__/js/bootstrap-select.js" charset="UTF-8"></script>
+<!-- select2 -->
+<link href="__PUBLIC__/style/css/plugins/select2/select2.min.css" rel="stylesheet">
+<script src="__PUBLIC__/style/js/plugins/select2/select2.full.min.js"></script>
+<link href="__PUBLIC__/css/new.css">
+	
+<script type="text/javascript" src="__PUBLIC__/js/PCASClass.js" ></script>
+<style type="text/css">
+.add_title{
+	padding-bottom:10px;
+	height: 60px;
+	margin-bottom:15px;
+}
+.add_title>span{
+	border-bottom: 2px solid #1ab394;
+	font-size: 24px;
+}
+.add_body >div >.full-height-scroll{
+	border-right:1px dotted #ccc
+}
+.add_body_title{
+	margin:20px auto 20px auto;
+	padding-left: 25px;
+}
+.add_body_form{
+	padding-left: 38px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.form-control{
+	float:left;
+}
+.checkbox{float:left;}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn">
+	<form class="form-horizontal" id="form" role="form" action="{:U('customer/add')}" method="post">
+	<input type="hidden" name="refer_url" value="{$refer_url}">
+	<div class="ibox-content add_body" id="add_body" style="">
+		<div class="row">
+			<div class="col-md-6 add_body" style="padding-right: 0px;">
+				<div class="full-height-scroll">
+					<div class="row" >
+						<div class="col-md-12 add_body_title">
+							<div class="all-inline">
+								<span class="sq-tag"></span>
+								<div class="text-tag">
+									<span>基础信息</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-11 add_body_form">
+							<volist name="field_list['main']" id="vo" key="key">
+								<if condition="$vo['field'] neq 'customer_owner_id'">
+									<div class="form-group">
+										<label class="col-md-4 control-label">{$vo.name}：</label>
+										<if condition="$vo['form_type'] == 'textarea'">
+											<if condition = "$vo['tip_start'] eq 1">
+												<div class="col-md-6">
+													{$vo.html}
+												</div>
+												<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+											<else/>
+												<div class="col-md-8">
+													{$vo.html}
+												</div>
+											</if>
+										<elseif condition="$vo['form_type'] == 'address'"/>
+											<if condition = "$vo['tip_start'] eq 1">
+												<div class="col-md-7">
+													{$vo.html}
+												</div>
+												<div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+											<else/>
+												<div class="col-md-8">
+													{$vo.html}
+												</div>
+											</if>
+										<elseif condition="$vo['form_type'] == 'box'"/>
+											<div class="col-md-6">
+												<if condition="$vo['field'] == 'grade'">
+													<input type="hidden" id="star" name="grade" value="">
+													<div class="all-star" style="font-size: 18px;padding-top:3px;color:#D0D0D0;">
+														<i class="fa fa-star">&nbsp;&nbsp;</i><i class="fa fa-star">&nbsp;&nbsp;</i><i class="fa fa-star">&nbsp;&nbsp;</i><i class="fa fa-star">&nbsp;&nbsp;</i><i class="fa fa-star">&nbsp;&nbsp;</i>
+													</div>
+												<else/>
+													{$vo.html}
+												</if>
+											</div>
+											<if condition = "$vo['tip_start'] eq 1">
+												<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+											<else/>
+												<div class="col-md-2"></div>
+											</if>
+										<elseif condition="$vo['field'] == 'name'"/>
+											<div class="col-md-6">
+												<input class="form-control required" id="name" onkeyup="checkinfo(name)"  name="name" placeholder="" type="text" />
+											</div>
+											<if condition = "$vo['tip_start'] eq 1">
+												<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+											<else/>
+												<div class="col-md-2"></div>
+											</if>
+										<else/>
+											<div class="col-md-6">
+												{$vo.html}
+											</div>
+											<if condition = "$vo['tip_start'] eq 1">
+												<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+											<else/>
+												<div class="col-md-2"></div>
+											</if>
+										</if>
+									</div>
+								</if>
+							</volist>
+						</div>
+						<div class="col-md-12 add_body_title">
+							<div class="all-inline">
+								<span class="sq-tag"></span>
+								<div class="text-tag">
+									<span>附加信息</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-11 add_body_form">
+							<volist name="field_list['data']" id="vo" key="key">
+								<div class="form-group">
+									<label class="col-md-4 control-label">{$vo.name}：</label>
+									<if condition="$vo['form_type'] == 'address' || $vo['form_type'] == 'box' || $vo['form_type'] == 'textarea'">
+										<div class="col-md-7">
+											{$vo.html}
+										</div>
+										<if condition = "$vo['tip_start'] eq 1">
+											<div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+										<else/>
+											<div class="col-md-1"></div>
+										</if>
+									<else/>
+										<div class="col-md-6">
+											{$vo.html}
+										</div>
+										<if condition = "$vo['tip_start'] eq 1">
+											<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+										<else/>
+											<div class="col-md-2"></div>
+										</if>
+									</if>
+								</div>
+							</volist>
+						</div>
+						<div class="col-md-1 pull-right">
+							<!-- <div style="height: 100%; border-right: 1px dashed gray;">&nbsp;sadf</div> -->
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6 add_body" style="padding-left: 0px;">
+				<div class="full-height-scroll">
+					<div class="col-md-12 add_body_title">
+						<div class="all-inline">
+							<span class="sq-tag"></span>
+							<div class="text-tag">
+								<span>首要联系人</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-10 add_body_form">
+						<volist name="contacts_field_list['main']" id="vo" key="key">
+							<if condition = "$vo['form_type'] neq 'customer'">
+								<div class="form-group">
+									<label class="col-md-4 control-label">{$vo.name}：</label>
+									<if condition="$vo['form_type'] == 'textarea'">
+										<div class="col-md-8">
+											<textarea class="form-control" rows="5"></textarea>
+										</div>
+									<elseif condition="$vo['form_type'] == 'address'"/>
+										<div class="col-md-8">
+											{$vo.html}
+										</div>
+									<elseif condition="$vo['form_type'] == 'box'"/>
+										<div class="col-md-6">
+											{$vo.html}
+										</div>
+										<div class="col-md-2"></div>
+									<else/>
+										<div class="col-md-6">
+											{$vo.html}
+										</div>
+										<div class="col-md-2"></div>
+									</if>
+								</div>
+							</if>
+						</volist>
+					</div>
+					<if condition = "$contacts_field_list['data']">
+						<div class="col-md-12 add_body_title">
+							<div classs="all-inline">
+								<span class="sq-tag"></span>
+								<div class="text-tag">
+									<span>附加信息</span>
+								</div>
+							</div>
+						</div>
+					</if>
+					<div class="col-md-10 add_body_form">
+						<volist name="contacts_field_list['data']" id="vo" key="key">
+							<div class="form-group">
+								<label class="col-md-4 control-label">{$vo.name}：</label>
+								<if condition="$vo['form_type'] == 'address' || $vo['form_type'] == 'box' || $vo['form_type'] == 'textarea'">
+									<div class="col-md-8">
+										{$vo.html}
+									</div>
+								<else/>
+									<div class="col-md-6">
+										{$vo.html}
+									</div>
+									<div class="col-md-2"></div>
+								</if>
+							</div>
+						</volist>
+					</div>
+					<div class="col-md-2 pull-right">
+						<!-- <div style="height: 100%; border-right: 1px dashed gray;">&nbsp;sadf</div> -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="tfoot_div" class="clearfix">
+		<div class="clearfix" id="tfoot_page">
+			<div class="ibox-content" style="border-top: none;">
+				<div class="col-sm-offset-2"><button type="submit" id="save_submit" class="btn btn-primary">创建客户</button></div>
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+<div style="display:none" id="dialog-validate" title="{:L('CUSTOMER_NAME_TEST_RESULTS')}">
+	{:L('HAVE_THE_FOLLOWING_CUSTOMERS_ARE_SIMILAR_TO_THE_CUSTOMER_NAME')}
+	<div id="search_content"></div>
+</div>
+<script>
+	function checkinfo(param){
+		var field_value = $('#'+param).val();
+		if(field_value){
+			$.post('{:U("customer/checkinfo")}',
+				{
+					field_value:field_value,
+					field_name:param,
+				},
+				function(data){
+					if(data.status == 1){
+						$('#'+param+'-error').remove('');
+						$('#'+param).after('<label id="'+param+'-error" class="error" for="source"><i class="fa fa-times-circle"></i></label>');
+						$('#'+param+'-error').html('<i class="fa fa-times-circle"></i>'+data.data);
+					}else{
+						$('#'+param+'-error').remove('');
+					}
+				},
+			'json');
+		}
+	}
+	$(document).ready(function(){
+		$('#save_submit').prop('disabled',false);
+		/*form表单验证*/
+		$("#form").validate({
+			submitHandler:function(form){
+	            $('#save_submit').click(function(){
+					$('#save_submit').prop('disabled',true);
+				});
+	            form.submit();
+	        }    
+		});
+	});
+	
+	/*星星特效*/
+	$('.fa-star').mousemove(function(){
+		$(this).addClass("star-orange");
+		$(this).prevAll().addClass("star-orange");
+		$(this).nextAll().removeClass("star-orange");
+	});
+	$('.fa-star').mouseout(function(){
+		var star = $('#star').val();
+		if(star == '' || star == null){
+			$('.fa-star').removeClass("star-orange");
+		}else{
+			$('.fa-star').removeClass("star-orange");
+			$('.fa-star:lt('+star+')').addClass("star-orange");
+		}
+	});
+	$('.fa-star').click(function(){
+		var num = $(this).index() + 1;
+		$('#star').val(num);
+	});
+	/*地区联动*/
+	//new PCAS("province","city","area")//三级联动，有默认值，有文字提示信息
+	$("#dialog-validate").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 400,
+		maxHeight: 400,
+		buttons: { 
+			"确定": function () {
+				$(this).dialog("close"); 
+			}
+		},
+		position: ["center", 100]
+	});
+	$('#name').blur(
+		function(){
+			name = $('#name').val();
+			if(name != ''){
+				$.post('{:U("customer/check")}',
+					{
+						name:name
+					},
+					function(data){
+						if(data.data != 0){
+							$result = '';
+							$.each(data.data, function(k, v){
+								$result += (k+1)+'、'+v+'</br>';
+							});
+							$('#dialog-validate').dialog('open');
+							$("#search_content").html($result);
+							// alert_crm($result,"","warning");
+						}
+					},
+				'json');
+			}
+			/*else {
+				alert('{:L('PLEASE_FILL_OUT_THE_CUSTOMER_NAME')}');
+			}*/
+		}
+	)
+</script>

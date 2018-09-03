@@ -1,0 +1,473 @@
+<style>
+	.select2-container{width: 100% !important;}
+	.select2-container--default .select2-selection--single{border:none;}
+	.col_debite{
+		background-image: url('__PUBLIC__/img/money_li.png');
+   		background-repeat: repeat-y;
+	}
+	.dislog_table > tbody > tr > td{padding:0px;}
+	.dislog_table tr td{border:1px solid #e7eaec;}
+	.money_span{
+		margin-left: -1px;
+		height: 30px !important;
+	    line-height: 30px;
+	    font-weight: normal;
+	    border-top: 1px solid #dadada;
+	    text-align: center;
+	    background-image: url('__PUBLIC__/img/money_li.png');
+    	background-repeat: repeat-y;
+    	padding: 0px !important;
+    	float: inherit !important;
+	}
+	.money_span span{
+		float: left;
+	    display: inline;
+	    width: 19px;
+	    height: 100%;
+	    margin-right: 1px;
+	    background-color: #fff;
+	    line-height: 22px;
+    	font-weight: normal;
+    	text-align: center;
+	}
+	.cell_val{
+		font-family: 'tahoma';
+	    font-weight: bold;
+	    font-size: 14px;
+	    letter-spacing: 11px;
+	    overflow: hidden;
+	    position: relative;
+	    right: -5px;
+	    text-align: right;
+	}
+	
+</style>
+<div class="ibox" style="overflow-x: hidden;margin-bottom: 10px;">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="input-group" style="float:left;"><span style="line-height: 32px;">凭证字&nbsp;&nbsp;</span></div>
+			<div class="input-group" style="float:left;">
+				<select class="form-control" name="" id="">
+					<option value="">记</option>
+				</select>
+			</div>
+			<div class="input-group" style="float:left;width: 120px;margin-left: 10px;" >
+				<input type="number" class="form-control" style="width: 70%;"/>
+				<span style="width: 20%;line-height: 32px;">&nbsp;&nbsp;号</span>
+			</div>
+			<div class="input-group" style="float:left;width:180px;">
+				<span style="width: 20%;line-height: 32px;">&nbsp;&nbsp;日期</span>
+				<input onclick="WdatePicker()" class="form-control required Wdate" aria-required="true" value="<?php echo date('Y-m-d', time());?>" type="text" style="width: 70%;" id="" name=""/>
+			</div>
+		</div>
+		<div class="col-md-1"></div>
+		<div class="col-md-5">
+			<div class="pull-right">
+				<span class="pull-left">2018年第1期</span>&nbsp;&nbsp;
+				<span class="pull-right">制单人：{$_SESSION['full_name']}</span>
+			</div>
+		</div>
+	</div>
+</div>
+<form id="addbusiness_form" action="<empty name="business['business_id']">{:U('business/add')}<else />{:U('business/edit')}</empty>" method="post">
+<input type="hidden" name="order_id" value="{$order_id}">
+<input type="hidden" name="cate" value="{$cate}">
+
+<div style="max-height:350px;">
+	<table style="margin-bottom:0px" class="table dislog_table select-table" id="no-input-border" border="0" cellspacing="1" cellpadding="0">
+		<thead>
+			<tr style="text-align:center;">
+				<td rowspan="2" style="width: 40px;"></td>
+				<td rowspan="2" style="width: 22%">摘要</td>
+				<td rowspan="2" style="width: 22%">会计科目</td>
+				<td style="min-width: 222px;">借方金额</td>
+				<td style="min-width: 222px;">贷方金额</td>
+			</tr>
+			<tr>
+				<td class="money_span">
+					<span>亿</span>
+					<span>千</span>
+					<span>百</span>
+					<span>十</span>
+					<span>万</span>
+					<span>千</span>
+					<span>百</span>
+					<span>十</span>
+					<span>元</span>
+					<span>角</span>
+					<span>分</span>
+				</td>
+				<td class="money_span">
+					<span>亿</span>
+					<span>千</span>
+					<span>百</span>
+					<span>十</span>
+					<span>万</span>
+					<span>千</span>
+					<span>百</span>
+					<span>十</span>
+					<span>元</span>
+					<span>角</span>
+					<span>分</span>
+				</td>
+			</tr>
+		</thead>
+		<?php $max_key = 1;?>
+		<if condition="$account_list">
+			<tbody class="form-inline" id="exit-product">
+				<volist name="account_list" id="vo">
+					<!-- <input type="hidden" name="business[product][{$key+1}][business_product_id]" value="{$vo.business_product_id}"/> -->
+					<tr id="row_{$key+1}">
+						<td style="text-align:center;">
+							<input class="reduce_one" type="checkbox" id="">
+						</td>
+						<td>
+							<textarea name="" id="" cols="30" rows="10"></textarea>
+						</td>
+						<td>
+							
+						</td>
+						<td>
+							
+						</td>
+						<td>
+							
+						</td>
+					</tr>
+					<?php $max_key = ++$key;?>
+				</volist>
+			</tbody>
+		<else/>
+			<tbody class="form-inline" id="account_list">
+				<tr>
+					<td></td>
+					<td>
+						<textarea class="form-control" name="" id="" cols="30" rows="1" style="border:none;outline:none;resize:none;"></textarea>
+					</td>
+					<td>
+						<select class="form-control select2" name="account_id[]">
+							<volist name="account_array" id="vo">
+								<option value="{$vo['id']}">{$vo['code']} - {$vo['name']}</option>
+							</volist>
+						</select>
+					</td>
+					<td class="borrow_debite col_debite" id="borrow_debite_1" rel="1">
+						<div class="cell_val debit_val" id="borrow_val_1"></div>
+						<input type="text" class="borrow_money form-control" id="borrow_money_1" rel="1" autocomplete="off" style="display: none;">
+						<input type="hidden" id="borrow_hidden_1" name="account[1]['borrow_money']"/>
+					</td>
+					<td class="loan_debite col_debite" id="loan_debite_1" rel="1">
+						<div class="cell_val debit_val" id="loan_val_1"></div>
+						<input type="text" class="loan_money form-control" id="loan_money_1" rel="1" autocomplete="off" style="display: none;">
+						<input type="hidden" id="loan_hidden_1" name="account[1]['loan_money']"/>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<textarea class="form-control" name="" id="" cols="30" rows="1" style="border:none;outline:none;resize:none;"></textarea>
+					</td>
+					<td>
+						<select class="form-control select2" name="account_id[]">
+							<volist name="account_array" id="vo">
+								<option value="{$vo['id']}">{$vo['code']} - {$vo['name']}</option>
+							</volist>
+						</select>
+					</td>
+					<td class="borrow_debite col_debite" id="borrow_debite_2" rel="2">
+						<div class="cell_val debit_val" id="borrow_val_2"></div>
+						<input type="text" class="borrow_money form-control" id="borrow_money_2" rel="2" autocomplete="off" style="display: none;">
+						<input type="hidden" id="borrow_hidden_2" name="account[2]['borrow_money']"/>
+					</td>
+					<td class="loan_debite col_debite" id="loan_debite_2" rel="2">
+						<div class="cell_val debit_val" id="loan_val_2"></div>
+						<input type="text" class="loan_money form-control" id="loan_money_2" rel="2" name="loan_money" autocomplete="off" style="display: none;" />
+						<input type="hidden" id="loan_hidden_2" name="account[2]['loan_money']"/>
+					</td>
+				</tr>
+			</tbody>
+		</if>
+		<tfoot>
+			<tr>
+				<td>
+					<a class="javascript:void(0);" id="add_account" title="添加科目"><i class="fa fa-plus"></i></a>
+				</td>
+				<td colspan="2">合计:<span id="total_money"></span></td>
+				<td class="borrow_debite col_debite" style="padding: 0px;">
+					<div class="cell_val debit_val" id="borrow_total_text"></div>
+					<input type="text" class=" form-control" id="borrow_total_money" name="borrow_total_money" autocomplete="off" style="display: none;">
+				</td>
+				<td class="loan_debite col_debite" style="padding: 0px;">
+					<div class="cell_val debit_val" id="loan_total_text"></div>
+					<input type="text" class=" form-control" id="loan_total_money" name="loan_total_money" autocomplete="off" style="display: none;">
+				</td>
+			</tr>
+		</tfoot>
+		<tbody class="form-inline" id="add_products">
+			<input type="hidden" id="now_rows" <if condition = "$now_rows neq ''">value="{$now_rows}"<else />value="0"</if>/>
+		</tbody>
+	</table>
+	<input type="hidden" name="total_amount" id="total_amount" value="{$business['total_amount']}">
+</div>
+</form>
+<script>
+$(".select2").select2();
+
+$(document).on('click','.borrow_debite',function(){
+	var rel = $(this).attr('rel');
+	$(this).removeClass('col_debite');
+	$('#borrow_val_'+rel).html('');
+	$('#borrow_money_'+rel).show();
+	$('#borrow_money_'+rel).focus();
+});
+
+$(document).on('click','.loan_debite',function(){
+	var rel = $(this).attr('rel');
+	$(this).removeClass('col_debite');
+	$('#loan_val_'+rel).html('');
+	$('#loan_money_'+rel).show();
+	$('#loan_money_'+rel).focus();
+});
+
+$(document).on('blur','.borrow_money',function(){
+	var rel = $(this).attr('rel');
+	var val = $('#borrow_money_'+rel).val();
+	//处理金额数字
+	var money_val = moneyVal(val);
+	$('#borrow_val_'+rel).html(money_val);
+	$('#borrow_debite_'+rel).addClass('col_debite');
+	$('#borrow_hidden_'+rel).val(val);
+	$('#borrow_money_'+rel).hide();
+
+	if(money_val){
+		$('#loan_val_'+rel).html('');
+		$('#loan_money_'+rel).val('');
+		$('#loan_hidden_'+rel).val('');
+	}
+	
+	calculate(rel);
+});
+
+$(document).on('blur','.loan_money',function(){
+	var rel = $(this).attr('rel');
+	
+	var val = $('#loan_money_'+rel).val();
+	//处理金额数字
+	var money_val = moneyVal(val);
+	$('#loan_val_'+rel).html(money_val);
+	$('#loan_debite_'+rel).addClass('col_debite');
+	$('#loan_hidden_'+rel).val(val);
+	$('#loan_money_'+rel).hide();
+
+	if(money_val){
+		$('#borrow_val_'+rel).html('');
+		$('#borrow_money_'+rel).val('');
+		$('#borrow_hidden_'+rel).val('');
+	}
+
+	calculate(rel);
+});
+
+// 处理金额数字
+function moneyVal(money){
+	var money = money ? money : 0.00;
+	var money_num = parseFloat(money).toFixed(2)*100;
+	if(money_num == '0' || money_num == ''){
+		money_num = '';
+	}
+	return money_num;
+}
+
+$(".borrow_money,.loan_money").keyup(function(){
+	var rel = $(this).attr('rel');
+	calculate(rel);
+    $(this).val($(this).val().replace(/[^0-9.]/g,''));
+}).bind("paste",function(){ 
+	//CTR+V事件处理  
+	$(this).val($(this).val().replace(/[^0-9.]/g,''));
+}).css("ime-mode", "disabled"); //CSS设置输入法不可用
+
+var now_rows = 2;
+$('#add_account').click(function(){
+	now_rows += 1;
+	var html = '';
+	html = '<tr id="tr_'+now_rows+'">\
+				<td><a href="javascript:void(0);" class="reduce_one" rel="'+now_rows+'"><i class="fa fa-minus"></i></a></td>\
+				<td>\
+					<textarea class="form-control" name="" id="" cols="30" rows="'+now_rows+'" style="border:none;outline:none;resize:none;"></textarea>\
+				</td>\
+				<td>\
+					<select class="form-control select2" name="account_id[]">\
+						<volist name="account_array" id="vo">\
+							<option value="{$vo['id']}">{$vo['code']} - {$vo['name']}</option>\
+						</volist>\
+					</select>\
+				</td>\
+				<td class="borrow_debite col_debite" id="borrow_debite_'+now_rows+'" rel="'+now_rows+'">\
+					<div class="cell_val debit_val" id="borrow_val_'+now_rows+'"></div>\
+					<input type="text" class="borrow_money form-control" id="borrow_money_'+now_rows+'" rel="'+now_rows+'" autocomplete="off" style="display: none;">\
+					<input type="hidden" id="borrow_hidden_'+now_rows+'" name="account['+now_rows+'][borrow_money]"/>\
+				</td>\
+				<td class="loan_debite col_debite" id="loan_debite_'+now_rows+'" rel="'+now_rows+'">\
+					<div class="cell_val debit_val" id="loan_val_'+now_rows+'"></div>\
+					<input type="text" class="loan_money form-control" id="loan_money_'+now_rows+'" rel="'+now_rows+'" autocomplete="off" style="display: none;">\
+					<input type="hidden" id="loan_hidden_'+now_rows+'" name="account['+now_rows+'][loan_money]"/>\
+				</td>\
+			</tr>';
+	$('#account_list').append(html);
+
+	$(".select2").select2();
+
+	$(".borrow_money,.loan_money").keyup(function(){
+		var rel = $(this).attr('rel');
+		calculate(rel);
+	    $(this).val($(this).val().replace(/[^0-9.]/g,''));
+	}).bind("paste",function(){ 
+		//CTR+V事件处理  
+		$(this).val($(this).val().replace(/[^0-9.]/g,''));
+	}).css("ime-mode", "disabled"); //CSS设置输入法不可用
+});
+
+
+$(document).on('click','.reduce_one',function(){
+	var row_id = $(this).attr('rel');
+	swal({
+		title: "温馨提示",
+		text: "您确定要移除该科目吗?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "是的，我要移除！",
+   		cancelButtonText:'让我再考虑一下…',
+		closeOnConfirm:false,
+    	closeOnCancel:false
+    }, 
+    function(isConfirm){
+		if (isConfirm) {
+			$('#tr_'+row_id).remove();
+			calculate(row_id);
+			swal("移除成功！", "您已经移除了该科目！", "success");
+		} else {
+			swal("已取消","您取消了移除操作！","error");
+		} 
+	});
+});
+
+//计算金额
+function calculate(param,par){
+
+	var borrow_money_total = 0;
+	$('.borrow_money').each(function(k, v){
+		if($(v).val() != '' &&  $(v).val() != '0'){
+			borrow_money_total += new Number($(v).val());
+		}
+	});
+
+	var loan_money_total = 0;
+	$('.loan_money').each(function(k, v){
+		if($(v).val() != '' &&  $(v).val() != '0'){
+			loan_money_total += new Number($(v).val());
+		}
+	});
+	var borrow_total = moneyVal(borrow_money_total);
+	var loan_total = moneyVal(loan_money_total);
+
+	var total_money = borrow_money_total-loan_money_total;
+	$('#borrow_total_text').html(borrow_total);
+	$('#borrow_total_money').val(borrow_money_total.toFixed(2));
+	$('#loan_total_text').html(loan_total);
+	$('#loan_total_money').val(loan_money_total.toFixed(2));
+
+	$('#total_money').html(Arabia_to_Chinese(total_money));
+
+}
+
+//数字转大写金额
+function Arabia_to_Chinese(Num) {
+	var Num_sub = Num.toString();
+    for (i = Num_sub.length - 1; i >= 0; i--) {
+        Num_sub = Num_sub.replace(",", "");//替换tomoney()中的“,”
+        Num_sub = Num_sub.replace(" ", "");//替换tomoney()中的空格
+    }
+    Num = Num_sub.replace("￥", "");//替换掉可能出现的￥字符
+    if (isNaN(Num)) { //验证输入的字符是否为数字
+        alert_crm("请检查小写金额是否正确");
+        return;
+    }
+    //---字符处理完毕，开始转换，转换采用前后两部分分别转换---//
+    part = String(Num).split(".");
+    newchar = "";
+    //小数点前进行转化
+    for (i = part[0].length - 1; i >= 0; i--) {
+        if (part[0].length > 10) { alert_crm("位数过大，无法计算"); return ""; } //若数量超过拾亿单位，提示
+        tmpnewchar = ""
+        perchar = part[0].charAt(i);
+        switch (perchar) {
+            case "0": tmpnewchar = "零" + tmpnewchar; break;
+            case "1": tmpnewchar = "壹" + tmpnewchar; break;
+            case "2": tmpnewchar = "贰" + tmpnewchar; break;
+            case "3": tmpnewchar = "叁" + tmpnewchar; break;
+            case "4": tmpnewchar = "肆" + tmpnewchar; break;
+            case "5": tmpnewchar = "伍" + tmpnewchar; break;
+            case "6": tmpnewchar = "陆" + tmpnewchar; break;
+            case "7": tmpnewchar = "柒" + tmpnewchar; break;
+            case "8": tmpnewchar = "捌" + tmpnewchar; break;
+            case "9": tmpnewchar = "玖" + tmpnewchar; break;
+        }
+        switch (part[0].length - i - 1) {
+            case 0: tmpnewchar = tmpnewchar + "元"; break;
+            case 1: if (perchar != 0) tmpnewchar = tmpnewchar + "拾"; break;
+            case 2: if (perchar != 0) tmpnewchar = tmpnewchar + "佰"; break;
+            case 3: if (perchar != 0) tmpnewchar = tmpnewchar + "仟"; break;
+            case 4: tmpnewchar = tmpnewchar + "万"; break;
+            case 5: if (perchar != 0) tmpnewchar = tmpnewchar + "拾"; break;
+            case 6: if (perchar != 0) tmpnewchar = tmpnewchar + "佰"; break;
+            case 7: if (perchar != 0) tmpnewchar = tmpnewchar + "仟"; break;
+            case 8: tmpnewchar = tmpnewchar + "亿"; break;
+            case 9: tmpnewchar = tmpnewchar + "拾"; break;
+        }
+        newchar = tmpnewchar + newchar;
+    }
+    //小数点之后进行转化
+    if (Num_sub.indexOf(".") != -1) {
+        if (part[1].length > 2) {
+            alert_crm("小数点之后只能保留两位,系统将自动截段");
+            part[1] = part[1].substr(0, 2)
+        }
+        for (i = 0; i < part[1].length; i++) {
+            tmpnewchar = ""
+            perchar = part[1].charAt(i)
+            switch (perchar) {
+                case "0": tmpnewchar = "零" + tmpnewchar; break;
+                case "1": tmpnewchar = "壹" + tmpnewchar; break;
+                case "2": tmpnewchar = "贰" + tmpnewchar; break;
+                case "3": tmpnewchar = "叁" + tmpnewchar; break;
+                case "4": tmpnewchar = "肆" + tmpnewchar; break;
+                case "5": tmpnewchar = "伍" + tmpnewchar; break;
+                case "6": tmpnewchar = "陆" + tmpnewchar; break;
+                case "7": tmpnewchar = "柒" + tmpnewchar; break;
+                case "8": tmpnewchar = "捌" + tmpnewchar; break;
+                case "9": tmpnewchar = "玖" + tmpnewchar; break;
+            }
+            if (i == 0) tmpnewchar = tmpnewchar + "角";
+            if (i == 1) tmpnewchar = tmpnewchar + "分";
+            newchar = newchar + tmpnewchar;
+        }
+    }
+    //替换所有无用汉字
+    while (newchar.search("零零") != -1)
+        newchar = newchar.replace("零零", "零");
+	    newchar = newchar.replace("零亿", "亿");
+	    newchar = newchar.replace("亿万", "亿");
+	    newchar = newchar.replace("零万", "万");
+	    newchar = newchar.replace("零元", "元");
+	    newchar = newchar.replace("零角", "");
+	    newchar = newchar.replace("零分", "");
+
+    if (newchar.charAt(newchar.length - 1) == "元" || newchar.charAt(newchar.length - 1) == "角")
+        newchar = newchar + "整"
+  //  document.write(newchar);
+    return newchar;
+
+}
+</script>

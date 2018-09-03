@@ -1,0 +1,87 @@
+<script src="/Public/style/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/Public/js/uploadPreview.js"></script>
+<link rel="stylesheet" href="/Public/css/jquery.fileupload.css">
+<style type="text/css">
+    .templete_Add .form-group {
+        margin: 10px 0;
+    }
+    .radio-info{
+        margin: 0 20px;
+    }
+    .textarea textarea{
+        width: 100%;
+    }
+    .select2-selection{
+        background-color: #FFFFFF !important;
+        background-image: none !important;
+        border: 1px solid #d8e3ef !important;
+        border-radius: 1px !important;
+        height: 32px;
+        line-height: 32px;
+    }
+    .select2-selection__rendered{
+        padding-left: 17px !important;
+    }
+    #main_pic_prev{width: 120px;height: 120px;border: 1px dashed #d3d3d6;}
+    .add_body_title{
+        margin:15px auto 30px auto;
+    }
+</style>
+
+
+
+<form action="" id="student_add_form">
+    <div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+        <!-- 选择客户 -->
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>客户信息</label>
+            <div class="col-md-8">
+                <a href="/index.php?m=customer&a=view&id={$info.id}" target="_blank">{$info.customer_name}</a>
+            </div>
+        </div>
+        <!-- 文本 -->
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>学生名称</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="realname" aria-required="true"
+                       value="{$info.realname}" placeholder="请输入学生名称" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>学生电话</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="mobile" aria-required="true"
+                       value="{$info.mobile}" placeholder="请输入学生电话" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>学生邮件</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="email" aria-required="true"
+                       value="{$info.email}" placeholder="请输入学生邮件" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>登陆密码</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="password" name="password" aria-required="true" value="" placeholder="请输入登陆密码" />
+            </div>
+        </div>
+        <!-- 文本域 -->
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label">备注</label>
+            <div class="col-md-8">
+                <div class="textarea">
+                    <textarea name="remark" id="" cols="30" rows="10">{$info.remark}</textarea>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="id" value="{$info.id}">
+    </div>
+</form>
+
+<script>
+
+</script>
+
+

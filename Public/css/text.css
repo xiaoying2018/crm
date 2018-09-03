@@ -1,0 +1,127 @@
+ul,li{list-style: none}
+a{outline: none;}
+.clearfix:after{content:".";display:block;}  
+.clearfix{display:inline-table;}  
+/* Hides from IE-mac */  
+* html .clearfix{height:1%;}  
+.clearfix{display:block;}  
+/* End hide from IE-mac */  
+*+html .clearfix{min-height:1%;}/* IE7 */ 
+.clearfix:before, .clearfix:after { content:"";display:table;}
+.clearfix:after{clear:both;overflow:hidden;}
+.hide{display: none} 
+.show{display: block}
+input,label { vertical-align:middle; opacity:1;} 
+.textBox{width:100%; float: left ;padding:15px 10px;background: #fff}
+.wraper{ width:100%; float: left;}
+.h-nav{ position:relative; width:100%; height:30px; overflow:hidden}
+.h-nav .nav-item{ position:relative; float:left; width:95px; height:30px;padding-bottom:10px;text-align: left; text-align:center; font-size:14px; z-index:1}
+.h-nav .nav-item a{ display:block;width:95px; height:30px; color:#585858;text-decoration: none;color:12px;}
+
+.move-bg{ display:block;position:absolute;left:0;top:0; width:95px;height: 30px; background: url(../img/editor/text-nav-bg.png) 37px bottom no-repeat; z-index:99}
+
+/*发布文章框架*/
+.textmain-box{width: 100%; float: left;}
+.textmain-box .f-enjoy{width:100%; height: auto;min-height: 60px; margin:15px 0; border:1px solid #ccc;margin-top: -1px;}
+.textmain-box .f-enjoy span.initial{display: none; color:#ccc;line-height: 25px;margin-left: 10px; font-size: 12px;}
+.textmain-box .f-enjoy .f-mian{width: 100%; min-height: 80px;float: left; overflow: hidden;}
+.h-textarea{border:1px solid #ccc; outline: none; width: 97%; height:100%; padding:15px;margin:25px 0 0 1.5%;  min-height: 60px;max-height: 600px; overflow:none; overflow: hidden; text-align: left; float: left;font-size: 14px; word-wrap: break-word; line-height: 24px;}
+.annex{width: 97%;height: 45px;float: left;background: #F9F9F9;border:1px solid #ccc;margin:-1px 0 10px 1.5%;}
+.annex ul{float: left; padding: 10px 0 0 10px;margin-left: 10px; }
+.annex ul li{float: left; display: block;position:relative}
+.annex ul li a.an-1,.annex ul li a.an-2,.annex ul li a.an-3,.annex ul li a.an-4,.annex ul li a.an-5,
+.annex ul li a.an-6,.annex ul li a.an-7,.annex ul li a.an-8,.annex ul li a.an-9,
+.annex ul li a.an-10{display: block;float: left; width: 18px; height: 17px;margin-right: 20px;position: relative;}
+.annex ul li a.an-1{background: url(../img/editor/send-function-icon.png) -133px 0 no-repeat;}
+.annex ul li a.an-2{background: url(../img/editor/send-function-icon.png) -155px 0 no-repeat;}
+.annex ul li a.an-3{background: url(../img/editor/send-function-icon.png) -54px 0 no-repeat;}
+.annex ul li a.an-4{background: url(../img/editor/send-function-icon.png) -72px 0 no-repeat;}
+.annex ul li a.an-5{background: url(../img/editor/send-function-icon.png) 0 0 no-repeat;}
+.annex ul li a.an-6{background: url(../img/editor/send-function-icon.png) -18px 0 no-repeat;}
+.annex ul li a.an-7{background: url(../img/editor/send-function-icon.png) -36px 0 no-repeat;}
+.annex ul li a.an-8{background: url(../img/editor/send-function-icon.png) -180px 0 no-repeat;}
+.annex ul li a.an-9{background: url(../img/editor/send-function-icon.png) -111px 0 no-repeat;}
+.annex ul li a.an-10{background: url(../img/editor/send-function-icon.png) -91px 1 no-repeat;}
+
+.annex ul li a.an-1:hover{background: url(../img/editor/send-function-icon.png) -133px -17px no-repeat;}
+.annex ul li a.an-2:hover{background: url(../img/editor/send-function-icon.png) -155px -18px no-repeat;}
+.annex ul li a.an-3:hover{background: url(../img/editor/send-function-icon.png) -54px -18px no-repeat;}
+.annex ul li a.an-4:hover{background: url(../img/editor/send-function-icon.png) -72px -18px no-repeat;}
+.annex ul li a.an-5:hover{background: url(../img/editor/send-function-icon.png) 0 -18px no-repeat;}
+.annex ul li a.an-6:hover{background: url(../img/editor/send-function-icon.png) -18px -18px no-repeat;}
+.annex ul li a.an-7:hover{background: url(../img/editor/send-function-icon.png) -36px -18px no-repeat;}
+.annex ul li a.an-8:hover{background: url(../img/editor/send-function-icon.png) -180px -17px no-repeat;}
+.annex ul li a.an-9:hover{background: url(../img/editor/send-function-icon.png) -111px -18px no-repeat;}
+.annex ul li a.an-10:hover{background: url(../img/editor/send-function-icon.png) -91px -18px no-repeat;}
+
+.annex ul li span{position:absolute;left:30px; top:0px;display:block;width:500px; height:30px; z-index:99}
+/*表情*/
+.face{display: block; width: 200px;position: absolute;left: 10px; top:10px;z-index: 99}
+.face ul li{width: 20px; height: 20px;border:1px solid #ccc; margin: -1px -1px 0 0}
+
+/*发布标题类型选择*/
+.send-info-box{width: 97%;float: left; margin-left: 1.5%;  }
+.send-info-box ul{background:#F6F6F6; border:1px solid #ccc;}
+.margt10{margin-top: 10px; }
+.send-info-box ul.task{width: 50%; float: left;padding:15px 0  15px 0;margin:0;}
+.send-info-box ul.margr-20{margin-right: -18px;}
+.send-info-box ul li{display: block;float: left; margin-bottom: 15px;font-size: 12px;}
+.send-info-box ul li span.send-tit{width: 85px; display: block; float: left; text-align: right;vertical-align:middle; line-height: 25px;}
+.send-info-box ul li span.send-info{display: block;float: left;width: 240px;}
+.send-info-box ul li span.send-radio1{display: block;float: left;width: 240px;margin-top: 3px;}
+.send-info-box ul li span.send-radio1 label{float: left; padding-left: 5px;margin-left: 5px; }
+
+.send-info-box ul li span.send-radio label{float: left;margin-left: 5px; padding-left: 5px;}
+.send-info-box ul li span.send-radio input.marg0{margin:0px;}
+input{border:0; outline: none;}
+input.inputStyle1{width: 206px; height: 26px; padding:0 10px; line-height: 26px;border: 1px solid #e5e6e7;
+border-radius: 1px;float: left;}
+select.inputStyle2{width: 88px; height: 26px;line-height: 26px;float: left;margin-right: 10px;border: 1px solid #e5e6e7;
+border-radius: 1px;}
+input.inputStyle3{width: 102px; height: 26px; padding:0 10px; line-height: 26px;border: 1px solid #e5e6e7;
+border-radius: 1px;float: left;}
+input.inputStyle4{width: 102px; height: 26px; padding:0 10px; line-height: 26px;border: 1px solid #e5e6e7;
+border-radius: 1px;float: left;}
+select.inputStyle4{width: 228px; height: 26px; line-height: 26px;float: left;border:1px solid #e5e6e7;padding:4px 12px;font-size:12px;}
+.btn-send-box{width: 666px; float: left;margin: 20px 0 20px 0;}
+.margleft10{margin-left:10px;}
+a.btn-send {display: block;float: left; width: 54px; height: 25px; line-height: 25px; font-size: 14px; color:#fff; text-align: center; background: url(../img/editor/send-btn.png) left top no-repeat;}
+
+
+/*日志类型*/
+.send-info-box ul.log{width:100%; float: left;padding:15px 0  15px 0;}
+.send-info-box ul li span.send-log{display: block;float: left;width: 556px;}
+.send-info-box ul li span.send-radio{display: block;float: left;width: 556px;margin-top:3px;}
+input.inputStyle5{width: 516px; height: 26px; line-height: 26px;float: left;border:1px solid #e5e6e7;padding:0 10px; }
+input.inputStyle6{width: 560px; height: 26px; line-height: 26px;float: left;border:1px solid #e5e6e7;padding:0 10px; }
+.send-info-box ul li.margl42{margin-left: 42px;}
+input.inputStyle7{width: 122px; height: 30px; line-height: 30px;padding:0 10px;text-align: center;color:#000;border: 1px solid #e5e6e7;
+border-radius: 1px;}
+
+
+/*审批类型*/
+.approve-nav{}
+.approve-nav ul.approve{width:97%; float: left;margin:15px 0 0 0;font-size: 12px; }
+.approve-nav ul.approve li{display: block; float: left;margin-right: 15px;position: relative;padding-bottom: 3px;}
+.approve-nav ul.approve li a{color:#585858;text-decoration: none; display: block;float: left;padding:5px 0;}
+.approve-nav ul.approve li:hover{border-bottom:2px solid #1968A0;}
+.approve-nav ul.approve li.active{border-bottom:2px solid #1968A0;}
+
+.send-info-box ul li span.marg230{margin:0 230px 0 40px;}
+.send-iframe{width: 97%; height: 300px;float: left; overflow-y:auto;}
+
+
+.zhi{float:left;line-height:26px;margin:0 8px;}
+
+/*上传附件*/
+
+.upFile{filter:alpha(opacity=0); -moz-opacity:0;-webkit-opacity:0;opacity:0; width: 20px; height: 20px;}
+.fileId{width: 220px; height: 80px;padding-left:40px;margin:10px 0 0 10px;  float: left; background: url(../img/editor/imgpng.png) left top no-repeat;}
+.fileId p{margin-bottom: 20px;}
+.fileId p a{font-size: 12px;text-decoration: none}
+
+
+/*修改的样式*/
+.f-tit{width: 100%;height: 30px; float:left;padding:20px 1.5% 0 1.5%;}
+input.xg-titstyl1{width: 100%;height: 28px; border:1px solid #e5e6e7;}
+select.f-select{width: 130px; float: right;margin:5px 10px 0 0 ;}

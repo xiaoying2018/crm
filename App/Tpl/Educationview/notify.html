@@ -1,0 +1,42 @@
+<style>
+    .table_user{border:none !important}
+    .table_user tr{height:35px !important;padding:0px !important;}
+    .table_user tr td{border:none !important;height:35px !important;line-height: 35px !important;padding:0px !important;}
+</style>
+<form action="" id="message_form" enctype="multipart/form-data">
+    <div class="col-md-12 add_body_form" style="margin:20px 0 0 21px;">
+        <!-- 文本 -->
+        <div class="form-group clearfix">
+            <label class="col-md-2 control-label">消息标题</label>
+            <div class="col-md-10">
+                <input class="form-control" id="message_title" autocomplete="off" required type="text" name="title" aria-required="true"
+                       value="" placeholder="请输入信息标题" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-2 control-label">发送类型</label>
+            <div class="col-md-10">
+                <foreach name="send_type" item="s">
+                    <div class="checkbox checkbox-info">
+                        <div class="checkbox checkbox-info" style="float:left;">
+                            <input type="checkbox" name="types" value="{$s.key}" style="width: 40px; height: 20px;">&nbsp;
+                            <label >{$s.type}</label>
+                        </div>
+                    </div>
+                </foreach>
+            </div>
+        </div>
+        <!-- 文本域 -->
+        <div class="form-group clearfix">
+            <label class="col-md-2 control-label">消息内容</label>
+            <div class="col-md-10">
+                <div class="textarea">
+                    <textarea class="form-control" id="message_content" name="content" cols="100" rows="10"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+
+</script>

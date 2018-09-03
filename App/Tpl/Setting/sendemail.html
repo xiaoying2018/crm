@@ -1,0 +1,269 @@
+<include file="Public:header" />
+<style type="text/css">
+.add_body_title{
+	margin:15px auto 30px auto;
+	padding-left: 14px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.form-control{
+	float:left;
+}
+body{
+	overflow-y: hidden;
+}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn">
+	<div class="ibox-content add_body" id="add_body" style="padding:0px;border: none;" >
+		<div class="col-md-12  add_body" style="padding-left:0px;padding-right:0px;">
+			<div class="full-height-scroll">
+				<include file="Public:alert" />
+				<form id="form1" action="{:U('setting/sendemail')}" method="post">
+					<div class="pull-left" style="width:20%">
+						<div class="col-md-12 add_body_title" style="padding:18px 15px 13px;margin:0px;background:#FAFAFA;border-left:1px solid #e3e3e3;border-right:1px solid #e3e3e3">
+							<div class="all-inline">
+								<div class="text-tag">
+									<img style="margin-top:-3px;" src="__PUBLIC__/img/send_tubiao.png"></img>
+									<span style="font-weight:400;font-size:15px;">选择收件人</span>
+								</div>
+								<a class="pull-right" style="color:#337ab7" href="javascript:void(0);" id="add_contracts"><i class="fa fa-plus"></i>&nbsp;联系人</a>
+							</div>
+						</div>
+					</div>
+					<div class="pull-left" style="width:79%">
+						<div class="col-md-12 add_body_title" style="padding:18px 15px 3px;margin:0px;background:#fff;border-bottom:1px solid #e3e3e3;">
+							<div class="all-inline">
+								<div class="text-tag" >
+									<span class="pull-left" style="margin-left:15px;">{:L('CHANCE_SEND_BOX')}&nbsp;</span>
+									<span class="pull-left">
+										<select name="smtp" id="smtp" class="form-control" style="width:auto;font-size:12px;margin-top:-3px;">
+											<option value="-1">系统默认({$moren_address['MAIL_ADDRESS']})</option>
+											<volist name="smtpList" id="v">
+												<option value="{$v['smtp_id']}">{$v['name']}({$v['settinginfo']['MAIL_ADDRESS']})</option>
+											</volist>
+										</select>
+									</span>
+									<span class="pull-left" style="margin-left:10px;">
+										<a href="{:U('email/smtp')}" >{:L('SETTING')}</a> &nbsp;  &nbsp;  &nbsp;  &nbsp; 
+									</span>
+									<span class="pull-left" style="margin-left:30px;">{:L('CHANCE_EMAIL_TEMPLATE')}&nbsp;</span>
+									<span class="pull-left">
+										<select name="template" id="template" class="form-control" style="width:auto;font-size:12px;margin-top:-3px;" onchange="changeContent()">
+											<option>--请选择--</option>
+											<volist name="templateList" id="v">
+												<option value="{$v['template_id']}" rel="{$v['content']}" id="{$v['title']}">{$v['subject']}</option>
+											</volist>
+										</select>
+									</span>
+									<span class="pull-left" style="margin-left:10px;">
+										<a href="{:U('email/index')}">{:L('SETTING')}</a>
+									</span>
+									<div style="clear:both"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+					<div class="pull-left" style="width:20%;background:#FAFAFA;padding-bottom:10px;border:1px solid #e3e3e3">
+						<div class="col-md-12 add_body_title" style="padding:18px 15px 15px;margin:0px;background:#F3F5F7;border-bottom:1px solid #e3e3e3;">
+							<div class="all-inline">
+								<span style="color:#999">温馨提示：请阅读发送规则</span>
+								<a id="shuoming" class="pull-right" href="javascript:void(0);" style="font-weight:700;font-size:20px;color:#e3e3e3;margin-top:-4px;"><i class="fa fa-question-circle"></i></a>
+							</div>
+						</div>
+						<div style="clear:both"></div>
+						<div style="margin:10px;">
+							<textarea id="emails" name="emails" placeholder=""  class="form-control" style="min-height: 375px;width:100%;resize:none"><notempty name="contacts">
+									<volist name="contacts" id="vo">
+										<if condition="is_email($vo['email'])">
+											{$vo['email']|trim},{$vo['name']},{$vo['customer_name']}<?php echo chr(10);?>
+										</if>
+									</volist>
+								</notempty></textarea>
+						</div>
+					</div>
+					<div class="pull-left" style="width:80%">
+						<div class="col-md-12 ">
+							<div class="col-md-10 add_body_form" style="margin:20px 0 0 2px;">
+								<!-- <notempty name="contacts">
+									<div style="margin-bottom:10px;">
+										<?php $first = 0; ?>
+										<volist name="contacts" id="vo">
+											<if condition="!is_email($vo['email'])">
+												<?php if($first==0){ $first = 1; }else{ $first = 2; } ?>
+												<if condition="$first == 1"><div class="alert alert-warning">{:L('INVALIDATE_EMAIL_HAVE_BEEN_FILTER')}<br/>{:L('DETAILS_SEE_BLOW')}:</if>
+												{$vo['email']|trim} &nbsp; {$vo['name']}[{:L('CUSTOMER')}:{$vo['customer_name']}]、	
+											</if>
+										</volist>
+										<if condition="$first != 0"></div></if>
+									</div>
+								</notempty> -->
+								<div class="form-group">
+									<div class="pull-left">{:L('EMAIL_TITLE')} &nbsp;&nbsp;&nbsp;&nbsp;</div>
+									<div class="pull-left" style="width:80%;margin-left:2px;">
+										<input type="text" class="form-control required" aria-required="true" id="title" name="title" style="margin-top:-3px;"></input>
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+								<div style="clear:both"></div>
+								<div class="form-group" style="margin-top:10px;">
+									<div class="pull-left">{:L('EMAIL_CONENT')} &nbsp;&nbsp;&nbsp;&nbsp;</div>
+									<div class="pull-left" style="width:80%;margin-left:2px;">
+										<div class="col-md-12 add_body_title" style="padding:13px 10px 12px;margin:0px;background:#FAFAFA;border-left:1px solid #e3e3e3;border-right:1px solid #e3e3e3;border-top:1px solid #e3e3e3">
+											<div class="all-inline">
+												<a id="add_blname_help" class="pull-right" href="javascript:void(0);" style="font-weight:700;font-size:20px;color:#e3e3e3;"><i class="fa fa-question-circle"></i></a>
+												<a id="add_blname" class="btn btn-primary pull-right" href="javascript:void(0);" style="font-size:14px;background:#469bf0;border:#469bf0;margin-right:5px;">插入变量联系人</a>
+											</div>
+										</div>
+										<textarea id="contented" name="content" class="form-control" placeholder="{:L('PLEASE_READ_OPERATING_TIPS')}" style="height: 300px;resize:none"></textarea>
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+								<div style="clear:both"></div>
+								<div class="form-group" style="margin-top:10px;">
+									<div class="pull-left" style="color:#fff;">{:L('EMAIL_CONENT')} &nbsp;&nbsp;&nbsp;&nbsp;</div>
+									<div class="pull-left" style="width:80%;margin-left:2px;">
+										<input type="submit" style="margin-top:10px;" class="btn btn-primary" value="{:L('SEND')}"/> &nbsp; 
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-2 pull-right"></div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-contacts-list" title="选择联系人">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-tishi-info" title="操作提示">
+	<div>1、群发邮件时，以换行间隔每个客户，如 </div>
+	<div style="margin-left:20px;">123@crm.com</div>
+	<div style="margin-left:20px;">321@crm.com</div>
+
+	<div style="margin-top:10px;">2、如需在邮件内容中加入联系人姓名信息，请按照“邮箱地址，联系人姓名”格式进行填写。如下所示 </div>
+	<div style="margin-left:20px;">123@crm.com,王经理</div>
+	<div style="margin-left:20px;">321@crm.com,张经理</div>
+	 
+	<div style="margin-top:10px;margin-bottom:15px;">3、请不要在邮件内容中填写特殊字符,包括换行符。</div>
+</div>
+<div style="display:none" id="dialog-righttishi-info" title="操作提示">
+	<div style="padding:5px 15px;">如需在群发内容中显示收件人姓名在需显示收件人姓名位置点击插入变量联系人
+发件内容中的{name}会自动替换为邮箱后的姓名</div>
+</div>
+<script type="text/javascript">
+$("#dialog-tishi-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 500,
+	maxHeight: 400,
+	position: ["center",100]
+});
+$("#dialog-righttishi-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 320,
+	maxHeight: 400,
+	position: ["center",100]
+});
+$('#shuoming').click(function(){
+	$('#dialog-tishi-info').dialog('open');
+});
+$('#add_blname_help').click(function(){
+	$('#dialog-righttishi-info').dialog('open');
+});
+$('#add_blname').click(function(){
+	var content_value = $('#contented').val();
+	var new_value = content_value + '{'+'name'+'}';
+	$('#contented').val(new_value);
+});
+$('#add_contracts').click(function(){
+	$('#dialog-contacts-list').dialog('open');
+	$('#dialog-contacts-list').load('{:U("contacts/listdialog")}');
+});
+$("#dialog-contacts-list").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 800,
+	maxHeight: 400,
+	buttons: { 
+		"确认": function () {
+			var temp = '';
+			$(".contacts_ch").each(function(){
+				var subordinates = $(this).is(':checked');
+				if(subordinates){
+					var name = $(this).attr('rel');
+					var customer_name = $(this).attr('rel2');
+					var emails = $(this).attr('rel3');
+					temp += emails+","+name+","+customer_name+"\n";
+				}
+			});
+			$('#emails').val(temp);
+			$(this).dialog("close"); 
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	position:["center",100],
+	close:function(){
+		$(this).html('');
+	}
+});
+$("#form1").submit(function(){
+	if($("#smtp option:selected").val() == ""){
+		alert_crm("请选择发件箱！");
+		$("#smtp").focus();
+		return false;
+	}
+	if($("#emails").val() == ""){
+		alert_crm("请填写收件人邮箱！");
+		$("#emails").focus();
+		return false;
+	}
+	if($("#title").val() == ""){
+		alert_crm("请填写邮件主题！");
+		$("#title").focus();
+		return false;
+	}
+	if($("#content").val() == ""){
+		alert_crm("请填写邮件内容！");
+		$("#content").focus();
+		return false;
+	}
+});
+changeContent();
+function changeContent(){
+	var a = $('#template option:selected').attr('rel');
+	var b = $('#template option:selected').attr('id');
+	if(a){
+		$('#title').val(b);
+		//$("iframe").contents().find("body").html(a);
+		$('#contented').html(a);
+	}else{
+		$('#title').val('');
+		//$("iframe").contents().find("body").html('');
+		$('#contented').html();
+	}
+}
+</script>
+<include file="Public:footer" />	

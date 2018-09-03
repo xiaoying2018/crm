@@ -1,0 +1,184 @@
+<include file="Public:header" />
+<style>
+	.status_a{
+		width:100%;
+		background-color:#ccc;
+		opacity:0.5;
+	}
+</style>
+<div class="wrapper wrapper-content">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-lg-12">
+			<include file="Setting:setting_left" />
+			<div class="col-lg-10 ">
+				<div class="table-content clearfix ibox-title" id="right_height" style="padding-top:0px">
+					<input type="hidden" name="status_id" id="status_id" value="{$status_id}">
+					<div class="col-lg-12">
+						<div style="padding:18px 0 10px;border-bottom:1px solid #ddd;font-weight:700;">内部审批流设置</div>
+						<div style="padding:10x;margin:15px 20px;">
+							<div class="">
+								<div class="radio radio-info radio-inline">
+									<input type="radio" name="openrecycle" <if condition="$status_info['option'] eq 1">checked</if> id="openrecycle1" class="openrecycle" value="2"><label for="openrecycle1">设置审批流程</label>&nbsp;<span style="color:#ccc;">&nbsp;(&nbsp;启用后,申请流程将会固定，用户无需选择下一审批人&nbsp;)</span>
+								</div>
+								<div id="status_a" <if condition="$status_info['option'] eq 0">class="status_a"</if> style="margin-top:10px;">
+									<div style="border:1px solid #ddd;padding:15px;" id="content_form">
+										<div class="pull-left">
+											<if condition="$step_list">
+												<volist name="step_list" id="vo">
+													<if condition="$key gt 0">
+														<div class="pull-left" style="margin-top:12px;margin-left:15px;font-size:22px;color:#ccc;"><i class="fa fa-long-arrow-right"></i></div>
+													</if>
+													<span class="pull-left">
+														<div style="clear:both;">
+															<if condition="$vo['user']['thumb_path']">
+																<img class="img-circle" style="width:50px;height:50px;border-radius:50%;margin-left:15px;" src="{$vo['user']['thumb_path']}"/>
+															<else/>
+																<img class="img-circle" style="width:50px;height:50px;border-radius:50%;margin-left:15px;" src="__PUBLIC__/img/avatar_default.png"/>
+															</if>
+														</div>
+														<div style="clear:both;text-align:center;margin-left:15px;margin-top:5px;">
+															{$vo['user']['user_name']}
+														</div>
+													</span>
+												</volist>
+											<else/>
+												<span style="vertical-align:middle;color:#ccc;">您还没有设置审批人！</span>
+											</if>
+										</div>
+										<button type="button" class="btn btn-danger pull-right" id="cleartype" <if condition="$status_info['option'] eq 0">disabled="disabled"</if> >清空</button>
+										<button type="button" id="edit_process" rel="{$status_id}" class="btn btn-primary pull-right" style="margin-right:5px;" <if condition="$status_info['option'] eq 0">disabled="disabled"</if>>
+											<if condition="$step_list">编辑<else/>新增</if>
+										</button>
+										<div style="clear:both;"></div>
+									</div>
+								</div>
+							</div>
+							<div style="margin-top:15px;">
+								<div class="radio radio-info radio-inline">
+									<input type="radio" name="openrecycle" <if condition="$status_info['option'] eq 0">checked</if> id="openrecycle" class="openrecycle" value="1"><label for="openrecycle">用户自选下一审批人</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-edit-process" title="添加审批流程">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div> 
+		</div>
+	</div>
+</div>
+<script type="text/javascript">	
+	$('#cleartype').click(function(){
+		var status_id = '{$status_id}';
+		swal({
+		  title: "您确定要清空吗?",
+		  type: "warning",
+		  showCancelButton: true,
+		  confirmButtonColor: "#DD6B55",
+		  confirmButtonText: "是的，清空！",
+		  cancelButtonText: "不，撤销",
+		  closeOnConfirm: false,
+		  closeOnCancel: false
+		},
+		function(isConfirm){
+		  if (isConfirm) {
+				$.ajax({
+		            type:'post',
+		            url: "{:U('setting/cleartype')}",
+		            data: {status_id: status_id},
+		            async: false,
+		            success: function (data) {
+						if (data.status == 1) {
+							swal({
+								title: "清除成功！",
+								type: "success"
+							});
+							location.reload();
+						}else{
+							swal({
+								title: "清空失败数据无变化！",
+								type: "error"
+							});
+							return false;
+						}
+		            },
+		            dataType: 'json'
+		        });
+				
+		  } else {
+				swal({
+					title: "已关闭数据无变化！",
+					type: "error"
+				});
+		  }
+		});
+	});
+	$("#dialog-edit-process").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 550,
+		maxheight: 500,
+		resizable: false,
+		position:["center",100],
+		buttons: {
+			"保存": function () {
+				var shenpi_id = $('#shenpi_id').val();
+				window.location.href = '{:U("setting/examinetype","id=")}'+shenpi_id;
+				$(this).dialog("close");
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		},
+		close:function(){
+			$(this).html('');
+		}
+	});	
+	$('#edit_process').click(function(){
+		var process_id = $(this).attr('rel');
+		$('#dialog-edit-process').dialog('open');
+		$('#dialog-edit-process').load("{:U('setting/edit_process','process_id=')}"+process_id);
+	});
+	$('.openrecycle').change(function(){
+		var openrecycle = $(this).val();
+		var status_id = $('#status_id').val();
+		if(openrecycle == 1){
+			$('#status_a').addClass('status_a');
+			$('#cleartype').attr('disabled','disabled');
+			$('#edit_process').attr('disabled','disabled');
+		}else{
+			$('#status_a').removeClass('status_a');
+			$('#cleartype').removeAttr('disabled');
+			$('#edit_process').removeAttr('disabled');
+		}
+		if(openrecycle){
+			$.ajax({
+				type: "post",
+				async:false,
+				url: "{:U('setting/ajaxexamine')}", 
+				data: {openrecycle:openrecycle,status_id:status_id},
+				dataType: "json",
+				success : function(result){
+					if(result.status != 1){
+						swal({
+							title: "编辑审批类型失败！",
+							type: "error"
+						});
+						return false;
+					}else{
+						return true;
+					}
+				}
+			});
+		}
+	});
+</script>
+<include file="Public:footer" />	

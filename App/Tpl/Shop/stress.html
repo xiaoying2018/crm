@@ -1,0 +1,133 @@
+<include file='Shop:header_shoping' title='京东购物商城' />
+<style type="text/css">
+	.page-content { background: #fff; padding: 20px; margin-top: 2em; } .product-badges
+	{ text-align: left;color: #333; }
+		 .product-controls{
+	background: #00A7F2;margin-top:10px;margin-left: 20px;} 
+</style>
+<div class="col-xs-2 page-sidebar">
+	<div class="fark-menu sticky-bottom sticking" data-sticky="true">
+		<div class="food-menu">
+			<h4>
+				我的账户
+			</h4>
+			<ul class="secondary-men">
+				<li class="secondary-men-item">
+					<a class="secondary-men-item-target " href="record.html">
+						<i class="fa fa-circle">
+						</i>
+						<span>
+							订单记录
+						</span>
+					</a>
+				</li>
+				<li class="secondary-men-itemn  selected">
+					<a class="secondary-men-item-target active" href="sader.html">
+						<i class="fa fa-circle">
+						</i>
+						<span>
+							配送地址
+						</span>
+					</a>
+				</li>
+				<li class="secondary-men-item">
+					<a class="secondary-men-item-target" href="account.html">
+						<i class="fa fa-circle">
+						</i>
+						<span>
+							账户设置
+						</span>
+					</a>
+				</li>
+				<li class="secondary-men-item">
+					<a class="secondary-men-item-target" href="order.html">
+						<i class="fa fa-circle">
+						</i>
+						<span>
+							更改密码
+						</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class=" col-xs-10 pull-right">
+	<div class="clearfix">
+		<div class="page-breadcrumbs pull-left">
+			<h4>
+				配送地址
+			</h4>
+		</div>
+	</div>
+	<div class="panel panel-basic panel-narrow">
+		<div class="panel-section-group">
+			<div class="panel panel-default panel-product">
+				<div class="panel-body">
+					<div class="product-badges">
+						配送地址
+					</div>
+				</div>
+				<volist name="address_list" id="vo">
+					<div class="pull-left">{$key}</div>>
+					<div class="panel-body">
+						<div class="product-badges">
+							{$vo['address']}
+						</div>
+					</div>
+				</volist>
+				<div class="panel-footer">
+					<div class="row row-narrow">
+						<form role="form">
+							<div class="form-g">
+								<label for="name">
+									详细地址：
+								</label>
+								<input type="text" id="address" class="form-control" placeholder="">
+							</div>
+						</form>
+						<div class="product-conts">
+							<a data-productid="" href="javascript:void(0)" id="add" data-toggle="modal" data-target="#signin"
+							class="btn btn-block action-create btn-red">
+								保存地址
+							</a>
+						</div>
+						<div class="prounct-return">
+							<a href="">
+								<img src="__PUBLIC__/img/shoping/jiantou_zuo.png">
+								<span>
+									返回
+								</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+$(document).on('click','#add',function(){
+	var address = $('#address').val();
+	$.ajax({
+        type: "POST",
+        url: "{:U('shop/stressAdd')}",
+        data: {address: address},
+        async: true,
+        success: function(data) {
+            if(data.status == 1){
+                alert('操作成功！');
+            }else if(data.status == 2){
+            	$("#login_modal").parent().removeClass("modal-lg").addClass("modal-md");
+			    $url = "{:U('shop/login_ajax')}";
+			    $('#Modal1').modal('show');
+			    $('#login_modal').load($url);
+            }else{
+            	alert('操作失败！');
+                return false;
+            }
+        }
+    });
+});
+</script>
+<include file='Shop:footer_shoping' />

@@ -1,0 +1,495 @@
+<include file="Public:header" />
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+	    <div class="col-lg-12">
+			<div class="title-bar">
+				<include file="Public:alert" />
+				<div class="row" id="title-show">
+					<ul class="nav pull-left" style="margin:0px 10px 0px 20px;">
+						<span>
+							<img src="__PUBLIC__/img/contract_view_icon.png" style="margin-bottom:9px;" alt="">
+						</span>
+						<span style="font-size:21px;margin-left:5px">&nbsp;&nbsp;&nbsp;{$invoice_info.name}</span>&nbsp;&nbsp; 
+						<if condition="$invoice_info['is_checked'] eq 1">
+							<span class="badge badge-success check_badge" style="padding:5px 20px;margin-top:-8px;background:#8BC34A;color:#fff;">通过</span>&nbsp;
+						<elseif condition="$invoice_info['is_checked'] eq 2"/>
+							<span class="badge badge-error check_badge" style="color:#fff;padding:5px 20px;margin-top:-8px;background:#F5715F">拒绝</span>&nbsp;
+						<else />
+							<span class="badge badge-warning" style="color:#fff;padding:5px 20px;margin-top:-8px;background:#F5CA00;">待审</span>
+						</if>
+					</ul>
+					<if condition = "checkPerByAction('invoice','check')">
+						<if condition="$invoice_info['is_checked'] eq 0">
+							<a href="{:U('invoice/edit','id='.$invoice_info['invoice_id'])}" class="btn btn-outline btn-default pull-right" style="margin-right: 15px;"><i class="fa fa-pencil"></i>&nbsp;&nbsp;编辑</a> 
+							<input type="hidden" id="is_checked" value="1"/>
+							<a href="javascript:void(0);" id="check_invoice" style="margin-right:15px;" rel="{$invoice_info['invoice_id']}" class="btn btn-primary pull-right">审核</a>
+						<else/>
+							<input type="hidden" id="is_checked" value="0"/>
+							<a href="javascript:void(0);" id="check_invoice" style="margin-right:15px;" rel="{$invoice_info['invoice_id']}" class="btn btn-primary pull-right">撤销审核</a>
+						</if>
+					</if>
+				</div>
+			</div>
+			<div class="tabs-container" >
+				<div class="ibox-content" style="padding:15px 0 0 20px;background:#fff;margin-bottom:20px;" id="left-content">
+					<ul class="nav nav-tabs" id="left_list" style="height:40px;">
+						<li class="active" ><a href="#tab1" data-toggle="tab" type="tab1">基本信息</a></li>
+						<li><a href="#tab2" data-toggle="tab" type="tab2">附件信息</a></li>
+					</ul>
+					<div class="tab-content ">
+						<div class="tab-pane in active" id="tab1">
+							<div class="panel-body ">
+								<div style="font-size:13px;font-weight:700;margin:15px auto;"><span style="border-left:5px solid #19AA8D;padding-left:10px;height:10px;"></span>基本信息</div>
+								<div class="form-horizontal view-group " style="margin-left:-10px;">
+									<div class="form-group">
+										<label class="col-lg-2 control-label">发票编号</label>
+										<div class="col-lg-4">
+											<p class="form-p">
+												{$invoice_info['name']}
+											</p>
+										</div>
+										<label class="col-lg-2 control-label">开票合同</label>
+										<div class="col-lg-4">
+											<p class="form-p">
+												<a href="{:U('contract/view','id='.$invoice_info['contract_id'])}">{$invoice_info['contract_num']}</a>
+											</p>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-lg-2 control-label">客户名称</label>
+										<div class="col-lg-4">
+											<p class="form-p">
+												<a href="{:U('customer/view','id='.$invoice_info['customer_id'])}">{$invoice_info['customer_name']}</a>
+											</p>
+										</div>
+										<label class="col-lg-2 control-label">开票金额</label>
+										<div class="col-lg-4">
+											<p class="form-p">
+												{$invoice_info['price']}
+											</p>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-lg-2 control-label">开票类型</label>
+										<div class="col-lg-4">
+											<p class="form-p">
+												{$invoice_info['billing_type_name']}
+											</p>
+										</div>
+										<label class="col-lg-2 control-label">发票号码</label>
+										<div class="col-lg-4">
+											<p class="form-p">
+												{$invoice_info['number']}
+											</p>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-lg-2 control-label">开票时间</label>
+										<div class="col-lg-4">
+											<p class="form-p">
+												{$invoice_info['invoice_time']|date='Y-m-d H:i:s',###}
+											</p>
+										</div>
+										<label class="col-lg-2 control-label">创建时间</label>
+										<div class="col-lg-4">
+											<p class="form-p">
+												{$invoice_info['create_time']|date='Y-m-d H:i:s',###}
+											</p>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-lg-2 control-label">快递单号</label>
+										<div class="col-lg-4">
+											<p class="form-p">
+												{$invoice_info['express']}
+											</p>
+										</div>
+										<label class="col-lg-2 control-label"></label>
+										<div class="col-lg-4">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-lg-2 control-label">备注</label>
+										<div class="col-lg-10">
+											<p class="form-p">
+												{$invoice_info['description']}
+											</p>
+										</div>
+									</div>
+								</div>
+								<div class="panel-body" style="padding-left:0px;">
+									<div style="font-size:13px;font-weight:700;margin:15px auto;"><span style="border-left:5px solid #19AA8D;padding-left:10px;height:10px;"></span>发票信息</div>
+									<div class="form-horizontal view-group " style="margin-left:-10px;">
+										<div class="form-group">
+											<label class="col-lg-2 control-label">开票抬头</label>
+											<div class="col-lg-4">
+												<p class="form-p">
+													{$invoice_info.invoice_header}
+												</p>
+											</div>
+											<label class="col-lg-2 control-label">纳税识别号</label>
+											<div class="col-lg-4">
+												<p class="form-p">
+													{$invoice_info.taxes_num}
+												</p>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-lg-2 control-label">开户行</label>
+											<div class="col-lg-4">
+												<p class="form-p">
+													{$invoice_info.opening_bank}
+												</p>
+											</div>
+											<label class="col-lg-2 control-label">开户账号</label>
+											<div class="col-lg-4">
+												<p class="form-p">
+													{$invoice_info.account_number}
+												</p>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-lg-2 control-label">开票地址</label>
+											<div class="col-lg-4">
+												<p class="form-p">
+													{$invoice_info.billing_address}
+												</p>
+											</div>
+											<label class="col-lg-2 control-label">电话</label>
+											<div class="col-lg-4">
+												<p class="form-p">
+													{$invoice_info.telephone}
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div style="font-size:13px;font-weight:700;margin-top:20px;margin-bottom:15px;">
+									<span style="border-left:5px solid #19AA8D;padding-left:10px;height:10px;"></span>审核信息
+								</div>
+								<div>
+									<div class="pull-left">
+										<img src="{$invoice_info['create_info']['thumb_path']}" style="width:45px;height:45px;margin:10px 0 0 10px;border-radius:50px;">
+									</div>
+									<div class="pull-left" style="margin:10px 0 0 10px;">
+										<div class="control-label" style="margin-top:2px;font-size:14px;color:#B4B1C2">
+											<a href="javascript:void(0)" rel="{$invoice_info['create_role_id']}" class="role_info" style="color: #B4B1C2;">{$invoice_info['create_info']['full_name']}</a>
+										</div>
+										<div class="control-label" style="margin-top:2px;font-size:13px;">{$invoice_info.create_time|date="Y-m-d H:i",###}</div>
+									</div>
+									<div class="pull-left" style="margin-left:6%;margin-top:25px;">
+										<span class="fa fa-circle" style="color:#B4B1C2;font-size:12px;"></span>
+										<span class="fa fa-circle" style="color:#B4B1C2;font-size:12px;"></span>
+										<span class="fa fa-circle" style="color:#B4B1C2;font-size:12px;"></span>
+									</div>
+									<div class="pull-left" style="margin-left:6%;">
+										<if condition="$invoice_info['is_checked'] eq 0">
+											<img src="__PUBLIC__/img/moren.png" style="width:45px;height:45px;margin:10px 0 0 10px;border-radius:50px;">
+										<else/>
+											<img src="{$invoice_info['check_role_info']['thumb_path']}" style="width:45px;height:45px;margin:10px 0 0 10px;border-radius:50px;">
+										</if>
+									</div>
+									<div class="pull-left" style="margin:10px 0 0 10px;">
+										<div class="control-label" style="margin-top:2px;font-size:14px;color:#B4B1C2">
+											<if condition="$invoice_info['is_checked'] neq 0">
+												<a href="javascript:void(0)" rel="{$invoice_info['check_role_id']}" class="role_info" style="color: #B4B1C2;">{$invoice_info['check_role_info']['full_name']}</a>
+											<else/>
+												发票审核员
+											</if>
+										</div>
+										<div class="control-label check_badge" style="margin-top:2px;font-size:13px;">
+											<if condition="$invoice_info['is_checked'] eq 1">
+												<span style="color:#19AA8D">通过</span>
+											<elseif condition="$invoice_info['is_checked'] eq 2"/>
+												<span style="color:#F5715F">拒绝</span>
+											<else />
+												<span style="color:#F5CA00">待审</span>
+											</if>
+											<if condition="checkPerByAction('invoice','check') && $invoice_info['is_checked'] gt 0">
+												&nbsp;<a class="backbtn control" style="display:none;" href="{:U('invoice/revokecheck','invoice_id='.$invoice_info['invoice_id'])}"><i class="icon-repeat"></i> 撤销</a>
+											</if>
+										</div>
+									</div>
+									<div style="clear:both"></div>
+								</div>
+								<div style="margin-top:20px;margin-left:15px;"><a href="javascript:void(0);" id="check_list"><i class="fa fa-history"></i>&nbsp;&nbsp;查看发票审核历史</a></div>
+							</div>
+						</div>
+						<div class="tab-pane" id="tab2">
+							<div class="panel-body">
+								<div class="header1">
+									<div class="pull-right">
+										<a href="javascript:void(0);" type="button" class="add_file btn btn-primary"><i class="fa fa-upload"></i>&nbsp;&nbsp;上传</a>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<if condition="$invoice_info.file eq null">
+									<include file="Public:nodata" />
+								<else /> 
+									<table class="table product-table">
+										<tr>
+											<td>附件名称</td>
+											<td>{:L('SIZE')}</td>
+											<td>上传人</td>
+											<td>上传时间</td><td>操作</td>
+										</tr>
+										<volist name="invoice_info.file" id="vo">
+											<tr>
+												<td>
+													<img src="__PUBLIC__/productImg/{$vo['pic']}" alt="">&nbsp;&nbsp;&nbsp;
+													<a <if condition="in_array(getExtension($vo['name']),imgFormat())">class="litebox_file" href="{$vo['file_path']}" data-litebox-group="group-{$invoice_info['invoice_id']}" title="点击查看大图"<else/>href="javascript:;" file="{$vo.file_path}" filename="{$vo.name}" onclick="filedown(this);"</if>>{$vo.name}</a>
+												</td>
+												<td>
+													{$vo.size}KB
+												</td>
+												<if condition="C('ismobile') neq 1">
+													<td>
+														<notempty name="vo.owner.full_name">{$vo.owner.full_name}</notempty>
+													</td>
+													<td>
+														<notempty name="vo.create_date">{$vo.create_date|date="Y-m-d H:i",###}</notempty>
+													</td>
+													<td class="tdleft">
+														<a href="javascript:void(0);" rel="{$vo['file_id']}" class="del_file">{:L('DELETE')}</a>
+														<a href="javascript:;" file="{$vo.file_path}" filename="{$vo.name}" onclick="filedown(this);">下载</a>
+													</td>
+												</if>
+											</tr>
+										</volist>
+									
+									</table>
+								</if>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-role-info" title="{:L('DIALOG_USER_INFO')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-file" title="添加附件">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-check-list" title="审核记录">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-check-info" title="发票审核">
+	<form action="{:U('invoice/check')}" id="deny_form" method="post">
+		<input name="contract_id" type="hidden" value="{$invoice_info['contract_id']}" />
+		<textarea style="width:400px;height:200px;" name="description" placeholder="填写理由(必填)"></textarea>
+		<div style="margin-top:10px;margin-right:5px;">
+			<a href="javascript:void(0);" onclick="javascript:$('#dialog-check-info').dialog('close');" class="pull-right btn btn-primary">取消</a>
+			<button type="submit" name="submit1" value="deny" class="pull-right btn btn-primary" style="margin-right:10px;padding:6px 13px;">确认拒绝</button>&nbsp;&nbsp;
+		</div>
+	</form>
+</div>
+<div style="display:none" id="dialog-check-invoice" title="发票审核">
+	<form action="" id="invoice_dialog" method="post">
+		<input name="invoice_id" type="hidden" value="{$invoice_info['invoice_id']}" />
+		<input type="hidden" name="m" value="invoice">
+		<input type="hidden" name="a" value="check">
+		<table class="table" style="border:none;">
+			<tr>
+				<td style="border:none;text-align:right">审核结果：</td>
+				<td style="border:none;">
+					<select name="is_agree" id="is_agree" style="width:300px;" class="form-control required">
+						<option value="1">同意</option>
+						<option value="2">拒绝</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td style="border:none;text-align:right">备注：</td>
+				<td style="border:none;">
+					<textarea class="form-control required" id="dialog_description" name="description" placeholder="填写理由(非必填)"></textarea>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+// 页面加载时执行Tab start
+$(function(){
+	var thisId = window.location.hash; 
+	var atype = thisId.substr(1);
+	$('#left_list a[type="'+atype+'"]').tab('show');
+});
+// 页面加载时执行Tab end
+$('#left_list a').click(function (e) {
+	var maodian = '#'+$(this).attr('type');
+	url_jump(maodian);
+});
+function url_jump(maodian){
+    var invoice_id = "{$invoice_info['invoice_id']}";;
+    var url = "{:U('invoice/view','id=')}"+invoice_id+maodian;
+    window.history.replaceState({},0,'http://'+window.location.host+url);
+}
+
+$("#check_invoice").click(function(){
+	var is_checked = $('#is_checked').val();
+	var id = $(this).attr('rel');
+	if(is_checked == 1){
+		$('#dialog-check-invoice').dialog('open');
+	}else{
+		swal({   
+			title: "确定要撤销审核吗？",   
+			type: "warning",   
+			showCancelButton: true,  
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "确定",   
+			closeOnConfirm: false 
+		},
+		function(){ 
+			window.location.href="{:U('invoice/revokeCheck', 'invoice_id=')}"+id; 
+		});
+	}
+});
+
+//发票审核
+$("#dialog-check-invoice").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 444,
+	maxHeight: 450,
+	position: ["center",100] ,
+	buttons: {
+		"确定": function () {
+			$('#invoice_dialog').submit();
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+/**
+ * 如果是图片时 双击可查看大图
+ */
+$('.litebox_file').liteBox({
+	revealSpeed: 400,
+	background: 'rgba(0,0,0,.8)',
+	overlayClose: true,
+	escKey: true,
+	navKey: true,
+	errorMessage: '图片加载失败.'
+});
+
+$("#dialog-check-list").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 400,
+	position: ["center",100],
+});
+$(function(){
+	$("#check_list").click(function(){
+		$('#dialog-check-list').dialog('open');
+		$('#dialog-check-list').load('{:U("invoice/check_list","id=".$invoice_info["invoice_id"])}');
+	});
+});
+
+$("#dialog-role-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 650,
+	maxHeight:600,
+	position: ["center",100]
+});
+$("#dialog-file").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 800,
+	maxHeight: 400,
+	position: ["center",100],
+	buttons: {
+		"确认": function () {
+		   location.reload();
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$("#dialog-check-info").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 432,
+	maxHeight: 400,
+	position: ["center",100],
+});
+$(function(){
+	$(".role_info").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+	$(".add_file").click(function(){
+		$('#dialog-file').dialog('open');
+		$('#dialog-file').load('{:U("file/add","r=RFileInvoice&module=invoice&id=".$invoice_info["invoice_id"])}');
+	});
+});
+$('.del_file').click(function(){
+	var file_id = $(this).attr('rel');
+	swal({
+		title: "您确定要删除这个附件吗？",
+		text: "删除后将无法恢复，请谨慎操作！",
+		type: "warning",   
+		showCancelButton: true,   
+		confirmButtonColor: "#DD6B55",   
+		confirmButtonText: "是的，我要删除！",
+        cancelButtonText:'让我再考虑一下…',
+        closeOnConfirm:false,
+        closeOnCancel:false
+	},
+	function(isConfirm){
+        if (isConfirm) {
+        	$.ajax({
+	            type:'get',
+	            url: "{:U('file/delete','r=RFileInvoice&id=')}"+file_id,
+	            async: false,
+	            success: function (data) {
+					if (data.status == 1) {
+						swal("删除成功！", "您已经永久删除了信息！", "success");
+						location.reload();
+					}else{
+						swal({
+							title: "操作失败！",
+							text:data.info,
+							type: "error"
+						})
+						return false;
+					}
+	            },
+	            dataType: 'json'
+	        });
+        } else {
+            swal("已取消","您取消了删除操作！","error");
+        }
+    });
+});
+</script>
+<include file="Public:footer" />	

@@ -1,0 +1,130 @@
+<include file="Public:header" />
+<link type="text/css" href="__PUBLIC__/css/dynamic.css" rel="stylesheet" />
+<div class="wrapper wrapper-content ">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<div class="pull-left">
+						<h4>{:L('USER_VIEW')}</h4>
+					</div>
+					<div class="pull-right" >
+						<p style="font-size: 14px;">
+							<a class="btn btn-primary btn-sm" href="{:U('user/edit','id=' . $user['user_id'])}">{:L('EDIT')}</a>
+							<a class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="javascript:history.go(-1)">{:L('RETURN')}</a>
+						</p>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="tab-content">
+								<div class="tab-pane active" id="tab1">
+									<table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
+										<tbody>
+											<!-- <tr>
+												<th <if condition="C('ismobile') eq 1">colspan="2"<else />colspan="4"</if>>{:L('BASIC_INFO')}</th>
+											</tr> -->
+											<tr>
+												<td class="tdleft">{:L('USER_LOGO')}</td>
+												<td >
+													<if condition="$user['img'] neq ''">
+														<a href="{$user['img']}" class="litebox" >
+															<img src="{$user.img}" style="height:70px;width:70px;margin-bottom: 0px;" class="thumbnail img"/>
+														</a>
+													<else/>
+														<img src="__PUBLIC__/img/avatar_default.png" class="thumbnail img"/>
+													</if>
+												</td>
+												<td class="tdleft">账号状态 :</td>
+												<td <if condition="C('ismobile') neq 1">colspan="3"</if>>
+													<if condition="$user['status'] eq 0">
+													{:L('UNAUDITED')}
+													<elseif condition = "$user['status'] eq 1" />
+													启用
+													<elseif condition = "$user['status'] eq 2" />
+													停用
+													<elseif condition = "$user['status'] eq 3" />
+													未激活
+													</if>
+													<if condition="C('CALL_CENTER') == 1">
+														（坐席号：<if condition="$user['extid'] gt 0">{$user.extid}<else />无</if>）
+													</if>
+												</td>
+											</tr>
+											<tr>
+												<td class="tdleft" width="15%">{:L('USER_NAME')} :</td>
+												<td width="35%">
+													{$user.full_name}(
+													<volist name="categoryList" id="temp">
+														<if condition="$temp.category_id eq $user['category_id']">{$temp.name}</if>
+													</volist>)
+												</td>
+												<if condition="C('ismobile') eq 1"></tr><tr></if>
+												<td  class="tdleft" width="15%">{:L('CURRENT_POSITION')} </td><td width="35%">{$user['department_name']}-{$user['role_name']}</td>
+											</tr>
+											<tr>
+												<td class="tdleft">{:L('SEX')} :</td>
+												<td><if condition="$user['sex'] eq 1">{:L('MALE')}<elseif condition="$user['sex'] eq 2"/>{:L('FEMALE')}<elseif condition="$user['sex'] eq 0"/>{:L('UNKNOW')}</if></td>
+												<if condition="C('ismobile') eq 1"></tr><tr></if>
+												<td class="tdleft">家乡:</td>
+												<td>{$user.hometown}</td>
+											</tr>
+											<tr>
+												<td class="tdleft">{:L('TELPHONE')} :</td><td><a href="tel:{$user.telephone}">{$user.telephone}</a></td>
+												<if condition="C('ismobile') eq 1"></tr><tr></if>
+												<td class="tdleft">办公电话 :</td>
+												<td><a href="tel:{$user.office_tel}">{$user.office_tel}</a></td>
+											</tr>
+											<tr>
+												<if condition="C('ismobile') eq 1"></tr><tr></if>
+												<td class="tdleft">{:L('EMAIL')} :</td>
+												<td><a href="mailto:{$user.email}">{$user.email}</a></td>
+												<if condition="C('ismobile') eq 1"></tr><tr></if>
+												<td class="tdleft">QQ/MSN :</td>
+												<td>{$user.qq}</td>
+											</tr>
+											<tr>
+												<td class="tdleft">出生日期 :</td>
+												<td>{$user.birthday}</td>
+												<if condition="C('ismobile') eq 1"></tr><tr></if>
+												<td class="tdleft">入职日期 :</td>
+												<td>{$user.entry}</td>
+											</tr>
+											<tr>
+												<td class="tdleft">{:L('ADDRESS')} :</td>
+												<td >{$user.address}</td>
+												<if condition="$customer_num eq 1">
+													<td class="tdleft">客户数量 :</td>
+													<td >{$user.customer_num}</td>
+												</if>
+											</tr>
+											<tr>
+												<td class="tdleft">自我介绍 :</td>
+												<td <if condition="C('ismobile') neq 1">colspan="3"</if>>{$user.introduce}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+<script>
+	//litebox
+	$('.litebox').liteBox({
+	  revealSpeed: 400,
+	  background: 'rgba(0,0,0,.8)',
+	  overlayClose: true,
+	  escKey: true,
+	  navKey: true,
+	  errorMessage: '图片加载失败.'
+	});
+</script>
+<include file="Public:footer" />	

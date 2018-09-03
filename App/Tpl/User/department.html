@@ -1,0 +1,350 @@
+<include file="Public:header"/>
+<link href="__PUBLIC__/style/css/plugins/jsTree/style.min.css" rel="stylesheet">
+<link href="__PUBLIC__/style/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+<script src="__PUBLIC__/style/js/plugins/jsTree/jstree.min.js"></script>
+<style>
+	.nav.nav-tabs-left li{width:100%;}
+	.nav-tabs-left>li.active>a{border-top:white;color: #19aa8d !important;background-color:#fff;}
+	.table>tbody>tr>td{border-top:0px;}
+	.table>tfoot>tr>td{border-top:0px;}
+	.close{font-size:34px;font-weight:400;color:#fff;}
+	.close:hover{color:#fff;}
+	/*popover*/
+	.popover.right>.arrow{display:none;}
+	.popover{border:none;}
+	.popover.right>.arrow{display:none;}
+	.popover-content {padding-top:2px;}
+	.nav > li > a{font-weight:300;}
+	.popover.right{margin-left:0px;}
+	.dropdown-menu{right:-90px;}
+	#tree2{margin-bottom:200px;padding-right:130px;float:left;margin-right:-30px;}
+</style>
+<script>
+    $(function(){
+        $("#center_height").height(window.innerHeight-$("#center_height").offset().top-50);
+        $(window).resize(function(){
+            $("#center_height").height(window.innerHeight-$("#center_height").offset().top-50);
+        })
+        $("#right_height").height(window.innerHeight-$("#right_height").offset().top-50);
+        $(window).resize(function(){
+            $("#right_height").height(window.innerHeight-$("#right_height").offset().top-50);
+        })
+    })
+</script>
+<div class="wrapper wrapper-content">
+    <div class="row" style="overflow-x:auto;">
+        <div class="col-lg-12" style="min-width: 1600px;">
+			<include file="Setting:setting_left" />
+			<div class="col-md-3" style="overflow-x:auto;">
+				<div class="ibox-content" id="center_height" style="background-color:#fff;">
+                    <div class="full-height-scroll">
+    					<div class="ibox-content ibox-title" style="background-color:#fff;padding-bottom:0px;border: none;padding-top: 5px;">
+                            <a href="{:U('User/department')}">
+    						  <div style="border-bottom:2px solid #e6e6e6;color: #525252;font-size:14px;margin-bottom:8px;text-align:left;line-height:36px;">部门管理</div>
+    					   </a>
+                           <div style="font-size:13px;background-color:#fff;" id="tree1">{$department_tree}</div>
+                        </div>
+                    </div>
+				</div>
+			</div>
+			<div class="col-md-7" style="padding-left: 0px;">
+                <div class="ibox-content" id="right_height" style="overflow-x:auto;float:left;background-color:#fff;min-width:100%;">
+                    <div class="full-height-scroll">
+        				<div class="ibox-content ibox-title" style="background-color:#fff;padding-bottom:0px;border: none;padding-top: 5px;">
+        					<div style="border-bottom:2px solid #e6e6e6;color: #525252;font-size:14px;margin-bottom:8px;text-align:left;line-height:36px;">岗位管理</div>
+        				</div>
+        				<div style="background-color:#fff;">
+        				<?php if (empty($position_tree)): ?>
+        				<p style="text-align:center;padding-top: 21px;"><a data-toggle="modal" data-target="#Modal" data-backdrop="static" href="{:U('user/position_create?department_id='.$_REQUEST['department_id'])}"><i class="fa fa-plus"></i>&nbsp;点击创建</a></p>
+        				<p style="text-align:center;padding-top: 10px;">当前部门岗位为空!</p>
+        				<?php else: ?>
+        				<div style="font-size:13px;background-color:#fff;" id="tree2" style="">
+        					{$position_tree}
+        				</div>
+        				<?php endif; ?>
+                        </div>
+                    </div>
+    			</div>
+			</div>
+	   </div>
+    </div>
+</div>
+
+<!-- 模态框 -->
+<div class="modal inmodal fade" id="Modal" tabindex="-1"  style=" overflow:auto; border:1px solid #000000;" role="dialog" >
+    <div class="modal-dialog modal-md" style="width:750px;">
+        <div class="modal-content" id="dep_modal" >
+
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal fade mlist" id="account" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content animated bounceInRight">
+
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript">
+/*模态框关闭或打开 先清除内容*/
+$(".modal").on("hide.bs.modal", function() {
+    $(this).removeData("bs.modal");
+});
+$(".modal").on("show.bs.modal", function() {
+    $(this).removeData("bs.modal");
+});
+
+/*左右树结构*/
+$(document).ready(function(){
+$('#tree1').jstree({
+    'core' : {
+        'check_callback' : false
+    },
+    'plugins' : [ 'types', 'dnd' ],
+    'types' : {
+        'default' : {
+            'icon' : 'fa fa-home'
+        }
+
+    }
+});
+$('#tree2').jstree({
+    'core' : {
+        'check_callback' : false
+    },
+    'plugins' : [ 'types', 'dnd' ],
+    'types' : {
+        'default' : {
+            'icon' : 'fa fa-user'
+        }
+    }
+});
+
+/*popover 的js */
+$(".dep1").popover({
+    trigger : 'manual',
+    placement : 'right',
+    title : '',
+    html: 'true',
+    content : '<ul class="nav navbar-nav navbar-right" style="padding-right: 30px;"><li><a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 2px;"><span>设置</span></a><ul id="popOverBox" class="dropdown-menu dep_con" style="margin-left:200px;" rel=""><li><a href="javascript:void(0)" onclick="depAdd(this)">新建下级部门</a></li><li><a href="javascript:void(0)" onclick="depEdit(this)">编辑部门</a></li><li><a href="javascript:void(0)" onclick="depDel(this)">删除部门</a></li></ul></li></ul>',
+    animation: false
+}).on('mouseenter', function(){
+    var _this = this;
+    $(this).popover('show');
+    var dep_id = $(this).parent().attr('rel');
+    $(this).parent().find(".popover-title").css({'margin-bottom':'0px','margin-top':'0px','padding-bottom':'5px','padding-top':'5px'});
+    //$(this).parent().find(".popover-title").html($(this).text());
+    $(this).parent().parent().find(".dep_con").attr('rel', dep_id);
+    $(this).siblings(".popover").on("mouseleave", function () {
+        $(_this).popover('hide');
+    });
+}).on('mouseleave',function(){
+    var _this = this;
+    setTimeout(function () {
+    if (!$(".popover:hover").length) {
+        $(_this).popover("hide")
+    }
+}, 10);
+});
+
+$(".dep2").popover({
+    trigger : 'manual',
+    placement : 'right',
+    title : '',
+    html: 'true',
+    content : '<ul class="nav navbar-nav navbar-right" style="padding-right: 30px;"><li><a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 2px;"><span>设置</span></a><ul id="popOverBox" class="dropdown-menu dep_con2" style="margin-left:200px;" rel=""><li><a href="javascript:void(0)" onclick="depTwo(this)" subject="addUser">添加用户</a></li><li><a href="javascript:void(0)" onclick="depTwo(this)" subject="addUp">插入上级岗位</a></li><li><a href="javascript:void(0)" onclick="depTwo(this)" subject="addDown">新建下级岗位</a></li><li><a href="javascript:void(0)" onclick="depTwo(this)" subject="addAuth" value="授权">岗位授权</a></li><li><a href="javascript:void(0)" subject="edit" onclick="depTwo(this);">编辑岗位</a></li><li><a href="javascript:void(0)" onclick="depTwo(this)" subject="del" value="删除">删除岗位</a></li></ul></li></ul>'
+	,
+    animation: false
+}).on('mouseenter', function(){
+    var _this = this;
+    //$(this).width('500px');
+    $(this).popover('show');
+    var position_id = $(this).attr('rel');
+   // $(this).parent().find(".popover-title").css({'margin-bottom':'0px','margin-top':'0px','padding-bottom':'5px','padding-top':'5px'});
+    //$(this).parent().find(".popover-title").html($(this).text());
+    $(this).parent().find(".dep_con2").attr('rel', position_id);
+    $(this).siblings(".popover").on("mouseleave", function () {
+        $(_this).popover('hide');
+    });
+}).on('mouseleave',function(){
+    var _this = this;
+    setTimeout(function () {
+    if (!$(".popover:hover").length) {
+        $(_this).popover("hide")
+    }
+}, 10);
+});
+});
+
+//dep2 sub 的函数
+
+function depTwo(e){
+    $("#dep_modal").parent().removeClass("modal-lg").addClass("modal-md");
+    var type = $(e).attr('subject');
+    var position_id = $(e).parent().parent().attr('rel');
+    var department_id = "<?php echo intval($_GET['department_id']); ?>";
+    var url = '';
+    //alert(type);
+    switch(type){
+        case 'edit':
+            var url = "{:U('user/position_edit')}&id="+position_id+'&department_id='+department_id;
+          break;
+        case 'addUser':
+            var url = "{:U('user/user_add')}&id="+position_id+'&department_id='+department_id;
+          break;
+        case 'addUp':
+            var url = "{:U('user/position_up')}&id="+position_id+'&department_id='+department_id;
+
+            $.get("{:U('user/is_parent')}", {'id':position_id}, function(msg){
+                if(msg == 1){
+                    swal({
+                        title: "温馨提示",
+                        text: "顶级岗位不能插入上级！",
+                        type: "error"
+                    });
+                }else{
+                    $('#Modal').modal('show');
+                    $('#dep_modal').load(url);
+                }
+            });
+          break;
+        case 'addDown':
+            var url = "{:U('user/position_down')}&id="+position_id+'&department_id='+department_id;
+          break;
+        case 'addAuth':
+            $("#dep_modal").parent().removeClass("modal-md").addClass("modal-lg");
+            var url = "{:U('user/user_authorize')}&position_id="+position_id+'&department_id='+department_id;
+          break;
+        //case 'copyAuth':
+        // var url = "{:U('user/department_edit')}&id="+position_id+'&department_id='+department_id;
+        // break;
+        case 'del':
+            var url = "{:U('user/position_del')}&id="+position_id+'&department_id='+department_id;
+            swal({
+                    title: "您确定要删除此岗位吗？",
+                    text: "删除后将无法恢复，请谨慎操作！",
+                    type: "warning",   
+                    showCancelButton: true,   
+                    confirmButtonColor: "#DD6B55",   
+                    confirmButtonText: "是的，我要删除！",
+                    cancelButtonText:'让我再考虑一下…',
+                    closeOnConfirm:false,
+                    closeOnCancel:false
+                },
+                function(isConfirm){
+                    if (isConfirm) {
+                    //window.location="{:U('user/department_delete')}&id="+dep_id;
+                        $.ajax({
+                            type: "GET",
+                            url: url,
+                            async: true,
+                            success: function(data) {
+                                if(data.status == 1){
+                                    swal({
+                                        title: "删除成功！",
+                                        text: "跳转中!",
+                                        type: "success"
+                                    });
+                                    $('#Modal').modal('hide');
+                                    top.location.reload();
+                                }else{
+                                    swal({
+                                        title: "操作失败！",
+                                        text:data.info,
+                                        type: "error"
+                                    })
+                                    return false;
+                                }
+                            }
+                        });
+                    } else {
+                        swal("已取消","您取消了删除操作！","error");
+                    }
+                });
+        break;
+    }
+
+    if(type !== 'addUp' && type !== 'del'){
+        $('#Modal').modal('show');
+        $('#dep_modal').load(url);
+    }
+}
+
+function depEdit(obj){
+    $("#dep_modal").parent().removeClass("modal-lg").addClass("modal-md");
+    var dep_id = $(obj).parent().parent().attr('rel');
+    $url = "{:U('user/department_edit')}&id="+dep_id;
+
+    $('#Modal').modal('show');
+    $('#dep_modal').load($url);
+}
+
+function depAdd(obj){
+    $("#dep_modal").parent().removeClass("modal-lg").addClass("modal-md");
+    var dep_id = $(obj).parent().parent().attr('rel');
+    $url = "{:U('user/department_add')}&id="+dep_id;
+    $('#Modal').modal('show');
+    $('#dep_modal').load($url);
+}
+
+function depMove(obj){
+    $("#dep_modal").parent().removeClass("modal-lg").addClass("modal-md");
+    var dep_id = $(obj).parent().attr('rel');
+
+    $url = "{:U('user/department_edit')}&move=1&id="+dep_id;
+    $('#Modal').modal('show');
+    $('#dep_modal').load($url);
+}
+
+function depDel(obj){
+    var dep_id = $(obj).parent().parent().attr('rel');
+    swal({
+            title: "您确定要删除此部门吗？",
+            text: "删除后将无法恢复，请谨慎操作！",
+            type: "warning",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "是的，我要删除！",
+            cancelButtonText:'让我再考虑一下…',
+            closeOnConfirm:false,
+            closeOnCancel:false
+        },
+        function(isConfirm){
+            if (isConfirm) {
+                //window.location="{:U('user/department_delete')}&id="+dep_id;
+                $.ajax({
+                    type: "GET",
+                    url: "{:U('user/department_delete')}&id="+dep_id,
+                    async: true,
+                    success: function(data) {
+                        if(data.status == 1){
+                            swal({
+                                title: "删除成功！",
+                                text: "即将刷新页面!",
+                                type: "success"
+                            });
+                            $('#Modal').modal('hide');
+                            window.location.href="{:U('department')}";
+                            //location.reload();
+                            //$("#file").load"{:U('debtor/listFile','id='.$debtor_id)}");
+                        }else{
+                             swal({
+                                title: "操作失败!",
+                                text: data.info,
+                                type: "error"
+                            });
+                        }
+                    }
+                });
+             } else {
+                swal("已取消","您取消了删除操作！","error");
+            }
+        });
+}
+
+</script>
+<include file="Public:footer"/>

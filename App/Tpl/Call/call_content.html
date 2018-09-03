@@ -1,0 +1,59 @@
+<style>
+	.row{
+		float:left;
+		padding:5px;
+		font-family: "Microsoft Yahei";
+		background-color: #ffffff;
+	}
+	.ibox-title{
+		float: left;
+		width:100%;
+		padding: 5px 0px;
+		min-height: 35px;
+		line-height: 35px;
+		border-bottom:1px solid #ccc;
+		margin-bottom: 5px;
+	}
+	.ibox-content{
+		width:100%;
+		float:left;
+		padding: 5px 0px;
+		line-height: 30px;
+		margin:0 10px;
+	} 
+	.pull-left{
+		float:left;
+	}
+	.form-group{
+		width:100%;
+		float: left;
+	}
+</style>
+<div class="row">
+	<div class="ibox-title">
+		<div class="pull-left" style="margin-left:12px;"><img src="__PUBLIC__/img/phone.png" style="width:30px;height:30px;" alt="" /></div>
+	    <span class="pull-left" style="margin-left:10px;font-size:16px;font-weight:400;color: #000;">来电信息</span>
+	</div>
+	<div class="ibox-content">
+	    <div class="pull-left"><img src="__PUBLIC__/img/customer_view_icon.png" style="margin-bottom:9px;" alt="" /></div>
+	    <span class="pull-left" style="margin-left:10px;font-size:20px;font-weight:400;color: #000;">{$info['name']}</span>
+	</div>
+	<div class="ibox-content">
+	    <div class="form-group">
+	    	<div style="width:100px;float: left;">
+	    		<span style="font-size:14px;color:#999;">联系人姓名</span>
+	    	</div>
+	    	<div style="width:auto;float: left;">
+	    		<span>{$info['name']}</span>
+	    	</div>
+	    </div>
+	    <div class="form-group">
+	    	<div style="width:100px;float: left;">
+	    		<span style="font-size:14px;color:#999;">联系电话</span>
+	    	</div>
+	    	<div style="width:auto;float: left;">
+	    		<span style="color:#00CC98;font-size:18px;font-weight: bold;">{$info['telephone']}</span>
+	    	</div>
+	    </div>
+	</div>
+</div>

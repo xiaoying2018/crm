@@ -1,0 +1,130 @@
+@import url("./function.less");
+.coo_box{
+	background: #fff;
+ 	border: 1px solid #ccc;
+ 	padding: 10px 20px;
+ 	position: relative;
+ 	&.b{
+ 		margin: 15px 0;
+ 	}
+ 	.ss_title{
+	    font-size: 14px;
+	    color: #949494;
+	    margin: 15px 0;
+ 	}
+ 	.ulDv{
+ 		margin-bottom: 8px;
+ 		&.disabled{
+ 			.list{
+ 				li{
+ 					cursor:not-allowed;
+ 					opacity: 0.6;
+ 					color: #ccc;
+ 				}
+ 			} 
+ 		}
+ 	}
+	.s_title{
+		float: left;
+		font-size: 12px;
+		margin-right: 8px;
+		color: #9a9a9a;
+		width: 80px;
+		border:1px solid #fff;
+		line-height: 33px;
+	}
+ 	.list{
+ 		list-style: none;
+ 		margin: 0;
+ 		padding: 0;
+		float: left;
+     	width: 85%;
+ 		.item{
+ 			font-size: 12px;
+ 			padding: 4px 8px;
+ 			cursor: pointer;
+ 			.transition();
+ 			.border-radius(3px);
+ 			color: #717171;
+ 			margin: 3px 0;
+			border:1px solid #fff;
+			display: inline-block;
+ 			&.active{
+		    	border: 1px solid #409eff;
+			    color: #fff;
+			    background-color: #409eff;
+ 			}
+ 		}
+ 		select{
+ 			display: inline-block;
+ 			width: 120px;
+		    padding: 0 12px;
+			height: 26px;
+			&:nth-child(1n){
+				margin-right: 5px;
+			}
+ 		}
+ 		.form-control:focus,
+		.single-line:focus {
+ 			border-color: #409EFF !important;
+ 		}
+ 	}
+ 	.typeui{
+ 		list-style: none;
+ 		margin: 0;
+ 		padding: 0;
+		padding: 10px 0;
+		.t_item{
+ 			float: left;
+ 			font-size: 14px;
+ 			padding: 4px 8px;
+ 			cursor: pointer;
+ 			.transition();
+ 			.border-radius(3px);
+ 			border: 1px solid #409EFF;
+ 			color: #409EFF;
+ 			margin: 3px 0;
+ 			margin-right: 20px;
+ 			&.active{
+ 				background-color: #409EFF;
+ 				color: #fff;
+ 			}
+		}
+ 	}
+ 	.tabcontent{
+ 		// display: none;
+ 	}
+}
+.btnDv{
+	text-align: center;
+	position: relative;
+	bottom: 15px;
+	right: 15px;
+    padding-top: 20px;
+    .icondown{
+        display: block;
+        font-size: 30px;
+        color:#969798;
+    }
+	.fa-send{
+		margin-right: 8px;
+	}
+	.submitBtn{
+		display: inline-block;
+		.border-radius(3px);
+		border: 1px solid #409EFF;
+	    font-size: 24px;
+        padding: 10px 40px;
+		cursor: pointer;
+		background-color: #409EFF;
+		color: #fff;
+		margin-top: 20px;
+		padding-right: 50px;
+		box-shadow: 0 0 30px 0px #bebebe;
+	}
+}
+
+
+
+.list-wapper {
+}

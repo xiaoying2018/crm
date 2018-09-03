@@ -1,0 +1,417 @@
+<include file="Public:header" />
+<style>
+    .nav.nav-tabs-left li{width:100%;}
+    .nav-tabs-left>li.active>a{border-top:white;color: #19aa8d !important;background-color:#fff;}
+    .table>tbody>tr>td{border-top:0px;}
+    .table>tfoot>tr>td{border-top:0px;}
+    #main_pic_prev{width: 38px;height: 38px;border: 1px dashed #d3d3d6;}
+    .table tbody tr {cursor: Default;}
+
+    #filter{
+        line-height: 36px;
+    }
+
+    #filter span{
+        margin-left: 5px;
+        padding: 5px;
+        cursor: pointer;
+        border-radius: 5px;
+        border: 1px solid #1ab394;
+        color: #1ab394;
+    }
+
+    #filter > .active{
+        background-color: #1ab394;
+        border: 1px solid #1ab394;
+        color: #fff;
+    }
+    .title-bar{height: 58px; overflow: hidden;}
+
+</style>
+<link rel="stylesheet" href="/Public/js/jqGrid/ui.jqgridffe4.css">
+<link rel="stylesheet" href="/Public/css/page/publicTable.css">
+<script src="/Public/js/jqGrid/i18n/grid.locale-cnffe4.js" type="text/javascript"></script>
+<script src="/Public/js/jqGrid/jquery.jqGrid.minffe4.js" type="text/javascript"></script>
+<link href="/Public/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="/Public/js/litebox.min.js" type="text/javascript"></script>
+<script src="/Public/js/images-loaded.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<link href="__PUBLIC__/style/css/plugins/cropper/cropper.min.css" rel="stylesheet">
+<script src="__PUBLIC__/style/js/plugins/cropper/cropper.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<div class="wrapper wrapper-content animated fadeIn">
+    <include file="Public:alert" />
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="col-md-12">
+
+                <div class="ibox float-e-margins" style="margin-bottom: 0;">
+                    <div class="title-bar" style="position: relative;z-index: 99;">
+                        <div class="row clearfix" id="title-hide" style="display:none;">
+                            <ul class="breadcrum pull-left">
+                                <li>已选中&nbsp;<span id="icheck_num"></span>&nbsp;项</li>
+                                <?php if ( checkPerByAction('materials','materialsSampleEdit') ): ?>
+                                <li class="single_btn"><a href="javascript:void(0)" id="edit_school"><i class="fa fa-pencil"></i>&nbsp;编辑</a></li>
+                                <?php endif; ?>
+                                <?php if ( checkPerByAction('materials','materialsSampleDelete') ): ?>
+                                <li><a id="delete" href="javascript:void(0)"><i class="fa fa-times"></i>&nbsp;删除</a></li>
+                                <?php endif; ?>
+                                <li class="last_li"><big><a class="fa fa-times pull-right" id="back-show"></a></big></li>
+                            </ul>
+                        </div>
+
+                        <!-- <div class="row " id="title-show">
+                            <?php if ( checkPerByAction('materials','materialsSampleAdd') ): ?>
+                            <ul class="nav pull-left" style="margin:2px 0 0 15px;">
+                                <a href="{:U('materials/materialsSampleAdd')}" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 添加样本</a>
+                            </ul>
+                            <?php endif; ?>
+                            <div id="filter">
+                                <span data-value="" class="active">所有</span>
+                                <span v-for="n in cate" :data-value="n.id">{{n.name}}</span>
+                            </div>
+                        </div> -->
+
+                        <div class="row " id="title-show">
+                            <ul class="nav pull-left" style="margin:2px 0 0 15px;">
+                                <a href="{:U('materials/materialsSampleAdd')}" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 添加样本</a>
+                            </ul>
+                            <div class="pull-right" style="margin-right:20px;">
+                                <form class="form-inline pull-left" onsubmit="return false;" method="get">
+
+                                    <ul class="breadcrum pull-left" style="margin-bottom: 0px;padding-right:0px;">
+                                        <li>
+                                            <div id="filter">
+                                                <span data-value="" class="active">所有</span>
+                                                <span v-for="n in cate" :data-value="n.id">{{n.name}}</span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="input-group">
+                                                <input id="search_key" type="text" style="width:180px;" placeholder="申请项目名称" class="form-control input-sm" name="name" value="{$_GET['name']}"/>
+                                                <span class="input-group-btn">
+                                                    <span class="btn btn-default" id="send_search">
+                                                        <i class="fa fa-search"></i>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </form>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row" style="margin: 0">
+                        <div class="ibox-box" style="padding:0px;border:none;">
+                            <div class="table_vue">
+                                <table class="table" id="table_list_2"></table>
+                                <!-- 分页 -->
+                                <div id="gridpager"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div style="clear:both;" ></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var _requert = {}
+
+
+    // 修改
+    $("#edit_school").click(function(){
+        window.location.href="{:U('materials/materialsSampleEdit', 'id=')}"+$(this).attr('rel');
+    });
+
+    // 删除
+    $(function(){
+        $('#send_search').click(function (){
+            var _search_key = $('#search_key').val();
+            _requert.name = _search_key;
+            $("#table_list_2").jqGrid("setGridParam", { postData: _requert }).trigger("reloadGrid");
+        })
+        $("#search_key").keyup(function (e) {
+          var curKey = e.which;
+          if (curKey == 13) {
+            var _search_key = $('#search_key').val();
+            _requert.name = _search_key;
+            $("#table_list_2").jqGrid("setGridParam", { postData: _requert }).trigger("reloadGrid");
+            return false;
+          }
+        });
+         // 选中全部
+        // $("#check_all").click(function(){
+        //     $("input[class='check_list']").prop('checked', $(this).prop("checked"));
+        // });
+
+        $('#delete').click(function(){
+            var id_array = new Array();
+            $("input.cbox:checked").each(function(){
+                if ($(this).val() != 'on') {
+                    id_array.push($(this).val());
+                }
+            });
+            if(id_array.length == 0){
+                alert_crm('你没有选择任何数据！');
+                return false;
+            }
+            swal({
+                    title: "您确定要删除这条信息吗？",
+                    text: "删除后将无法恢复，请谨慎操作！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "是的，我要删除！",
+                    cancelButtonText:'让我再考虑一下…',
+                    closeOnConfirm:false,
+                    closeOnCancel:false
+                },
+                function(isConfirm){
+                    if (isConfirm) {
+                        $.ajax({
+                            type:'post',
+                            url: "{:U('materials/materialsSampleDelete')}",
+                            data: {id:id_array},
+                            async: false,
+                            success: function (data) {
+                                console.log(data);
+                                if (data.status == 1) {
+                                    swal("删除成功！", "您已经永久删除了信息！", "success");
+                                    location.reload();
+                                }else{
+                                    swal({
+                                        title: "操作失败！",
+                                        text:data.info,
+                                        type: "error"
+                                    })
+                                    return false;
+                                }
+                            },
+                            dataType: 'json'
+                        });
+                    } else {
+                        swal("已取消","您取消了删除操作！","error");
+                    }
+                });
+        });
+
+        table();
+    });
+    function getAllCate(_all){
+        var filter = new Vue({
+            el: '#filter',
+            data: {cate:_all},
+            mounted(){
+                $("#filter span").click(function(){
+                    _requert["c"] = $(this).attr("data-value");
+                    $("#table_list_2").jqGrid("setGridParam", { postData: _requert }).trigger("reloadGrid");
+                    $(this).addClass("active").siblings().removeClass("active");
+                })
+
+            }
+        });
+    }
+
+    function table(){
+        $("#table_list_2").clearGridData();
+        
+        $.jgrid.defaults.styleUI = "Bootstrap";
+
+        var _height = $(window).height() - ($(".title-bar").outerHeight() + $("#gridpager").outerHeight() + $("#secondPart").height() + 260);
+
+        var icheck_num = 0;
+        var d_width = $(".table_vue").width() - 16;
+        $("#table_list_2").jqGrid({
+            url:"/index.php?m=materials&a=materialsSample",
+            datatype: "JSON",
+            mtype: "post",
+            width: "100%",
+            postData: _requert,
+            height: _height,
+            autowidth: true,
+            forceFit: true,
+            autoScroll: true,
+            multiselect: true,
+            useColSpanStyle: true,
+            colNames: ["id","样本名称", "分类","上传时间","操作"],
+            colModel: [{
+                    name: "id",
+                    index: "id",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    hidden:true
+                },{
+                    name: "name",
+                    index: "name",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    formatter:nameFormat
+                },{
+                    name: "cate_name",
+                    index: "cate_name",
+                    editable: false,
+                    sorttype: "text",
+                    search: true
+                }, {
+                    name: "create_time",
+                    index: "create_time",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    formatter:timeFormat,
+                }, {
+                    name: "file",
+                    index: "file",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    formatter:downloadFormat
+                }],
+            forceFit: true,
+            //分页
+            rowNum: 30,
+            rowList: [5, 10, 30],
+            pager: '#gridpager',
+            viewrecords: true,
+            jsonReader: {
+                repeatitems: false,
+                root: "data.list",
+                records: "data.count",
+                total: "data.total"
+            },
+            hidegrid: false,
+            loadComplete: function (res) {
+                getAllCate(res.data.cates);
+            },
+            gridComplete: function () {
+                var rowIds = jQuery("#table_list_2").jqGrid('getDataIDs');
+                var s_ahref = "";
+                for (var k = 0; k < rowIds.length; k++) {
+                    //多选
+                    var curRowData = jQuery("#table_list_2").jqGrid('getRowData', rowIds[k]);
+                    var curChk = $("#" + rowIds[k] + "").find("input");
+                    curChk.attr('value', curRowData['id']);//给checkbox赋值   
+
+                }
+
+                $('.litebox_file').liteBox({
+                    revealSpeed:  400,
+                    background:   'rgba(0,0,0,.8)',
+                    overlayClose:  true,
+                    escKey:  true,
+                    navKey:  true,
+                    errorMessage:   '图片加载失败.'
+                });
+
+                setWidthHeight();
+
+            },
+            onSelectRow: function (rowid, status) {
+                if (status) {
+                    icheck_num = icheck_num + 1;
+                } else {
+                    icheck_num = icheck_num - 1;
+                }
+
+                $("#icheck_num").text(icheck_num);
+                if (icheck_num <= 0) {
+                    $('#title-hide').hide();
+                    $('#title-show').show();
+                } else {
+                    $('#title-hide').show();
+                    $('#title-show').hide();
+                }
+                //处理单选时才有的操作
+                if (icheck_num == 1) {
+                    $(".single_btn").show().children().each(function () {
+                        $(this).attr('rel', $("input.cbox:checked").val());
+                        $(".edit_href").attr("href", "/case/edit?id=" + $("input.cbox:checked").val());
+                    })
+                } else {
+                    $(".single_btn").hide().children().each(function () {
+                        $(this).attr('rel', '');
+                    })
+                }
+            }, 
+            onSelectAll: function (s, sx) {
+                if (sx) {
+                    $('#title-hide').show();
+                    $('#title-show').hide();
+                    icheck_num = s.length
+                } else {
+                    $('#title-hide').hide();
+                    $('#title-show').show();
+                    icheck_num = 0
+                }
+                $("#icheck_num").text(icheck_num)
+            }
+        }).trigger("reloadGrid"); //重新载入
+
+
+        jQuery("#table_list_2").jqGrid('navGrid', '#gridpager', {edit: false, add: false, del: false, search: false}, {}, {}, {multipleSearch: true, multipleGroup: true});
+
+        $('.ui-jqgrid-bdiv').niceScroll({
+            cursorcolor: "#77B8FF",
+            cursoropacitymax: 1,
+            cursorwidth: "4px",
+            cursorborder: "0",
+            cursorborderradius: "0px",
+            autohidemode: false
+        });
+
+        $('.nicescroll-rails').eq(2).remove()
+
+        $(window).bind("resize", function () {
+            setWidthHeight();
+        })
+    }
+    //设置table高度
+    function setWidthHeight(){
+        var _height,width;
+        _height = $(window).height() - ($(".title-bar").outerHeight() + $("#gridpager").outerHeight()) - 190;
+        width = $(".table_vue").width();
+        $("#table_list_2").setGridWidth(width)
+        $("#table_list_2").setGridHeight(_height)
+    }
+
+    function timeFormat(cellvalue, options, cell){
+        if (cellvalue != "" && cellvalue != "0") {
+            return timestampToFormat(cellvalue, 'yyyy-MM-dd hh:mm:ss');  
+        }else{
+            return "<span class='nodata'>-</span>"
+        }
+    }
+    //下载操作
+    function downloadFormat(cellvalue, options, cell){
+        var _v = "<span>"+cellvalue+"</span>";
+
+        return "<a file="+cellvalue+" filename='"+cell.name+"' class='a_name' href='javascript:;' onclick='filedown(this);'>下载</a>"
+    }
+
+    //名字处理
+    function nameFormat(cellvalue, options, cell){
+         //判断是否图片格式
+        var _text = cellvalue;
+        var _file = cell.file
+        var s_ahref;
+        if (_file.indexOf('jpg') > 0 || _file.indexOf('png') > 0 || _file.indexOf('gif') > 0 || _file.indexOf('jpeg') > 0) {
+            s_ahref = "<a title='点击查看大图' data-litebox-group='group-1' class='a_name litebox_file' href='" + _file + "'>" + _text + "</a>"
+        }else{
+            s_ahref = "<a file="+_file+" filename='"+_text+"' class='a_name' href='javascript:;' onclick='filedown(this);'>" + _text + "</a>"
+        }
+        return s_ahref;
+    }
+</script>
+<include file="Public:footer" />

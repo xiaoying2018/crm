@@ -1,0 +1,356 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/css/validator.css"/>
+<style>
+	table tbody tr{cursor:move;padding:0px;}
+	.table thead>tr>th{padding:3px;}
+	.table tbody>tr>td{padding:3px;}
+</style>
+<script>
+$(function(){
+	var scroll_width = 5;
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-10);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-10);
+		$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+	})
+	$("#tab_Test3").FrozenTable(1,0,0);
+	$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width).width($("#oTableLH_tab_Test3").width());
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+})
+</script>
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<include file="Public:alert" />
+		<div class="col-md-12">
+			<include file="Setting:setting_left" />
+			<div class="col-lg-10 ">
+				<div class="table-content" style="padding-bottom:10px">
+					<div class="ibox-content mar-top" style="border-bottom:none;padding-top:20px;">
+						<div class="bulk-actions align-left">
+							<button onclick="del_status(this)" style="background:#fff;border:1px solid #e3e3e3;color:#000;" type="button" class="btn btn-primary" >&nbsp;{:L('DELETE')}</button>
+							<div class="pull-right">
+								<a class="btn btn-primary" id="add">添加财务类别</a>
+							</div>
+						</div>
+					</div>
+					<form action="" id="form1" method="post">
+						<div class="col-sm-12 ibox-content" style="margin-top:0px;padding:0px;">
+							<div class="full-height-scroll" id="table_div" style="left:0px;top:0px;">
+								<table class="table table-hover table-striped table_thead_fixed" id="tab_Test3" >
+									<notempty name="activity_list">
+									<thead>
+										<tr class="tabTh">
+											<td style="width:50px;text-align:center;">
+												<div class="checkbox checkbox-primary">
+													<input type="checkbox" class="check_all"/>
+													<label for=""></label>
+												</div>
+											</td>
+											<td>编号</td>
+											<td>名称</td>
+											<td>科目</td>
+											<td>备注</td>
+											<td>操作</td>
+										</tr>
+									</thead>
+									<tbody>
+										<volist name="activity_list" id="vo">
+											<tr>
+												<td style="text-align:center;">
+													<div class="checkbox checkbox-primary">
+														<input name="account_id[]" class="check_list" type="checkbox" value="{$vo.account_id}"/>
+														<label for=""></label>
+													</div>
+												</td>
+												<td>{$vo.code}</td>
+												<td>{$vo.name}</td>
+												<td>{$vo.accounts}</td>
+												<td>{$vo.remark}</td>
+												<td>
+													<a href="javascript:void(0)" class="is_pause" id="pause_{$vo['id']}" rel="{$vo['id']}">
+														<if condition = "$vo['is_pause'] eq 1">
+															禁用中
+														<else />
+															启用中
+														</if>
+													</a>&nbsp;
+													<a class="edit" href="javascript:void(0)" rel="{$vo.id}">{:L('EDIT')}</a>
+												</td>
+											</tr> 
+										</volist>
+									</tbody>
+									<else />
+										<tr>
+											<td><include file="Public:nodata" /></td>
+										</tr>
+									</notempty>
+								</table>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="" style="display:none;" id="dialog-add" title="添加财务类别">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div class="" style="display:none;" id="dialog-edit" title="编辑财务类别">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+</div>
+<script type="text/javascript">
+// 科目重复判断
+var dosearch = 1;
+function doh(){
+	var ary = new Array();
+	var account_id = '';
+	var is_submit = 1;
+	$('.account_id').each(function(k, v){
+		account_id = $(this).find("option:selected").val();
+		if(jQuery.inArray(account_id,ary) >= 0){
+			is_submit = 0;
+			swal({
+				title: "相关科目中有重复项！",
+				text: '',
+				type: "error"
+			});
+			dosearch = 0;
+			return false;
+		}
+		ary[k] = account_id;
+	})
+	/*if(is_submit == 1){
+		$("#activity_form").submit();
+	}*/
+}
+
+$("#dialog-add").dialog({
+	autoOpen: false,
+	// modal: true,
+	width: 600,
+	maxHeight: 450,
+	position: ["center",100],
+	close:function(){
+		$(this).html("");
+	},
+	buttons: {
+		"确定": function () {
+			$('#error_code').removeClass('onFocus');
+			$('#error_code').html('');
+			var code = $("#code").val();
+
+			if(code == ''){
+				$('#error_code').addClass('onFocus');
+				$('#error_code').html('编号不能为空！');
+				return false;
+			}
+
+			var name = $('#activity_name').val();
+			$('#error_name').removeClass('onFocus');
+			$('#error_name').html('');
+			if(name == ''){
+				$('#error_name').addClass('onFocus');
+				$('#error_name').html('名称不能为空！');
+				return false;
+			}
+
+			doh();
+
+			$.ajax({
+	            type:'post',
+	            url: "{:U('setting/activityadd')}",
+	            data:$('#activity_form').serialize(),
+	            async: true,
+	            success: function (data) {
+					if (data.status == 1) {
+						swal("温馨提示", "添加成功！", "success");
+						location.reload();
+					}else{
+						swal({
+							title: "操作失败！",
+							text:data.info,
+							type: "error"
+						})
+						return false;
+					}
+	            },
+	            dataType: 'json'
+	        });
+	  		// if(dosearch == 1){
+			// 	$(this).dialog("close");
+			// }	
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$("#dialog-edit").dialog({
+	autoOpen: false,
+	// modal: true,
+	width: 600,
+	maxHeight: 450,
+	position: ["center",100],
+	close:function(){
+		$(this).html("");
+	},
+	buttons: {
+		"确定": function () {
+			$('#error_code').removeClass('onFocus');
+			$('#error_code').html('');
+			var code = $("#code").val();
+
+			if(code == ''){
+				$('#error_code').addClass('onFocus');
+				$('#error_code').html('编号不能为空！');
+				return false;
+			}
+
+			var name = $('#activity_name').val();
+			$('#error_name').removeClass('onFocus');
+			$('#error_name').html('');
+			if(name == ''){
+				$('#error_name').addClass('onFocus');
+				$('#error_name').html('名称不能为空！');
+				return false;
+			}
+
+			doh();
+
+			$.ajax({
+	            type:'post',
+	            url: "{:U('setting/activityedit')}",
+	            data:$('#activity_form').serialize(),
+	            async: true,
+	            success: function (data) {
+					if (data.status == 1) {
+						swal("温馨提示", "修改成功！", "success");
+						location.reload();
+					}else{
+						swal({
+							title: "操作失败！",
+							text:data.info,
+							type: "error"
+						})
+						return false;
+					}
+	            },
+	            dataType: 'json'
+	        });
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+
+$(function(){
+	$("#check_all").click(function(){
+		$("input[class='list']").prop('checked', $(this).prop("checked"));
+	});
+	$("#add").click(function(){
+		$('#dialog-add').dialog('open');
+		$('#dialog-add').load('{:U("setting/activityadd")}');
+	});
+	$(".edit").click(function(){
+		var id = $(this).attr('rel');
+		$('#dialog-edit').dialog('open');
+		$('#dialog-edit').load('{:U("setting/activityedit","id=")}'+id);
+	});
+})
+
+function del_status(obj){
+	var id_array = new Array();
+	$("input.check_list:checked").each(function(){  
+		id_array.push($(this).val());
+	});
+	if(id_array.length == 0){
+		swal({
+			title: "温馨提示",
+			text: "请先选择要删除的财务活动!",
+			type: "warning"
+		})
+		return false;
+	}else{
+		swal({
+			title: "您确定要删除该财务活动吗？",
+   			text: "删除后将无法恢复，请谨慎操作！",
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "是的，我要删除！",
+	        cancelButtonText:'让我再考虑一下…',
+	        closeOnConfirm:false,
+	        closeOnCancel:false
+		},
+		function(isConfirm){
+	        if (isConfirm) {
+				$.ajax({
+					type: "POST",
+					url: "{:U('setting/activitydel')}",
+					data: $("#form1").serialize(),
+					async: true,
+					success: function(data) {
+						if(data.status == 1){
+							swal({
+								title: "删除成功！",
+								text: "即将刷新页面!",
+								type: "success"
+							});
+							window.location.href="{:U('setting/activity')}";
+						}else{
+							 swal({
+								title: "操作失败!",
+								text: data.info,
+								type: "error"
+							});
+						}
+					}
+				});
+			} else {
+	            swal("已取消","您取消了删除操作！","error");
+	        }
+	    });
+	}
+}
+
+//开启
+$('.is_pause').click(function(){
+	var activity_id = $(this).attr('rel');
+	if(activity_id){
+		$.ajax({
+		type:'get',
+		url:"{:U('setting/activitypause','id=')}"+activity_id,
+		async:true,
+		success:function(data){
+			var options = '';
+			if(data.data == 1 && data.status == 1){
+				options = '启用中';
+			}else if(data.data == 2 && data.status == 1){
+				options = '禁用中';
+			}else{
+				alert_crm('状态修改失败，请重试！');
+			}
+			$('#pause_'+activity_id).html(options);
+		},
+		dataType:'json'});
+	}
+});
+</script>
+<include file="Public:footer" />

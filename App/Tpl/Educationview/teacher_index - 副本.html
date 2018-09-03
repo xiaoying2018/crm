@@ -1,0 +1,503 @@
+<include file="Public:header" />
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<link href="__PUBLIC__/css/page/leadsIndex.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<!-- nice-scroll -->
+<!-- <script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script> -->
+<script src="https://nicescroll.areaaperta.com/wp-content/plugins/jnicescroll/js/jquery.nicescroll.min.js?ver=1"></script>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/mxcrm_more.js" type="text/javascript"></script>
+<style>
+    body{
+        overflow-y: hidden;
+    }
+    .option{padding-left:-30px;}
+    #oDivL_tab_Test3{background-color: #fff;border-right: 1px solid #ececec; z-index: 8 !important;}
+    .table{max-width: none;}
+    #tab_Test3{opacity: 1}
+    input[type=text],select{
+        appearance:none;
+        -moz-appearance:none;
+        -webkit-appearance:none;
+    }
+    .crm_status{
+        padding: 2px 3px;
+        border-radius: 3px;
+    }
+    /*跟进中*/
+    .status_ing{
+        border: 1px solid #00CE67;
+        background-color: none;
+        color: #00CE67;
+    }
+    /*作废*/
+    .status_no{
+        border: 1px solid #ccc;
+        background-color: #ccc;
+        color: #fff;
+    }
+    /*待跟进*/
+    .status_waning{
+        border: 1px solid #F9D10B;
+        background-color: none;
+        color: #F9D10B;
+    }
+    /*已转换*/
+    .status_tanseformed{
+        border: 1px solid #0080FF;
+        background-color: #0080FF;
+        color: #fff;
+    }
+</style>
+<div class="wrapper wrapper-content">
+    <include file="Public:alert" />
+    <div class="row" id="table_container">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+                <div class="title-bar" style="position: relative;z-index: 99;">
+                    <div id="title-show" class="clearfix">
+                        <ul class="searchpart">
+                            <a href="javascript:;" class="btn btn-primary btn-sm pull-left" style="margin:2px 0 0 0; width: 100px;" onclick="addTeacher()">
+                                <i class="fa fa-plus-circle"></i>&nbsp; 新建教师
+                            </a>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="ibox-content clearfix" style="z-index: 1;">
+                    <form id="form1" action="" method="post" style="position:relative;">
+                        <input type="hidden" name="owner_id" id="hidden_owner_id" value="0"/>
+                        <input type="hidden" name="message" id="hidden_message" value="0"/>
+                        <input type="hidden" name="sms" id="hidden_sms" value="0"/>
+                        <input type="hidden" name="email" id="hidden_email" value="0"/>
+                        <!-- class="nicescroll" -->
+                        <div id="table_div" style="overflow-x: scroll;">
+                            <table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
+                                <tr id="childNodes_num" class="tabTh">
+                                    <td style="width:30px;padding-left: 20px">
+                                        <div class="checkbox checkbox-primary">
+                                            <input type="checkbox" class="check_all"/>
+                                            <label for=""></label>
+                                        </div>
+                                    </td>
+
+                                    <td>教师名称</td>
+                                    <td>教师角色</td>
+                                    <td>创建人</td>
+                                    <td>创建时间</td>
+                                    <td>
+                                        操作
+                                    </td>
+                                </tr>
+                                <!-- 我的线索 -->
+                                <tr class="controls_tr" v-for="(item,index) in lists" data-target="#table_container"  :data-id="item.id">
+                                    <td style="width: 30px;padding-left: 20px" nowrap="nowrap">
+                                        <div class="checkbox checkbox-primary">
+                                            <input name="ids[]" class="check_list" type="checkbox" :value="item.id">
+                                            <label for=""></label>
+                                        </div>
+                                    </td>
+
+                                    <td>{{item.teacher_name}}</td>
+                                    <td>{{item.roles}}</td>
+                                    <td>{{item.creator_name}}</td>
+                                    <td>{{item.create_at}}</td>
+                                    <td>
+                                        <button type="button" onclick="gotoEdit(this)">修改</button>
+                                        <button type="button" onclick="gotoDel(this)">删除</button>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div v-if="nodata" style="text-align:center;color:#E4E4E4;font-size:16px;font-weight:700;padding-top:15px;">
+                                <img src="/Public/img/exclamation_mark.png" style="margin-top:-3px;width:25px;">&nbsp;&nbsp;暂无更多数据
+                            </div>
+                        </div>
+
+                        <div class="cover"></div>
+                        <div class="loader" id="loader">
+                            <div class="loader-inner pacman">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 弹框模板 -->
+<div style="display:none" id="dialog-teacher-add" title="添加老师">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script>
+    //下拉刷新
+    var table_container = new Vue({
+        el: "#table_container",
+        data: {
+            lists:{},
+            nodata:{},
+        },
+        methods:{
+            getLists: function () {
+                var _this		=	this;
+                $.ajax({
+                    url:"{:U('education/teacher_index')}",
+                    data:{},
+                    dataType:"JSON",
+                    type:"POST",
+                    success:function(res){
+                        if( res.result == false || !res.lists ){
+                            _this.nodata = true;
+                        }else{
+                            _this.nodata = false;
+                        }
+                        _this.lists = res.lists;
+                    }
+                });
+
+                dd( _this.nodata );
+            },
+        },
+    });
+    table_container.getLists();
+
+    /**
+     * @ 详情
+     * @param a
+     */
+    function gotoDetail(a) {
+        var id = $(a).parent().parent().data('id');
+        if( !id ) return ;
+        window.open("{:U('educationview/course_detail')}&id="+id);
+    }
+    /**
+     * @编辑
+     * @param btn
+     */
+    function gotoEdit (btn){
+        var id = $(btn).parent().parent().data('id');
+        if( !id ) return ;
+        window.open("{:U('educationview/course_edit')}&id="+id);
+    }
+    /**
+     * @ 删除
+     * @param btn
+     */
+    function gotoDel (btn){
+        var id = $(btn).parent().parent().data('id');
+        if( !id ) return ;
+        dd(id)
+    }
+    /**
+     * @添加老师
+     */
+    function addTeacher(){
+        $('#dialog-teacher-add').dialog('open');
+        $('#dialog-teacher-add').load('{:U("educationview/teacher_add")}');
+    }
+    // 添加老师
+    $("#dialog-teacher-add").dialog({
+        autoOpen: false,
+        modal: true,
+        width: '55%',
+        maxHeight: 600,
+        position: ["center",100],
+        buttons:{
+            '添加':function(){
+                // 操作
+                var form_data       =   $('#section_add_form').serializeArray(),
+                    data            =   {},
+                    _dialog         =   this;
+                form_data.forEach(function (v) {
+                    data[v.name]    =   v.value;
+                });
+                $.ajax({
+                    url:"{:U('education/teacher_add')}",
+                    data:data,
+                    dataType:"JSON",
+                    type:"POST",
+                    success:function (res) {
+                        if( res.result ){
+                            // 刷新主页数据
+                            table_container.getLists();
+                            //
+                            layer.msg( '添加成功！' );
+                            // 关闭弹框
+                            $(_dialog).dialog('close');
+
+                        }else{
+                            layer.msg('ERROR '+res.error);
+                        }
+                    }
+                });
+                return;
+            },
+            '取消':function(){
+                $(this).dialog('close');
+            }
+        },
+        close:function(){
+            $(this).html('');
+        }
+    });
+
+    function dd(data){
+        console.log(data);
+        return ;
+    }
+</script>
+
+<script type="text/javascript">
+
+
+    function jumpWithCate(that){
+        var cateid		=	$(that).val(),
+            url			=	location.href,
+            name		=	'cluecate',
+            reg 		= 	new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"),
+            catestr		=	url.substr(1).match(reg),
+            repstr		=	catestr ? catestr[0] : '',
+            newUrl		=	url.replace( catestr, '&cluecate='+cateid );
+
+        location.href	=	newUrl;
+    }
+
+    /*让复选框默认取消选择*/
+    $(':checkbox').prop('checked', false);
+    $('[data-toggle="tooltip"]').tooltip({html:true});
+
+    $(".controls_tr").mouseenter(function(){
+        $(this).find(".controls").show();
+    }).mouseleave(function(){
+        $(this).find(".controls").hide();
+    });
+
+
+    $(document).on('click','.rem_search',function(){
+        var num = $(this).attr('rel');
+        $('#con_search_'+num).remove();
+    });
+
+    // 筛选重复判断
+    var dosearch = 1;
+    function doh(){
+        var ary = new Array();
+        var field_name = '';
+        var is_submit = 1;
+        $('.field_name').each(function(k, v){
+            field_name = $(this).find("option:selected").val();
+            if(jQuery.inArray(field_name,ary) >= 0){
+                is_submit = 0;
+                swal({
+                    title: "筛选条件中有重复项！",
+                    text: "",
+                    type: "error"
+                });
+                dosearch = 0;
+                return false;
+            }
+            ary[k] = field_name;
+        })
+        if(is_submit == 1){
+            $("#searchForm").submit();
+        }
+    }
+
+    var url = "{:U('leads/getcurrentstatus')}";
+    var limit_size = 1000;
+    var count = {$count|default=0};
+    var ii = 1;
+    function remainTime(){
+        var id_array = new Array();
+        // 判断是普通查询还是高级搜索
+        var field = "{$_GET['field']}";
+        $("input[class='check_list']:checked").each(function() {
+            id_array.push($(this).val());
+        });
+        $.get(url,function(data){
+            if(data.data == 0){
+                if (id_array != '') {
+                    count = id_array.length;
+                }
+                if((ii-1)*limit_size < count){
+                    $("#act").val('excel');
+                    $("#daochu").val(id_array);
+                    $("#current_page").val(ii);
+                    $("#export_limit").val(limit_size);
+                    if (field) {
+                        $("#leads_search").submit();
+                    } else {
+                        $("#searchForm").submit();
+                    }
+                    setTimeout("remainTime()",1000);
+                    ii++;
+                }else{
+                    $("#act").val('');
+                    ii = 1;
+                    swal("数据导出成功！","","success");
+                }
+            }else{
+                setTimeout("remainTime()",1000);
+            }
+        }, 'json');
+    }
+
+    if ("{:C('isMobile')}" == "1") {
+        width = $('.container').width() * 0.9;
+    } else {
+        width = 800;
+    }
+
+    $("#log_leads").click(function(){
+        $('#dialog-log').dialog('open');
+        $('#dialog-log').load('{:U("log/add","r=RLeadsLog&module=leads&id=")}'+$(this).attr('rel'));
+    });
+
+    $("#dialog-log").dialog({
+        autoOpen: false,
+        modal: true,
+        width: width,
+        maxHeight: 400,
+        position: ["center",100],
+        buttons: {
+            "确定": function () {
+                // $('#dialog_form1').submit();
+                // $(this).dialog("close");
+
+                var log_content = $('#log_content').val();
+                var nextstep_time = $('#nextstep_time').val();
+                if(log_content == ""){
+                    alert_crm("请填写内容！");
+                    $("#log_content").focus();
+                    return false;
+                }
+                $.ajax({
+                    type:'post',
+                    url: "{:U('Log/add')}",
+                    data:$('#dialog_form1').serialize(),
+                    async: false,
+                    success: function (data) {
+                        if (data.status == 1) {
+                            swal("操作成功！", "沟通日志添加成功！", "success");
+                            $("#dialog-log").dialog("close");
+                            $('#nextstep_time_'+dialog_module_value).html(nextstep_time);
+                            $('#nextstep_'+dialog_module_value).html(log_content);
+                            // location.reload();
+                        } else {
+                            swal({
+                                title: "操作失败！",
+                                text:data.info,
+                                type: "error"
+                            })
+                            return false;
+                        }
+                    },
+                    dataType: 'json'
+                });
+            },
+            "取消": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+
+    $("#remind").click(function(){
+        var leads_id = $(this).attr('rel');
+        $('#dialog-remind').dialog('open');
+        $('#dialog-remind').load("{:U('remind/add','module=leads&module_id=')}"+leads_id);
+    });
+
+    $(document).on('click','.remind_view',function(){
+        var leads_id = $(this).attr('rel');
+        $('#dialog-remind_view').dialog('open');
+        $('#dialog-remind_view').load("{:U('remind/view','module=leads&module_id=')}"+leads_id);
+    });
+
+    $("#dialog-remind").dialog({
+        autoOpen: false,
+        modal: true,
+        width: width,
+        maxHeight: 400,
+        position: ["center",100],
+        buttons: {
+            "确定": function () {
+                if($('#dialog_content').val() == ''){
+                    alert_crm("请填写提醒内容！")
+                    $("#dialog_content").focus();
+                }else{
+                    $('#remind_form').submit();
+                    $(this).dialog("close");
+                }
+            },
+            "取消": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+    $("#dialog-remind_view").dialog({
+        autoOpen: false,
+        modal: true,
+        width: width,
+        maxHeight: 400,
+        position: ["center",100],
+        buttons: {
+            "删除": function () {
+                swal({
+                        title: "您确认删除吗？" ,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "确定",
+                        closeOnConfirm: false
+                    },
+                    function(){
+                        $("#dialog_remind").submit();
+                        $(this).dialog("close");
+                    });
+            },
+            "取消": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+
+
+</script>
+
+<!-- loading加载 -->
+<style type="text/css">
+    #box{
+        position:absolute;
+        top:0;
+        bottom:0;
+        left:0;
+        right:0;
+        background:#000;
+        opacity:0.7;
+
+        padding-top: 200px;
+        padding-left: 45%;
+    }
+</style>
+
+<!-- 客户详细 -->
+<include file="Leads:detail" />
+<script type="text/javascript">
+
+    //点击客户姓名展示详细
+    $(document).on('click', '.showCustomer', function() {
+        $(".customerModal").modal('show',$(this).data("customerid"));
+    });
+</script>
+
+<include file="Public:footer" />

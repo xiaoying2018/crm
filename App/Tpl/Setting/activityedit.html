@@ -1,0 +1,143 @@
+<style>
+	.error_message{color: #666;text-align: left;}
+	.select2{width: 170px;}
+</style>
+<form class="form-horizontal" id="activity_form" method="post">
+	<input type="hidden" name="id" value="{$activity_info['id']}" />
+	<table class="table" style="border:none;">
+		<tr>
+			<td style="border:none;text-align:right;width: 100px;">活动编号：</td>
+			<td style="border:none;">
+				<input type="text" name="code" id="code" class="form-control" value="{$activity_info['code']}"/>
+			</td>
+			<td style="border:none;min-width: 150px;"><div class="error_message" id="error_code"></div></td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">活动名称：</td>
+			<td style="border:none;">
+				<input type="text" name="name" id="activity_name" class="form-control" value="{$activity_info['name']}"/>
+			</td>
+			<td style="border:none;"><div class="error_message" id="error_name"></div></td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">类别：</td>
+			<td style="border:none;">
+				<select class="form-control select2" name="type">
+					<option value="1" <if condition="$activity_info['type'] eq 1">selected="selected"</if>>收入</option>
+					<option value="2" <if condition="$activity_info['type'] eq 2">selected="selected"</if>>支出</option>
+					<option value="3" <if condition="$activity_info['type'] eq 3">selected="selected"</if>>其他</option>
+				</select>
+			</td>
+			<td style="border:none;"><div class="error_message" id="error_name"></div></td>
+		</tr>
+	</table>
+	<table class="table" style="border:none;">
+		<tbody id="table_activity">
+			<empty name="activity_account_list">
+				<tr id="account_1" style="height: 38px;">
+					<td style="border:none;text-align:right;width: 100px;">相关科目：</td>
+					<td style="border:none;">
+						<div style="float:left;width:70%;">
+							<select class="form-control select2 account_id" id="account_list_1" name="account_id[]">
+								<volist name="account_list" id="vo">
+									<option value="{$vo['id']}" rel="{$vo['status_name']}">{$vo['code']}&nbsp;&nbsp;{$vo['name']}</option>
+								</volist>
+							</select>
+						</div>
+					</td>
+					<td style="border:none;min-width: 150px;"></td>
+				</tr>
+			<else />
+				<volist name="activity_account_list" key="key" id="vo">
+					<tr id="account_{$i}" style="height: 38px;">
+						<td style="border:none;text-align:right;width: 100px;">
+							<if condition = "$i egt 1">
+								<a href="javascript:void(0);" class="rem_search" rel="{$i}" title="移除" style="margin-right: 10px;;"><span class="fa fa-times-circle"></span></a>
+							<else />
+								相关科目：
+							</if>
+						</td>
+						<td style="border:none;">
+							<div style="float:left;width:70%;">
+								<select class="form-control select2 account_id" name="account_id[]">
+									<volist name="account_list" key="k" id="vo1">
+										<option value="{$vo1['id']}" rel="{$vo1['status_name']}" <if condition = "$vo1['id'] eq $vo['id']">selected</if>>{$vo1['code']}&nbsp;&nbsp;{$vo1['name']}</option>
+									</volist>
+								</select>
+							</div>
+						</td>
+						<td style="border:none;min-width: 150px;"></td>
+					</tr>
+				</volist>
+			</empty>
+		</tbody>
+	</table>
+	<table class="table" style="border:none;">
+		<tr style="height: 38px;">
+			<td style="border:none;text-align:right;width: 100px;"></td>
+			<td style="border:none;">
+				<a href="javascript:void(0);" style="display: -moz-stack;margin: 30px 0px 0px; font-size: 12px; color: rgb(62, 133, 233);" id="add_btn">+新增科目</a>
+			</td>
+			<td style="border:none;"></td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">备注：</td>
+			<td style="border:none;">
+				<textarea class="form-control" rows="4" name="remark">{$activity_info['remark']}</textarea>
+			</td>
+			<td style="border:none;min-width: 150px;"></td>
+		</tr>
+	</table>
+</form>
+<script>
+$(document).ready(function(){
+	$(".select2").select2();
+
+	$("#code").blur(function(){
+		$('#error_code').removeClass('onFocus');
+		$('#error_code').html('');
+		var code = $("#code").val();
+
+		if(code == ''){
+			$('#error_code').addClass('onFocus');
+			$('#error_code').html('活动编号不能为空！');
+		}
+	});
+	$("#activity_name").blur(function(){
+		var name = $('#account_name').val();
+		$('#error_name').removeClass('onFocus');
+		$('#error_name').html('');
+		if(name == ''){
+			$('#error_name').addClass('onFocus');
+			$('#error_name').html('活动名称不能为空！');
+		}
+	});
+
+	var m = "{$activity_account_count}";
+	$('#add_btn').click(function(){
+		m ++;
+		$('#table_activity').append('\
+			<tr id="account_'+m+'" style="height: 38px;">\
+				<td style="border:none;text-align:right"><a href="javascript:void(0);" class="rem_search" rel="'+m+'" title="移除" style="margin-right: 10px;;"><span class="fa fa-times-circle"></span></a></td>\
+				<td style="border:none;">\
+					<div style="float:left;width:70%;">\
+					<select class="form-control select2 account_id" id="account_list_'+m+'" name="account_id[]">\
+						<volist name="account_list" id="vo">\
+							<option value="{$vo['id']}" rel="{$vo['status_name']}">{$vo['code']}&nbsp;&nbsp;{$vo['name']}</option>\
+						</volist>\
+					</select>\
+					</div>\
+				</td>\
+				<td style="border:none;min-width: 150px;"></td>\
+			</tr>\
+		');
+		$(".select2").select2(); 
+	});
+
+	//移除
+	$(document).on('click','.rem_search',function(){
+		var num = $(this).attr('rel');
+		$('#account_'+num).remove();
+	});
+});
+</script>

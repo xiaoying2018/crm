@@ -1,0 +1,229 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/chart/highcharts.js"></script>
+<script src="__PUBLIC__/js/chart/modules/exporting.js"></script>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>添加任务</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{:U('Dynamic/index')}">首页</a>
+            </li>
+            <li>
+                <a href="{:U('Task/index')}">任务</a>
+            </li>
+            <li class="active">
+                <strong>添加任务</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+<div class="ibox-content"  style="padding-bottom:10x">
+	<a href="{:U('task/index')}">&nbsp; 任务</a>
+	<a class="active" href="{:U('task/analytics')}">&nbsp;{:L('STATISTICS')}</a>
+
+</div>
+<div class="container-fluid" style="margin-top:10px;">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="ibox-content" style="padding:1px 15px">
+				<p>
+					<li class="active width-size">
+						<a href="javascript:void(0);" class="yangshi" style="color:inherit">{:L('SELECT_STATISTICAL_CONTENT')}</a>
+					</li>
+					<li id="report" class="width-size">&nbsp;&nbsp; 
+						<a id="show_report" class="active color1" href="javascript:void(0)">{:L('TASK_STATISTICAL_REPORTS')}</a>&nbsp;&nbsp;
+					</li>
+					<!-- <li id="scale" class="width-size">|&nbsp;&nbsp;
+						<a id="show_completion" href="javascript:void(0)">{:L('TASK_COMPLETION_STATISTICS')}</a>
+					</li> -->
+				</p>
+			</div>
+			<div style="margin-top:10px;background-color:#fff">
+				<div class="row-fluid">
+					<div class="clearfix" style="margin-top:18px;">
+						<include file="Public:alert" />
+						<ul class="nav pull-left" style="margin-left:20px;">
+							<li class="pull-left">
+								<form class="form-inline" id="searchForm" onsubmit="return checkSearchForm();" action="" method="get">
+									<ul class="nav pull-left">
+										<li class="pull-left">
+											{:L('SELECT_DEPARTMENT')}&nbsp; <select style="width:auto" class="form-control input-sm" name="department" id="department" onchange="changeRole()">
+												<option class="all" value="all">{:L(ALL)}</option>
+												<volist name="departmentList" id="vo">
+													<option value="{$vo.department_id}">{$vo.name}</option>
+												</volist>
+											</select>&nbsp;&nbsp;
+										</li>
+										<li class="pull-left">
+											{:L('SELECT_USER')}&nbsp; <select style="width:auto" class="form-control input-sm" name="role" id="role" onchange="changeCondition()">
+												<option class="all" value="all">{:L('ALL')}</option>
+												<volist name="roleList" id="vo">
+													<option value="{$vo.role_id}">{$vo.role_name}-{$vo.user_name}</option>
+												</volist>
+											</select>&nbsp;&nbsp;
+										</li>
+										<li class="pull-left">
+											{:L('SELECT_DATE')}&nbsp; {:L('FROM')}<input type="text" id="start_time" name="start_time" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="form-control input-sm Wdate" value="{$Think.get.start_time}"/>{:L('TO')}<input type="text" id="end_time" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" name="end_time" class="form-control input-sm Wdate" value="{$Think.get.end_time}" />&nbsp;&nbsp;
+										</li>
+										<li class="pull-left"><input type="hidden" name="m" value="task"/><input type="hidden" name="a" value="analytics"/>
+										<if condition="$Think.get.by neq null"><input type="hidden" name="by" value="{$Think.get.by}"/></if>
+										<button type="submit" class="btn btn-primary btn-sm">{:L('SEARCH')}</button></li>
+									</ul>
+								</form>
+							</li>				
+						</ul>
+					</div>
+					<div class="container span12" style="margin-left:0px;">
+						<div class="span12">
+							<div  id="report_content">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>{:L('USER')}</th>
+											<th>{:L('TASK_TOTAL_COUNT')}</th>
+											<th>{:L('NOT_START_COUNT')}</th>
+											<th>{:L('DELY_TASK_COUNT')}</th>
+											<th>{:L('ONGOING_TASK_COUNT')}</th>
+											<th>{:L('COMPLETED_TASK_COUNT')}</th>
+										</tr>
+									</thead>
+
+									<tfoot>
+										<tr style="background: #1ab394;color: #fff;font-size: 13px;">
+											<td>{:L('TOTAL')}:</td>
+											<td>{$total_report['own_count']}</td>
+											<td>{$total_report['new_count']}</td>
+											<td>{$total_report['late_count']}</td>
+											<td>{$total_report['deal_count']}</td>
+											<td>{$total_report['success_count']}</td>
+										</tr>
+									</tfoot>
+									<tbody>
+										<volist name="reportList" id="vo">
+										<tr>
+											<td><a class="role_info" rel="{$vo.user.role_id}" href="javascript:void(0)">{$vo.user.user_name}</a></td>
+											<td>{$vo.own_count}</td>
+											<td><a href="{:U('task/index')}&field=owner_role_id&search={$vo.user.role_id}&by=s1">{$vo.new_count}</a></td>
+											<td><a href="{:U('task/index')}&field=owner_role_id&search={$vo.user.role_id}&by=s2">{$vo.late_count}</a></td>
+											<td><a href="{:U('task/index')}&field=owner_role_id&search={$vo.user.role_id}&by=s3">{$vo.deal_count}</a></td>
+											<td><a href="{:U('task/index')}&field=owner_role_id&search={$vo.user.role_id}&by=s4">{$vo.success_count}</a></td>
+										</tr>
+										</volist>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div style="display:none;" id="dialog-import" title="{:L('IMPORT_DATA')}">loading...</div>
+<div style="display:none;" id="dialog-role-info" title="{:L('DIALOG_USER_INFO')}">loading...</div>
+<script type="text/javascript">
+	<if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else/>width=800;</if>
+	$("#dialog-role-info").dialog({
+		autoOpen: false,
+		modal: true,
+		width: width,
+		maxHeight: 400,
+		position: ["center",100]
+	});
+	
+	$(".role_info").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+	
+	$(function () {
+		$(document).ready(function () {
+			var chart1;
+			// Build the chart1
+			<if condition="$total_report.own_count gt 0">
+			$('#canvas_completion').highcharts({
+				chart1: {
+					plotBackgroundColor: null,
+					plotBorderWidth: null,
+					plotShadow: false
+				},
+				title: {
+					text: "{:L('TASK_COMPLETION_COUNT' ,array($total_report['own_count']))}"
+				},
+				tooltip: {
+					pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>',
+					percentageDecimals: 1
+				},
+				plotOptions: {
+					pie: {
+						allowPointSelect: true,
+						cursor: 'pointer',
+						dataLabels: {
+							enabled: false
+						},
+						showInLegend: true
+					}
+				},
+				series: [{
+					type: 'pie',
+					name: "{:L('STAGE_RATE')}",
+					data: [
+						{$completion_count}
+					]
+				}]
+			});
+			</if>
+		});
+		
+	});
+	
+	function changeRole(){
+		department_id = $("#department option:selected").val();
+		$.ajax({
+			type:'get',
+			url:'index.php?m=user&a=getrolebydepartment&department_id='+department_id,
+			async:true,
+			success:function(data){
+				options = '<option value="all">{:L('ALL')}</option>';
+				if(data.data != null){
+					$.each(data.data, function(k, v){
+						options += '<option value="'+v.role_id+'">'+v.role_name+"-"+v.user_name+'</option>';
+					});
+				}
+				$("#role").html(options);
+				<if condition="$_GET['role']">
+				$("#role option[value='{$Think.get.role}']").prop("selected", true);
+				</if>
+			},
+			dataType:'json'});
+	}
+	
+	<if condition="$_GET['department'] and $_GET['department'] neq 'all'">
+	$("#department option[value='{$Think.get.department}']").prop("selected", true); 
+	changeRole();
+	</if>
+	<if condition="$_GET['department'] eq 'all'">
+	$("#role option[value='{$Think.get.role}']").prop("selected", true);
+	</if>
+	
+	$(function(){
+		$("#show_report").click(function(){
+			$(this).addClass('active color1');
+			$("#show_completion").removeClass('active color1');
+			$("#report_content").removeClass('hidden');
+			$("#completion_content").addClass('hidden');
+		});
+		$("#show_completion").click(function(){
+			$(this).addClass('active color1');
+			$("#show_report").removeClass('active color1');
+			$("#completion_content").removeClass('hidden');
+			$("#report_content").addClass('hidden');
+		});
+	});
+</script>
+<include file="Public:footer" />

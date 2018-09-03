@@ -1,0 +1,200 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<link href="__PUBLIC__/style/css/plugins/cropper/cropper.min.css" rel="stylesheet">
+<script src="__PUBLIC__/style/js/plugins/cropper/cropper.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<link rel="stylesheet" href="__PUBLIC__/css/page/cooperateIndex.css">
+<style>
+    .school_num{
+        color: #0074E8;
+    }
+    .active .school_num{
+        color: #fff;
+    }
+</style>
+<div class="wrapper wrapper-content animated fadeIn">
+    <include file="Public:alert" />
+    <div class="row" id="coopIndex">
+        <div class="col-md-12">
+            <div class="coo_box">
+                <div class="ulDv clearfix" :data-tag="n.tag" :class="n.tag" v-for="(n,key,index) in data" v-if="index < 4">
+                    <template>
+                        <div class="s_title">{{key}}</div>
+                        <ul class="list">
+                            <li v-for="(n,index) in data[key].info" class="item" :class="index == 0 ? 'active' : ''" :data-val="n.id" :data-score="n.score"><span class="name">{{n.name}}</span></li>
+                        </ul>
+                    </template>
+                </div>
+            </div>
+            <div class="coo_box b">
+                <div class="ulDv clearfix" :data-tag="n.tag" :class="n.tag" v-for="(n,key,index) in data" v-if="index >= 4">
+                    <template v-if="key == '地域'">
+                        <ul class="list clearfix">
+                            <div class="s_title">地域:</div>
+                            <select v-if="data['地域'] && data['地域'].info" name="area_id" class="form-control" @change="changecity($event.target)">
+                                <option value="">请选择</option>
+                                <option v-for="(n,index) in data['地域'].info" :value="n.id" :data-index="index">{{n.name}}</option>
+                            </select>
+                            <select name="city_id" class="form-control">
+                                <option value="">请选择</option>
+                                <option :value="n.id" v-for="n in city">{{n.name}}</option>
+                            </select>
+                        </ul>
+                    </template>
+                    <template v-else>
+                        <div class="s_title">{{key}}</div>
+                        <ul class="list">
+                            <li v-for="(n,index) in data[key].info" class="item" :class="index == 0 ? 'active' : ''" :data-val="n.id" :data-score="n.score"><span class="name">{{n.name}}</span> <span class="school_num" v-if="key == '目标专业'">({{n.school_num}})</span></li>
+                        </ul>
+                    </template>
+                </div>
+            </div>
+            <div class="btnDv">
+                <i class="fa fa-angle-double-down icondown"></i>
+                <!-- /index.php?m=cooperate&a=proplans -->
+                <a @click="submit()" href="javascript:void(0)" class="submitBtn">
+                    <i class="fa fa-send"></i> 确认
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+var vue = new Vue({
+    el: "#coopIndex",
+    data: {
+        data: {},
+        city: [],
+        send: {},
+        clickFlag: true
+    },
+    methods: {
+        getField: function() {
+            var _this = this;
+            $.ajax({
+                url: "http://crm.xiaoying.net/index.php/api/cooperate/getfields",
+                methods: "get",
+                success: function(res) {
+                    _this.data = res
+
+                }
+            });
+        },
+        changecity: function(e) {
+            var _index = $(e).find("option:selected").data("index");
+            if (_index) {
+                this.city = this.data["地域"].info[_index].child;
+            } else {
+                this.city = [];
+            }
+        },
+        submit: function() {
+            if (this.clickFlag) {
+                this.clickFlag = false;
+                var _this = this;
+                var _s = 0;
+                var _out = {};
+                $(".ulDv").each(function() {
+                    if ($(this).find(".item.active").data("score")) {
+                        _s = _s + parseInt($(this).find(".item.active").data("score"));
+                    }
+
+                    var _key = $(this).data("tag");
+
+                    if (_key == 'now_major') {
+                        _key = "major";
+                    }
+                    var _val = $(this).find(".item.active").data("val");
+                    var _text = $(this).find(".item.active").find(".name").text();
+
+                    _out[_key] = _text;
+
+                    if (_key != "address") {
+                        _this.send[_key] = _val;
+                    } else {
+                        var area_name = $('[name="area_id"]').val()
+                        var city_name = $('[name="city_id"]').val()
+                        //地区判断
+                        if (city_name != "") {
+                            _this.send["area_id"] = parseInt(city_name);
+                            _out["area"] = $('[name="city_id"] option:selected').text();
+                        } else {
+                            _out["area"] = ""
+                            var _option_val = ",";
+                            $("[name='city_id'] option").each(function() {
+                                if ($(this).val() != "") {
+                                    _option_val = _option_val + $(this).val() + ",";
+                                }
+                            })
+                            _option_val = _option_val.substr(0, _option_val.length - 1);
+                            _this.send["area_id"] = area_name + _option_val;
+                            if (area_name != "") {
+                            _out["area"] = $('[name="area_id"] option:selected').text();
+                            }
+                        }
+                    }
+                    _out["score"] = _s;
+                    _this.send["score"] = _s;
+                });
+                if ($(".now_major").hasClass("disabled")) {
+                    _this.send.major = "";
+                }
+
+                delete _out.address;
+
+                delete _this.send.en;
+                delete _this.send.jn;
+                delete _this.send.gpa;
+                delete _this.send.school;
+                _this.send["outer"] = _out;
+
+                var sendData = _this.send;
+                console.log("xxx", sendData);
+                $.ajax({
+                    type: "POST",
+                    url: "/api/cooperate/create/promote",
+                    data: sendData,
+                    dataType: "json",
+                    success: function(res) {
+                        if (res) {
+                            var _id = res.id;
+                            location.href = "/index.php?m=cooperate&a=proplans&id=" + _id;
+                        }
+                    },
+                    error: function() {
+                        _this.clickFlag = true
+                    }
+                });
+
+            }
+        }
+    },
+    mounted: function() {
+        this.getField();
+    }
+});
+$(document).on('click', '.ulDv.grade .item', function() {
+    if ($(this).text().indexOf("高") > -1) {
+        $(".now_major").addClass("disabled");
+        $(".now_major .item").removeClass("active");
+    } else {
+        $(".now_major").removeClass("disabled");
+        $(".now_major .item:first-child").addClass("active");
+    }
+});
+$(document).on('click', '.list .item', function() {
+    if ($(this).closest(".ulDv").hasClass("disabled")) {
+        return false;
+    }
+    $(this).addClass("active").siblings().removeClass("active");
+    // console.log("xxx",!$(this).siblings().hasClass("active"));
+    // if ($(this).hasClass("active")) {
+    //     $(this).removeClass("active");
+    // } else {
+    //     $(this).addClass("active").siblings().removeClass("active");
+    // }
+});
+// $(".typeui .t_item").eq(0).click();
+</script>
+<include file="Public:footer" />

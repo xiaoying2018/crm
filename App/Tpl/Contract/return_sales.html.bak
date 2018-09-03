@@ -1,0 +1,178 @@
+<form action="{:U('contract/return_sales')}" method="post">
+	<input type="hidden" name="contract_id" value="{$contract_id}">
+	<table class="table table-bordered " id="no-input-border" border="0" cellspacing="1" cellpadding="0">
+		<thead>
+			<tr>
+				<th colspan="9">产品信息</th>
+			</tr>
+			<tr style="background-color:#E0E8FF;text-align:center;">
+				<td class="span3">产品名称</td>
+				<td class="span2">产品类别</td>
+				<td class="span2">数量</td>
+				<td class="span2">单价</td>
+				<td class="span2">折扣(%)</td>
+				<td class="span2">折扣价</td>
+				<td class="span2">小计</td>
+				<td class="span2">备注</td>
+				<td class="span2">仓库</td>
+			</tr>
+		</thead>
+		<?php $max_key = 1;?>
+			<tbody >
+			<volist name="sales_product" id="vo">
+				<tr id="row_{$key+1}">
+					<td>
+						<input type="hidden" name="quote[product][{$key+1}][product_id]" id="product_id_{$key+1}" class="product_id" value="{$vo.product_id}"/>
+						<input type="text" id="product_name_{$key+1}" readonly="true" value="{$vo.product.name}"/>
+					</td>
+					<td>
+						<span id="category_name_{$key+1}" style="display:inline-block;min-width:50px;text-align:center;">{$vo.product.category_name}</span>
+					</td>
+					<td>
+						<a href="javascript:void(0)" onclick="loadminusnum({$key+1})" id="num_del_{$key+1}" title="减少">
+							<i class="icon-minus" style="position: relative;left:15px;top: 1px;" class="colors"></i>
+						</a>
+						<input type="text" name="quote[product][{$key+1}][amount]" id="product_amount_{$key+1}" style="border-color:#F6F0F0;width:50px;" rel="{$vo.amount}" class="amount" onkeyup="calculate({$key+1})" value="{$vo.amount}"/>
+						<a href="javascript:void(0)" onclick="loadaddnum({$key+1})" id="num_add_{$key+1}" title="增加">
+							<i class="icon-plus" style="position: relative;left: -15px;top: 1px;"></i>
+						</a>
+					</td>
+					<td><input type="text" name="quote[product][{$key+1}][unit_price]" id="product_unit_price_{$key+1}" onkeyup="calculate({$key+1})" readonly value="{$vo.unit_price}"/></td>
+					<td>
+						<input type="text" name="quote[product][{$key+1}][discount_rate]" readonly id="product_discount_rate_{$key+1}" class="product_discount_rate" onkeyup="calculate({$key+1})" <if condition="$vo['discount_rate'] eq 0">value="100"<else/>value="{$vo.discount_rate}"</if>/>
+					</td>
+					<td><input type="text" id="product_discount_{$key+1}" name="quote[product][{$key+1}][discount]" class="product_discount" readonly="readonly" value="{$vo.subtotal}"/></td>
+					<td><input type="text" name="quote[product][{$key+1}][subtotal]" id="product_subtotal_{$key+1}" class="subtotal" value="{$vo.subtotal}" readonly="readonly" rel="{$key+1}"/></td>
+					<td><input type="text" name="quote[product][{$key+1}][description]" value="{$vo.description}" /></td>
+					<td>
+						<div class="divSelect">
+						<select name="quote[product][{$key+1}][warehouse_id]" id="product_warehouse_id_{$key+1}">
+							<volist name="warehouse" id="vo">
+								<option value="{$vo.warehouse_id}">{$vo.name}</option>
+							</volist>	
+						</select>
+						</div>
+					</td>
+				</tr>
+				<?php $max_key = ++$key;?>
+			</volist>
+			<tr style="background-color:#FFFFF1;font-weight: 700;font-size: 14px;">
+				<td></td>
+				<td>总数量</td>
+				<td><span id="dialog_total_amount_val">{$sales['total_amount']}</span></td>
+				<td><input type="hidden" id="dialog_total_amount" name="total_amount" value="{$sales['total_amount']}"/></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>退款金额</td>
+				<td><input type="text" name="quote_price" id="total_subtotal_val" style="font-size:14px;font-weight: 700;border-bottom: 1px solid #D6D6D6;" readonly value="{$sales['sales_price']}"/></td>
+			</tr>
+			<tr>
+				<td class="tdleft">备注</td>
+				<td colspan="8"><textarea style="width:95%" rows="3" name="description" id="description"></textarea></td>
+			</tr>
+		</tbody>
+	</table>
+	<div style="text-align:center">
+		<input name="submit" class="btn btn-primary" type="submit" value="确定"/> &nbsp;
+		<input class="btn  btn-primary" type="button" onclick="javascript:$('#dialog-return-sales').dialog('close');" value="{:L('RETURN')}"/>&nbsp;&nbsp;
+	</div>
+</form>
+<script>
+function loadaddnum(param){
+	/*增加数量*/
+	var buy_num = parseInt($('#product_amount_'+param).val());
+	var max_num = parseInt($('#product_amount_'+param).attr('rel'));
+	if(buy_num >= max_num){
+		alert('数量不能大于购买数量！');
+	}else{
+		$('#product_amount_'+param).val(buy_num+1);
+		calculate(param);
+	}
+}
+function loadminusnum(param){
+	/*减少数量*/
+	var buy_nums = parseInt($('#product_amount_'+param).val());
+	if(buy_nums > 0){
+		$('#product_amount_'+param).val(buy_nums-1);
+		calculate(param);
+	}else{
+		alert('数量最少为0');
+	}
+}
+function calculate(param){
+	if($('#product_id_'+param).val() != '' && $('#product_id_'+param).val() != '0'){
+		//先对当前Row进行计算
+		var amount = $('#product_amount_'+param).val();			//数量
+		var unit_price = $('#product_unit_price_'+param).val(); 
+		var discount = $('#product_discount_rate_'+param).val();
+		if( discount != 0){
+			var discount_rate = $('#product_discount_rate_'+param).val();
+		}else{
+			var discount_rate = $('#discount_rate').val();
+		}
+		var product_discount = cal_discount_money(unit_price, amount, discount_rate);//折扣额	
+		if(product_discount > 0){
+			var subtotal = parseFloat(product_discount ).toFixed(2); //小计
+		}else{
+			var subtotal = parseFloat(unit_price*amount).toFixed(2); //小计
+		}
+		$('#product_discount_rate_'+param).val(discount_rate);
+		$('#product_subtotal_'+param).val(subtotal);
+		$('#product_discount_'+param).val(product_discount);
+		//合计数量
+		var total_amount = 0;
+		$('.amount').each(function(k, v){
+			if($(v).val() != '' ||  $(v).val() != '0'){
+				total_amount += new Number($(v).val());
+			}
+		});
+		$('#dialog_total_amount_val').html(total_amount);
+		$('#dialog_total_amount').val(total_amount);
+		
+		//合计小计
+		var total_subtotal = 0.00;
+		$('.subtotal').each(function(k, v){
+			if($(v).val() != '' ||  $(v).val() != '0'){
+				total_subtotal += new Number($(v).val());
+			}
+		});
+		$('#total_subtotal_val').val(total_subtotal.toFixed(2));
+		$('#total_subtotal').val(total_subtotal.toFixed(2));
+		//cal_discount_price();
+	}else{
+		return false;
+	}
+}
+function cal_discount_money(unit_price, amount, discount_rate){
+	var product_discount = 0;
+	if(discount_rate == 0){
+		product_discount = 0;
+	}else{
+		product_discount = (unit_price * amount) * (discount_rate/100);
+	}
+	return parseFloat(product_discount).toFixed(2);
+}
+function cal_discount_price(){
+	discount_rate = $('#discount_rate').val();
+	/*total_subtotal = $('#total_subtotal_val').html();
+	quote_price = cal_discount_allmoney(total_subtotal,discount_rate);
+	$('#quote_price').val(quote_price);*/
+	$('.product_discount_rate').val(discount_rate);
+	$('.subtotal').each(function(k, v){
+        var key_id = $(this).attr('rel');
+		calculate(key_id);
+	});
+}
+
+function cal_discount_allmoney(total_subtotal , discount_rate){
+	var total_price = 0.00;
+	if(discount_rate == 0){
+		total_price = total_subtotal;
+	}else{
+		total_price = total_subtotal *(discount_rate/100);
+	}
+	return parseFloat(total_price).toFixed(2);
+}
+
+</script>									

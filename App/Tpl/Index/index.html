@@ -1,0 +1,2516 @@
+<include file="Public:header" />
+<link type="text/css" href="__PUBLIC__/css/dynamic.css" rel="stylesheet" />
+<link type="text/css" href="__PUBLIC__/css/flat/blue.css" rel="stylesheet">
+<style>
+	/**
+	 * 首页仪表盘
+	 **/
+	.wall .span6, .wall .span4{
+		margin-bottom:20px;
+	}
+	.dash-border{
+		border-collapse: separate;
+		border-left: 0;
+		height:300px;
+		/**border:1px solid lightgray;*/
+		font-family:Microsoft Yahei;
+		overflow:hidden;
+	}
+	.dash-border a{
+		text-decoration: none;
+	}
+	.dash-border .content-chart{
+		padding: 10px;
+		width: auto;
+		height: 79%;
+		text-align: center;
+		line-height: 15;
+	}
+	.dash-border .dash-title{
+		font-size:15px;
+		color:#000;
+		height:41px;
+		line-height: 2.5;
+		padding-left:10px;
+		background: #F8F9FA;
+	}
+	.dash-border .dash-swtich{
+		float: right;
+		padding-right: 10px;
+		font-size: 12px;
+		line-height: 3.8;
+		color: #999;
+	}
+	.dash-border .cut-line{
+		width: 97%;
+		margin: 0 auto;
+		border-bottom: 1px solid lightgray;
+	}
+	.content-item{
+		font-size:13px;
+		line-height:2.8;
+	}
+	.content-item .content-main{
+		float:left;
+		width: 95%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		padding-left:15px;
+		color: #666;
+		margin-top: 5px;
+		
+	}
+	.content-item .content-time{
+		float:right;
+		padding-right:20px;
+		color: #888;
+	}
+	.error_msg{
+		font-size: 13px;
+		color: #808080;
+	}
+	.notepad{
+		width:94.7%;
+		height:79%;
+		margin:5px;
+		resize: none;
+	}
+	.sort-item{
+		margin-top:10px;
+		border:1px solid #ddd;
+		background-color:#fff;
+	}
+	.allmap{width:100%;height:150px;display:none;}
+	.top-panel>ul>li a.active{font-weight:400;}
+	.list0>li a{color:#93A6B5;}
+	.list0>li a:active{color:#337ab7;}
+	.col-span{
+		float: left;
+		position: relative;
+	    min-height: 1px;
+	    width: 20%;
+	    margin-left: 0px;
+	    text-align: center;
+	}
+
+	/*日志评论*/
+	.talkcontent{
+		clear: both;
+		padding:10px;
+	}
+	.talkcontent .talknow{
+		padding:10px;
+	}
+	.imgtx{
+		width: 28px;
+		float: left;
+	}
+	.neirong{
+		margin-left: 42px;
+		word-wrap: break-word;
+		border-bottom:1px solid #eee;
+	}
+	.reply_talk{
+		margin: 12px 0 12px 0;
+	}
+	.reply_content{
+	    border: 1px solid #aaa;
+	    min-height: 80px;
+	    padding: 10px;
+	    border-radius: 2px;
+	    margin-left: 43px;
+	}
+	.reply_content:empty::before{  
+	    color:#cab0ba;
+	    content:attr(placeholder);  
+	}  
+	.btn_reply{
+		margin-top: 0px;
+		float: right;
+	}
+	.content_lanage
+	{
+		border: 1px solid #eee;
+	    min-height: 51px;
+	    padding: 10px;
+	    border-radius: 2px;
+	}
+	.content_lanage:empty::before{  
+	    color:#cab0ba;
+	    content:attr(placeholder);  
+	}
+	.talkcontent{padding:0px;}
+	.talkcontent .talknow{padding:10px 0px;}
+	.tsinfo{padding: 6px;line-height: 30px;}
+	#table_div{margin-bottom: 15px;}
+
+/*任务相关*/
+	.dropdown, .dropup{
+		position: relative;
+	}
+	.dropdown-menu.bullet{
+		margin-top: 12px;
+	}
+	.dropdown-menu{
+		padding: 1px 0;
+	    margin-top: 3px;
+	    border-radius: 0;
+	    -webkit-box-shadow: 0 3px 12px rgba(0,0,0,.05);
+	    box-shadow: 0 3px 12px rgba(0,0,0,.05);
+	    -webkit-transition: .25s;
+	    -o-transition: .25s;
+	    transition: .25s;
+	    position: absolute;
+	    top: 100%;
+	    left: 0;
+	    z-index: 1200;
+	    display: none;
+	    float: left;
+	    min-width: 160px;
+	    padding: 5px 0;
+	    margin: 2px 0 0;
+	    font-size: 14px;
+	    text-align: left;
+	    list-style: none;
+	    background-color: #fff;
+	    -webkit-background-clip: padding-box;
+	    background-clip: padding-box;
+	    border: 1px solid #ccc;
+	    border: 1px solid #e4eaec;
+	    border-radius: 3px;
+	    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+	}
+	.dropdown-menu>li{
+		padding: 0 3px;
+    	margin: 2px 0;
+	}
+	.taskboard-stage-header .dropdown-menu>li>a{
+		padding: 6px 10px;
+	    -webkit-transition: background-color .25s;
+	    -o-transition: background-color .25s;
+	    transition: background-color .25s;
+	    display: block;
+	    padding: 3px 20px;
+	    clear: both;
+	    font-weight: 400;
+	    line-height: 1.6;
+	    color: #76838f;
+	    white-space: nowrap;
+	}
+	.dropdown-menu li .icon:first-child, .dropdown-menu li>a .icon:first-child{
+		width: 1em; 
+	    margin-right: .5em;
+	    text-align: center;
+	}
+
+	#right-sidebar-task{
+		width: 50% !important;
+		right: -60%;
+		background-color: #fff;
+	    overflow: hidden;
+	    position: fixed;
+	    top: 60px;
+	    z-index: 1009;
+	    bottom: 0;
+	    box-shadow: 0px 2px 1px #888888;
+	}
+	.agile-list li{
+		margin-bottom: -1px;
+		border:none;
+	}
+	.taskboard-stage{
+		height:90% !important;
+	}
+	.taskboard-stages{
+		overflow-y:hidden !important;
+	}
+
+	.color-selector>li{
+		position: relative;
+	    display: inline-block;
+	    width: 24px;
+	    height: 24px;
+	    margin: 0 5px 0 0;
+	    border-radius: 100%;
+	}
+	.bg-blue-600 label:before{
+		background-color: #62a8ea!important;
+	}
+	.bg-green-600 label:before{
+		background-color: #46be8a!important;
+	}
+	.bg-cyan-600 label:before{
+		background-color: #57c7d4!important;
+	}
+	.bg-orange-600 label:before{
+		background-color: #f2a654!important;
+	}
+	.bg-red-600 label:before{
+		background-color: #f96868!important;
+	}
+	.bg-blue-grey-600 label:before{
+		background-color: #526069!important;
+	}
+	.bg-purple-600 label:before{
+		background-color: #926dde!important;
+	}
+
+	.bg-blue-600 label:after{
+		background-color: #62a8ea!important;
+	}
+	.bg-green-600 label:after{
+		background-color: #46be8a!important;
+	}
+	.bg-cyan-600 label:after{
+		background-color: #57c7d4!important;
+	}
+	.bg-orange-600 label:after{
+		background-color: #f2a654!important;
+	}
+	.bg-red-600 label:after{
+		background-color: #f96868!important;
+	}
+	.bg-blue-grey-600 label:after{
+		background-color: #526069!important;
+	}
+	.bg-purple-600 label:after{
+		background-color: #926dde!important;
+	}
+	.radio label:before{
+		width:24px;
+		height:24px;
+	}
+	.radio label:after{
+		left:6px;
+		top: 4px;
+		font-family: "FontAwesome";
+    	content: "\f00c";
+    	color: #fff;
+	}
+	.img-circle{
+		margin-right:0px;
+	}
+	.list-group-item:hover{
+		background-color: #fafafb !important;
+	}
+	.taskboard-list .list-group-item .task-members{
+		float:left;
+	}
+	.action-wrap{
+		float:left;
+		width:100%;
+		height:10%;
+		min-height: 40px;
+		background-color: #fff;
+	}
+	.placeh{
+		margin-left: 10px
+	}
+	thead{
+		font-weight: bold;
+		font-size: 14px;
+	}
+	td{
+		padding: 7px;
+		/*        border-bottom: 1px solid lightgray;
+                margin: 5px*/
+	}
+	.operation a{
+		margin-left: 12px;
+		color: #00B3FF
+	}
+	.shows tr{
+		/*         border-bottom:#FF0000 solid 1px;*/
+	}
+
+	.arrow {
+		display: inline-block;
+		vertical-align: middle;
+		width: 0;
+		height: 0;
+		margin-left: 5px;
+		opacity: 0.66;
+	}
+
+	.arrow.asc {
+		border-left: 4px solid transparent;
+		border-right: 4px solid transparent;
+		border-bottom: 4px solid #fff;
+	}
+
+	.arrow.dsc {
+		border-left: 4px solid transparent;
+		border-right: 4px solid transparent;
+		border-top: 4px solid #fff;
+	}
+	.sanjiao_up{
+		position: relative;
+		left: 1px;
+		top: -14px;
+		width:0;
+		height:0;
+		overflow:hidden;
+		font-size: 0;     /*是因为, 虽然宽高度为0, 但在IE6下会具有默认的 */
+		line-height: 0;  /* 字体大小和行高, 导致盒子呈现被撑开的长矩形 */
+		border-width:6px;
+		border-style:solid;  /*ie6下会出现不透明的兼容问题*/
+		/*border-color:lightgray transparent transparent transparent;*/
+		border-color:transparent transparent lightgray transparent ;
+	}
+	.sanjiao_down{
+		position: relative;
+		left: -11px;
+		width:0;
+		height:0;
+		overflow:hidden;
+		font-size: 0;     /*是因为, 虽然宽高度为0, 但在IE6下会具有默认的 */
+		line-height: 0;  /* 字体大小和行高, 导致盒子呈现被撑开的长矩形 */
+		border-width:6px;
+		border-style:solid;  /*ie6下会出现不透明的兼容问题*/
+		border-color:lightgray transparent transparent transparent;
+		/*border-color:transparent transparent lightgray transparent ;*/
+	}
+	.ml5{
+		margin-left: 5px
+	}
+	.dn{
+		display: none
+	}
+	.shows{
+		/*        border-spacing:0px 0px;*/
+	}
+	.shows td{
+		width: 25%;
+		border-bottom: 1px solid lightgrey
+	}
+</style>
+<script type="text/javascript" src="__PUBLIC__/js/chart/highcharts.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/mychart/macarons.js"></script>
+<script src="__PUBLIC__/js/mychart/echarts-plain.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.e-calendar.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/chart/funnel.js"></script>
+<!-- echarts -->
+<script type="text/javascript" src="__PUBLIC__/js/echarts/echarts.js"></script>
+<!-- nice-scroll -->
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<!--the css for jquery.mCustomScrollbar-->
+<link rel="stylesheet" href="__PUBLIC__/emoji/css/jquery.mCustomScrollbar.min.css"/>
+<!--the css for this plugin-->
+<link rel="stylesheet" href="__PUBLIC__/emoji/css/jquery.emoji.css"/>
+<!--layui-->
+<!--<link href="__PUBLIC__/css/layui.css" rel="stylesheet">-->
+<script type="text/javascript" src="__PUBLIC__/js/layer/layer.js"></script>
+<!--echarts-->
+<script type="text/javascript" src="__PUBLIC__/js/echarts.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/china.js" charset="utf-8"></script>
+<script>
+$(function(){
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-10);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-10);
+	})
+	var scroll_width = 5;
+	$(".nicescroll").niceScroll({
+		cursorcolor: "#ccc",//#CC0071 光标颜色
+	    cursoropacitymax: 1, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0
+	    touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备
+	    cursorwidth: scroll_width+"px", //像素光标的宽度
+	    cursorborder: "0", //     游标边框css定义
+	    cursorborderradius: "5px",//以像素为光标边界半径
+	    autohidemode: false, //是否隐藏滚动条
+	    zindex:100,
+	    background:"#F3F3F5",//滚动条背景色
+	});
+})
+</script>
+
+<div class="page-wrapper wrapper wrapper-content animated fadeIn" >
+	<div class="row">
+		<include file="Public:alert" />	
+		<div class="col-sm-12" style="margin-bottom: 20px;">
+		<div class="row">
+			<div class="col-sm-8" >
+				<div class="table-content container-fluid ibox-title">
+					<div class="col-sm-12">
+						<div class="col-sm-1">
+							<span style="font-size:18px;line-height:25px;color: #000;vertical-align: middle;">简报</span>
+						</div>
+						<div class="col-sm-11">
+							<div class="col-span">
+								<span style="color: #000;">新增客户</span>
+								<div style="margin-top:10px;"><span style="font-size:15px;">{$anly_count['customer_count'][0]}个</span></div>
+							</div>
+							<div class="col-span">
+								<span style="color: #000;">新增联系人</span>
+								<div style="margin-top:10px;"><span style="font-size:15px;">{$anly_count['contacts_count'][0]}个</span></div>
+							</div>
+							<div class="col-span">
+								<span style="color: #000;">新增商机</span>
+								<div style="margin-top:10px;"><span style="font-size:15px;">{$anly_count['business_count'][0]}个</span></div>
+							</div>
+							<div class="col-span">
+								<span style="color: #000;">新增沟通日志</span>
+								<div style="margin-top:10px;"><span style="font-size:15px;">{$anly_count['log_count'][0]}篇</span></div>
+							</div>
+							<div class="col-span">
+								<span style="color: #000;">工作日志</span>
+								<div style="margin-top:10px;">
+									<if condition ="$mylog_count_today gt 0">
+										<span style="font-size:15px;"><i class="fa fa-check-circle" style="color:#19AA8D;"></i>&nbsp;&nbsp;今日已完成</span>
+									<else/>
+										<a href="{:U('log/mylog_add')}" style="color:#999;" title="点击跳转日志添加页面"><span style="font-size:15px;"><i class="fa fa-exclamation-circle" style="color:#FFCC00;"></i>&nbsp;&nbsp;今日未填写</span></a>
+									</if>
+								</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+				</div>
+				<div class="table-content container-fluid ibox-title" style="border-top: none;">
+					<div class="col-sm-12" style="margin-bottom: 5px;">
+						<div class="col-sm-1" style="padding:0px;text-align: center;">
+							<span style="font-size:13px;line-height:25px;color: #000;">本周新增</span>
+						</div>
+						<div class="col-sm-11">
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['customer_count'][1]}个</span></div>
+							</div>
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['contacts_count'][1]}个</span></div>
+							</div>
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['business_count'][1]}个</span></div>
+							</div>
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['log_count'][1]}篇</span></div>
+							</div>
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['mylog_count'][1]}篇</span></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+					<div class="col-sm-12" style="margin-bottom: 5px;">
+						<div class="col-sm-1" style="padding:0px;text-align: center;">
+							<span style="font-size:13px;line-height:25px;color: #000;">本月新增</span>
+						</div>
+						<div class="col-sm-11">
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['customer_count'][2]}个</span></div>
+							</div>
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['contacts_count'][2]}个</span></div>
+							</div>
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['business_count'][2]}个</span></div>
+							</div>
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['log_count'][2]}篇</span></div>
+							</div>
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['mylog_count'][2]}篇</span></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+					<div class="col-sm-12" style="margin-bottom: 5px;">
+						<div class="col-sm-1" style="padding:0px;text-align: center;">
+							<span style="font-size:13px;line-height:25px;color: #000;">本年新增</span>
+						</div>
+						<div class="col-sm-11">
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['customer_count'][3]}个</span></div>
+							</div>
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['contacts_count'][3]}个</span></div>
+							</div>
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['business_count'][3]}个</span></div>
+							</div>
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['log_count'][3]}篇</span></div>
+							</div>
+							<div class="col-span">
+								<div ><span style="font-size:15px;">{$anly_count['mylog_count'][3]}篇</span></div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+				</div>
+				<div class="table-content container-fluid ibox-title" style="margin-top: 10px;">
+					<div class="col-sm-12">
+						<div class="col-sm-1">
+							<span style="font-size:18px;line-height:25px;color: #000;">指标</span>
+						</div>
+						<div class="col-sm-11">
+							<div class="col-span" style="padding-left: none;">
+								<span style="color: #000;">收款进度</span>
+								<div class="project-completion" style="margin-top:10px;">
+									<small>{$anly_count['schedule']}%</small>
+		                            <div class="progress progress-mini">
+		                                <div style="width: {$anly_count['schedule']}%;" class="progress-bar"></div>
+		                            </div>
+								</div>							
+							</div>
+							<div class="col-span" style="padding-left: none;">
+								<span style="color: #000;">历史收款金额</span>
+								<div style="margin-top:10px;"><span style="font-size:20px;color: #ffb173;">{$anly_count['sum_price']}</span>元</div>
+							</div>
+							<div class="col-span" style="padding-left: none;">
+								<span style="color: #000;">本周收款金额</span>
+								<div style="margin-top:10px;"><span style="font-size:20px;color: #ffb173;">{$anly_count['sum_price_week']}</span>元</div>
+							</div>
+							<div class="col-span" style="padding-left: none;">
+								<span style="color: #000;">本月收款金额</span>
+								<div style="margin-top:10px;"><span style="font-size:20px;color: #ffb173;">{$anly_count['sum_price_month']}</span>元</div>
+							</div>
+							<div class="col-span" style="padding-left: none;">
+								<span style="color: #000;">全年收款总额</span>
+								<div style="margin-top:10px;"><span style="font-size:20px;color: #ffb173;">{$anly_count['sum_price_year']}</span>元</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+				</div>
+				<form id="" class="form-group" method="get" style="margin-bottom: 0px;">
+					<input type="hidden" name="m" value="index"/>
+					<input type="hidden" name="a" value="index"/>
+
+					<input type='hidden' name='is_s' id='is_s' value="<?php echo $departmentList['is_s']; ?>">
+
+					<input type='hidden' name='stime' id='stime' value="{$_GET['start_date']}">
+					<input type='hidden' name='etime' id='etime' value="{$_GET['end_date']}">
+					<input type='hidden' name='adepartment' id='adepartment' value="{$_GET['department']}">
+					<input type='hidden' name='arole' id='arole' value="{$_GET['role']}">
+					<input type='hidden' name='aarea_name' id='aarea_name' value="{$_GET['area_name']}">
+					<div class="table-content container-fluid ibox-title" style="margin-top: 10px;overflow: auto">
+						<div class="col-sm-12">
+							<div class="row">
+								<span style="font-size:16px;color: #000;margin-left: 17px;padding-bottom: 8px;display: block;">线索分析</span>
+							</div>
+							<div class="row">
+								<div class="col-lg-12">
+									<!--<ul class="nav pull-left" style="margin:2px 0 0 0;float:left">-->
+									<!--<li>-->
+									<div class="nav pull-left mslkj col-md-2">
+										<!--<span class="placeh">&nbsp;</span>-->
+										<div class="input-group" style="">
+											<input type="text" name="start_date" id="reservation"
+												   class="form-control" autocomplete="off"
+												   value="<?php if(!empty($starttime)){echo $starttime;}else{echo date('Y-m-d',1526745600) ;} ?>"
+												   placeholder="选择开始日期"/>
+											<i class="glyphicon glyphicon-calendar fa fa-calendar"
+											   style="position: absolute;bottom: 10px;right: 24px;top: auto;cursor: pointer;"></i>
+										</div>
+									</div>
+									<!--</li>-->
+									<!--<li>-->
+									<div class="nav pull-left mslkj col-md-2">
+										<!--<span class="placeh">&nbsp;</span>-->
+										<div class="input-group" style="">
+											<input type="text" name="end_date" id="reservations"
+												   class="form-control" autocomplete="off"
+												   value="<?php if(!empty($endtime)){echo $endtime;}else{echo date('Y-m-d',time()) ;} ?>"
+												   placeholder="选择结束日期"/>
+											<i class="glyphicon glyphicon-calendar fa fa-calendar"
+											   style="position: absolute;bottom: 10px;right: 24px;top: auto;cursor: pointer;"></i>
+										</div>
+									</div>
+
+									<div class="nav pull-left mslkj col-md-2" >
+										<!--&nbsp;-->
+										<div class="input-group" style="display: block;">
+											<select class="form-control input-sm select2 noneselect"
+													style="height: 0px; width:100%;"
+													name="department" id="department" onchange="changeRole()">
+
+												<option class="all" value="all">{:L('ALL')}</option>
+												<volist name="departmentList" id="vo">
+													<option value="{$vo.department_id}"  <if condition="$_GET['department'] eq $vo['department_id']">selected</if> >{$vo.name}</option>
+												</volist>
+											</select>
+										</div>
+									</div>
+									<div class="nav pull-left mslkj col-md-2" >
+										<!--&nbsp;-->
+										<div class="input-group" style="display: block;">
+											<select class="form-control input-sm select2 noneselect"
+													style="height: 0px; width:100%;"
+													name="role" id="role" onchange="changeCondition()">
+												<option class="all" value="all">{:L('ALL')}</option>
+												<volist name="roleList" id="vo">
+													<option value="{$vo.role_id}"
+													<if condition="$_GET['role'] eq $vo['role_id']">selected</if>
+													>{$vo.full_name}</option>
+												</volist>
+											</select>
+										</div>
+									</div>
+									<div class="nav pull-left mslkj col-md-2" >
+										<!--&nbsp;-->
+										<div class="input-group" style="display: block;">
+											<select class="form-control input-sm select2 noneselect"
+													style="height: 0px; width:100%;"
+													name="area_name" id="crmcity" onchange="changeCondition()">
+												<option class="all" value="all">{:L('ALL')}</option>
+												<volist name="crmcity" id="vo">
+													<option value="{$vo}"
+													<if condition="$_GET['area_name'] eq $vo">selected</if>
+													>{$vo}</option>
+												</volist>
+											</select>
+										</div>
+									</div>
+
+
+									<div class="pull-left mslkj col-md-2" >
+										<!--&nbsp;-->
+										<button type="submit" id="analytics_search" class="btn btn-primary" style="width: 100%;">
+											{:L('SEARCH')}
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-content" id="right_height"
+						 style="border-top: none;padding-top: 10px;height: 280px;">
+						<table class="table table-hover table-striped table_thead_fixed table-bordered">
+							<tbody>
+							<tr class="tabTh">
+								<td width="40%">员工姓名</td>
+								<!--<td >员工编号</td>-->
+								<td width="15%" class="leadsnum"><a herf="javascript:void(0)">线索数</a>
+									<span>
+                                        <span id="leadsnumup" class="sanjiao_up"></span>
+                                        <span id="leadsnumdown" class="sanjiao_down"></span>
+                                    </span>
+								</td>
+								<td width="15%" class="leadsdeal"><a herf="javascript:void(0)">已跟进</a>
+									<span>
+                                        <span id="leadsdealup" class="sanjiao_up"></span>
+                                        <span id="leadsdealdown" class="sanjiao_down"></span>
+                                    </span>
+								</td>
+								<!--<td >平均响应时间</td>-->
+								<td width="15%" class="leadstrans"><a herf="javascript:void(0)">已转换</a>
+									<span>
+                                        <span id="leadstransup" class="sanjiao_up"></span>
+                                        <span id="leadstransdown" class="sanjiao_down"></span>
+                                    </span>
+								</td>
+								<td width="15%" class="leadsrate"><a herf="javascript:void(0)">转化率</a>
+									<span>
+                                        <span id="leadsrateup" class="sanjiao_up"></span>
+                                        <span id="leadsratedown" class="sanjiao_down"></span>
+                                    </span>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+						<div id="report_content" class="th_content" style="position:relative;">
+							<div id="" class="nicescroll" style="left:0px;top:0px;overflow-x: auto;height: 170px;">
+								<table class="table table-hover table-striped table_thead_fixed table-bordered showss"
+									   id="tab_Test3" style="background:#fff;margin-bottom:0px;">
+									<!--<tbody>-->
+									<volist name="reportList" id="vo">
+										<tr>
+											<td width="40%">
+												<!--<a class="role_info" rel="{$vo.user.role_id}" href="javascript:void(0)">-->
+												{$vo.user.user_name}
+												<!--</a>-->
+											</td>
+											<!--<td>{$vo['user']['number']}</td>-->
+											<td width="15%">
+												<!--<a href="{:U('leads/index')}&field=owner_role_id&search={$vo.user.role_id}&by=sub">{$vo.own_count}</a>-->
+												{$vo.own_count}
+											</td>
+											<td width="15%">
+												{$vo.deal_count}
+											</td>
+											<!--<td>{$vo.own_response_time}</td>-->
+											<td width="15%">
+												{$vo.success_count}
+											</td>
+											<td width="15%">
+												<if condition="$vo.success_rate neq ''">{$vo.success_rate}%
+													<else/>
+													0%
+												</if>
+											</td>
+										</tr>
+									</volist>
+									<!--</tbody>-->
+								</table>
+							</div>
+							<div id="tfoot_div" class="clearfix">
+							</div>
+						</div>
+						<table class="table table-hover table-striped table_thead_fixed table-bordered">
+							<tbody>
+							<tr style="background: lightskyblue;color: #fff;font-size: 13px;">
+								<td width="40%" style="color:#fff;">{:L('TOTAL')}</td>
+								<!--<td style="color:#fff;">&nbsp;</td>-->
+								<td width="15%" style="color:#fff;">{$total_report['own_count']}</td>
+								<td width="15%" style="color:#fff;">{$total_report['deal_count']}</td>
+								<!--<td style="color:#fff;">&nbsp;</td>-->
+								<!--<td style="color:#fff;">{$total_report['own_response_time_total']}</td>-->
+								<td width="15%" style="color:#fff;">{$total_report['success_count']}</td>
+								<!--<td style="color:#fff;">{$total_report['success_rate_total']}%</td>-->
+								<td width="15%">{$total_report['tsuccess_rate']}%</td>
+							</tr>
+							</tbody>
+						</table>
+						<div id="source_content" class="hidden">
+							<div id="an_chart" class="">
+								<div id="canvas_resource"
+									 style="min-width: 500px; height: 500px;margin: 0 auto"></div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				</form>
+
+				<!--&lt;!&ndash;线索分析&ndash;&gt;-->
+				<!--<form id="" class="form-group" method="get" style="margin-bottom: 0px;">-->
+					<!--<input type="hidden" name="m" value="index" />-->
+					<!--<input type="hidden" name="a" value="index" />-->
+
+					<!--<input type='hidden' name='is_s' id='is_s' value="<?php echo $departmentList['is_s']; ?>" >-->
+					<!--<div class="table-content container-fluid ibox-title" style="margin-top: 10px;">-->
+						<!--<div class="col-sm-12">-->
+							<!--<div class="col-sm-12">-->
+								<!--<span style="font-size:16px;line-height:25px;color: #000;">线索分析</span>-->
+							<!--</div>-->
+							<!--<div class="row" >-->
+								<!--<div class="col-lg-12">-->
+									<!--&lt;!&ndash;<ul class="nav pull-left" style="margin:2px 0 0 0;float:left">&ndash;&gt;-->
+									<!--&lt;!&ndash;<li>&ndash;&gt;-->
+									<!--<div class="nav pull-left" style="margin:2px 0 0 0px;width: 140px;">-->
+										<!--&lt;!&ndash;<span class="placeh">&nbsp;</span>&ndash;&gt;-->
+										<!--<div class="input-group" style="">-->
+											<!--<input type="text" name="start_date" id="reservation" class="form-control" style="width:150px;"  autocomplete="off"   value="<?php if(!empty($starttime)){echo $starttime;}else{echo date('Y-m-d',time()-86400*365) ;} ?>" placeholder="选择开始日期" />-->
+											<!--<i class="glyphicon glyphicon-calendar fa fa-calendar" style="position: absolute;bottom: 10px;right: 24px;top: auto;cursor: pointer;"></i>-->
+										<!--</div>-->
+									<!--</div>-->
+									<!--&lt;!&ndash;</li>&ndash;&gt;-->
+									<!--&lt;!&ndash;<li>&ndash;&gt;-->
+									<!--<div class="nav pull-left" style="margin:2px 0 0 5px;width: 140px;">-->
+										<!--&lt;!&ndash;<span class="placeh">&nbsp;</span>&ndash;&gt;-->
+										<!--<div class="input-group" style="">-->
+											<!--<input type="text" name="end_date" id="reservations" class="form-control" style="width:150px;"  autocomplete="off"  value="<?php if(!empty($endtime)){echo $endtime;}else{echo date('Y-m-d',time()) ;} ?>" placeholder="选择结束日期" />-->
+											<!--<i class="glyphicon glyphicon-calendar fa fa-calendar" style="position: absolute;bottom: 10px;right: 24px;top: auto;cursor: pointer;"></i>-->
+										<!--</div>-->
+									<!--</div>-->
+
+									<!--<div class="nav pull-left" style="margin:2px 0 0 15px;width: 165px;">-->
+										<!--&lt;!&ndash;&nbsp;&ndash;&gt;-->
+										<!--<div class="input-group">-->
+											<!--<select class="form-control input-sm select2" style="min-width:165px;max-width: 165px;height: 0px;" name="department" id="department" onchange="changeRole()">-->
+
+												<!--<option class="all" value="all">{:L('ALL')}</option>-->
+												<!--<volist name="departmentList" id="vo">-->
+													<!--<option value="{$vo.department_id}">{$vo.name}</option>-->
+												<!--</volist>-->
+											<!--</select>-->
+										<!--</div>-->
+									<!--</div>-->
+									<!--<div class="nav pull-left" style="margin:2px 0 0 15px;width: 165px;">-->
+										<!--&lt;!&ndash;&nbsp;&ndash;&gt;-->
+										<!--<div class="input-group">-->
+											<!--<select class="form-control input-sm select2" style="min-width:165px;max-width: 165px;height: 0px;" name="role" id="role" onchange="changeCondition()">-->
+												<!--<option class="all" value="all">{:L('ALL')}</option>-->
+												<!--<volist name="roleList" id="vo">-->
+													<!--<option value="{$vo.role_id}" <if condition="$_GET['role'] eq $vo['role_id']">selected</if>>{$vo.role_name}-{$vo.user_name}</option>-->
+												<!--</volist>-->
+											<!--</select>-->
+										<!--</div>-->
+									<!--</div>-->
+									<!--&lt;!&ndash;                                        <div class="nav pull-left" style="margin:2px 0 0 15px;width: 165px;">-->
+                                                                                <!--&nbsp;-->
+                                                                                <!--<div class="input-group">-->
+                                                                                    <!--<select class="form-control input-sm select2" style="min-width:165px;max-width: 165px;height: 0px;" name="area_name" id="crmcity" onchange="changeCondition()">-->
+                                                                                        <!--<option class="all" value="all">{:L('ALL')}</option>-->
+                                                                                        <!--<volist name="crmcity" id="vo">-->
+                                                                                            <!--<option value="{$vo.area_name}" <if condition="$_GET['area_name'] eq $vo['area_name']">selected</if>>{$vo.area_name}</option>-->
+                                                                                        <!--</volist>-->
+                                                                                    <!--</select>-->
+                                                                                <!--</div>-->
+                                                                            <!--</div>&ndash;&gt;-->
+
+
+									<!--<div class="pull-left" style="margin-left: 20px;margin-top: 0px">-->
+										<!--&lt;!&ndash;&nbsp;&ndash;&gt;-->
+										<!--<button type="submit" id="analytics_search" class="btn btn-primary">{:L('SEARCH')}</button>-->
+									<!--</div>-->
+								<!--</div>-->
+							<!--</div>-->
+						<!--</div>-->
+					<!--</div>-->
+
+					<!--<div class="ibox-content" id="right_height" style="border-top: none;padding-top: 10px;height: 280px">-->
+						<!--<div id="report_content" class="th_content" style="position:relative;">-->
+							<!--<div id="" class="nicescroll" style="left:0px;top:0px;overflow-x: auto;height: 260px;">-->
+								<!--<table class="table table-hover table-striped table_thead_fixed table-bordered" id="tab_Test3" style="background:#fff;margin-bottom:0px;">-->
+									<!--<tr class="tabTh" >-->
+										<!--<td >员工姓名</td>-->
+										<!--&lt;!&ndash;<td >员工编号</td>&ndash;&gt;-->
+										<!--<td >线索数</td>-->
+										<!--<td >已跟进</td>-->
+										<!--&lt;!&ndash;<td >平均响应时间</td>&ndash;&gt;-->
+										<!--<td >已转换</td>-->
+										<!--<td >转化率</td>-->
+									<!--</tr>-->
+									<!--&lt;!&ndash;<tbody>&ndash;&gt;-->
+									<!--<volist name="reportList" id="vo">-->
+										<!--<tr>-->
+											<!--<td>-->
+												<!--<a class="role_info" rel="{$vo.user.role_id}" href="javascript:void(0)">{$vo.user.user_name}</a>-->
+											<!--</td>-->
+											<!--&lt;!&ndash;<td>{$vo['user']['number']}</td>&ndash;&gt;-->
+											<!--<td>-->
+												<!--<a href="{:U('leads/index')}&field=owner_role_id&search={$vo.user.role_id}&by=sub">{$vo.own_count}</a>-->
+											<!--</td>-->
+											<!--<td>-->
+												<!--{$vo.deal_count}-->
+											<!--</td>-->
+											<!--&lt;!&ndash;<td>{$vo.own_response_time}</td>&ndash;&gt;-->
+											<!--<td>-->
+												<!--<a href="{:U('leads/index')}&field=owner_role_id&search={$vo.user.role_id}&by=transformed">{$vo.success_count}</a>-->
+											<!--</td>-->
+											<!--<td><if condition = "$vo.success_rate neq ''">{$vo.success_rate}%</if></td>-->
+										<!--</tr>-->
+									<!--</volist>-->
+									<!--<tr style="background: lightskyblue;color: #fff;font-size: 13px;">-->
+										<!--<td style="color:#fff;">{:L('TOTAL')}</td>-->
+										<!--&lt;!&ndash;<td style="color:#fff;">&nbsp;</td>&ndash;&gt;-->
+										<!--<td style="color:#fff;">{$total_report['own_count']}</td>-->
+										<!--<td style="color:#fff;">{$total_report['deal_count']}</td>-->
+										<!--&lt;!&ndash;<td style="color:#fff;">&nbsp;</td>&ndash;&gt;-->
+										<!--&lt;!&ndash;<td style="color:#fff;">{$total_report['own_response_time_total']}</td>&ndash;&gt;-->
+										<!--<td style="color:#fff;">{$total_report['success_count']}</td>-->
+										<!--&lt;!&ndash;<td style="color:#fff;">{$total_report['success_rate_total']}%</td>&ndash;&gt;-->
+										<!--<td>{$total_report['tsuccess_rate']}%</td>-->
+									<!--</tr>-->
+									<!--&lt;!&ndash;</tbody>&ndash;&gt;-->
+								<!--</table>-->
+							<!--</div>-->
+							<!--<div id="tfoot_div" class="clearfix">-->
+							<!--</div>-->
+						<!--</div>-->
+						<!--<div id="source_content" class="hidden">-->
+							<!--<div id="an_chart" class="">-->
+								<!--<div id="canvas_resource" style="min-width: 500px; height: 500px;margin: 0 auto"></div>-->
+							<!--</div>-->
+						<!--</div>-->
+						<!--<div class="clearfix"></div>-->
+					<!--</div>-->
+				<!--</form>-->
+				<!--&lt;!&ndash;线索分析end&ndash;&gt;-->
+
+				<div class="row" id="widgets" style="">
+					<div class="wall">
+						<div class="col-sm-12 sort-list">
+							{:W('OA')}
+
+							<volist name="widget" id="vo">
+								<?php $vo['redirect'] = $vo['widget']; ?>
+								{:W('Common', $vo)}
+							</volist>
+
+							<div class="col-sm-6 sort-item" style="background: #fff;">
+								<a id="add" style="width: 100%;height: 100%;float: left;" title="添加仪表盘">
+									<div class="dash-border">
+										<div class="content-chart" style="font-size: 15px;color: #7D899C; width: 100%; height: 100%;">
+											<div style="float: left;margin:0 auto;width: 100%;">
+												<i class="fa fa-filter" style="#7D899C;"></i>&nbsp; 添加仪表盘
+											</div>
+										</div>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<?php if ( checkPerByAction('leads','addrcount') ): ?>
+				<!--省份筛选strat leads/addrcount-->
+				<div class="table-content container-fluid ibox-title" style="margin-top: 10px;">
+					<div style="margin-left:330px;display:inline-block" class="operation">
+						<span style="position:absolute;left: 60px;font-size: 16px">地区数据分析</span>
+						<a href="javascript:void(0);" class="maps">地图</a>
+						<a href="javascript:void(0);" class="bars">条形图</a>
+						<a href="javascript:void(0);" class="pies">饼图</a>
+						<!--<a href="javascript:void(0);" class="oDownLoad">下载图片</a>-->
+						<div style="margin-left: 130px;display: inline-block">总数据量：{$sums}</div>
+					</div>
+					<div class="col-sm-7"  style="height:600px;">
+						<!--所在地区-->
+
+						<div id="main"  class="col-sm-12" style='height:600px;width:100%'></div>
+					</div>
+					<!-- 引入ECharts文件 -->
+					<!--<script src='./echarts.min.js'></script>-->
+                        <script>
+                            var myChart = echarts.init(document.getElementById('main'));
+                            //地图
+                            var option = {
+                            title : {
+                            text: '',
+                                    //                                    subtext: '纯属虚构',
+                                    x:'center'
+                            },
+                                    tooltip : {
+                                    trigger: 'item'//数据项图形触发，主要在散点图，饼图等无类目轴的图表中使用。
+                                    },
+                                    legend: {
+                                    orient: 'horizontal', //图例的排列方向
+                                            x:'left', //图例的位置
+                                            data:['']
+                                    },
+                                    visualMap: {
+                                    x: 'left',
+                                            y: 'center',
+                                            splitList: [
+                                                    //                                            {start: 1500},
+                                                            //                                            {start: 900, end: 1500},
+                                                            {start: 301, end: 10000, label: '301（自定义特殊颜色）', color: '#FF7466'},
+                                                    {start: 101, end: 300, label: '101（自定义特殊颜色）', color: '#FF947B'},
+                                                    {start: 51, end: 100, label: '51（自定义特殊颜色）', color: '#FFB590'},
+                                                    {start: 11, end: 50, label: '11（自定义特殊颜色）', color: '#FFD5A5'},
+                                                    {start: 0, end: 10, label: '10（自定义特殊颜色）', color: '#FFF5BA'}
+                                                    ],
+                                                            //            min: 0,
+                                                            //            max: 2500,
+                                                            //            calculable : true,//颜色呈条状
+                                                            text:['高', '低'], // 文本，默认为数值文本
+                                                            color: ['#E0022B', '#E09107', '#A3E00B']
+                                                    },
+                                                    toolbox: {
+
+                                                    //工具栏
+                                                    show: true,
+                                                            x:'350', //下载的字体显示不全
+                                                            feature : {
+                                                            //                                 dataView : {show: false, readOnly: false},
+                                                            //                                 magicType : {show: true, type: ['line', 'bar']},
+                                                            //                                 restore : {show: true},
+                                                            saveAsImage : {show: true}
+                                                            }
+
+                                                    },
+                                                    roamController: {
+                                                    //控制地图的上下左右放大缩小 图上没有显示
+                                                    show: true,
+                                                            x: 'right',
+                                                            mapTypeControl: {
+                                                            'china': true
+                                                            }
+                                                    },
+                                                    series : [
+                                                    {
+                                                    name: '图例',
+                                                            type: 'map',
+                                                            mapType: 'china',
+                                                            roam: false, //是否开启鼠标缩放和平移漫游
+                                                            itemStyle:{
+                                                            //地图区域的多边形 图形样式
+                                                            normal:{
+                                                            ////是图形在默认状态下的样式
+                                                            label:{
+                                                            show:true, //是否显示标签
+                                                                    textStyle: {
+                                                                    color: "black"
+                                                                    }
+                                                            }
+                                                            },
+                                                                    emphasis:{
+                                                                    //是图形在高亮状态下的样式,比如在鼠标悬浮或者图例联动高亮时
+                                                                    label:{show:true}
+                                                                    }
+                                                            },
+                                                            top:"15%",
+                                                            //组件距离容器的距离
+                                                            data:[
+                                                            {name: '北京', value: "<?php echo $datas['北京']['leads'][0]; ?>" },
+                                                            {name: '天津', value: "<?php echo $datas['天津']['leads'][0]; ?>" },
+                                                            {name: '上海', value: "<?php echo $datas['上海']['leads'][0]; ?>" },
+                                                            {name: '重庆', value:  "<?php echo $datas['重庆']['leads'][0]; ?>" },
+                                                            {name: '河北', value:  "<?php echo $datas['河北']['leads'][0]; ?>" },
+                                                            {name: '河南', value:  "<?php echo $datas['河南']['leads'][0]; ?>" },
+                                                            {name: '云南', value: "<?php echo $datas['云南']['leads'][0]; ?>" },
+                                                            {name: '辽宁', value:  "<?php echo $datas['辽宁']['leads'][0]; ?>" },
+                                                            {name: '黑龙江', value:  "<?php echo $datas['黑龙江']['leads'][0]; ?>" },
+                                                            {name: '湖南', value:  "<?php echo $datas['湖南']['leads'][0]; ?>" },
+                                                            {name: '安徽', value:  "<?php echo $datas['安徽']['leads'][0]; ?>" },
+                                                            {name: '山东', value:  "<?php echo $datas['山东']['leads'][0]; ?>" },
+                                                            {name: '新疆', value:  "<?php echo $datas['新疆']['leads'][0]; ?>" },
+                                                            {name: '江苏', value:  "<?php echo $datas['江苏']['leads'][0]; ?>" },
+                                                            {name: '浙江', value:  "<?php echo $datas['浙江']['leads'][0]; ?>" },
+                                                            {name: '江西', value:  "<?php echo $datas['江西']['leads'][0]; ?>" },
+                                                            {name: '湖北', value:  "<?php echo $datas['湖北']['leads'][0]; ?>" },
+                                                            {name: '广西', value:  "<?php echo $datas['广西']['leads'][0]; ?>" },
+                                                            {name: '甘肃', value: "<?php echo $datas['甘肃']['leads'][0]; ?>" },
+                                                            {name: '山西', value:  "<?php echo $datas['山西']['leads'][0]; ?>" },
+                                                            {name: '内蒙古', value: "<?php echo $datas['内蒙']['leads'][0]; ?>" },
+                                                            {name: '陕西', value:  "<?php echo $datas['陕西']['leads'][0]; ?>" },
+                                                            {name: '吉林', value: "<?php echo $datas['吉林']['leads'][0]; ?>" },
+                                                            {name: '福建', value:  "<?php echo $datas['福建']['leads'][0]; ?>" },
+                                                            {name: '贵州', value:  "<?php echo $datas['贵州']['leads'][0]; ?>" },
+                                                            {name: '广东', value:  "<?php echo $datas['广东']['leads'][0]; ?>" },
+                                                            {name: '青海', value:  "<?php echo $datas['青海']['leads'][0]; ?>" },
+                                                            {name: '西藏', value: "<?php echo $datas['西藏']['leads'][0]; ?>" },
+                                                            {name: '四川', value: "<?php echo $datas['四川']['leads'][0]; ?>" },
+                                                            {name: '宁夏', value:  "<?php echo $datas['宁夏']['leads'][0]; ?>" },
+                                                            {name: '海南', value:  "<?php echo $datas['海南']['leads'][0]; ?>" },
+                                                            {name: '台湾', value:  "<?php echo $datas['台湾']['leads'][0]; ?>" },
+                                                            {name: '香港', value:  "<?php echo $datas['香港']['leads'][0]; ?>" },
+                                                            {name: '澳门', value: "<?php echo $datas['澳门']['leads'][0]; ?>" }
+                                                            ]
+                                                    }
+                                                    ]
+                                            };
+                                            var isbar = 0;
+                                            $('.maps').click(function(){
+                                            isbar = 0;
+                                            myChart.clear()
+                                                    myChart.setOption(option);
+                                            })
+                                                    $('.bars').click(function(){
+                                            $.ajax({
+                                            url:"{:U('index/getdatas')}",
+                                                    data:{
+                                                    },
+                                                    dataType:'JSON',
+                                                    type:'GET',
+                                                    success:function(res){
+                                                    var option1 = {
+                                                    title: {
+                                                    text: ''
+                                                    },
+                                                            tooltip: {},
+                                                            legend: {
+                                                            data:[]
+                                                            },
+                                                            xAxis: {
+
+                                                            },
+                                                            yAxis: {
+                                                            axisLabel :{
+                                                            interval:0
+                                                            },
+                                                                    //                                    data: ["北京", "上海", "浙江", "安徽", "广东", "天津", "河北", "山西", "江苏", "福建", "江西", "山东", "河南", "内蒙", "湖南", "黑龙江", "吉林", "辽宁", "成都", "广西", "宁夏", "湖北", "海南", "四川", "贵州", "云南", "甘肃", "港澳", "海外"]
+//                                                            data: ["海外", "港澳", "甘肃", "云南", "贵州", "四川", "海南", "湖北", "宁夏", "广西", "成都", "辽宁", "吉林", "黑龙江", "湖南", "内蒙", "河南", "山东",
+//                                                                    "江西", "福建", "江苏", "山西", "河北", "天津", "广东", "安徽", "浙江", "上海", "北京"]
+                                                                    data:res.areas
+
+//                                                    ]
+                                                            },
+                                                            toolbox: {
+                                                            //工具栏
+                                                            show: true,
+                                                                    x:'350', //下载的字体显示不全
+                                                                    feature : {
+                                                                    //                                 dataView : {show: false, readOnly: false},
+                                                                    //                                 magicType : {show: true, type: ['line', 'bar']},
+                                                                    //                                 restore : {show: true},
+                                                                    saveAsImage : {show: true}
+                                                                    }
+                                                            },
+                                                            series: [{
+                                                            itemStyle:{
+                                                            normal:{
+                                                            color: function (params){
+                                                            var colorList = ['#FFB54D', '#FF7466', '#4D9FFF', '#54C7FC', '#FFB54D', '#44DB5E', '#4D9FFF', '#54C7FC', '#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#54C7FC'
+                                                                    , '#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#54C7FC', '#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#54C7FC'
+                                                                    , '#FFB54D', '#FF7466', '#44DB5E', '#FF7466', '#44DB5E', '#4D9FFF', '#44DB5E', '#4D9FFF'
+                                                            ];
+                                                            return colorList[params.dataIndex];
+                                                            }
+                                                            }
+                                                            },
+                                                                    name: '',
+                                                                    type: 'bar',
+                                                                    data:res.leads
+//                                                                    data: [
+//                                                                            "<?php echo $datas['海外']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['港澳']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['甘肃']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['云南']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['贵州']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['四川']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['海南']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['湖北']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['宁夏']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['广西']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['成都']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['辽宁']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['吉林']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['黑龙江']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['湖南']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['内蒙']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['河南']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['山东']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['江西']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['福建']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['江苏']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['山西']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['河北']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['天津']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['广东']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['安徽']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['浙江']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['上海']['leads'][0]; ?>",
+//                                                                            "<?php echo $datas['北京']['leads'][0]; ?>",
+//                                                                    ]
+                                                            }]
+                                                    };
+                                                    isbar = 1;
+                                                    myChart.clear()
+                                                            myChart.setOption(option1);
+                                                    },
+                                                    error:function(){
+                                                    alert('网络信号不好，请稍后再试')
+                                                    }
+                                            });
+                                            //                                    window.location.reload()
+                                            })
+                                                    $('.pies').click(function(){
+                                            $.ajax({
+                                            url:"{:U('index/getdatas')}",
+                                                    data:{
+                                                    },
+                                                    dataType:'JSON',
+                                                    type:'GET',
+                                                    success:function(res){
+                                                    _res = res.data
+//                                                            console.log(_res)
+                                                            servicedata = new Array();
+                                                    for (var i = 0; i < _res.length; i++){
+                                                    var obj = new Object();
+                                                    obj.name = _res[i].areas;
+                                                    obj.value = _res[i].leads;
+                                                    servicedata[i] = obj;
+                                                    }
+                                                    var option21 = {
+                                                    title : {
+                                                    text: '',
+                                                            subtext: '',
+                                                            x:'center'
+                                                    },
+                                                            tooltip : {
+                                                            trigger: 'item',
+                                                                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                                                            },
+                                                            legend: {
+                                                            orient: 'vertical',
+                                                                    left: 'left',
+                                                                    data: []
+                                                            },
+                                                            toolbox: {
+                                                            //工具栏
+                                                            show: true,
+                                                                    x:'350', //下载的字体显示不全
+                                                                    feature : {
+                                                                    //                                 dataView : {show: false, readOnly: false},
+                                                                    //                                 magicType : {show: true, type: ['line', 'bar']},
+                                                                    //                                 restore : {show: true},
+                                                                    saveAsImage : {show: true}
+                                                                    }
+                                                            },
+                                                            series : [
+                                                            {
+                                                            name: '访问来源',
+                                                                    type: 'pie',
+                                                                    radius : '55%',
+                                                                    center: ['50%', '50%'],
+                                                                    labelLine:{
+                                                                    normal:{
+                                                                    length:5
+                                                                    }
+                                                                    },
+                                                                    data:servicedata,
+//                                                                            data:[
+//                                                                            {name: '北京', value: _res[0].leads },
+//                                                                            {name: '上海', value: _res[1].leads },
+//                                                                            {name: '浙江', value: _res[2].leads },
+//                                                                            {name: '安徽', value: _res[3].leads },
+//                                                                            {name: '广东', value:  _res[4].leads },
+//                                                                            {name: '天津', value:  _res[5].leads },
+//                                                                            {name: '河北', value:  _res[6].leads },
+//                                                                            {name: '山西', value: _res[7].leads },
+//                                                                            {name: '江苏', value:  _res[8].leads },
+//                                                                            {name: '福建', value:  _res[9].leads },
+//                                                                            {name: '江西', value:  _res[10].leads },
+//                                                                            {name: '山东', value:  _res[11].leads },
+//                                                                            {name: '河南', value:  _res[12].leads},
+//                                                                            {name: '内蒙', value:  _res[13].leads },
+//                                                                            {name: '湖南', value:  _res[14].leads },
+//                                                                            {name: '黑龙江', value:  _res[15].leads },
+//                                                                            {name: '吉林', value:  _res[16].leads },
+//                                                                            {name: '辽宁', value:  _res[17].leads },
+//                                                                            {name: '成都', value:  _res[18].leads },
+//                                                                            {name: '广西', value: _res[19].leads },
+//                                                                            {name: '宁夏', value:  _res[20].leads },
+//                                                                            {name: '湖北', value: _res[21].leads },
+//                                                                            {name: '海南', value:  _res[22].leads },
+//                                                                            {name: '四川', value: _res[23].leads },
+//                                                                            {name: '贵州', value:  _res[24].leads },
+//                                                                            {name: '云南', value:  _res[25].leads },
+//                                                                            {name: '陕西', value:  _res[26].leads },
+//                                                                            {name: '甘肃', value:  _res[27].leads },
+//                                                                            {name: '港澳', value: _res[28].leads },
+//                                                                            {name: '海外', value: _res[29].leads },
+////                                                            {name: '宁夏', value: _res[30].leads },
+////                                                            {name: '海南', value:  _res[31].leads },
+////                                                            {name: '台湾', value:  _res[32].leads },
+////                                                            {name: '香港', value:  _res[33].leads },
+////                                                            {name: '澳门', value: _res[34].leads }
+//                                                                            ],
+                                                                    itemStyle: {
+                                                                    //                                            normal:{
+                                                                    //                                            color: function (params){
+                                                                    //                                            var colorList = ['#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#54C7FC', '#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#54C7FC'
+                                                                    //                                                    , '#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#54C7FC', '#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#54C7FC'
+                                                                    //                                                    , '#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#54C7FC', '#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF'
+                                                                    //                                            ];
+                                                                    //                                            return colorList[params.dataIndex];
+                                                                    //                                            }
+                                                                    //                                            },
+                                                                    emphasis: {
+                                                                    shadowBlur: 10,
+                                                                            shadowOffsetX: 0,
+                                                                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                                    }
+                                                                    }
+                                                            }
+                                                            ]
+                                                    };
+                                                    isbar = 0;
+                                                    myChart.clear()
+                                                            myChart.setOption(option21);
+                                                    },
+                                                    error:function(){
+                                                    alert('网络信号不好，请稍后再试')
+                                                    }
+                                            });
+//                                            isbar = 0;
+//                                            myChart.clear()
+//                                                    myChart.setOption(option2);
+                                            })
+                                                    $('.oDownLoad').click(function(){
+
+
+                                            //                                        alert(1)
+                                            //                            var myCharts = echarts.init(document.getElementById('main'));
+                                            //                            var dataurl = myCharts.getDataURL();
+                                            //                            console.log(dataurl)
+                                            //                            location = dataurl;
+                                            //                                    var myCharts1 = echarts.init(document.getElementById('main'));
+                                            //                            var dataurl1 = myCharts1.getDataURL();
+                                            //                            var myCharts2 = echarts.init(document.getElementById('main'));
+                                            //                            var dataurl2 = myCharts2.getDataURL();
+                                            //                            drawOnCanvas(dataurl, dataurl1, dataurl2);
+                                            //                            return;
+                                            })
+                                                    myChart.setOption(option);
+                                            myChart.on('mouseover', function (params) {
+                                            var dataIndex = params.dataIndex;
+                                            console.log(params);
+                                            });
+                                            $(function(){
+                                            function orders(classes, lorders){
+                                            $.ajax({
+                                            url:"{:U('index/getdatas')}",
+                                                    data:{
+                                                    leadorder:lorders,
+                                                            classes:classes
+                                                    },
+                                                    dataType:'JSON',
+                                                    type:'GET',
+                                                    success:function(res){
+                                                    _res = res.data;
+                                                    var _htmls = '';
+                                                    $.each(_res, function(i, item){
+
+                                                    _htmls += '<tr><td>' + _res[i].areas + '</td><td>' + _res[i].leads + '</td><td>' + _res[i].succ + '</td><td>' + _res[i].succrate + '%</td></tr>';
+                                                    //                                console.log(_htmls)
+                                                    });
+                                                    $('.shows tbody').html(_htmls)
+                                                            //bar
+                                                            var option1 = {
+                                                            title: {
+                                                            text: ''
+                                                            },
+                                                                    tooltip: {},
+                                                                    legend: {
+                                                                    data:[]
+                                                                    },
+                                                                    toolbox: {
+                                                                    //工具栏
+                                                                    show: true,
+                                                                            x:'350', //下载的字体显示不全
+                                                                            feature : {
+                                                                            //                                 dataView : {show: false, readOnly: false},
+                                                                            //                                 magicType : {show: true, type: ['line', 'bar']},
+                                                                            //                                 restore : {show: true},
+                                                                            saveAsImage : {show: true}
+                                                                            }
+                                                                    },
+                                                                    xAxis: {
+
+                                                                    },
+                                                                    yAxis: {
+                                                                    axisLabel :{
+                                                                    interval:0
+                                                                    },
+                                                                            data: res.areas
+                                                                    },
+                                                                    series: [{
+                                                                    itemStyle:{
+                                                                    normal:{
+                                                                    color: function (params){
+                                                                    var colorList = ['#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#54C7FC', '#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#54C7FC'
+                                                                            , '#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#54C7FC', '#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#54C7FC'
+                                                                            , '#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#54C7FC', '#FFB54D', '#FF7466', '#44DB5E', '#4D9FFF', '#4D9FFF', '#4D9FFF'
+                                                                    ];
+                                                                    return colorList[params.dataIndex];
+                                                                    }
+                                                                    }
+                                                                    },
+                                                                            name: '',
+                                                                            type: 'bar',
+                                                                            data:  res.leads
+
+                                                                    }]
+                                                            };
+                                                    if (isbar == 1){
+                                                    myChart.clear()
+                                                            myChart.setOption(option1);
+                                                    }
+
+                                                    //bar
+                                                    },
+                                                    error:function(){
+                                                    alert('网络信号不好，请稍后再试')
+                                                    }
+                                            });
+                                            }
+
+                                            var lorders = 1;
+                                            var sorders = 1;
+                                            var srorders = 1;
+                                            $(".leadss").click(function() {
+                                            ++lorders;
+                                            if (lorders > 3){
+                                            lorders = 1;
+                                            }
+                                            if (lorders == 2){
+                                            $('#sjlu').css('border-color', 'transparent transparent white transparent')
+                                            } else if (lorders == 3){
+                                            $('#sjld').css('border-color', 'transparent transparent white transparent')
+                                                    $('#sjlu').css('border-color', 'transparent transparent lightgrey transparent')
+                                            } else{
+                                            $('#sjlu').css('border-color', 'transparent transparent lightgrey transparent')
+                                                    $('#sjld').css('border-color', ' lightgrey transparent transparent transparent')
+                                            }
+                                            var classes = $(this).attr("class");
+                                            orders(classes, lorders)
+                                            })
+
+                                                    $(".trans").click(function() {
+                                            ++sorders;
+                                            if (sorders > 3){
+                                            sorders = 1;
+                                            }
+                                            if (sorders == 2){
+                                            $('#zhlu').css('border-color', 'transparent transparent white transparent')
+                                            } else if (sorders == 3){
+                                            $('#zhld').css('border-color', 'transparent transparent white transparent')
+                                                    $('#zhlu').css('border-color', 'transparent transparent lightgrey transparent')
+                                            } else{
+                                            $('#zhlu').css('border-color', 'transparent transparent lightgrey transparent')
+                                                    $('#zhld').css('border-color', ' lightgrey transparent transparent transparent')
+                                            }
+                                            var classes = $(this).attr("class");
+                                            //                        alert(lorders)
+                                            orders(classes, sorders)
+                                            })
+
+                                                    $(".transrate").click(function() {
+                                            ++srorders;
+                                            if (srorders > 3){
+                                            srorders = 1;
+                                            }
+                                            if (srorders == 2){
+                                            $('#zhlvlu').css('border-color', 'transparent transparent white transparent')
+                                            } else if (srorders == 3){
+                                            $('#zhlvld').css('border-color', 'transparent transparent white transparent')
+                                                    $('#zhlvlu').css('border-color', 'transparent transparent lightgrey transparent')
+                                            } else{
+                                            $('#zhlvlu').css('border-color', 'transparent transparent lightgrey transparent')
+                                                    $('#zhlvld').css('border-color', ' lightgrey transparent transparent transparent')
+                                            }
+                                            var classes = $(this).attr("class");
+                                            //                        alert(lorders)
+                                            orders(classes, srorders)
+                                            })
+
+                                            })
+                            //线索分析排序
+                            $(function () {
+                                function lorders(classes, lorders, stime, etime, adepart, arole, aarea) {
+                                    $.ajax({
+                                        url: "{:U('index/getdatass')}",
+                                        data: {
+                                            leadorder: lorders,
+                                            classes: classes,
+                                            stime: stime,
+                                            etime: etime,
+                                            adepart: adepart,
+                                            arole: arole,
+                                            aarea: aarea
+                                        },
+                                        dataType: 'JSON',
+                                        type: 'GET',
+                                        success: function (res) {
+                                            console.log(res)
+                                            _res = res;
+                                            var _htmls = '';
+                                            $.each(_res, function (i, item) {
+
+                                                _htmls += '<tr><td style="width:40%"  class="role_info"  href="javascript:void(0)">' + _res[i].user.full_name + '</td><td style="width:15%">' + _res[i].own_count + '</td><td style="width:15%">' + _res[i].deal_count + '</td><td style="width:15%">' + _res[i].success_count + '</td><td style="width:15%">' + _res[i].success_rate + '%</td></tr>';
+                                                //                                console.log(_htmls)
+                                            });
+                                            $('.showss tbody').html(_htmls)
+                                        },
+                                        error: function () {
+                                            alert('网络信号不好，请稍后再试')
+                                        }
+                                    });
+                                }
+
+                                var leadsnum = 1;
+                                var leadsdeal = 1;
+                                var leadstrans = 1;
+                                var leadsrate = 1;
+
+                                $(".leadsnum").click(function () {
+                                    ++leadsnum;
+                                    if (leadsnum > 3) {
+                                        leadsnum = 1;
+                                    }
+                                    if (leadsnum == 2) {
+                                        $('#leadsnumup').css('border-color', 'transparent transparent #F9F9F9 transparent')
+                                    } else if (leadsnum == 3) {
+                                        $('#leadsnumdown').css('border-color', 'transparent transparent #F9F9F9 transparent')
+                                        $('#leadsnumup').css('border-color', 'transparent transparent lightgrey transparent')
+                                    } else {
+                                        $('#leadsnumup').css('border-color', 'transparent transparent lightgrey transparent')
+                                        $('#leadsnumdown').css('border-color', ' lightgrey transparent transparent transparent')
+                                    }
+                                    var classes = $(this).attr("class");
+                                    console.log($('#stime').val(), $('#etime').val(), $('#adepart').val(), $('#arole').val(), $('#aarea').val())
+                                    lorders(classes, leadsnum, $('#stime').val(), $('#etime').val(), $('#adepartment').val(), $('#arole').val(), $('#aarea_name').val())
+                                })
+
+                                $(".leadsdeal").click(function () {
+                                    ++leadsdeal;
+                                    if (leadsdeal > 3) {
+                                        leadsdeal = 1;
+                                    }
+                                    if (leadsdeal == 2) {
+                                        $('#leadsdealup').css('border-color', 'transparent transparent #F9F9F9 transparent')
+                                    } else if (leadsdeal == 3) {
+                                        $('#leadsdealdown').css('border-color', 'transparent transparent #F9F9F9 transparent')
+                                        $('#leadsdealup').css('border-color', 'transparent transparent lightgrey transparent')
+                                    } else {
+                                        $('#leadsdealup').css('border-color', 'transparent transparent lightgrey transparent')
+                                        $('#leadsdealdown').css('border-color', ' lightgrey transparent transparent transparent')
+                                    }
+                                    var classes = $(this).attr("class");
+                                    //                        alert(lorders)
+                                    lorders(classes, leadsdeal, $('#stime').val(), $('#etime').val(), $('#adepartment').val(), $('#arole').val(), $('#aarea_name').val())
+//                                    lorders(classes, leadsdeal)
+                                })
+
+                                $(".leadstrans").click(function () {
+                                    ++leadstrans;
+                                    if (leadstrans > 3) {
+                                        leadstrans = 1;
+                                    }
+                                    if (leadstrans == 2) {
+                                        $('#leadstransup').css('border-color', 'transparent transparent #F9F9F9 transparent')
+                                    } else if (leadstrans == 3) {
+                                        $('#leadstransdown').css('border-color', 'transparent transparent #F9F9F9 transparent')
+                                        $('#leadstransup').css('border-color', 'transparent transparent lightgrey transparent')
+                                    } else {
+                                        $('#leadstransup').css('border-color', 'transparent transparent lightgrey transparent')
+                                        $('#leadstransdown').css('border-color', ' lightgrey transparent transparent transparent')
+                                    }
+                                    var classes = $(this).attr("class");
+                                    //                        alert(lorders)
+                                    lorders(classes, leadstrans, $('#stime').val(), $('#etime').val(), $('#adepartment').val(), $('#arole').val(), $('#aarea_name').val())
+                                })
+                                $(".leadsrate").click(function () {
+                                    ++leadsrate;
+                                    if (leadsrate > 3) {
+                                        leadsrate = 1;
+                                    }
+                                    if (leadsrate == 2) {
+                                        $('#leadsrateup').css('border-color', 'transparent transparent #F9F9F9 transparent')
+                                    } else if (leadsrate == 3) {
+                                        $('#leadsratedown').css('border-color', 'transparent transparent #F9F9F9 transparent')
+                                        $('#leadsrateup').css('border-color', 'transparent transparent lightgrey transparent')
+                                    } else {
+                                        $('#leadsrateup').css('border-color', 'transparent transparent lightgrey transparent')
+                                        $('#leadsratedown').css('border-color', ' lightgrey transparent transparent transparent')
+                                    }
+                                    var classes = $(this).attr("class");
+                                    //                        alert(lorders)
+                                    lorders(classes, leadsrate, $('#stime').val(), $('#etime').val(), $('#adepartment').val(), $('#arole').val(), $('#aarea_name').val())
+                                })
+
+                            })
+
+                            function changeRole() {
+                                department_id = $("#department option:selected").val();
+                                $.ajax({
+                                    type: 'get',
+                                    url: 'index.php?m=user&a=getrolebydepartments&department_id=' + department_id,
+                                    async: true,
+                                    success: function (data) {
+                                        options = '<option value="all">{:L('All')}</option>';
+                                        if (data.data != null) {
+                                            $.each(data.data, function (k, v) {
+//                                        options += '<option value="' + v.role_id + '">' + v.role_name + "-" + v.user_name + '</option>';
+                                                options += '<option value="' + v.role_id + '">' + v.role_name + "-" + v.user_name + '</option>';
+                                            });
+                                        }
+                                        $("#role").html(options);
+                                    <if condition="$_GET['role']">
+                                            $("#role option[value='{$Think.get.role}']").prop("selected", true);
+                                    </if>
+                                    },
+                                    dataType: 'json'});
+                            }
+
+
+
+                        </script>
+					<div class="col-sm-5 nicescroll" style="height: 500px;overflow:auto">
+						<table class="shows" style="width:100%;border-collapse:separate;">
+
+							<thead>
+							<td style="width:20%">地区</td>
+							<td style="width:20%;"><a href="javascript:void(0)" class='leadss' style="color: #00B3FF">数据量</a>
+								<span>
+                                        <span id="sjlu" class="sanjiao_up"></span>
+                                        <span id="sjld" class="sanjiao_down"></span>
+                                    </span>
+							</td>
+							<td style="width:20%;color: #00B3FF"><a href="javascript:void(0)" class='trans' style="color: #00B3FF">转化量</a>
+								<span>
+                                        <span id="zhlu" class="sanjiao_up"></span>
+                                        <span id="zhld" class="sanjiao_down"></span>
+                                    </span>
+							</td>
+							<td style="width:20%;color: #00B3FF"><a href="javascript:void(0)" class='transrate' style="color: #00B3FF">转换率</a>
+								<span>
+                                        <span id="zhlvlu"  class="sanjiao_up"></span>
+                                        <span id="zhlvld" style="" class="sanjiao_down"></span>
+                                    </span>
+							</td>
+							</thead>
+							<foreach name='datas' item='vo' key='k'>
+								<tr>
+									<td>{$k}</td>
+									<td><?php echo $vo['leads'][0]; ?></td>
+									<td><?php echo $vo['succ'][0]; ?></td>
+									<td><?php echo $vo['succrate'][0]; ?>%</td>
+								</tr>
+							</foreach>
+						</table>
+					</div>
+				</div>
+				<!--省份筛选end-->
+				<?php endif; ?>
+			</div>
+			<div class="col-sm-4" style="background-color:#fff;border: 1px solid #ccc;">
+				<div class="ibox-title" style="border: none;">
+					<div class="pull-left">
+						<span style="height:35px;font-size:14px;color: #000;">工作圈</span>
+					</div>
+					<div class="pull-right" id="log_add" style="display: none;">
+						<a href="{:U('log/mylog_add')}"><span style="height:35px;font-size:14px;color: #000;">写日志</span></a>
+					</div>
+				</div>
+				<div class="ibox-title" style="border-width: 1px 0 0;">
+					<div class="top-panel" style="border-bottom:0px;">
+						<ul class="list0 pull-left" style="margin-left:-40px;">
+							<li><a href="javascript:void(0)" class="dynamic_type active" id="crm" rel="crm">全部动态</a></li>
+							<li><a href="javascript:void(0)" class="dynamic_type" id="customer" rel="customer">客户相关</a></li>
+							<li><a href="javascript:void(0)" class="dynamic_type" id="log" rel="log" >日志相关</a></li>
+							<li><a href="javascript:void(0)" class="dynamic_type" id="business" rel="business" >商机相关</a></li>
+							<li><a href="javascript:void(0)" class="dynamic_type" id="sign" rel="sign" >签到相关</a></li>
+							<li><a href="javascript:void(0)" class="dynamic_type" id="follows" rel="follows" >跟进记录</a></li>
+						</ul>
+					</div>
+				</div>
+				<input type="hidden" id="dynamic_type" value="crm" />
+				<input type="hidden" id="p" value="{$p}"/>
+				<input type="hidden" id="load" value="1"/>
+				<div class="middle-content nicescroll" id="table_div" style="margin-top:0px;width:100%;border-bottom: 1px solid #ddd;" >
+					<empty name="actionLog">
+						<div class="alert alert-info">暂无动态信息</div>
+					<else />
+						<div id="list">
+						<volist name="actionLog" id="vo">
+							<div class="dy-content" id="anchor_{$vo.log_id}">
+								<div class="title3">
+									<if condition="empty($vo['creator']['thumb_path'])">
+										<img src="__PUBLIC__/img/avatar_default.png" class="avatar"/>
+									<else />
+										<img src="{$vo.creator.thumb_path}" class="avatar"/>
+									</if>
+								</div>
+								<div class="role0">
+									<p>
+										<a href="javascript:void(0)" class="role_info" rel="{$vo.creator.role_id}">{$vo.creator.user_name}（{$vo.creator.department_name} - {$vo.creator.role_name}）</a>
+										|<span style="padding-left:10px;color: #000;">{$vo.dynamic}</span>
+									</p>
+								</div>
+								<if condition="$vo['module_name'] == 'sign'">
+									<div class="conent0" style="width:100%;">
+										<img style="height:15px;vertical-align:text-bottom;" src="__PUBLIC__/img/location.png"/>
+										<span style="color:#666">{$vo.address}</span>
+										<input class="longitude" type="hidden" rel="{$vo.y}"/>
+										<a href="javascript:void(0);" style="font-size:12px;" class="pull-right map" >显示地图</a>
+										<div id="allmap{$key+1}" rel="allmap{$key+1}" class="allmap"></div>
+										<input class="latitude" type="hidden" rel="{$vo.x}"/>
+									</div>
+									<div class="conent0">
+										<span style="color:#000">相关客户：<a href="{:U('customer/view','id='.$vo['customer_info']['customer_id'])}">{$vo['customer_info']['name']}</a></span>
+									</div>
+									<div class="conent0">
+										<span style="color:#000">签到说明：{$vo.log}</span>
+									</div>
+									<div class="conent0">
+										<div style="color:#000">现场照片：</div>
+										<volist name="vo['sign_img']" id="v">
+											<div class="box-secondary" rel="{$vo.img_id}" style="width:30%;float:left;">
+												<a href="{$v.path}" target="_self" class="litebox" data-litebox-group="group-1">
+													<img src="{$v.path}" class="thumbnail thumb100">
+												</a>
+											</div>
+										</volist>
+										<div style="clear:both;"></div>
+									</div>
+								<elseif condition = "$vo['module_name'] == 'log'"/>
+									<div class="conent0" style="font-size: 12px;">{$vo.create_time|date='Y-m-d H:i:s',###}</div>
+									<div class="conent0" id="content_{$vo['log_id']}" style="word-wrap: break-word;word-break: normal;padding:10px 20px;padding-top: 10px;">{$vo['cut_content']}</div>
+									<if condition = "$vo['content_open'] eq 1">
+										<div class="conent0" style="padding: 0px;">
+									    	<div id="open_{$vo['log_id']}" class="panel-collapse collapse">
+									            <div class="panel-body" style="word-wrap: break-word;word-break: normal;padding-left: 20px;padding-top: 10px;">
+									               {$vo.log_content}
+									            </div>
+									        </div>
+									        <div class="panel-heading" style="padding-left: 20px;">
+								                <a data-toggle="collapse" data-parent="#accordion" 
+								                href="#open_{$vo['log_id']}" class="hide_content" rel="{$vo['log_id']}" rel1="0">展开全文</a>
+									        </div>
+										</div>
+									</if>
+									<if condition = "$vo['log_files']">
+										<div class="conent0" style="padding-left: 20px;padding-right:10px;margin-right: 10px;border: 1px dashed #d8e3ef;">
+											<span class="tsinfo"><img src="__PUBLIC__/img/addFile.png"/><span class="fujian">附件&nbsp;({$vo['file_count']})</span></span>
+											<volist name="vo['log_files']" id="files">
+												<div class="file_tr" style="padding: 6px;">
+													<img src="__PUBLIC__/productImg/{$files['pic']}">&nbsp;
+													<a <if condition="in_array(getExtension($files['name']),imgFormat())">class="litebox_file" href="{$files['file_path']}" data-litebox-group="group-{$vo['log_id']}" title="点击查看大图"<else/>href="javascript:;" file="{$files.file_path}" filename="{$files.name}" onclick="filedown(this);"</if> title="{$files['name']}">{$files.cut_name}</a><span style="color:#646464;">&nbsp;(&nbsp;{$files['size']}KB&nbsp;)</span>&nbsp;&nbsp;<a class="controls_file" style="float: right;display: none;" href="javascript:void(0);" file="{$files.file_path}" filename="{$files.name}" onclick="filedown(this);" title="{$files['name']}">下载</a>
+												</div>
+											</volist>
+										</div>
+									</if>
+									<div class="conent0" style="padding:10px 20px;height: 35px;">
+									<if condition = "$vo['comment_count'] gt 0">
+										<div class="pull-left ">
+							                <a href="javascript:void(0)" class="log_comment" id="log_comment_{$vo['action_id']}" rel="{$vo['log_id']}" rel1="0" rel2 = "{$vo['action_id']}">展开评论</a>
+								        </div>
+									</if>
+									<div class="pull-right" style="margin-right: 5px;">
+										<a href="javascript:void(0)" class="reply" rel="{$vo['action_id']}" rel1="0"><span id="reply_{$vo['action_id']}" style="height:35px;font-size:14px;">回复</span></a>
+									</div>
+									</div>
+									<div class="conent0" id="reparynow_{$vo['action_id']}" style="padding-left: 20px;padding-right: 20px;display: none;">
+										<div id="content_lanage_{$vo['action_id']}" class="content_lanage" rel="{$vo['action_id']}" contenteditable="true" placeholder="添加回复..."></div>
+										<div style="margin-top: 5px;">
+											<input type="image" id="btn_emoji_{$vo['action_id']}" src="__PUBLIC__/img/emoji.png" />
+											<button disabled="true" id="but_sub_{$vo['action_id']}" style="display: none;" class="btn btn-primary subit add_language pull-right" rel="{$vo['action_id']}" type="button">发 表</button>
+										</div>
+									</div>
+									<div class="conent0" style="padding-left: 20px;padding-right: 20px;">
+										<div class="talkcontent" rel="{$vo['log_id']}" id="talkcontent_{$vo['action_id']}">
+											
+										</div>
+									</div>
+								<elseif condition = "$vo['module_name'] == 'task'"/>
+									<div class="conent0" style="font-size: 12px;">{$vo.create_time|date='Y-m-d H:i:s',###}</div>
+									<div class="conent0"><a class="task_view" href="javascript:void(0);" rel="{$vo['action_id']}">{$vo.type}</a></div>
+								<else/>
+									<div class="conent0" style="font-size: 12px;">{$vo.create_time|date='Y-m-d H:i:s',###}</div>
+									<div class="conent0">{$vo.type}</div>
+								</if>
+							</div>
+						</volist>
+						</div>
+					</empty>
+				</div>
+				<div style="clear:both;"></div>
+			</div>
+		</div>
+		</div>
+	</div>
+</div>
+
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+
+<div id="dialog-message" style="display:none" title="{:L('ADD_A_PANEL_COMPONENT')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div id="dialog-message2" style="display:none" title="{:L('MODIFY_THE_PANEL_COMPONENT')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div id="dialog-role-info" style="display:none" title="{:L('DIALOG_USER_INFO')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Z0Fo0ib1GUgWlylCWeLvQh2U"></script>
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/laydate/laydate.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+<!--(Optional) the js for jquery.mCustomScrollbar's addon-->
+<script src="__PUBLIC__/emoji/js/jquery.mousewheel-3.0.6.min.js"></script>
+<!--the js for jquery.mCustomScrollbar-->
+<script src="__PUBLIC__/emoji/js/jquery.mCustomScrollbar.min.js"></script>
+<!--the js for this plugin-->
+<script src="__PUBLIC__/emoji/js/jquery.emoji.js"></script>
+<script type="text/javascript">
+    laydate.render({
+        elem: '#reservation', //指定元素
+//                                                                        value:"开始日期",
+        max:"<?php echo date('Y-m-d',time()); ?>"
+    });
+    laydate.render({
+        elem: '#reservations', //指定元素
+//                                                                        value:"",
+//                                                                       min:$('#reservation').val(),
+        max:"<?php echo date('Y-m-d',time()); ?>"
+    });
+
+$(document).on('mouseenter','.file_tr',function(){
+	$(this).find(".controls_file").show();
+});
+$(document).on('mouseleave','.file_tr',function(){
+	$(this).find(".controls_file").hide();
+});
+//流加载
+$(document).ready(function (){
+	var loading = false;  //状态标记
+	var deviation = 10; //事件偏移量
+	var nScrollHight = 0; //滚动距离总长(注意不是滚动条的长度)
+	var nScrollTop = 0;   //滚动到的当前位置
+	var nDivHight = $("#table_div").height();
+	var scrollTop = $("#table_div").scrollTop();
+	
+	$("#table_div").scroll(function(){
+		var type = $('#dynamic_type').attr('value');
+		var p = $('#p').val();
+		var load = $('#load').val();
+		nScrollHight = $(this)[0].scrollHeight;
+		nScrollTop = $(this)[0].scrollTop;
+		if(loading){
+			return false;	
+		}
+		if(nScrollTop + nDivHight + deviation >= nScrollHight && load == 1){
+			loading = true;
+			//alert("滚动条到底部了");
+			temp_loading = "";
+			temp_loading = "<div class='loading' id='loading'><div class='spiner-example'><div class='sk-spinner sk-spinner-three-bounce'><div class='sk-bounce1'></div><div class='sk-bounce2'></div><div class='sk-bounce3'></div></div></div></div>";
+			$("#message_div").scrollTop(nScrollTop + deviation + 200);
+			$("#list").append(temp_loading);
+			var temp = "";
+            var no_data = "";
+            p++;
+			$('#p').val(p);
+			$.ajax({
+				type:'get',
+				url:'index.php?m=index&a=dynamic_data&p='+p+'&by='+type,
+				async : false,
+				success : function(data){
+					temp = "";
+					$('#no_data').remove();
+					if (data.status == 1) {
+						$.each(data.data, function(k, v){
+							var ke = k+1;
+							temp += "<div class='dy-content' id='anchor_"+v.log_id+"'><div class = 'title3'>";
+							if(v.creator.thumb_path){
+								temp += "<img src='"+v.creator.thumb_path+"' class='avatar'/>";
+							}else{
+								temp += "<img src='__PUBLIC__/img/avatar_default.png' class='avatar'/>";
+							}
+							if (type == 'follows'){
+                                temp += "</div><div class='role0'><p><a href='javascript:void(0)' class='role_info' rel='"+v.creator.role_id+"'>"+v.creator.user_name+"</a> |<span style='padding-left:10px;color:#000;'>"+v.dynamic+"</span></p></div>";
+                            }else{
+                                temp += "</div><div class='role0'><p><a href='javascript:void(0)' class='role_info' rel='"+v.creator.role_id+"'>"+v.creator.user_name+"（"+v.creator.department_name+" - "+v.creator.role_name+"）</a>|<span style='padding-left:10px;color:#000;'>"+v.dynamic+"</span></p></div>";
+                            }
+							if(v.module_name == 'sign'){
+								temp += "<div class='conent0' style='width:100%;'><img style='height:15px;vertical-align:text-bottom;' src='__PUBLIC__/img/location.png'></img><span style='color:#000'>"+v.address+"</span><input class='longitude' type='hidden' rel='"+v.y+"'/><a href='javascript:void(0);' style='font-size:12px;' class='pull-right map' >显示地图</a><div id='allmap"+ke+"' rel='allmap"+ke+"' class='allmap'></div><input class='latitude' type='hidden' rel='"+v.x+"'/></div><div class='conent0'><span style='color:#000'>相关客户：<a href='{:U('customer/view','id='."+v.customer_info.customer_id+")}'>"+v.customer_info.name+"</a></span></div><div class='conent0'><span style='color:#000'>签到说明："+v.log+"</span></div><div class='conent0'><div style='color:#000'>现场照片：</div>";
+								$.each(v.sign_img, function(key, val){
+									temp += "<div class='box-secondary' rel='"+val.img_id+"' style='width:30%;float:left;'><a href='"+val.path+"' target='_self' class='litebox' data-litebox-group='group-1'><img src='"+val.path+"' class='thumbnail thumb100'></a></div>";
+								})
+								temp += "<div style='clear:both;'></div></div>";	
+							}else if(v.module_name == 'log'){
+								temp +=	"<div class='conent0' style='font-size: 12px;'>"+v.create_time+"</div><div class='conent0' id='content_'+v.log_id style='word-wrap: break-word;word-break: normal;padding:10px 20px;padding-top: 10px;'>"+v.cut_content+"</div>";
+								if(v.content_open == 1){
+									temp += "<div class='conent0' style='padding: 0px;'><div id='open_'+v.log_id class='panel-collapse collapse'><div class='panel-body' style='word-wrap: break-word;word-break: normal;padding-left: 20px;padding-top: 10px;'>"+v.log_content+"</div></div><div class='panel-heading' style='padding-left: 20px;'><a data-toggle='collapse' data-parent='#accordion' href='#open_'+v.log_id class='hide_content' rel='"+v.log_id+"' rel1='0'>展开全文</a></div></div>";
+								}
+								if(v.log_files != ''){
+									temp += "<div class='conent0' style='padding-left: 20px;padding-right:10px;margin-right: 10px;border: 1px dashed #d8e3ef;'><span class='tsinfo'><img src='__PUBLIC__/img/addFile.png'/><span class='fujian'>附件&nbsp;("+v.file_count+")</span></span>";
+
+									$.each(v.log_files, function(key, files){
+										temp += "<div style='padding: 6px;'><img src='__PUBLIC__/productImg/"+files.pic+"'>&nbsp;";
+										if(js_getExtension(files.name)){
+											temp += "<a class='litebox_file' href='"+files.file_path+"' data-litebox-group='group-"+v.log_id+"' title='点击查看大图' title='"+files.name+"'>"+files.cut_name+"</a><span style='color:#646464;'>&nbsp;(&nbsp;"+files.size+"KB&nbsp;)</span>&nbsp;&nbsp;<a style='float: right;' href='javascript:void(0);' file='"+files.file_path+"' filename='"+files.name+"' onclick='filedown(this);' title='"+files.name+"'>下载</a>";
+										}
+										temp += "</div>";
+									})
+									temp += "</div>";
+								}
+								temp += "<div class='conent0' style='padding:10px 20px;height: 35px;'>";
+								if(v.comment_count > 0){
+									temp += "<div class='pull-left '><a href='javascript:void(0)' class='log_comment' id='log_comment_+"+v.action_id+"' rel='"+v.log_id+"' rel1='0' rel2 = '"+v.action_id+"'>展开评论</a></div>";
+								}
+								temp += "<div class='pull-right' style='margin-right: 5px;'><a href='javascript:void(0)' class='reply' rel='"+v.action_id+"' rel1='0'><span id='reply_"+v.action_id+"' style='height:35px;font-size:14px;'>回复</span></a></div></div><div class='conent0' id='reparynow_"+v.action_id+"' style='padding-left: 20px;padding-right: 20px;display: none;'><div id='content_lanage_"+v.action_id+"' class='content_lanage' rel='"+v.action_id+"' contenteditable='true' placeholder='添加回复...'></div><div style='margin-top: 5px;'><input type='image' id='btn_emoji_"+v.action_id+"' src='__PUBLIC__/img/emoji.png' /><button disabled='true' id='but_sub_"+v.action_id+"' style='display: none;' class='btn btn-primary subit add_language pull-right' rel='"+v.action_id+"' type='button'>发 表</button></div></div><div class='conent0' style='padding-left: 20px;padding-right: 20px;'><div class='talkcontent' rel='"+v.log_id+"' id='talkcontent_"+v.action_id+"'></div></div>";
+							}else if(v.module_name == 'task'){
+								temp += "<div class='conent0' style='font-size: 12px;'>"+v.create_time+"</div><div class='conent0'><a class='task_view' href='javascript:void(0);' rel='"+v.action_id+"'>"+v.type+"</a></div>";
+							}else{
+								temp += "<div class='conent0' style='font-size: 12px;'>"+v.create_time+"</div><div class='conent0'>"+v.type+"</div>";
+							}
+							temp +=	"</div>";
+						})
+					} else {
+						p--;
+						$('#p').val(p);
+						// alert_crm(data.data);
+                        no_data = "<p id='no_data' style='margin-top: 20px;text-align: center;'>没有更多数据</p>";
+                        $('#load').val('0');
+					}
+				}
+			});
+			if(no_data == ''){
+				setTimeout(function() {
+					$("#message_div").scrollTop(nScrollTop + deviation - 200);
+					$('#loading').remove();
+					$("#list").append(temp);
+					loading = false;
+				}, 1500);   //模拟延迟
+            }else{
+                setTimeout(function() {
+                	$("#message_div").scrollTop(nScrollTop + deviation);
+                    $('#loading').remove();
+                    $("#list").append(no_data);
+                    loading = false;
+                }, 1500);   //模拟延迟
+            }			
+
+			//litebox
+			$('.litebox').liteBox({
+			  revealSpeed: 400,
+			  background: 'rgba(0,0,0,.8)',
+			  overlayClose: true,
+			  escKey: true,
+			  navKey: true,
+			  errorMessage: '图片加载失败.'
+			});
+
+			$('.litebox_file').liteBox({
+			  revealSpeed: 400,
+			  background: 'rgba(0,0,0,.8)',
+			  overlayClose: true,
+			  escKey: true,
+			  navKey: true,
+			  errorMessage: '图片加载失败.'
+			});
+			
+			//地图
+			$("#list").on("click", ".map", function(){
+				$(this).next('.allmap').slideToggle('show');
+				var a =$(this).siblings('.longitude').attr('rel');
+				var b =$(this).siblings('.latitude').attr('rel');
+				var vals = $(this).next('.allmap').attr('rel');
+				var url = "{:U('index/gettranslocation')}"+"&longtitude="+a+"&latitude="+b;
+				$.get(url, function(data){
+					var x = data.data.x;
+					var y = data.data.y;
+					setTimeout("mapInit("+y+","+x+","+vals+")",1000);
+				})
+			});
+		}
+		if (nScrollTop == 0) {  //滚动到头部执行事件
+			//alert("我到头部了");
+        }
+	});
+});
+
+//获取文件名后缀(是否图片类型)
+function js_getExtension(file){
+	var file = file; 
+	var filename = file.replace(/.*(\/|\\)/, ""); 
+	var fileExt = (/[.]/.exec(filename)) ? /[^.]+$/.exec(filename.toLowerCase()) : '';
+	var img_arr = ["jpg","jpeg","gif","png"];
+	if($.inArray(fileExt,img_arr)){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+//动态类型切换加载
+$('.dynamic_type').click(function(){
+    var type = $(this).attr('rel');
+	$('#dynamic_type').val(type);
+	$(".dynamic_type").removeClass("active");	//移除样式
+	$('#'+type).addClass("active"); //追加样式
+	var detail_html = '<div class="spiner-example"><div class="sk-spinner sk-spinner-three-bounce"><div class="sk-bounce1"></div><div class="sk-bounce2"></div><div class="sk-bounce3"></div></div></div>';
+	$('#table_div').html(detail_html);
+	$('#p').val(1);
+	$('#table_div').load("{:U('index/dynamic_data')}", {by: type,date_type:1});	
+	if(type == 'log'){
+		$('#log_add').show();
+	}else{
+		$('#log_add').hide();	
+	}
+
+	$(document).on('click','.role_info',function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+	$(document).ready(function (){
+		//litebox
+		$('.litebox').liteBox({
+		  revealSpeed: 400,
+		  background: 'rgba(0,0,0,.8)',
+		  overlayClose: true,
+		  escKey: true,
+		  navKey: true,
+		  errorMessage: '图片加载失败.'
+		});
+
+		$('.litebox_file').liteBox({
+		  revealSpeed: 400,
+		  background: 'rgba(0,0,0,.8)',
+		  overlayClose: true,
+		  escKey: true,
+		  navKey: true,
+		  errorMessage: '图片加载失败.'
+		});
+	});
+	
+	//地图
+	$('#list').on("click", ".map", function(){
+		$(this).next('.allmap').slideToggle('show');
+		var a =$(this).siblings('.longitude').attr('rel');
+		var b =$(this).siblings('.latitude').attr('rel');
+		var vals = $(this).next('.allmap').attr('rel');
+		var url = "{:U('index/gettranslocation')}"+"&longtitude="+a+"&latitude="+b;
+		$.get(url, function(data){
+			var x = data.data.x;
+			var y = data.data.y;
+			setTimeout("mapInit("+y+","+x+","+vals+")",1000);
+		})
+	});
+});
+
+//展开全文
+$(document).on('click','.hide_content',function(){
+	var rel = $(this).attr('rel');
+	var rel1 = $(this).attr('rel1');
+	if(rel1 == 0){
+		$('#content_'+rel).hide();
+		$(this).attr('rel1',1);
+		$(this).html('收起全文');
+	}else{
+		$('#content_'+rel).show();
+		$(this).attr('rel1',0);
+		$(this).html('展开全文');
+	}
+});
+
+/**日志评论start**/
+
+//最后一个样式
+$(".neirong:last").css('border','none');
+ //展开评论
+$(document).on('click','.log_comment',function(){
+ 	var log_id = $(this).attr('rel2');
+ 	var action_id = $(this).attr('rel');
+ 	var rel1 = $(this).attr('rel1');
+	if(rel1 == 0){
+		//加载效果
+	 	var load = "<div class='spiner-example'><div class='sk-spinner sk-spinner-three-bounce'><div class='sk-bounce1'></div><div class='sk-bounce2'></div><div class='sk-bounce3'></div></div></div>";
+	 	$('#talkcontent_'+log_id).html(load);
+		setTimeout(function() {
+			var send_role_id = $('#send_role_id').val();
+			var url = "{:U('log/commentShow')}";
+			$('#talkcontent_'+log_id).load(url,{log_id:log_id});
+		}, 500);   //模拟延迟
+		$(this).attr('rel1',1);
+		$(this).html('收起评论');
+	}else{
+		$('#talkcontent_'+log_id).html('');
+		$(this).attr('rel1',0);
+		$(this).html('展开评论');
+	}
+});
+
+//回复
+$(document).on('click','.reply',function(){
+	var log_id = $(this).attr('rel');
+	var rel1 = $(this).attr('rel1');
+	if(rel1 == 0){
+		$("#reparynow_"+log_id).slideToggle("3000");
+		$(this).attr('rel1',1);
+		$("#content_lanage_"+log_id).emoji({
+			button:"#btn_emoji_"+log_id,
+		    showTab: true,
+		    animation: 'slide',
+		    icons: [{
+		    	name: "小表情",
+		        path: "__PUBLIC__/emoji/img/tieba/",
+		        maxNum: 50,
+		        file: ".jpg",
+		        placeholder: ":{alias}:",
+		        alias: {
+		            1: "hehe",
+		            2: "haha",
+		            3: "tushe",
+		            4: "a",
+		            5: "ku",
+		            6: "lu",
+		            7: "kaixin",
+		            8: "han",
+		            9: "lei",
+		            10: "heixian",
+		            11: "bishi",
+		            12: "bugaoxing",
+		            13: "zhenbang",
+		            14: "qian",
+		            15: "yiwen",
+		            16: "yinxian",
+		            17: "tu",
+		            18: "yi",
+		            19: "weiqu",
+		            20: "huaxin",
+		            21: "hu",
+		            22: "xiaonian",
+		            23: "neng",
+		            24: "taikaixin",
+		            25: "huaji",
+		            26: "mianqiang",
+		            27: "kuanghan",
+		            28: "guai",
+		            29: "shuijiao",
+		            30: "jinku",
+		            31: "shengqi",
+		            32: "jinya",
+		            33: "pen",
+		            34: "aixin",
+		            35: "xinsui",
+		            36: "meigui",
+		            37: "liwu",
+		            38: "caihong",
+		            39: "xxyl",
+		            40: "taiyang",
+		            41: "qianbi",
+		            42: "dnegpao",
+		            43: "chabei",
+		            44: "dangao",
+		            45: "yinyue",
+		            46: "haha2",
+		            47: "shenli",
+		            48: "damuzhi",
+		            49: "ruo",
+		            50: "OK"
+		        },
+		        title: {
+		            1: "呵呵",
+		            2: "哈哈",
+		            3: "吐舌",
+		            4: "啊",
+		            5: "酷",
+		            6: "怒",
+		            7: "开心",
+		            8: "汗",
+		            9: "泪",
+		            10: "黑线",
+		            11: "鄙视",
+		            12: "不高兴",
+		            13: "真棒",
+		            14: "钱",
+		            15: "疑问",
+		            16: "阴脸",
+		            17: "吐",
+		            18: "咦",
+		            19: "委屈",
+		            20: "花心",
+		            21: "呼~",
+		            22: "笑脸",
+		            23: "冷",
+		            24: "太开心",
+		            25: "滑稽",
+		            26: "勉强",
+		            27: "狂汗",
+		            28: "乖",
+		            29: "睡觉",
+		            30: "惊哭",
+		            31: "生气",
+		            32: "惊讶",
+		            33: "喷",
+		            34: "爱心",
+		            35: "心碎",
+		            36: "玫瑰",
+		            37: "礼物",
+		            38: "彩虹",
+		            39: "星星月亮",
+		            40: "太阳",
+		            41: "钱币",
+		            42: "灯泡",
+		            43: "茶杯",
+		            44: "蛋糕",
+		            45: "音乐",
+		            46: "haha",
+		            47: "胜利",
+		            48: "大拇指",
+		            49: "弱",
+		            50: "OK"
+		        }
+		    },
+		       { name: "萌萌哒",
+		        path: "__PUBLIC__/emoji/img/qq/",
+		        maxNum: 91,
+		        excludeNums: [41, 45, 54],
+		        file: ".gif"
+		    }]
+		});
+
+		$('#reply_'+log_id).html('取消');
+	}else{
+		$("#reparynow_"+log_id).slideToggle("3000");
+		$(this).attr('rel1',0);
+		$('#reply_'+log_id).html('回复');
+	}
+});
+
+$(document).on('focus','.content_lanage',function(){
+	var rel = $(this).attr('rel');
+	$(".subit").removeAttr('disabled');
+	$("#but_sub_"+rel).fadeIn("3000");
+});
+$(document).on('focusout','.content_lanage',function(){
+	var rel = $(this).attr('rel');
+	var content = $(this).html();
+	if(!content){
+		$("#but_sub_"+rel).fadeOut("3000");
+		$(".subit").prop('disabled',true);
+		$(this).html('');
+	}
+});
+
+//点击发表后
+function add_after(log_id){
+	var log_id = log_id;
+	$('#content_lanage_'+log_id).html('');
+	$('#content_lanage_'+log_id).attr('placeholder');
+	$("#but_sub_"+log_id).fadeOut("3000");
+	$(".subit").prop('disabled',true);
+}
+/*
+*添加首次回复调用
+ */
+$(document).on('click','.add_language',function(){
+	var log_id = $(this).attr('rel');
+	var content_lanage = $('#content_lanage_'+log_id).html();
+	$.post("{:U('log/myCommont')}",{content:content_lanage,log_id:log_id},function(data){
+			if(data.status == 1){
+				add_after(log_id);//还原初始状态
+				var url = "{:U('log/commentShow')}";
+ 				$('#talkcontent_'+log_id).load(url,{log_id:log_id});
+ 				//收起评论
+ 				$('#log_comment_'+log_id).attr('rel1',1);
+				$('#log_comment_'+log_id).html('收起评论');	
+			}else{
+				alert_crm(data.info);
+			}
+		},"json"
+	);
+});
+
+/**日志评论end**/
+
+/**
+ * 附件 如果是图片时 双击可查看大图
+ */
+$('.litebox_file').liteBox({
+  revealSpeed: 400,
+  background: 'rgba(0,0,0,.8)',
+  overlayClose: true,
+  escKey: true,
+  navKey: true,
+  errorMessage: '图片加载失败.'
+});
+
+//排序
+$(".sort-list").sortable({
+	stop:function() {
+		var chart_arr = new Array();
+		$(".sort-item").each(function(key, val){
+			chart_arr.push($(val).attr('rel'));
+			console.log($(val).attr('rel'));
+		});
+		$.post('{:U("index/sortCharts")}',{chart_arr:chart_arr.join(',')},'json');
+	}
+});
+//litebox
+$('.litebox').liteBox({
+  revealSpeed: 400,
+  background: 'rgba(0,0,0,.8)',
+  overlayClose: true,
+  escKey: true,
+  navKey: true,
+  errorMessage: '图片加载失败.'
+});
+
+$('#dialog-collection').dialog({
+	autoOpen: false,
+	modal: true,
+	width: 930,
+	maxHeight: 480,
+	position :["center",100]
+});
+
+$('#dialog-message').dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 400,
+	position :["center",100],
+	buttons: {
+		"{:L('OK')}": function () {
+			$('#widget_add').submit();
+			$(this).dialog("close");
+		},
+		"{:L('CANCEL')}": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+
+$('#dialog-message2').dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 400,
+	position :["center",100],
+	buttons: {
+		"{:L('OK')}": function () {
+			$('#widget_edit').submit();
+			$(this).dialog("close");
+		},
+		"{:L('CANCEL')}": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$("#dialog-role-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 600,
+	minHeight: 420,
+	position: ["center",100]
+});
+
+$(function(){
+	$("#add").click(
+		function(){
+			$('#dialog-message').dialog('open');
+			$('#dialog-message').load('{:U("index/widget_add")}');
+		}
+	);
+	$("#collection_target").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-collection').dialog('open');
+		$('#dialog-collection').load('{:U("index/collection_add","owner_role_id=")}'+$role_id);
+	});
+	$(".update").click(
+		function(){
+			id = $(this).attr('rel');
+			$('#dialog-message2').dialog('open');
+			$('#dialog-message2').load("{:U('index/widget_edit','id=')}"+id);
+		}
+	);
+	$("#list").on("click", ".role_info", function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+
+	//包含下属
+	$("#include_subordinates").click(function(){
+		var subordinates = $(this).is(':checked');
+		if(subordinates == true){
+			window.location.href = "{:U('index/index', 'is_checked=')}"+1;
+		}else{
+			window.location.href = "{:U('index/index', 'is_checked=')}"+2;
+		}
+	});
+});
+$(document).ready(function(){
+	$("#list").on("click", ".map", function(){
+		$(this).next('.allmap').slideToggle('show');
+		var a =$(this).siblings('.longitude').attr('rel');
+		var b =$(this).siblings('.latitude').attr('rel');
+		var vals = $(this).next('.allmap').attr('rel');
+		var url = "{:U('index/gettranslocation')}"+"&longtitude="+a+"&latitude="+b;
+		$.get(url, function(data){
+			var x = data.data.x;
+			var y = data.data.y;
+			setTimeout("mapInit("+y+","+x+","+vals+")",1000);
+		})
+	});
+});
+
+$("#dialog-role-info").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 550,
+	position: ["center",100]
+});
+function mapInit(x,y,mapID){
+	var map = new BMap.Map(mapID);
+	var point = new BMap.Point(y, x);
+	map.centerAndZoom(point, 15);
+	var marker = new BMap.Marker(point);  // 创建标注
+	map.addOverlay(marker);               // 将标注添加到地图中
+	map.enableScrollWheelZoom(true);
+	marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+/*
+	// 默认河南省郑州市
+	var map = new BMap.Map(mapID);
+	var point = new BMap.Point(y,x);
+	map.centerAndZoom(point,15);
+	// 根据聚焦点缩放
+	map.enableScrollWheelZoom(true);
+
+	var marker = new BMap.Marker(point);  // 创建标注
+	map.addOverlay(marker);               // 将标注添加到地图中
+	//marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+
+	geoc.getLocation(point, function(rs){
+		//alert(rs.address);
+	});*/
+}
+
+//任务
+/*任务详情 加载的圈圈效果*/
+var detail_html = '<div class="spiner-example">\
+					<div class="sk-spinner sk-spinner-fading-circle">\
+						<div class="sk-circle1 sk-circle"></div>\
+						<div class="sk-circle2 sk-circle"></div>\
+						<div class="sk-circle3 sk-circle"></div>\
+						<div class="sk-circle4 sk-circle"></div>\
+						<div class="sk-circle5 sk-circle"></div>\
+						<div class="sk-circle6 sk-circle"></div>\
+						<div class="sk-circle7 sk-circle"></div>\
+						<div class="sk-circle8 sk-circle"></div>\
+						<div class="sk-circle9 sk-circle"></div>\
+						<div class="sk-circle10 sk-circle"></div>\
+						<div class="sk-circle11 sk-circle"></div>\
+						<div class="sk-circle12 sk-circle"></div>\
+					</div>\
+				</div>';
+//鼠标点击空白处，隐藏右侧滑出
+document.onmousedown=function(event){
+	if($(".litebox-overlay").length > 0) return;
+	if($("#dialog_open").val() == 1) return;
+	if(event.target.className == 'right-sidebar-toggle-task') return;
+
+    var div = document.getElementById("right-sidebar-task");
+    var x=event.clientX;
+    var y=event.clientY;
+    var divx1 = div.offsetLeft;
+    var divy1 = div.offsetTop;
+    var divx2 = div.offsetLeft + div.offsetWidth;
+    var divy2 = div.offsetTop + div.offsetHeight;
+    if( x < divx1 || x > divx2 || y < divy1 || y > divy2){
+        if($("#right-sidebar-task").css('right') == '0px'){
+            $("#right-sidebar-task").animate({right:'-60%'}, 400);
+        }
+    }
+}
+//任务详情弹出
+$(document).on('click','.task_view',function(){
+	var task_id = $(this).attr('rel');
+	// var is_show = document.getElementById("is_show").value;
+	$(".emoji_container").remove();
+	if($("#right-sidebar-task").css('right') != '0px'){
+		$("#right-sidebar-task").animate({right:'0px'}, 600);
+	}
+		
+    $('#task-content').html(detail_html);
+    $('#sidebar-container').load("{:U('task/view','task_id=')}"+task_id);
+});
+</script>
+<include file="Public:footer" />
+
+<div id="right-sidebar-task">
+	<!--the css for jquery.mCustomScrollbar-->
+	<link rel="stylesheet" href="__PUBLIC__/emoji/css/jquery.mCustomScrollbar.min.css"/>
+	<!--the css for this plugin-->
+	<link rel="stylesheet" href="__PUBLIC__/emoji/css/jquery.emoji.css"/>
+	<!--(Optional) the js for jquery.mCustomScrollbar's addon-->
+	<script src="__PUBLIC__/emoji/js/jquery.mousewheel-3.0.6.min.js"></script>
+	<!--the js for jquery.mCustomScrollbar-->
+	<script src="__PUBLIC__/emoji/js/jquery.mCustomScrollbar.min.js"></script>
+	<!--the js for this plugin-->
+	<script src="__PUBLIC__/emoji/js/jquery.emoji.js"></script>
+
+	<div class="sidebar-container" id="sidebar-container">
+		
+	</div>
+</div>

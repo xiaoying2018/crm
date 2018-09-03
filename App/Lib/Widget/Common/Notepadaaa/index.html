@@ -1,0 +1,62 @@
+<!-- 便笺 -->
+<div class="span4 sort-item" style="width:303px;background-color:#fff; padding:0px 4px;margin-left:0px;border:1px solid lightgray;" rel="{$id}">
+	<div class="dash-border" >
+		<div class="dash-title" style="height:30px">
+			<small>
+				便笺
+			</small>
+		</div>
+		<div class="cut-line"></div>
+		<textarea class="notepad form-control" style="height:85%;" id="notepad">
+		</textarea>
+	</div>
+</div>
+<script type="text/javascript">
+	$('.delete_notepad').click(function(){
+		var id = $(this).attr('rel');
+		swal({
+			title: "",
+			text: "确定要删除吗？",
+			type: "warning",
+			showCancelButton: true,
+			closeOnConfirm: false
+		},
+		function(){
+			window.location.href = "index.php?m=index&a=widget_delete&id="+id;
+		});
+	});
+	$(function () {
+		$.get("{:U('log/getnotepad')}", function(data){
+			$('#notepad').html(data.data);
+		});
+
+		var load_content = '';//点击时数据
+		$('#notepad').focus(function(){
+			load_content = $('#notepad').val();
+		});
+		
+		$('#notepad').blur(function(){
+			var note_content = $('#notepad').val();//修改后数据
+			if(note_content == '' && load_content != ''){
+				if(!confirm('确定要清空便笺么?')){
+					$('#notepad').val(load_content);
+					return true;
+				}
+			}
+			if(load_content != note_content){
+				$.ajax({
+					type: "post",
+					url: "{:U('log/notepad')}", 
+					data: {content : note_content},
+					dataType: "json",
+					success : function(result){
+						if(result.status != 1){
+							alert('跑神儿了,没有写入成功!');
+						}
+					}
+				});
+			}
+		});
+	});
+</script>
+<!-- 便笺 END-->

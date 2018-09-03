@@ -1,0 +1,112 @@
+<style>
+	#datas tr{cursor : pointer;}
+</style>
+<div class="clearfix">
+	<input type="hidden" name="m" value="contract" />
+	<input type="hidden" name="a" value="listdialog" />
+	<input type="hidden" name="row" id="row" value="{$_GET['row']}" />
+	<input type="hidden" name="customer_id" id="customer_id" value="{$_GET['customer_id']}" />
+	<input type="hidden" name="type" id="type" value="{$_GET['type']}" />
+	<ul class="nav pull-left form-inline">
+		<li class="pull-left">
+			<select id="field" class="form-control input-sm" style="width:auto" onchange="changeCondition()" name="field">
+				<option class="word" value="contract.number" <if condition = "$search_field['field'] eq 'contract.number'">selected</if>>{:L('CONTRACT_NO')}</option>
+				<option class="role" value="contract.owner_role_id" <if condition = "$search_field['field'] eq 'contract.owner_role_id'">selected</if>>{:L('OWNER_ROLE')}</option>
+				<option class="word" value="business.customer_id" <if condition = "$search_field['field'] eq 'business.customer_id'">selected</if>>{:L('CUSTOMER')}</option>
+				<option class="date" value="contract.create_time" <if condition = "$search_field['field'] eq 'contract.create_time'">selected</if>>{:L('CREATION_DATE')}</option>
+				<option class="date" value="contract.update_time" <if condition = "$search_field['field'] eq 'contract.update_time'">selected</if>>{:L('MODIFICATION_DATE')}</option>
+				<option class="date" value="contract.due_time" <if condition = "$search_field['field'] eq 'contract.due_time'">selected</if>>{:L('MODIFICATION_DATE')}</option>
+				<option class="number" value="contract.price" <if condition = "$search_field['field'] eq 'contract.price'">selected</if>>{:L('QUOTATION')}</option>
+				<option class="word" value="contract.description" <if condition = "$search_field['field'] eq 'contract.description'">selected</if>>{:L('REMARK')}</option>
+			</select>&nbsp;&nbsp;
+		</li>
+		<li id="conditionContent" class="pull-left" >
+			<select id="condition" class="form-control input-sm" style="width:auto" name="condition" onchange="changeSearch()">
+				<option value="contains" <if condition = "$search_field['condition'] eq 'contains'">selected</if>>{:L('CONTAINS')}</option>
+				<option value="not_contain" <if condition = "$search_field['condition'] eq 'not_contain'">selected</if>>{:L('NOT_CONTAIN')}</option>
+				<option value="is" <if condition = "$search_field['condition'] eq 'is'">selected</if>>{:L('IS')}</option>
+				<option value="isnot" <if condition = "$search_field['condition'] eq 'isnot'">selected</if>>{:L('ISNOT')}</option>						
+				<option value="start_with" <if condition = "$search_field['condition'] eq 'start_with'">selected</if>>{:L('START_WITH')}</option>
+				<option value="end_with" <if condition = "$search_field['condition'] eq 'end_with'">selected</if>>{:L('END_WITH')}</option>
+				<option value="is_empty" <if condition = "$search_field['condition'] eq 'is_empty'">selected</if>>{:L('IS_EMPTY')}</option>
+				<option value="is_not_empty" <if condition = "$search_field['condition'] eq 'is_not_empty'">selected</if>>{:L('IS_NOT_EMPTY')}</option>
+			</select>&nbsp;&nbsp;
+		</li>
+		<li id="searchContent" class="pull-left">
+			<input id="search" type="text" class="input-medium form-control input-sm search-query" name="search" value="{$search_field['search']}" onkeydown="if(event.keyCode==13)d_changeCondition(0)"/>&nbsp;&nbsp;
+		</li>
+		<li class="pull-left">
+			<button type="submit" onclick="d_changeCondition(0)" class="btn btn-primary btn-sm">{:L('SEARCH')}</button>
+		</li>
+		<!-- &nbsp;<a target="_blank" class="btn btn-primary" href="{:U('contract/add')}">{:L('THE_NEW_CONTRACT')}</a> -->
+	</ul>
+</div>
+<empty name="contractList">
+	<div class="alert">{:L('EMPTY_TPL_DATA')}</div>
+<else/>
+	<table class="table table-hover">
+		<thead>
+			<tr> 
+				<th></th>
+				<th>{:L('CONTRACT_NO')}</th>
+				<th class="hide"></th>
+				<th>{:L('CUSTOMER')}</th>
+				<th>{:L('QUOTATION')}</th>
+				<th>签约人</th>
+			</tr>
+		</thead>
+		<tfoot id="footers">
+			<tr>
+				<td colspan="5">
+					{$page}
+				</td>
+			</tr>
+		</tfoot>
+		<tbody id="data">
+			<volist name="contractList" id="vo">
+				<tr>
+					<td>
+						<div class="radio radio-info radio-inline" style="margin-left:15px;">
+							<input type="radio" name="contract" class="contract" value="{$vo.contract_id}"><label for="openrecycle"></label>
+						</div>
+					</td>
+					<td>{$vo.number}</td>
+					<td class="hide">{$vo.customer_id}</td>
+					<td>{$vo.customer_name}</td>
+					<td>{$vo.price}</td>
+					<td>{$vo['owner_name']}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<script type="text/javascript">
+		$('#go_page').change(function(){
+			var sel = $(this).val();
+			$('#dialog-contract-list').load(sel,function(){
+				changeCondition();
+			});
+			return false;
+		});
+		$("#data tr").click(function(){
+			$(this).find('td:first-child .contract').prop('checked', true);
+		});
+		$(function(){
+			$('#footers a').click(function(){
+				var rel = $(this).attr('href'); 
+				$('#dialog-contract-list').load(rel);    
+				return false;
+			});
+		}); 
+		function d_changeCondition(p){
+			var field = $('#field option:selected').val();
+			var condition = $('#condition option:selected').val();
+			var search = $('#search').val();
+			var customer_id = $('#customer_id').val();
+			var type = $('#type').val();
+			var url = "{:U('contract/listdialog','field=')}"+field+'&condition='+condition+'&search='+search+'&customer_id='+customer_id+'&type='+type;
+			$('#dialog-contract-list').load(url,function(){
+				changeCondition();
+			});
+		}
+	</script>
+</empty>

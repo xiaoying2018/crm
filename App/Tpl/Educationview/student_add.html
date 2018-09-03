@@ -1,0 +1,110 @@
+<script src="/Public/style/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/Public/js/uploadPreview.js"></script>
+<link rel="stylesheet" href="/Public/css/jquery.fileupload.css">
+<style type="text/css">
+    .templete_Add .form-group {
+        margin: 10px 0;
+    }
+    .radio-info{
+        margin: 0 20px;
+    }
+    .textarea textarea{
+        width: 100%;
+    }
+    .select2-selection{
+        background-color: #FFFFFF !important;
+        background-image: none !important;
+        border: 1px solid #d8e3ef !important;
+        border-radius: 1px !important;
+        height: 32px;
+        line-height: 32px;
+    }
+    .select2-selection__rendered{
+        padding-left: 17px !important;
+    }
+    #main_pic_prev{width: 120px;height: 120px;border: 1px dashed #d3d3d6;}
+    .add_body_title{
+        margin:15px auto 30px auto;
+    }
+</style>
+
+
+
+<form action="" id="student_add_form">
+    <div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+        <!-- 选择客户 -->
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>选择客户</label>
+            <div class="col-md-8">
+                <select name="customer_id" class="form-control customer_list" onchange="setDefaultStudentInfo()">
+                    <option data-info="" value="">选择客户</option>
+                    <foreach name="notYetCoustimer" item="s">
+                        <!-- <option data-info='{:json_encode($s)}' value="{$s.customer_id}">&nbsp;&nbsp;&nbsp;&nbsp;{$s.customer_id}.{$s.name}</option> -->
+                        <option data-info='{:json_encode($s)}' value="{$s.customer_id}">{$s.customer_id}. {$s.name}</option>
+                    </foreach>
+                </select>
+            </div>
+        </div>
+        <!-- 文本 -->
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>学生名称</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="realname" aria-required="true" value="" placeholder="请输入学生名称" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>学生电话</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="mobile" aria-required="true" value="" placeholder="请输入学生电话" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>学生邮件</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="email" aria-required="true" value="" placeholder="请输入学生邮件" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>登陆密码</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="password" name="password" aria-required="true" value="" placeholder="请输入登陆密码" />
+            </div>
+        </div>
+        <!-- 文本域 -->
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label">备注</label>
+            <div class="col-md-8">
+                <div class="textarea">
+                    <textarea name="remark" id="" cols="30" rows="10"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    //初始化上传图片
+    $("body").on('click','input[type="file"]', function(){
+        var selector = $(this).attr('id');
+        $("#"+selector).uploadPreview({ Img: selector+"_prev", Width: 120, Height: 120 });
+    });
+
+
+    function setDefaultStudentInfo(){
+        var current =   $('.customer_list option:selected'),
+            data    =   current.data('info');
+        console.log(data.name)
+        if( data ){
+            $("input[name='realname']").val(data.name);
+            $("input[name='mobile']").val(data.mobile);
+        }else{
+            $("input[name='realname']").val('');
+            $("input[name='mobile']").val('');
+        }
+    }
+
+    $(".customer_list").select2({
+    });
+</script>
+
+

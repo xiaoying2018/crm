@@ -1,0 +1,237 @@
+<include file="Public:header" />
+<style>
+	.nav.nav-tabs-left li{width:100%;}
+	.nav-tabs-left>li.active>a{border-top:white;color: #19aa8d !important;background-color:#fff;}
+	.table>tbody>tr>td{border-top:0px;}
+	.table>tfoot>tr>td{border-top:0px;}
+	#main_pic_prev{width: 38px;height: 38px;border: 1px dashed #d3d3d6;}
+	.table tbody tr {cursor: Default;}
+</style>
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<link href="__PUBLIC__/style/css/plugins/cropper/cropper.min.css" rel="stylesheet">
+<script src="__PUBLIC__/style/js/plugins/cropper/cropper.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<div class="wrapper wrapper-content animated fadeIn">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-lg-12">
+			<include file="Setting:setting_left" />
+			<form class="form-horizontal" enctype="multipart/form-data" action="{:U('setting/defaultinfo')}" method="post">
+			<div class="col-sm-10" >
+				<div class="ibox-content add_body" id="add_body">
+					<div class="row">
+						<div class="col-md-12  add_body" >
+							<div class="full-height-scroll">
+								<table class="table">
+									<thead>
+										<tr>
+											<th colspan="2">基本设置</th>
+										</tr>
+									</thead>
+									<tbody class="form-inline">
+										<tr>
+											<td class="tdleft" style="width:150px;">{:L('SYSTEM_NAME')}</td>
+											<td>
+												<input class="form-control" name="name" id="name" type="text" value="{$defaultinfo.name}">
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">{:L('SYSTEM_DESCRIBE')}</td>  
+											<td>
+												<input class="form-control" name="description" id="description" type="text" value="{$defaultinfo.description}">
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">首页Logo :</td>  
+											<td>
+												<div class="row">
+													<div class="col-sm-5">
+														<div class="image-crop" style="height:100px;width:300px;">
+															<img 
+																<if condition="$defaultinfo['logo'] neq ''"> src="{$defaultinfo.logo}" 
+																<else/> src="__PUBLIC__/img/wk.png"
+																</if>
+															/>
+														</div>
+													</div>
+													<div class="col-sm-7" style="margin-top:0px;">
+														<div class="img-preview img-preview-sm" style="height:75px;width:235px;margin-top:25px;"></div>
+														<p style="margin-top:10px;">
+															<!-- 该图片用于登录页面Logo展示 -->
+														</p>
+														<div class="btn-group">
+															<label title="选择图片" for="inputImage" class="btn" style="color: #337ab7;">
+																<input type="file" accept="image/*" name="img" id="inputImage" class="hide">
+																+选择图片
+															</label>
+														</div>
+														<div class="btn-group">
+															<label title="上传Logo" id="download" class="btn" style="color: #337ab7;">上传图片</label>
+														</div>
+													</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">{:L('SYSTEM_LOGO')}</td>
+											<td>
+												<div style="width: 100px;height: 80px;margin-top: 40px;float: left;">
+													<if condition = "$defaultinfo['logo_min_thumb_path']">
+														<img id="main_pic_prev" class="thumb80" src="{$defaultinfo['logo_min_thumb_path']}"/>
+													<else />
+														<img id="main_pic_prev" class="thumb80" src="__PUBLIC__/img/logo2.png"/>
+													</if>
+												</div>
+												<div style="width: 150px;float: left;margin-top: 40px;">
+													<div class="fileinput-button btn" style="color: #337ab7;">
+														<span>+选择图片</span>
+														<input type="file" name="logo_min" id="main_pic" style="width: 80px;height: 32px;"/>
+													</div>
+												</div>
+											</td>
+										</tr>
+										<!-- <tr>
+											<td>&nbsp;</td>  
+											<td>
+												<label title="保存" id="download" class="btn btn-primary">保存</label>
+											</td>
+										</tr> -->
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="tfoot_div" class="clearfix">
+					<div class="clearfix" id="tfoot_page">
+						<div class="ibox-content" style="border-top:none;">
+							<div class="col-sm-offset-2"><button type="submit" class="btn btn-primary">保存</button></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			</form>
+			<div style="clear:both;" ></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/js/uploadPreview.js"></script>
+<script type="text/javascript">
+//初始化上传图片
+$("body").on('click','input[type="file"]', function(){
+	var selector = $(this).attr('id');
+	$("#"+selector).uploadPreview({ Img: selector+"_prev", Width: 120, Height: 120 });
+});
+$(function(){
+	/**
+	 * 将以base64的图片url数据转换为Blob
+	 * @param urlData
+	 * 用url方式表示的base64图片数据
+	 */
+	function convertBase64UrlToBlob(urlData){
+		var bytes=window.atob(urlData.split(',')[1]); //去掉url的头，并转换为byte
+		//处理异常,将ascii码小于0的转换为大于0
+		var ab = new ArrayBuffer(bytes.length);
+		var ia = new Uint8Array(ab);
+		for (var i = 0; i < bytes.length; i++) {
+			ia[i] = bytes.charCodeAt(i);
+		}
+		return new Blob( [ab] , {type : 'image/png'});
+	}
+	$(function(){
+		var $image = $(".image-crop > img");
+		$($image).cropper({
+			aspectRatio: 3/1,
+			preview: ".img-preview",
+			done: function(data) {
+				// Output the result data for cropping image.
+			}
+		});
+
+		var $inputImage = $("#inputImage");
+		if (window.FileReader) {
+			$inputImage.change(function() {
+				var fileReader = new FileReader(),
+					files = this.files,
+					file;
+
+				if (!files.length) {
+					return;
+				}
+
+				file = files[0];
+
+				if (/^image\/\w+$/.test(file.type)) {
+					fileReader.readAsDataURL(file);
+					fileReader.onload = function () {
+						$inputImage.val("");
+						$image.cropper("reset", true).cropper("replace", this.result);
+					};
+				} else {
+					showMessage("请选择一张图片");
+				}
+			});
+		} else {
+			$inputImage.addClass("hide");
+		}
+
+		$("#download").click(function() {
+			// var form=document.forms[0];
+			// var formData = new FormData(form);
+			var formData = new FormData();
+			//这里连带form里的其他参数也一起提交了,如果不需要提交其他参数可以直接FormData无参数的构造函数
+			//convertBase64UrlToBlob函数是将base64编码转换为Blob
+			formData.append("blob",convertBase64UrlToBlob($image.cropper("getDataURL")), "image.png"); 
+			//append函数的第一个参数是后台获取数据的参数名,和html标签的input的name属性功能相同
+			//ajax 提交form
+			$.ajax({
+			   url : "{:U('setting/defaultinfo')}",
+			   type : "POST",
+			   data : formData,
+			   dataType: "json",
+			   processData : false,         // 告诉jQuery不要去处理发送的数据
+			   contentType : false,        // 告诉jQuery不要去设置Content-Type请求头
+			   
+			   success:function(data){
+					if(data.status == 1){
+						swal(data.msg,'');
+						location.reload();
+					}else{
+						swal(data.msg,'',"error");
+					}
+			   }
+			});
+		});
+
+		$("#zoomIn").click(function() {
+			$image.cropper("zoom", 0.1);
+		});
+
+		$("#zoomOut").click(function() {
+			$image.cropper("zoom", -0.1);
+		});
+
+		$("#rotateLeft").click(function() {
+			$image.cropper("rotate", 45);
+		});
+
+		$("#rotateRight").click(function() {
+			$image.cropper("rotate", -45);
+		});
+
+		$("#setDrag").click(function() {
+			$image.cropper("setDragMode", "crop");
+		});
+	})	
+});
+</script>
+<include file="Public:footer" />	

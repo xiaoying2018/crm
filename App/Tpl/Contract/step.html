@@ -1,0 +1,87 @@
+<style>
+	.table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{
+		border:0px;
+	}
+</style>
+<div class="form-horizontal" >
+	<input type="hidden" id="step_id" value="{$info['id']}">
+	<table class="table form-inline">
+		<tr>
+			<td width="130px;" class="tdleft">部门：</td>
+			<td>
+				<select class="form-control pull-left" name="department_id" id="step_department_id" onchange="changePosition()">
+					<option value="">--选择部门--</option>
+					<volist name="department_list" id="vo">
+						<option value="{$vo['department_id']}" <if condition = "$info['role_info']['department_id'] eq $vo['department_id']">selected="true"</if>>{$vo['name']}</option>
+					</volist>
+				</select>
+			</td>
+		<tr>
+		<tr>
+			<td width="130px;" class="tdleft">岗位：</td>
+			<td>
+				<select class="form-control pull-left" id="step_position_id" name="position_id" onchange="changeRole()">
+					<option value="">--选择岗位--</option>
+					<volist name="info['position_list']" id="vo">
+						<option value="{$vo['position_id']}" <if condition = "$info['role_info']['position_id'] eq $vo['position_id']">selected="true"</if>>{$vo['name']}</option>
+					</volist>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td width="130px;" class="tdleft">审批人：</td>
+			<td>
+				<select class="form-control pull-left" class="examine_role" id="step_role_id" name="role_id" >
+					<option value="">--选择审批人--</option>
+					<volist name="info['role_list']" id="vo">
+						<option value="{$vo['role_id']}" <if condition = "$info['role_id'] eq $vo['role_id']">selected="true"</if>>{$vo['full_name']}</option>
+					</volist>
+				</select>
+			</td>
+		</tr>
+	</table>
+</div>
+<script type="text/javascript">
+function changePosition(){
+	var department_id = $('#step_department_id').val();
+	$.ajax({ 
+		type:'get',
+		url:'index.php?m=user&a=getPositionlistByDepartment&id='+department_id,
+		async:false,
+		success:function(data){
+			temp = '<option value="">--请选择--</option>';
+			if(data.status == 1){
+				if(data.data != null){
+					$.each(data.data, function(k, v){
+						temp += "<option value='"+v.position_id+"'>"+v.name+"</option>";
+					});
+				}
+			}
+			$('#step_position_id').html(temp);
+		},
+		dataType:'json'
+	});
+	changeRole();
+};
+
+function changeRole(){
+	var position_id = $('#step_position_id').val();
+	$.ajax({
+		type:'get',
+		url:'index.php?m=user&a=getRoleByPosition&position_id='+position_id,
+		async:false,
+		success:function(data){
+			temp = '<option value="">--请选择--</option>';
+			if(data.status == 1){
+				if(data.data != null){
+					$.each(data.data, function(k, v){
+						temp += "<option value='"+v.role_id+"'>"+v.full_name+"</option>";
+					});
+				}
+			}
+			$('#step_role_id').html(temp);
+		},
+		dataType:'json'
+	});
+};
+</script>

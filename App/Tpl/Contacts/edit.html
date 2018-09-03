@@ -1,0 +1,187 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/js/PCASClass.js" ></script>
+<style type="text/css">
+.add_title{
+	padding-bottom:10px;
+	height: 60px;
+	margin-bottom:15px;
+}
+.add_title>span{
+	border-bottom: 2px solid #1ab394;
+	font-size: 24px;
+}
+.add_body >div >.full-height-scroll{
+   	border-right:1px dotted #ccc
+}
+.add_body_title{
+	margin:20px auto 20px auto;
+	padding-left: 25px;
+}
+.add_body_form{
+	padding-left: 38px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.form-control{
+	float:left;
+}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+	/*form表单验证*/
+	$("#form").validate({
+		
+	});
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+	<include file="Public:alert" />
+	<form class="form-horizontal" action="{:U('contacts/edit')}" method="post" id="form" role="form">
+	<input type="hidden" name="contacts_id" id="contacts_id" value="{$contacts.contacts_id}"/>
+	<input type="hidden" name="refer_url" value="{$refer_url}"/>
+	<div class="ibox-content add_body" id="add_body">
+		<div class="row">
+			<div class="col-md-12 full-height-scroll add_body">
+				<div class="row" >
+					<div class="col-md-12 add_body_title">
+						<div class="all-inline">
+							<span class="sq-tag"></span>
+							<div class="text-tag">
+								<span>{:L('BASIC_INFO')}</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-11 add_body_form">
+						<volist name="field_list['main']" id="vo" key="key"><!-- 主要字段 -->
+							<div class="form-group">
+								<label class="col-md-4 control-label">{$vo.name}：</label>
+								<if condition="$vo['form_type'] == 'address'">
+									<if condition = "$vo['tip_start'] eq 1">
+										<div class="col-md-7">
+											{$vo.html}
+										</div>
+										<div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+									<else/>
+										<div class="col-md-8">
+											{$vo.html}
+										</div>
+									</if>
+								<else/>
+									<div class="col-md-6">
+										{$vo.html}
+									</div>
+									<if condition = "$vo['tip_start'] eq 1">
+										<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+									<else/>
+										<div class="col-md-2"></div>
+									</if>
+								</if>
+							</div>
+						</volist>
+						<volist name="field_list['data']" id="vo" key="key"><!-- 附加字段 -->
+							<php>if($vo['in_add']){</php>
+							<div class="form-group">
+								<label class="col-md-4 control-label">{$vo.name}：</label>
+								<if condition="$vo['form_type'] == 'address'">
+									<if condition = "$vo['tip_start'] eq 1">
+										<div class="col-md-7">
+											{$vo.html}
+										</div>
+										<div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+									<else/>
+										<div class="col-md-8">
+											{$vo.html}
+										</div>
+									</if>
+								<else/>
+									<div class="col-md-6">
+										{$vo.html}
+									</div>
+									<if condition = "$vo['tip_start'] eq 1">
+										<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+									<else/>
+										<div class="col-md-2"></div>
+									</if>
+								</if>
+							</div>
+							<php>}</php>
+						</volist>
+					</div>
+					<div class="col-md-1 pull-right">
+						<!-- <div style="height: 100%; border-right: 1px dashed gray;">&nbsp;sadf</div> -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="tfoot_div" class="clearfix">
+		<div class="clearfix" id="tfoot_page">
+			<div class="ibox-content" style="border-top: 0px;">
+				<div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><button type="submit" class="btn btn-primary">编辑联系人</button></div>
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+
+<div id="dialog-customer-list" title="{:L('SELECT_THE_CONTACT_BELONGS_TO_THE_CUSTOMER')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$("[data-type='nummber']").keyup(function(){
+	if(isNaN($(this).val())){
+		$(this).val($(this).val().replace(/\D/g,''))
+	}
+});
+if ("{:C('isMobile')}" == "1") {
+	width=$('.container').width() * 0.9;
+} else {
+	width=800;
+}
+$("#dialog-customer-list").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 450,
+	buttons: {
+		"{:L('AFFIRM')}": function () {
+			var item = $('input:radio[name="customer"]:checked').val();
+			var name = $('input:radio[name="customer"]:checked').parent().next().html();
+			if(item){
+				$('#customer_name').val(name);
+				$('#customer_id').val(item);
+			}
+			$(this).dialog("close");
+		},
+		"{:L('CANCEL')}": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+
+$(function(){
+	$("#customer_name").click(
+		function(){
+			$('#dialog-customer-list').dialog('open');
+			$('#dialog-customer-list').load('{:U("customer/listDialog")}');
+		}
+	);
+	
+});
+
+</script>
+<include file="Public:footer" />

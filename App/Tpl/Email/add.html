@@ -1,0 +1,55 @@
+<form action="{:U('email/add')}" method="post" id="dialog_email_add">
+	<table class="table form-inline" border="0" cellspacing="1" cellpadding="0">
+		<!-- <tfoot>
+			<tr>
+				<td colspan="2"><input class="btn btn-primary btn-sm" name="submit" type="submit" value="{:L('SAVE')}"/> &nbsp; <input class="btn btn-sm" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/></td>
+			</tr>
+		</tfoot> -->
+		<tbody>
+			<tr>
+				<td class="tdleft">{:L('TEMPLATE_NAME')}</td>
+				<td><input type="text" name="subject" class="form-control" value=""/></td>
+			</tr>
+			<tr>
+				<td class="tdleft">{:L('EMAIL_SUBJECT')}</td>
+				<td><input type="text" name="title" class="form-control" value=""/></td>
+			</tr>
+			<tr>
+				<td class="tdleft">{:L('MAIL_SUBJECT_CONTENT')}</td>
+				<td>
+					{:L('IF_YOU_NEED_CUSTOMER_NAME')}
+					<textarea name="content" class="form-control" id="content" style="width: 400px; height: 100px;"></textarea>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+
+<!-- <form action="{:U('email/add')}" method="post">
+	<table class="table form-inline" style="border:none" border="0" cellspacing="1" cellpadding="0">
+		<tfoot>
+			<tr>
+				<td colspan="2"><input class="btn btn-primary btn-sm" name="submit" type="submit" value="{:L('SAVE')}"/> &nbsp; <input class="btn btn-sm" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/></td>
+			</tr>
+		</tfoot>
+		<tbody>
+			<tr>
+				<th colspan="2" style="border:none">{:L('BASIC_INFO')}<span style="font-weight:200;color:#999;font-size:12px;">(如需客户姓名请在内容中以<font color='red'>{name}</font>代替)</span></th>
+			</tr>
+			<tr >
+				<td class="tdleft" style="border:none">{:L('TEMPLATE_NAME')}</td>
+				<td style="border:none"><input type="text" name="subject" class="form-control" value=""/></td>
+			</tr>
+			<tr style="border:none">
+				<td style="border:none" class="tdleft">{:L('EMAIL_SUBJECT')} :</td>
+				<td style="border:none"><input type="text" name="title" class="form-control" value=""/></td>
+			</tr>
+			<tr style="border:none">
+				<td style="border:none" class="tdleft">{:L('MAIL_SUBJECT_CONTENT')}</td>
+				<td style="border:none">
+					<textarea name="content" class="form-control" id="content" style="width: 400px; height: 100px;"></textarea>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form> -->

@@ -1,0 +1,77 @@
+<style>
+    body{
+        overflow-y: hidden;
+    }
+    table tbody tr{cursor:move;}
+    .active {color: #000;}
+    .nav.nav-tabs-left li{width:100%;}
+    .nav-tabs-left>li.active>a{border-top:white;color: #19aa8d !important;background-color:#fff;}
+
+    /*主要样式*/
+    .subNavBox{width:100%;margin-top:0px;margin-bottom:50px;}
+    .subNav{
+        cursor:pointer;
+        font-size:14px;
+        color:#000;
+        line-height:40px;
+        padding-left:10px;
+    }
+    .subNav_text{
+        cursor:pointer;
+        font-size:14px;
+        color:#000;
+        line-height:40px;
+        padding-left:10px;
+    }
+    subNavBox ul{margin-bottom:18px;}
+    .subNav:hover{color:#375264;}
+    /*.currentDt{background-image:url(__PUBLIC__/img/jiantou.jpg);}*/
+    .navContent{list-style: none;display: none;padding-left: 13px;}
+    .navContent li a{display:block;width:100%;height:32px;text-align:left;font-size:14px;line-height:32px;color:#000;}
+    .li_text{padding-left:10px;width: 100%;float:left;line-height:32px;margin-bottom:3px;}
+    .li_text:hover{background-color:#f5f5f5;}
+    .li_text_active{float:left;background-color:#f5f5f5;padding-left:10px;width: 100%;border-left:2px solid #03a9f4;line-height:32px;margin-bottom:3px;color:#03a9f4;}
+</style>
+<script type="text/javascript">
+    $(function(){
+        $("#left_height").height(window.innerHeight-$("#left_height").offset().top-32);
+        $(window).resize(function(){
+            $("#left_height").height(window.innerHeight-$("#left_height").offset().top-32);
+        });
+    })
+</script>
+<div class="col-sm-2 ibox-title" style="background-color:#fff;padding-bottom:5px;" id="left_height">
+    <div class="full-height-scroll">
+        <div class="subNavBox">
+
+            <div class="subNav currentDd currentDt">数据定位</div>
+            <ul class="navContent" style="display:block">
+                <li ><a href="{:U('apply/index')}" ><span <if condition="$module_name eq 'apply' && $action_name == 'index'">class="li_text_active"<else />class="li_text"</if> >数据列表</span></a></li>
+            </ul>
+
+            <div class="subNav currentDd currentDt">表单管理</div>
+            <ul class="navContent" style="display:block">
+                <li >
+                    <a href="{:U('apply/form')}" ><span <if condition = "$module_name == 'apply' && $action_name == 'form'">class="li_text_active"<else />class="li_text"</if>>表单字段列表</span></a>
+                </li>
+            </ul>
+
+            <div class="subNav currentDd currentDt">推荐方案</div>
+            <ul class="navContent" style="display:block">
+                <li ><a href="{:U('apply/plan')}" ><span <if condition="$module_name == 'apply' && $action_name == 'plan'">class="li_text_active"<else />class="li_text"</if>>方案列表</span></a></li>
+            </ul>
+
+            <div class="subNav currentDd currentDt">推荐学校</div>
+            <ul class="navContent" style="display:block">
+                <li ><a href="{:U('apply/school')}" ><span <if condition="$module_name == 'apply' && $action_name == 'school'">class="li_text_active"<else />class="li_text"</if> >学校列表</span></a></li>
+            </ul>
+
+            <div class="subNav currentDd currentDt">推荐课程</div>
+            <ul class="navContent" style="display:block">
+                <li ><a href="{:U('apply/courseCate')}" ><span <if condition="$module_name eq 'apply' && $action_name == 'courseCate'">class="li_text_active"<else />class="li_text"</if> >课程分类</span></a></li>
+                <li ><a href="{:U('apply/course')}" ><span <if condition="$module_name eq 'apply' && $action_name == 'course'">class="li_text_active"<else />class="li_text"</if> >课程列表</span></a></li>
+            </ul>
+
+        </div>
+    </div>
+</div>

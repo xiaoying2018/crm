@@ -1,0 +1,202 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<style>
+	table tbody tr{cursor:move;padding:0px;}
+	.table thead>tr>th{padding:3px;}
+	.table tbody>tr>td{padding:3px;}
+</style>
+<script>
+$(function(){
+	var scroll_width = 5;
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-20);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-20);
+		$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+	})
+	$("#tab_Test3").FrozenTable(1,0,0);
+	$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width).width($("#oTableLH_tab_Test3").width());
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+})
+</script>
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<include file="Public:alert" />
+		<div class="col-md-12">
+			<include file="Setting:setting_left" />
+			<div class="col-lg-10 ">
+				<div class="table-content" style="padding-bottom:10px">
+					<div class="ibox-content mar-top" style="border-bottom:none;padding-top:20px;">
+						<div class="bulk-actions align-left">
+							<button onclick="del_category(this)" style="background:#fff;border:1px solid #e3e3e3;color:#000;" type="button" class="btn btn-primary" >&nbsp;{:L('DELETE')}</button>
+							<div class="pull-right">
+								<a class="btn btn-primary" id="add_category" href="javascript:void(0);">{:L('ADD_KNOWLEDGE_CATEGORY')}</a>
+							</div>
+						</div>
+					</div>
+					<form id="form1" action="" method="post">
+						<div class="col-sm-12 ibox-content" style="margin-top:0px;padding:0px;">
+							<div class="full-height-scroll" id="table_div" style="left:0px;top:0px;">
+								<table class="table table-hover table-striped table_thead_fixed" id="tab_Test3" >
+									<thead>
+										<tr class="tabTh">
+											<td width="5%" style="text-align:center">
+												<div class="checkbox checkbox-primary">
+													<input type="checkbox" class="check_all"/>
+													<label for=""></label>
+												</div>
+											</td>
+											<td width="75%">{:L('CATEGORY_NAME')}</td>
+											<td width="20%">{:L('OPERATING')}</th>
+										</tr>
+									</thead>
+									<tbody>
+										<volist name="category_list" id="vo">
+											<tr>
+												<td style="text-align:center">
+													<div class="checkbox checkbox-primary">
+														<input name="category_list[]" class="check_list" type="checkbox" value="{$vo.category_id}"/>
+														<label for=""></label>
+													</div>
+												</td>
+												<td>{$vo.name}</td>
+												<td><a class="edit_category" rel="{$vo.category_id}" href="javascript:void(0)">{:L('EDIT')}</a> &nbsp;
+												<a href="{:U('knowledge/index','category_id='.$vo['category_id'])}">{:L('VIEW_THIS_CATEGORY')}</a></td>
+											</tr>
+										</volist>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="dialog-message1" class="" style="display:none;" title="注:选择相应的部门则本部门有查看此类别权限">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div id="dialog-message2" class="" style="display:none;" title="注:选择相应的部门则本部门有查看此类别权限">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$('#dialog-message1').dialog({
+		autoOpen: false,
+		modal: true,
+		width: 600,
+		minHeight: 400,
+		position :["center",100],
+		close:function(){
+			$(this).html("");
+		},
+		buttons: {
+			"确定": function () {
+				$('#category_form1').submit();
+				$(this).dialog("close");
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+
+	$('#dialog-message2').dialog({
+		autoOpen: false,
+		modal: true,
+		width: 600,
+		minHeight: 400,
+		position :["center",100],
+		buttons: {
+			"确定": function () {
+				$('#knowledge_form2').submit();
+				$(this).dialog("close");
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+
+	$(function(){
+		$("#add_category").click(function(){
+			$('#dialog-message1').dialog('open');
+			$('#dialog-message1').load("{:U('knowledge/categoryAdd')}");
+		});
+		$(".edit_category").click(function(){
+			$('#dialog-message2').dialog('open');
+			$id = $(this).attr('rel');
+			$('#dialog-message2').load("{:U('knowledge/categoryEdit','id=')}"+$id);
+		});
+	});
+	
+	function del_category(obj){
+		var id_array = new Array();
+		$("input.check_list:checked").each(function(){  
+			id_array.push($(this).val());
+		});
+		if(id_array.length == 0){
+			swal({
+				title: "温馨提示",
+				text: "请先选择要删除的知识分类!",
+				type: "warning"
+			})
+			return false;
+		}else{
+			swal({
+				title: "您确定要删除该知识分类吗？",
+	   			text: "删除后将无法恢复，请谨慎操作！",
+				type: "warning",   
+				showCancelButton: true,   
+				confirmButtonColor: "#DD6B55",   
+				confirmButtonText: "是的，我要删除！",
+		        cancelButtonText:'让我再考虑一下…',
+		        closeOnConfirm:false,
+		        closeOnCancel:false
+			},
+			function(isConfirm){
+	        	if (isConfirm) {
+					$.ajax({
+						type: "POST",
+						url: "{:U('knowledge/categorydelete')}",
+						data: $("#form1").serialize(),
+						async: true,
+						success: function(data) {
+							if(data.status == 1){
+								swal({
+									title: "删除成功！",
+									text: "即将刷新页面!",
+									type: "success"
+								});
+								window.location.href="{:U('knowledge/category')}";
+							}else{
+								 swal({
+									title: "操作失败!",
+									text: data.info,
+									type: "error"
+								});
+							}
+						}
+					});
+				} else {
+		            swal("已取消","您取消了删除操作！","error");
+		        }
+		    });
+			//$("#form1").attr('action', '{:U("knowledge/categoryDelete")}');
+			//$("#form1").submit();
+		}
+	}
+</script>
+<include file="Public:footer" />

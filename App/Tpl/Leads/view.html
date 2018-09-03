@@ -1,0 +1,518 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/js/jquery.tagsinput.js"></script>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery.tagsinput.css" />
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+	    <div class="col-lg-12">
+	    <include file="Public:alert"/>
+	    	<div class="title-bar">
+				<div class="row " id="title-show">
+					<ul class="nav pull-left" style="margin:0px 10px 0px 20px;">
+						<span>
+							<img src="__PUBLIC__/img/contract_view_icon.png" style="margin-bottom:9px;" alt="">
+						</span>
+						<span style="font-size:21px;margin-left:5px">&nbsp;&nbsp;&nbsp;{$leads['name']}</span>&nbsp;&nbsp;
+					</ul>
+					<if condition = "checkPerByAction('contract','check')">
+						<div class="pull-right" style="margin-bottom:10px;margin-right: 20px;">
+							<a href="{:U('leads/edit','id='.$leads['leads_id'])}" class="btn btn-outline btn-default"><i class="icon-pencil"></i> {:L('EDIT')}</a>
+							<a href="javascript:history.go(-1);" class="btn btn-outline btn-default" onclick="javascript:void(0);"><i class="icon-arrow-left"></i> {:L('RETURN')}</a>
+						</div>
+					</if>
+				</div>
+			</div>
+		    <div class="tabs-container" style="">
+		    	<div class="ibox-content" style="padding:15px 0 0 20px;background:#fff;" id="left-content">
+					<ul class="nav nav-tabs" id="left_list" style="height:40px;">
+						<li class="active"><a href="#tab1" data-toggle="tab" type="tab1">{:L('BASIC_INFO')}</a></li>
+						<li><a href="#tab2" data-toggle="tab" type="tab2">{:L('COMMUNICATION_LOG')}&nbsp;&nbsp;<span class="badge badge-success"></span></a></li>
+						<li><a href="#tab6" data-toggle="tab" type="tab6">{:L('OWNER_LOG')}&nbsp;&nbsp;<span class="badge badge-success"></span></a></li>
+						<li><a href="#tab4" data-toggle="tab" type="tab4">日程&nbsp;&nbsp;<span class="badge badge-success"></span></a></li>
+						<li><a href="#tab3" data-toggle="tab" type="tab3">{:L('FILE')}</a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane fade in active" id="tab1">
+							<div class="panel-body">
+								<div class="form-horizontal view-group " >
+									<div class="form-group">
+				                        <label class="col-lg-2 control-label">{:L('CREATE_TIME')}</label>
+				                        <div class="col-lg-4">
+				                            <p class="form-p">
+				                                <if condition="$leads['create_time'] neq 0">{$leads.create_time|date='Y-m-d H:i:s',###}</if>
+				                            </p>
+				                        </div>
+				                        <label class="col-lg-2 control-label">{:L('CREATOR_ROLE')}</label>
+				                        <div class="col-lg-4">
+				                            <p class="form-p">
+				                                <a class="role_info" href="javascript:void(0)" rel="{$leads.owner.role_id}">{$leads.creator.user_name}</a>
+				                            </p>
+				                        </div>
+				                    </div>
+				                    <div class="form-group">
+				                        <label class="col-lg-2 control-label">{:L('OWNER_ROLE')}</label>
+				                        <div class="col-lg-4">
+				                            <p class="form-p">
+				                                <a class="role_info" href="javascript:void(0)" rel="{$leads.owner.role_id}">{$leads.owner.user_name}</a>
+				                            </p>
+				                        </div>
+				                        <label class="col-lg-2 control-label">{:L('LAST_MODIFIED_TIME')}</label>
+				                        <div class="col-lg-4">
+				                            <p class="form-p">
+				                                <if condition="$leads['update_time'] gt 0">{$leads.update_time|date='Y-m-d H:i:s',###}</if>
+				                            </p>
+				                        </div>
+				                    </div>
+				                    <div id="list-show" rel="false" class="">
+		                            	<php>$j=0;</php>
+				                        <volist name="field_list" id="vo" key="k">
+				                        <php>$j++;</php>
+				                        <?php 
+					                        if($vo['form_type'] == 'datetime' && $leads[$vo['field']] != 0){
+					                            $leads[$vo['field']] = date('Y-m-d H:i', $leads[$vo['field']]);
+					                        }elseif ($vo['form_type'] == 'datetime' && $leads[$vo['field']] == 0) {
+					                            $leads[$vo['field']] = ' ';
+					                        }
+				                        ?>
+				                        <?php if ($k%2 == 0): ?>
+				                            <label class="col-lg-2 control-label">{$vo['name']}</label>
+				                            <div class="col-lg-4">
+				                                <?php if ($vo['field'] != null): ?>
+				                                <p class="form-p">
+				                                	<if condition="$vo['form_type'] eq 'address'" >
+			                                            {$leads[$vo['field']]}
+			                                            <a href="javascript:void(0);" class="getMap" rel="{$leads[$vo['field']]}">
+			                                                <span class="fa fa-map-marker" style="font-size:16px;"></span>
+			                                            </a>
+			                                        <else />
+				                                    	<span style="color:#{$vo['color']}">{$leads[$vo['field']]}</span>
+				                                    </if>
+				                                </p>
+				                                <?php endif; ?>
+				                            </div>
+				                        </div>
+				                        <?php else: ?>
+					                        <div class="form-group">
+					                            <label class="col-lg-2 control-label">{$vo['name']}</label>
+					                            <div class="col-lg-4">  
+					                                <p class="form-p">
+					                                	<if condition="$vo['form_type'] eq 'address'" >
+				                                            {$leads[$vo['field']]}
+				                                            <a href="javascript:void(0);" class="getMap" rel="{$leads[$vo['field']]}">
+				                                                <span class="fa fa-map-marker" style="font-size:16px;"></span>
+				                                            </a>
+				                                        <else />
+					                                    	<span style="color:#{$vo['color']}">{$leads[$vo['field']]}</span>
+					                                    </if>
+					                                </p>
+					                            </div>
+					                        <?php if (count($field_list) == $j): ?>
+					                        	<div class="col-lg-6">
+					                            </div>
+					                        </div>
+					                        <?php endif; ?>                   
+				                        <?php endif; ?>
+				                        </volist>
+				                    </div>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane fade back_box" id="tab2">
+							<div class="panel-body">
+					            <div id="form-div">
+					                <form id="add-form" action="{:U('Log/add')}" method="post">
+										<input type='hidden' name="r" value="rLeadsLog"/>
+										<input type='hidden' name="module" value="leads"/> 
+										<input type='hidden' id="leads_id" name="id" value="{$leads['leads_id']}"/> 
+										<input type='hidden' name="role_id" value="{$Think.session.role_id}"/>
+										<textarea name="content" placeholder="添加跟进记录" id="log-text" style="resize:none;" class="form-control" cols="30" rows="1"></textarea>
+										<div>
+											<if condition="$content neq 'resource'">
+												<div class="text-right" id="log-btn" style="padding-top:8px;display:none;"><button class="btn btn-primary" id="add_log" type="button">添加</button>&nbsp;</div><br>
+											</if>
+										</div>
+					                </form>
+					            </div>
+					            <div id="log-list">
+					            <volist name="leads['log']" id="vo">
+					                <div class="ibox-content gray-log" log-rel="{$vo['log_id']}" >
+					                    <div class="social-feed-separated clearfix">
+					                        <div class="social-feed-box">
+					                            <div class="pull-right social-action dropdown">
+					                                <span data-toggle="dropdown" class="dropdown-toggle">
+					                                    <i style="font-size:20px;cursor:pointer" class="fa fa-angle-down"></i>
+					                                </span>
+					                                <ul class="dropdown-menu m-t-xs" >
+					                                    <li><a rel="{$vo['log_id']}" href="javascript:void(0);" type="{$vo['log_type']}" onclick="del_confirm(this);">{:L('DELETE')}</a></li>
+					                                </ul>
+					                            </div>
+					                            <div class="social-avatar">
+					                                <img alt="image" style="width:35px;height:35px;" class="img-circle" src="{$vo['owner']['thumb_path']}">
+					                                <a class="role_info name-colors"  rel="{$vo.owner.role_id}" href="javascript:void(0);">{$vo['owner']['full_name']}</a>&nbsp;&nbsp;
+					                                <span class="text-muted">发布了一条快速记录</span>&nbsp;&nbsp;&nbsp;
+					                                <span class="text-muted" >{$vo.create_date|date="Y-m-d  H:i",###}&nbsp;&nbsp;<a title="沟通类型" href="javascript:void(0);">{$vo['status_name']}</a></span>
+					                            </div>
+					                            <div class="social-body">
+					                                <span style="word-wrap:break-word;line-height: 21px;color: #000;">{$vo['content']}</span>
+					                            </div>
+					                        </div>
+					                    </div>
+					                </div>
+					            </volist>
+					            </div>
+					        </div>
+						</div>
+						<div class="tab-pane fade back_box" id="tab4">
+							<div class="panel-body">
+					             <div class="ibox">
+								   <empty name="event_list">
+										<include file="Public:nodata" />
+									<else />
+										<volist name="event_list" id="vo">
+											<div style="padding-bottom:20px;border-left:1px solid #ccc;margin: 5px 0 0 15px;">
+												<if condition="$vo['color']">
+													<i class="fa fa-circle pull-left" style="margin-left:-5px;color:{$vo['color']};font-size:12px;"></i>
+												<else />
+													<i class="fa fa-circle pull-left" style="margin-left:-5px;color:#FB8F7A;font-size:12px;"></i>
+												</if>
+												<div class="pull-left" style="margin-left:25px;color:#999">
+													<div>{$vo['start_date']|date="H:i",###}</div>
+													<div>{$vo['start_date']|date="Y/m/d",###}</div>
+												</div>
+												<div class="pull-left" style="margin-left:25px;color:#999">
+													<div style="margin-top:11px;">~</div>
+												</div>
+												<div class="pull-left" style="margin-left:25px;color:#999">
+													<div>{$vo['end_date']|date="H:i",###}</div>
+													<div>{$vo['end_date']|date="Y/m/d",###}</div>
+												</div> 
+												<div class="pull-left" style="margin-left:25px;"><img src="{$vo['img']}" style="width:30px;height:30px;border-radius:50px;margin-top:5px;"></div>
+												<div class="pull-left" style="margin-left:10px;width:60%">
+													<div>{$vo['create_role_name']} &nbsp;<if condition="$vo['bus_num']">({$vo['bus_num']})</if></div>
+													<div>{$vo['subject']}</div> 
+												</div>
+												<div style="clear:both"></div>
+											</div>
+										</volist>
+									</empty>
+								</div> 
+					        </div>
+						</div>
+						<div class="tab-pane fade back_box" id="tab6">
+							<div class="panel-body">
+								<table class="table">
+									<if condition="$leads.record eq null">
+										<div style="background-color:#fff;"><include file="Public:nodata" /></div>
+									<else /> 
+										<tr>
+											<td>{:L('OWNER_ROLE')}</td>
+											<td>{:L('RECEIVE_TIME')}</td>
+										</tr>
+										<volist name="leads.record" id="vo">
+											<tr>
+												<td>
+													<notempty name="vo.owner.user_name"><a class="role_info" rel="{$vo.owner.role_id}" href="javascript:void(0)">{$vo.owner.user_name}</a></notempty>
+												</td>
+												<td>
+													{$vo.start_time|date="Y-m-d",###}
+												</td>
+											</tr>
+										</volist>
+									</if>
+								</table>
+							</div>
+						</div>
+						<div class="tab-pane fade back_box" id="tab3">
+							<div class="panel-body">
+								<div class="header1">
+									<div class="pull-right"> 
+									<if condition="$leads['is_deleted'] == 0">
+										<a href="javascript:void(0);" class="add_file btn btn-primary"><i class="fa fa-upload"></i>&nbsp;&nbsp;上传</a>
+									</if>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+								<if condition="$leads.file eq null">
+									<include file="Public:nodata" />
+								<else />
+									<table class="table product-table">
+										<tr>
+											<td>附件名称</td>
+											<td>{:L('SIZE')}</td>
+											<td>上传人</td>
+											<td>上传时间</td>
+											<if condition="$content neq 'resource'">
+											<td>操作</td>
+										</tr>
+										<volist name="leads.file" id="vo">
+											<tr>
+												<td>
+													<img src="__PUBLIC__/productImg/{$vo['pic']}" alt="">&nbsp;&nbsp;&nbsp;
+													<a <if condition="in_array(getExtension($vo['name']),imgFormat())">class="litebox_file" href="{$vo['file_path']}" title="点击查看大图" data-litebox-group="group-1"<else/>href="javascript:;" file="{$vo.file_path}" filename="{$vo.name}" onclick="filedown(this);"</if>>{$vo.name}</a>
+												</td>
+												<td>
+													{$vo.size}KB
+												</td>
+												<td>
+													<notempty name="vo.owner.user_name"><a class="role_info" rel="{$vo['owner']['role_id']}" href="javascript:void(0)">{$vo.owner.user_name}</a></notempty>
+												</td>
+												<td>
+													<notempty name="vo.create_date">{$vo.create_date|date="Y-m-d H:i",###}</notempty>
+												</td>
+												<if condition="$content neq 'resource'">
+												<td class="tdleft">
+													<a href="javascript:void(0);" class="file_delete" rel="{$vo['file_id']}">{:L('DELETE')}</a>
+													<a href="javascript:void(0);" file="{$vo.file_path}" filename="{$vo.name}" onclick="filedown(this);">下载</a>
+												</td>
+												</if>
+											</tr>
+										</volist>
+									</table>
+								</if>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="" style="display:none" id="dialog-file" title="{:L('DIALOG_ADD_FILE')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div class="" style="display:none" id="dialog-role-info" title="{:L('DIALOG_USER_INFO')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div class="" style="display:none" id="dialog-map" title="{:L('MAP')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Z0Fo0ib1GUgWlylCWeLvQh2U"></script>
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+/**
+* 页面加载时执行Tab start
+ */
+$(function(){
+    var thisId = window.location.hash;
+    var atype = thisId.substr(1);
+    // $('#left_list a[type="'+atype+'"]').trigger('click');
+    $('#left_list a[type="'+atype+'"]').tab('show');
+ });
+/**
+* 页面加载时执行Tab end
+ */
+$('#left_list a').click(function (e) {
+	var maodian = '#'+$(this).attr('type');
+	url_jump(maodian);
+});
+function url_jump(maodian){
+    var leads_id = "{$leads['leads_id']}";
+    var url = "{:U('leads/view','id=')}"+leads_id+maodian;
+    window.history.replaceState({},0,'http://'+window.location.host+url);
+}
+/**
+ * 附件 如果是图片时 双击可查看大图
+ */
+$('.litebox_file').liteBox({
+  revealSpeed: 400,
+  background: 'rgba(0,0,0,.8)',
+  overlayClose: true,
+  escKey: true,
+  navKey: true,
+  errorMessage: '图片加载失败.'
+});
+
+/*跟进记录*/
+function btnHide(){
+    $('#log-text').attr('rows',1);
+    $('#log-btn').hide();
+    $('#product-radio').hide();
+    $('#log-text').val('');
+}
+$('#log-text').focus(function(){
+    $(this).attr('rows',4);
+    $('#log-btn').show();
+    $('#product-radio').show();
+    $('#add_log').prop('disabled',false);
+});
+$('#log-text').focusout(function(){
+    var code_id = $("input[name='id']:checked").val();
+    if($(this).val() == '' && code_id == ''){
+        btnHide();
+    }
+});
+$('#quxiao').click(function(){
+    btnHide();
+    return false;
+});
+/*ajax 提交记录*/
+$('#add_log').click(function(){
+    var log_type = 'rLeadsLog';
+    $(this).prop('disabled',true);
+    $.post("{:U('Log/add')}", $("#add-form").serialize(), function(data){
+        if(data.status == 1){
+            var content = $('#log-text').val().replace('&nbsp','&NBSP');
+            var log_html = "<div class='ibox-content gray-bg' log-rel='"+data.data.log_id+"' style='margin-bottom: 18px'><div class='social-feed-separated clearfix'><div class='social-feed-box'><div class='pull-right social-action dropdown'><span data-toggle='dropdown' class='dropdown-toggle'><i style='font-size:20px;cursor:pointer' class='fa fa-angle-down'></i></span><ul class='dropdown-menu m-t-xs' ><li><a  rel='"+data.data.log_id+"' href='javascript:void(0);' type='"+log_type+"' onclick='del_confirm(this);'>{:L('DELETE')}</a></li></ul></div><div class='social-avatar'><img alt='image' style='width:35px;height:35px;' class='img-circle' src='"+data.data.owner.thumb_path+"'><a class='role_info name-colors'  rel='"+data.data.owner.role_id+"' href='javascript:void(0)'>"+data.data.owner.full_name+"</a>&nbsp;&nbsp;<span class='text-muted'>添加了一条快快速记录</span>&nbsp;&nbsp;<span class='text-muted' >"+data.data.date+"</span></div><div class='social-body'><span style='word-wrap:break-word;line-height: 21px;color: #000;'>"+content+"</span></div></div></div></div>";
+            $('#log-list').prepend(log_html);
+            btnHide();
+        }else{
+            alert_crm('添加失败, 请重试');
+        }
+    });
+});
+/*删除日志*/
+function del_confirm(e){
+    swal({
+        title: "确定要删除沟通日志吗？",
+        text: "删除后将无法恢复，请谨慎操作！",
+        type: "warning",   
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "是的，我要删除！",
+        cancelButtonText:'让我再考虑一下…',
+        closeOnConfirm:false,
+        closeOnCancel:false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+            var log_id = $(e).attr('rel');
+            var type = $(e).attr('type');
+            $.get("{:U('log/delete')}", {r:type, id:log_id}, function(data){
+                if(data != 0){
+                    swal({
+                        title: "删除成功！",
+                        text: "",
+                        type: "success"
+                    });
+                    $("[log-rel='"+log_id+"']").remove();
+                }else{
+                    swal({
+                        title: "操作失败！",
+                        text:data.info,
+                        type: "error"
+                    })
+                    return false;
+                }
+            });
+        } else {
+            swal("已取消","您取消了删除操作！","error");
+        }
+    });
+};
+//删除附件
+$('.file_delete').click(function(){
+    var file_id = $(this).attr('rel');
+    swal({
+        title: "您确定要删除附件信息吗？",
+        text: "删除后将无法恢复，请谨慎操作！",
+        type: "warning",   
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "是的，我要删除！",
+        cancelButtonText:'让我再考虑一下…',
+        closeOnConfirm:false,
+        closeOnCancel:false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+            $.ajax({
+                type:'get',
+                url: "{:U('file/delete','r=RFileLeads&id=')}"+file_id,
+                async: false,
+                success: function (data) {
+                    if (data.status == 1) {
+                        swal("删除成功！", "您已经永久删除了信息！", "success");
+                        history.go(0);
+                    }else{
+                        swal({
+                            title: "操作失败！",
+                            text:data.info,
+                            type: "error"
+                        })
+                        return false;
+                    }
+                },
+                dataType: 'json'
+            });
+        } else {
+            swal("已取消","您取消了删除操作！","error");
+        }
+    });
+});
+
+if ("{:C('isMobile')}" == "1") {
+	width = $('.container').width() * 0.9;
+} else {
+	width = 800;
+}
+
+$("#dialog-file").dialog({
+    autoOpen: false,
+    modal: true,
+	width: width,
+	maxHeight: 400,
+	position: ["center",100],
+	buttons: {
+		"确认": function () {
+		   window.location.reload();
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+
+$("#dialog-role-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: width,
+	maxHeight: 400,
+	position: ["center",100]
+});
+
+$("#dialog-map").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 800,
+	minHeight: 600,
+	position: ["center",100]
+});
+
+$(".add_file").click(function(){
+	$('#dialog-file').dialog('open');
+	$('#dialog-file').load('{:U("file/add","r=RFileLeads&module=leads&id=".$leads["leads_id"])}');
+});
+$(function(){
+	$(".role_info").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+	$(".getMap").click(function(){
+		var map = $(this).attr('rel');
+		$('#dialog-map').dialog('open');
+		$('#dialog-map').load('{:U("setting/mapdialog","map=")}'+map);
+	});
+});
+</script>
+<include file="Public:footer" />

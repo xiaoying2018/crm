@@ -1,0 +1,288 @@
+<include file="Public:header" />
+<style type="text/css">
+    .add_title{
+        padding-bottom:10px;
+        height: 60px;
+        margin-bottom:15px;
+    }
+    .add_title>span{
+        border-bottom: 2px solid #1ab394;
+        font-size: 24px;
+    }
+    .add_body >div >.full-height-scroll{
+        border-right:1px dotted #ccc
+    }
+    .add_body_title{
+        margin:15px auto 30px auto;
+        padding-left: 14px;
+    }
+    .add_body_form>form>.form-group{
+        margin-bottom: 25px;
+    }
+    body{overflow-y:hidden;}
+    .form-control{
+        float:left;
+    }
+</style>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<script>
+    $(function(){
+        $(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+        $(window).resize(function(){
+            $(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+        })
+    })
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+    <form class="form-horizontal" id="form" role="form" action="{:U('cooperate/schoolEdit')}" method="post" enctype="multipart/form-data">
+        <div class="ibox-content " id="add_body" >
+            <div class="row">
+                <div class="col-md-12 add_body">
+                    <div class="full-height-scroll">
+                        <div class="row" >
+                            <div class="col-md-12 add_body_title" style="margin:20px 0 0 0px;">
+                                <div class="all-inline">
+                                    <span class="sq-tag"></span>
+                                    <div class="text-tag">
+                                        <span>基础信息</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+
+
+
+                                <!-- 名称 -->
+                                <div class="form-group" >
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 学校中文名称</label>
+                                    <div class="col-md-6">
+                                        <input value="{$info.name_cn}" class="form-control " type="text" name="name_cn" id="name_cn" aria-required="true" value="" placeholder="请输入学校中文名称"/>
+                                    </div>
+                                </div>
+                                <!-- 英文名称 -->
+                                <div class="form-group" >
+                                    <label class="col-md-4 control-label">英文名称</label>
+                                    <div class="col-md-6">
+                                        <input value="{$info.name_en}" class="form-control " type="text" name="name_en" id="name_en" aria-required="true" value="" placeholder="请输入学校英文名称"/>
+                                    </div>
+                                </div>
+                                <!-- 日文名称 -->
+                                <div class="form-group" >
+                                    <label class="col-md-4 control-label">日文名称</label>
+                                    <div class="col-md-6">
+                                        <input value="{$info.name_jp}" class="form-control " type="text" name="name_jp" id="name_jp" aria-required="true" value="" placeholder="请输入学校日文名称"/>
+                                    </div>
+                                </div>
+                                <!-- 学校logo -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">学校logo</label>
+                                    <div class="col-md-4">
+                                        <img id="main_pic_prev" class="thumb80" src="{$info.logo}"/>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="btn btn-success fileinput-button">
+                                            <span>选择图片</span>
+                                            <input value="{$info.logo}" type="file" name="logo" id="main_pic"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 分数范围 -->
+                                <div class="form-group ">
+                                    <label class="col-md-4 control-label" for="score"><span style="color:#FF0011;">*</span> 分数范围：</label>
+                                    <div class="col-sm-6">
+                                        <select id="score" class="form-control checkit" onchange="" style="float:left;" rel="require" rell="分数范围" name="score">
+                                            <option value="1" <if condition="$info['score'] == 1">selected</if>>90-100分</option>
+                                            <option value="2" <if condition="$info['score'] == 2">selected</if>>80-90分</option>
+                                            <option value="3" <if condition="$info['score'] == 3">selected</if>>70-80分</option>
+                                            <option value="4" <if condition="$info['score'] == 4">selected</if>>60-70分</option>
+                                            <option value="5" <if condition="$info['score'] == 5">selected</if>>50-60分</option>
+                                            <option value="6" <if condition="$info['score'] == 6">selected</if>>50分以下</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- 包含专业类别 -->
+                                <hr>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">包含专业类别:</label>
+                                    <div class="col-md-6">
+                                        <volist name="major_cates" id="major_cate">
+                                            <div class="checkbox checkbox-info" style="float:left;">
+                                                <input type="checkbox" name="major_cate[]" id="{$major_cate.id}" value="{$major_cate.id}" <if condition="in_array($major_cate['id'],$info['major_cate'])">checked</if>> <label for="{$major_cate.id}">{$major_cate.name}</label> &nbsp;
+                                            </div>
+                                        </volist>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                                <!-- 高中 -->
+                                <hr>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">高中:</label>
+                                    <div class="col-md-6">
+                                        <volist name="programs" id="program">
+                                            <div class="checkbox checkbox-info" style="float:left;">
+                                                <input type="checkbox" name="gaozhong[]" id="gz{$program.id}" value="{$program.id}" <if condition="in_array($program['id'],$info['gaozhong'])">checked</if>> <label for="gz{$program.id}">{$program.name}</label> &nbsp;
+                                            </div>
+                                        </volist>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                                <!-- 大学 -->
+                                <hr>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">大学:</label>
+                                    <div class="col-md-6">
+                                        <volist name="programs" id="program">
+                                            <div class="checkbox checkbox-info" style="float:left;">
+                                                <input type="checkbox" name="daxue[]" id="dx{$program.id}" value="{$program.id}" <if condition="in_array($program['id'],$info['daxue'])">checked</if>> <label for="dx{$program.id}">{$program.name}</label> &nbsp;
+                                            </div>
+                                        </volist>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                                <!-- 所在地区 -->
+                                <div class="form-group ">
+                                    <label class="col-md-4 control-label" for="area_id">所在地区</label>
+                                    <div class="col-sm-3">
+                                        <select id="parent_area" class="form-control checkit" onchange="changeCity(this.value)" style="float:left;" rel="require" rell="所在地区">
+                                            <volist name="area" id="vo">
+                                                <if condition="$vo['pid'] == 0">
+                                                    <option value="{$vo.id}">{$vo.name}</option>
+                                                </if>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <select id="area_id" class="form-control checkit" onchange="" style="float:left;" rel="require" rell="所在地区" name="area_id">
+                                            <!-- 所在地区 -->
+                                            <option value="" id="kong">--请选择--</option>
+                                            <volist name="area" id="vo" class="childselect">
+                                                <option value="{$vo.id}" data-pid="{$vo.pid}" <if condition="$vo['id'] == $info['area_id']">selected</if>>{$vo.name}</option>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- 院校性质-->
+                                <div class="form-group ">
+                                    <label class="col-md-4 control-label" for="xingzhiid">院校性质</label>
+                                    <div class="col-sm-6">
+                                        <select id="xingzhiid" class="form-control checkit" onchange="" style="float:left;" rel="require" rell="院校性质" name="xingzhiid">
+                                            <option value="1" <if condition="$info['xingzhiid'] == 1">selected</if>>国立</option>
+                                            <option value="2" <if condition="$info['xingzhiid'] == 2">selected</if>>公立</option>
+                                            <option value="3" <if condition="$info['xingzhiid'] == 3">selected</if>>私立</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- 一句话亮点 -->
+                                <div class="form-group" >
+                                    <label class="col-md-4 control-label">一句话亮点</label>
+                                    <div class="col-md-6">
+                                        <input value="{$info.one}" class="form-control " type="text" name="one" id="one" aria-required="true" value="" placeholder="请输入一句话亮点介绍"/>
+                                    </div>
+                                </div>
+                                <!-- 官方主页 -->
+                                <div class="form-group" >
+                                    <label class="col-md-4 control-label">官方主页</label>
+                                    <div class="col-md-6">
+                                        <input value="{$info.website}" class="form-control " type="text" name="website" id="website" aria-required="true" value="" placeholder="请输入官方主页"/>
+                                    </div>
+                                </div>
+                                <!-- 排名 -->
+                                <div class="form-group" >
+                                    <label class="col-md-4 control-label">排名</label>
+                                    <div class="col-md-6">
+                                        <input value="{$info.rank}" class="form-control " type="number" name="rank" id="rank" aria-required="true" value="" placeholder="请输入排名,可选,默认值99"/>
+                                    </div>
+                                </div>
+                                <!-- 院校介绍 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">院校介绍</label>
+                                    <div class="col-md-8">
+                                        <textarea class="form-control" placeholder="请输入院校介绍" rows="5" name="desc" id="desc">{$info.desc}</textarea>
+                                    </div>
+                                </div>
+                                <!-- 学校地址 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">学校地址</label>
+                                    <div class="col-md-8">
+                                        <textarea class="form-control" placeholder="请输入学校地址" rows="5" name="address" id="address">{$info.address}</textarea>
+                                    </div>
+                                </div>
+                                <!-- 状态 -->
+                                <div class="form-group ">
+                                    <label class="col-md-4 control-label">状态</label>
+                                    <div class="col-sm-6">
+                                        <div class="radio radio-info radio-inline" style="margin-left: 25px;">
+                                            <input class="form-control" type="radio" id="status_1"  name="status" value="1" <if condition="$info['status'] == 1">checked</if> />
+                                            <label for="status_1">开启</label>
+                                        </div>
+                                        <div class="radio radio-info radio-inline" style="margin-left: 25px;">
+                                            <input class="form-control" type="radio" id="status_2" name="status" value="0" <if condition="$info['status'] == 0">checked</if> />
+                                            <label for="status_2">关闭</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tfoot_div" class="clearfix">
+            <div class="clearfix" id="tfoot_page">
+                <div class="ibox-content" style="border-top: none;">
+                    <input type="hidden" name="id" value="{$info.id}">
+                    <input type="hidden" name="logo" value="{$info.logo}">
+                    <div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><a href="javascript:void(0)" id="submit" class="btn btn-primary">确认修改</a></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript" src="__PUBLIC__/js/uploadPreview.js"></script>
+<script type="text/javascript">
+
+    // 默认选中地区
+    var parent_id = $("#area_id option:selected").data("pid");
+    console.log();
+    $("#parent_area").find("[value='"+parent_id+"']").attr("selected","selected");
+
+    //初始化上传图片
+    $("body").on('click','input[type="file"]', function(){
+        var selector = $(this).attr('id');
+        $("#"+selector).uploadPreview({ Img: selector+"_prev", Width: 120, Height: 120 });
+    });
+
+    if ("{:C('isMobile')}" == "1") {
+        width = $('.container').width() * 0.9;
+    } else {
+        width = 800;
+    }
+
+    $(document).ready(function(){
+        /*form表单验证*/
+        $("#form").validate({
+
+        });
+    });
+
+    $("#submit").click(function(){
+        $('#form').submit();
+    });
+
+    function changeCity(id) {
+        // 隐藏所有
+        $("#area_id").find("option").hide();
+        //显示选中地区的子元素
+        $("#area_id").find("[data-pid='"+id+"']").show();
+
+        $("#area_id").val($("#area_id").find("[data-pid='"+id+"']").eq(0).val());
+
+        if($("#area_id").find("[data-pid='"+id+"']").length < 1){
+            $('#kong').val(id).attr("selected","selected").show()
+        }
+    }
+
+</script>
+<include file="Public:footer" />

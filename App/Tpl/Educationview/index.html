@@ -1,0 +1,302 @@
+<include file="Public:header" />
+<script src="/Public/layui/layui.js"></script>
+<link rel="stylesheet" href="/Public/layui/css/layui.css">
+<style type="text/css">
+    #show_schedule #laydate{
+        display: none;
+        position: absolute;
+        top: 30px;
+        right: 0;
+    }
+    .fa-calendar{
+        font-size: 24px;
+        color: #1ab394;
+        cursor: pointer;
+    }
+    .pageDv {
+        margin: 15px 0
+    }
+
+    .pageNav {
+        text-align: center;
+        margin: 0
+    }
+
+    #totalcount {
+        padding: 0 6px
+    }
+
+    .pageNav a {
+        font-size: 14px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        padding: 5px 8px;
+        text-align: center;
+        color: #8b929f;
+        background-color: #fff;
+        border: 1px solid #1ab394;
+        display: inline-block;
+        margin-left: 5px;
+        -moz-transition: all .3s ease-in-out;
+        -webkit-transition: all .3s ease-in-out;
+        -o-transition: all .3s ease-in-out;
+        transition: all .3s ease-in-out;
+        height: 30px;
+        font-weight: normal !important
+    }
+
+    .pageNav a.page {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        line-height: 28px
+    }
+
+    .pageNav a.active {
+        color: #fff;
+        background-color: #1ab394;
+        border-color: #1ab394
+    }
+
+    .pageNav a:hover {
+        cursor: pointer;
+        color: #fff;
+        background-color: #1ab394;
+        border-color: #1ab394
+    }
+</style>
+<script src="/Public/js/jqPaginator/jqPaginator.min.js"></script>
+<div class="page-wrapper wrapper wrapper-content animated fadeIn">
+    <div class="row" id="show_schedule">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="title-bar" style="position: relative;z-index: 99; padding: 12px 10px 6px 20px;">
+                    <div class="row" id="title-show">
+                        <ul class="clearfix row" style=" padding: 0; width: 100%; text-align: right;">
+                            <div class="col-lg-2">
+                                <a href="javascript:;" class="btn btn-primary btn-sm pull-left" style="margin-right:8px">{{now}}</a>
+                            </div>
+                            <li class="li_item bt col-lg-10">
+                                <i class="fa fa-calendar"></i>
+                                <div id="laydate"></div>
+                                <!-- <foreach name="roles" item="r">
+                                    <span class="chhose_item pull-right" data-val="{$r.id}"><i class="fa fa-square-o"></i>{$r.name}</span>
+                                </foreach> -->
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-12 ibox-title" style="padding: 10px;">
+                    <div class="nicescroll" id="table_div" style="overflow-x: scroll; width: 100%;">
+                        <table class="table table-hover table-striped table_thead_fixed">
+                            <tr id="childNodes_num" class="tabTh">
+                                <td>课时名称</td>
+                                <td>班级/课时</td>
+                                <td>所属课程</td>
+                                <td>开始时间</td>
+                                <td>结束时间</td>
+                                <td>课时时长</td>
+                                <td>授课老师</td>
+                                <td>班主任</td>
+                                <td>查看签到</td>
+                            </tr>
+                            <!-- 我的线索 -->
+                            <tr class="controls_tr" v-for="(item,index) in taday" :data-id="item.id">
+                                <td>{{item.section_name}}</td>
+                                <td>{{item.period_name}}</td>
+                                <td>{{item.course_name}}</td>
+                                <td>{{item.start_time}}</td>
+                                <td>{{item.end_time}}</td>
+                                <td>{{item.duration}}</td>
+                                <td>{{item.teacher_name}}</td>
+                                <td>{{item.headmaster_name}}</td>
+                                <td><button class="btn btn-danger" id="SignList"  :data-id="item.id">查看学员签到</button></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- 分页 -->
+                <div class="pageDv" style="position: fixed;bottom: 0;z-index: 11;width: 100%; height: 30px;">
+                    <span class="pageNav pagination">
+                    </span>
+                    <span href="">
+                        <!-- 一共检索到<font id="totalcount">{{total}}</font>条数据 -->
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display:none" id="dialog-sign" title="查看学员签到">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(function() {
+    $("#dialog-sign").dialog({
+        autoOpen: false,
+        modal: true,
+        width: '60%',
+        maxHeight: 600,
+        position: ["center", 100],
+        buttons: {
+            '取消': function() {
+                $(this).dialog('close');
+            }
+        },
+        close: function() {
+            $(this).html('');
+        }
+    });
+
+
+
+    $(document).on('click','.fa-calendar',function(){
+        $("#laydate").show();
+
+    })
+    $(document).on('click','#SignList',function(){
+        var schedule_id=$(this).data('id');
+        $('#dialog-sign').load('/index.php?m=sign_In&a=showSignList&schedule_id='+schedule_id);
+        $('#dialog-sign').dialog('open');
+    })
+    var current_stamp = Date.parse(new Date()) / 1000,
+        current_date = timestampToFormat(current_stamp, 'yyyy-MM-dd'),
+        marks = {};
+    // vue 模型
+    model = new Vue({
+        el: "#show_schedule",
+        data: {
+            request:{
+                page:1,
+                rows:10
+            },
+            lists: {},
+            taday: {},
+            marks: {},
+            now: {},
+            total:""
+        },
+        methods: {
+            _init: function() {
+                var _this = this;
+                $.ajax({
+                    url: "{:U('education/schedule_after')}",
+                    data: _this.request,
+                    dataType: "JSON",
+                    type: "POST",
+                    success: function(res) {
+                        if (res.result) {
+                            _this.initPage(res.count, _this.request.rows, res.page);
+                            _this.now = current_date;
+                            _this.lists = res.lists;
+                            _this.total = res.count;
+                            marks = res.marks;
+                            // 初始化日历
+                            layui.use(['laydate', 'layer'], function() {
+                                var laydate = layui.laydate,
+                                    layer = layui.layer;
+
+                                //执行一个laydate实例
+                                laydate.render({
+                                    elem: '#laydate' // 指定元素
+                                        ,
+                                    type: 'date' // 时间类型
+                                        ,
+                                    range: false // 显示时间段
+                                        ,
+                                    format: 'yyyy-MM-dd' // 时间格式
+                                        ,
+                                    value: new Date() // 初始化默认值
+                                        ,
+                                    position: 'static',
+                                    showBottom: true,
+                                    theme: '#667b8f',
+                                    calendar: false // 是否显示公历节日
+                                        ,
+                                    min: current_date,
+                                    mark: marks,
+                                    ready: function(date) {
+
+                                    },
+                                    change: function(value, date) { //监听日期被切换
+                                        model.refreshSchedule(value);
+                                        $("#laydate").hide();
+                                    }
+                                });
+                            });
+                            //第一次展示全部
+                            var _temp = []
+                            for (var key in res.lists) {
+                                for (var i in res.lists[key]) {
+                                    _temp.push(res.lists[key][i]);
+                                }
+                            }
+                            _this.taday = _temp
+                            console.log("xxx",_temp);
+                            // _this.refreshSchedule(current_date);
+
+                        } else {
+                            layer.msg('ERROR ' + res.error);
+                        }
+                    }
+                });
+            },
+            //初始化分页
+            initPage(count,size,page){
+                var _this = this;
+                $('.pageNav').jqPaginator({
+                    totalCounts: parseInt(count),
+                    pageSize: size,
+                    visiblePages: 5,
+                    currentPage: parseInt(page),
+                    first: "<a>首页</a>",
+                    last: "<a>末页</a>",
+                    prev: "<a>上一页</a>",
+                    page: "<a class='page'>{{page}}</a>",
+                    next: "<a>下一页</a>",
+                    onPageChange: function(num, type) {
+                        _this.request.page = num
+                        if (type != "init") {
+                            //ajax请求分页数据 num是第几页
+                            _this._init();
+                        }
+                    }
+                });
+            },
+            refreshSchedule: function(date) {
+                var _this = this,
+                    taday = {};
+
+                if (_this.lists[date]) {
+                    taday = _this.lists[date];
+                } else {
+                    taday = {};
+                }
+                _this.now = date;
+                _this.taday = taday;
+                _this.total = _this.taday.length;
+            }
+        }
+
+    });
+    // 初始化调用数据
+    model._init();
+
+    function dd(data) {
+        console.log(data);
+    }
+
+    function signList(obj) {
+        alert(1);
+    }
+});
+</script>
+<include file="Public:footer" />

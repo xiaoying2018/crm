@@ -1,0 +1,130 @@
+<include file="Public:header" />
+<style>
+table tbody tr{cursor:move;}
+</style>
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+            	<div class="ibox-content">
+					<div class="title-bar" style="margin-bottom:10px;border-bottom:1px solid #e3e3e3;padding-top:0px;padding-left:10px;">
+						<div class="row  clearfix" id="title-hide" style="font-size:14px;font-weight:700">
+							<ul class="breadcrum pull-left">
+								{:L('MAIL_TEMPLATE_SETTINGS')}
+							</ul>
+							<div class="pull-right">
+								<a href="javascript:void(0);" id="add" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> {:L('ADD_THE_EMAIL_TEMPLATE')}</a>
+							</div>
+						</div>
+					</div>
+					<include file="Public:alert" />
+					<div class="row">
+							<div class="col-sm-12">
+								<table class="table table-hover table-striped table_thead_fixed" width="95%" border="0" cellspacing="1" cellpadding="0">
+									<notempty name="templateList">
+										<thead>
+											<tr>
+												<th style="width:20px;"></th>
+												<th width="20%">{:L('THE_NAME_OF_THE_TEMPLATE')}</th>
+												<th width="20%">{:L('EMAIL_SUBJECT')}</th>
+												<th width="50%">{:L('MAIL_SUBJECT_CONTENT')}</th>
+												<th width="20%">{:L('OPERATING')}</th>
+											</tr>
+										</thead>
+										<tfoot>
+											<tr>
+												<td colspan="5">
+												</td>
+											</tr>
+										</tfoot>
+										<tbody>
+											<volist name="templateList" id="vo">
+												<tr>
+													<td></td>
+													<td>{$vo.subject}</td>
+													<td>{$vo.title}</td>
+													<td>{$vo.content}</td>
+													<td>
+														<a href="javascript:void(0);" rel="{$vo['template_id']}" class="edit">{:L('EDITING')}</a>&nbsp;&nbsp;
+														<a href="{:U('email/delete','id='.$vo['template_id'])}" >删除</a>
+													</td>
+												</tr>
+											</volist>
+										</tbody>
+									<else />
+										<tr>
+											<td>{:L('EMPTY_TPL_DATA')}</td>
+										</tr>
+									</notempty>
+								</table>
+							</div> 
+					</div>
+            	</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" id="dialog-add" title="{:L('ADD_STATE')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-edit" title="{:L('MODIFY_STATE')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">	
+$("#dialog-add").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 400,
+	position: ["center",100],
+	buttons: { 
+		"确认": function () {
+			$('#dialog_email_add').submit();
+			//$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$("#dialog-edit").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 400,
+	position: ["center",100],
+	buttons: { 
+		"确认": function () {
+			$('#dialog_email_edit').submit();
+			//$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$(function(){
+	$("#add").click(function(){
+		$('#dialog-add').dialog('open');
+		$('#dialog-add').load('{:U("email/add")}');
+	});
+	$(".edit").click(function(){
+		var id = $(this).attr('rel');
+		$('#dialog-edit').dialog('open');
+		$('#dialog-edit').load('{:U("email/edit","id")}'+id);
+	});
+})
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,62 @@
+<style>
+	.nav-tabs li.active{
+		margin-bottom:-1px;
+	}
+	.nav-tabs>li.active>a{
+		margin-top:-2px;
+	}
+</style>
+<form action="{:U('Message/send')}" method="post">
+	<div class="tabs-container">
+		<ul class="nav nav-tabs">
+			<volist name="departments_list" id="vo" key="k">
+				<li <if condition="$vo['department_id'] eq session('department_id')">class="active"</if>>
+					<a class="ta" rel="{$k}" data-toggle="tab">{$vo['name']}</a>
+				</li>
+			</volist>
+		</ul>
+		<div class="tab-content">
+			<volist name="departments_list" id="vo" key="k">
+				<div class="tab-pane <if condition="$vo['department_id'] eq session('department_id')">active</if>" id="ta{$k}" style="line-height: 30px;">
+					<input type="checkbox" class="check_all" rel="{$k}" style="width:13px;height:13px;"/>&nbsp;<span style="font-weight: bold;">{:L('SELECT_ALL')}</span><br/>
+					<volist  name="vo['user']" id="temp">
+						<span style="width:25%; float:left;">
+							<label>
+								<input type="checkbox" class="muti_role_id muti_role_id{$k}" name="to_role_id[]" rel="{$temp['user_name']}" <if condition = "$temp['thumb_path']">rel1="{$temp['thumb_path']}"<else />rel1="__PUBLIC__/img/avatar_default.png"</if> value="{$temp.role_id}"<if condition="strpos($_GET['check_ids'], ','.$temp['role_id'].',') !== false"> checked="checked"</if> />
+								{$temp['user_name']}【{$temp.role_name}】
+							</label>&nbsp; 
+						</span>
+					</volist>
+				</div>
+			</volist>
+		</div>
+	</div>
+
+</form>
+<script type="text/javascript">
+	
+$(function(){
+	$('.ta').click(
+		function(){
+			var num = $(this).attr('rel');
+			var list = new Array();
+			<volist name="departments_list" id="vo" key="k">
+				list.push({$k});
+			</volist>
+			for (var i=0;i<list.length;i++){
+				if(num == list[i]){
+					$('#ta'+(i+1)).show().addClass('active').removeClass('hide');
+				}else{
+					$('#ta'+(i+1)).hide().removeClass('active').addClass('hide');
+				}
+			}
+		}
+	);
+	$('.check_all').click(
+		function(){
+			var k = $(this).attr('rel');
+			$("input.muti_role_id"+k).prop('checked', $(this).prop("checked"));
+		}
+	);
+});
+</script>

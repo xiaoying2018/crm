@@ -1,0 +1,1016 @@
+<script src="https://cdn.bootcss.com/vue/2.5.13/vue.min.js"></script>
+<style>
+    .eModal td a{
+        color: #35a2ff;
+    }
+    .eModal .nodata{
+        color: #ccc;
+    }
+    table{
+     display: table !important;
+    }
+    tbody{
+        width: 100%;
+    }
+    .list_detail td{
+        border: none !important;
+        padding:6px 10px !important;
+    }
+    .modal-header span{
+        font-size: 16px;
+        color: #000;
+        vertical-align: middle;
+        margin-right: 5px;
+    }
+    .header-lp{
+        width: 70%;
+        float: left;
+        line-height: 30px;
+    }
+    .header-rp{
+        width: 30%;
+        line-height: 30px;
+        float: right;
+    }
+    .close{
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .close span{
+        padding: 5px;
+        font-size: 40px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        background: #fff;
+    }
+    .school_rank{
+        padding: 2px 5px;
+        border-radius: 5px;
+        color: #fff;
+        background-color: #72c931;
+        vertical-align: baseline;
+        min-width: 30px;
+        display: inline-block;
+        text-align: center;
+    }
+    .dataperson{
+        margin: 15px 0;
+        text-align: left;
+    }
+    .s_content.block{
+        border: 1px solid #f4f4f4;
+        display: block;
+        padding: 5px 10px;
+        margin-top: 5px;
+    }
+    .datapoint{
+        margin: 15px 0;
+        text-align: left;
+    }
+    .s_content .fa{
+        font-size: 20px;
+        vertical-align: bottom;
+        color: #72c931;
+    }
+    .s_content .fa-times-circle{
+        color: #ff5a5a;
+    }
+    .blue_a{
+        color: #35a2ff;
+        border: 1px solid #35a2ff;
+        padding: 2px 4px;
+        border-radius: 3px;
+        text-align: center;
+    }
+    .s_width{
+      width: 65px;
+      display: inline-block;
+    }
+    .eModal .nodata {
+        color: #ccc !important;
+    }
+    .click_Update,.click_Save{
+        float: right;
+        margin-right: 50px;
+    }
+    .click_Save{
+        background-color: #ed5565 !important;
+    }
+    .click_Save span,.click_Save i{
+        color: #fff !important;
+    }
+    .editPart input{
+        border: none;
+        border-bottom: 1px solid #eeeeee;
+        outline: none;
+        font-size: 14px;
+
+    }
+    .editPart input[type=text]{
+        width: 60%;
+        font-size: 14px;
+    }
+    .editPart textarea{
+        width: 80%;
+        min-height: 70px;
+        vertical-align: top;
+        padding: 5px 10px;
+        border: 1px solid #eeeeee;
+        font-size: 14px;
+    }
+    .editPart select{
+        width: 60%;
+        border: 1px solid #eeeeee;
+        font-size: 14px;
+    }
+    .editPart .checkbox-inline{
+        line-height: 13px;
+    }
+    .header-lp input{
+        width: auto !important;
+    }
+    .header-lp select{
+        width: 230px !important;
+    }
+    .modal-content{
+        overflow-y: scroll !important;
+        overflow-x: hidden !important;
+    }
+</style>
+<!-- 详细层 -->
+<div class="modal fade eModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style=" overflow-x: hidden;">
+    <div class="modal-dialog" role="document" style="width: 80%;  overflow-x: hidden;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" @click="close()" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <template v-if="!update">
+                    <div class="header-lp">
+                        <span class="s_content" v-html="data.school_name"></span>
+                        <span style="font-size: 12px; color: #ccc;">|</span>
+                        <span class="s_content" v-html="data.include_major"></span>
+                        <span style="font-size: 12px; color: #ccc;">|</span>
+                        <span class="s_content" style="color: #666" v-html="data.recommend_level"></span>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="editPart header-lp">
+                        <span class="s_content">
+                            学校:&nbsp;&nbsp;&nbsp;&nbsp;<input  id="update_school_name"  type="text" :value="(data.school_name.indexOf('暂无数据')) > -1 ? '' : data.school_name" >
+                        </span>
+                        <span style="font-size: 12px; color: #ccc;">|</span>
+                        <span class="s_content">
+                            项目:&nbsp;&nbsp;&nbsp;&nbsp;<input type="text"  id="update_include_major" :value="(data.include_major.indexOf('暂无数据')) > -1 ? '' : data.include_major" >
+                        </span>
+                        <span style="font-size: 12px; color: #ccc;">|</span>
+                        <span class="s_content">
+                            等级:&nbsp;&nbsp;&nbsp;&nbsp;<select name=""   id="update_recommend_level" style="width:100px !important;">
+                                <option value="">请选择</option>
+                                <option :value="n.id" v-for="n in select_data.recommend_level">{{n.name}}</option>
+                            </select>
+                            <input type="hidden" :value="data.recommend_level" id="update_recommend_level_hidden">
+                        </span>
+                    </div>
+                </template>
+                <div class="header-rp clearfix">
+                    <template v-if="!update">
+                        <span class="s_content left" v-html="data.nature_id"></span>
+                        <span class="s_content left" style="margin-left: 20px;">排名：<font class="school_rank" v-html="data.school_rank"></font></span>
+                    </template>
+                    <template v-else>
+                        <div class="editPart left" style="display: inline-block;">
+                            <span class="s_content left">
+                                <!-- 性质： -->
+                                <select name="" id="update_nature" style="width:70px;">
+                                    <option value="">请选择</option>
+                                    <option :value="n.id"  v-for="n in select_data.nature">{{n.name}}</option>
+                                </select>
+                                <input type="hidden" :value="data.nature_id" id="update_nature_hidden">
+                            </span>
+                            <span class="s_content left" style="margin-left: 20px;">排名：<input type="text" :value="(data.school_rank.indexOf('暂无数据')) > -1 ? '' : data.school_rank" style="width: 30px;"  id="update_school_rank"  /></span>
+                        </div>
+                    </template>
+                    <if condition="checkPerByAction('programadmin','program_edit')">
+                        <a href="javascript:void(0)" v-if="!update" @click="startUpdate()" class="btn btn-outline btn-default click_Update"><i class="icon-pencil"></i><span> 修改</span></a>
+                    </if>
+                <a href="javascript:void(0)" @click="save()" v-if="update" class="btn btn-outline btn-danger click_Save"><i class="icon-save"></i><span style="color: #fff;"> 保存</span></a>
+
+                </div>
+            </div>
+            <div class="modal-body row" style="padding-top: 0;">
+                
+                <ul class="list_detail col-md-12">
+                    <div class="col-md-8">
+                        <table style="table-layout:fixed;word-wrap: break-word; word-break: break-all; margin: 10px 0;">
+                            <tbody v-if="!update">
+                                <tr>
+                                    <td colspan="2">
+                                        <span class="s_title">学校地址:</span>
+                                        <span class="s_content">
+                                            <!-- <font id="u_area"></font>
+                                            <font id="u_city"></font> -->
+                                            <font v-html="data.address"></font>    
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">入学学期:</span>
+                                        <span class="s_content" v-html="data.term"></span>
+                                    </td>
+                                    <td>
+                                        <span class="s_title s_width">专科生申请:</span>
+                                        <span class="s_content">
+                                            <i v-if="data.specialty_enable == '是'" class="fa fa-check-circle"></i>
+                                            <i v-else class="fa fa-times-circle"></i>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">日语要求:</span>
+                                        <span class="s_content" v-html="data.required_jp"></span>
+                                    </td>
+                                    <td>
+                                        <span class="s_title s_width">海外出愿:</span>
+                                        <span class="s_content">
+                                            <i v-if="data.whether_abroad == '是'" class="fa fa-check-circle"></i>
+                                            <i v-else class="fa fa-times-circle"></i>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">英语要求:</span>
+                                        <span class="s_content" v-html="data.required_en"></span>
+                                    </td>
+                                    <td>
+                                        <span class="s_title s_width">资格审查:</span>
+                                        <span class="s_content">
+                                            <i v-if="data.is_aoo_check == '是'" class="fa fa-check-circle"></i>
+                                            <i v-else class="fa fa-times-circle"></i>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">其他要求:</span>
+                                        <span class="s_content" v-html="data.required_special"></span>
+                                    </td>
+                                    <td>
+                                        <span class="s_title s_width">教授套磁:</span>
+                                        <span class="s_content">
+                                            <i v-if="data.taoci == 1" class="fa fa-check-circle"></i>
+                                            <i v-else class="fa fa-times-circle"></i>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tbody v-else class="editPart">
+                                <tr>
+                                    <td colspan="2">
+                                        <span class="s_title">学校地区:</span>
+                                        <select name="area_id" id="area_id_update" onchange="resetCity(this)" class="form-control" style="    width: 150px;display: inline-block;">
+                                            <option value="">选择地区</option>
+                                            <volist name="area" id="vo" key="k">
+                                                <option value="{$vo.id}">{$vo.name}</option>
+                                            </volist>
+                                        </select>
+                                        <select name="city_id" id="city_id_update" class="form-control" style="width: 150px;display: inline-block;">
+                                            <option value="">选择城市</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <span class="s_title">学校地址:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.address.indexOf('暂无数据')) > -1 ? '' : data.address"  id="update_address">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">入学学期:</span>
+                                        <span class="s_content">
+                                            <label class="checkbox-inline" v-for="n in select_data.term"><input type="checkbox" :class="'term_'+n.id" name="terms[]" :value="n.id"> {{n.name}}</label>
+                                            <input type="hidden" id="term_hidden" :value="term">
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="s_title s_width">专科生申请:</span>
+                                        <span class="s_content">
+                                            <label v-if="data.specialty_enable == '是'" class="checkbox-inline" style="margin：0"><input type="radio" name="specialty_enable[]" value="1" checked="checked"> 是</label>
+                                            <label v-else class="checkbox-inline" style="margin：0"><input type="radio" name="specialty_enable[]" value="1"> 是</label>
+
+                                            <label v-if="data.specialty_enable == '否'" class="checkbox-inline" style="margin：0"><input type="radio" name="specialty_enable[]" value="0" checked="checked"> 否</label>
+                                            <label v-else class="checkbox-inline" style="margin：0"><input type="radio" name="specialty_enable[]" value="0"> 否</label>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">日语要求:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.required_jp.indexOf('暂无数据')) > -1 ? '' : data.required_jp" id="update_required_jp">
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="s_title s_width">海外出愿{{data.whether_abroad}}:</span>
+                                        <span class="s_content">
+                                            <label v-if="data.whether_abroad == '是'" class="checkbox-inline" style="margin：0"><input type="radio" name="whether_abroad[]" value="1" checked="checked"> 是</label>
+                                            <label v-else class="checkbox-inline" style="margin：0"><input type="radio" name="whether_abroad[]" value="1"> 是</label>
+
+                                            <label v-if="data.whether_abroad == '否'" class="checkbox-inline" style="margin：0"><input type="radio" name="whether_abroad[]" value="0" checked="checked"> 否</label>
+                                            <label v-else class="checkbox-inline" style="margin：0"><input type="radio" name="whether_abroad[]" value="0"> 否</label>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">英语要求:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.required_en.indexOf('暂无数据')) > -1 ? '' : data.required_en" id="update_required_en">
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="s_title s_width">资格审查:</span>
+                                        <span class="s_content">
+                                            <label v-if="data.is_aoo_check == '是'" class="checkbox-inline" style="margin：0"><input type="radio" name="is_aoo_check[]" value="1" checked="checked"> 是</label>
+                                            <label v-else class="checkbox-inline" style="margin：0"><input type="radio" name="is_aoo_check[]" value="1"> 是</label>
+
+                                            <label v-if="data.is_aoo_check == '否'" class="checkbox-inline" style="margin：0"><input type="radio" name="is_aoo_check[]" value="0" checked="checked"> 否</label>
+                                            <label v-else class="checkbox-inline" style="margin：0"><input type="radio" name="is_aoo_check[]" value="0"> 否</label>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">其他要求:</span>
+                                        <span class="s_content">
+                                            <input type="text" id="required_special" :value="(data.required_special.indexOf('暂无数据')) > -1 ? '' : data.required_special">
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="s_title s_width">教授套磁:</span>
+                                        <span class="s_content">
+                                            <label v-if="data.taoci == '1'" class="checkbox-inline" style="margin：0"><input type="radio" name="taoci[]" value="1" checked="checked"> 需要</label>
+                                            <label v-else class="checkbox-inline" style="margin：0"><input type="radio" name="taoci[]" value="1"> 需要</label>
+
+                                            <label v-if="data.taoci == '0'" class="checkbox-inline" style="margin：0"><input type="radio" name="taoci[]" value="0" checked="checked"> 不需要</label>
+                                            <label v-else class="checkbox-inline" style="margin：0"><input type="radio" name="taoci[]" value="0"> 不需要</label>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="background-color: #f4f4f4; margin: 20px 0;height: 1px; width: 100%;"></div>
+                        <template v-if="!update">
+                            <table style="">
+                                <tr>
+                                    <td colspan="2">
+                                        <span class="s_title">募集要项链接:</span>
+                                        <span class="s_content" v-if="data.required_download_url != '暂无数据'"><a :href="data.required_download_url" class="blue_a" target="_blank">点击进入</a></span>
+                                        <span class="nodata" v-else>暂无数据</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">选拔方式:</span>
+                                        <span class="s_content" v-html="data.filter_plan"></span>
+                                    </td>
+                                    <td>
+                                        <span class="s_title">报名方式:</span>
+                                        <span class="s_content" v-html="data.sign_type"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="vertical-align: top;">
+                                        <span class="s_title">研究方向:</span>
+                                        <span class="s_content" v-if="data.yanjiufangxiang != '暂无数据'">>{{data.yanjiufangxiang}}</span>
+                                        <span class="nodata" v-else>暂无数据</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align: top;">
+                                        <span class="s_title">资格审查材料:</span>
+                                        <span class="s_content block" v-html="data.aoo_mate"></span>
+                                        <span class="s_content block nodata" v-else>暂无数据</span>
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <span class="s_title">资格审查地址:</span>
+                                        <span class="s_content block" v-if="data.aoo_check_url != '暂无数据'"><a :href="data.aoo_check_url" target="_blank">{{data.aoo_check_url}}</a></span>
+                                        <span class="s_content block nodata" v-else>暂无数据</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align: top;">
+                                        <span class="s_title">申请材料:</span>
+                                        <span class="s_content block" v-if="data.cailiaoqingdan != '暂无数据'">{{data.cailiaoqingdan}}</span>
+                                        <span class="s_content nodata block" v-else>暂无数据</span>
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <span class="s_title">申请邮寄地址:</span>
+                                        <span class="s_content block" v-if="data.mail_to != '暂无数据'">{{data.mail_to}}</span>
+                                        <span class="s_content block nodata" v-else>暂无数据</span>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="datapoint">
+                                <span class="s_title">项目卖点:</span>
+                                <span class="s_content" v-html="data.point"></span>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <table class="editPart">
+                                <tr>
+                                    <td colspan="2">
+                                        <span class="s_title">募集要项链接:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.required_download_url.indexOf('暂无数据')) > -1 ? '' : data.required_download_url" id="update_required_download_url">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">选拔方式:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.filter_plan.indexOf('暂无数据')) > -1 ? '' : data.filter_plan" id="update_filter_plan">
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="s_title">报名方式:</span>
+                                        <span class="s_content">
+                                            <select name=""  id="update_sign_type">
+                                                <option value="">请选择</option>
+                                                <option :value="n.id" v-for="n in select_data.sign_type">{{n.name}}</option>
+                                            </select>
+                                            <input type="hidden" :value="data.sign_type" id="update_sign_type_hidden">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="vertical-align: top;">
+                                        <span class="s_title">研究方向:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.yanjiufangxiang.indexOf('暂无数据')) > -1 ? '' : data.yanjiufangxiang" id="update_yanjiufangxiang">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align: top;">
+                                        <span class="s_title">资格审查材料:</span>
+                                        <span class="s_content block" style="border:none;">
+                                            <textarea type="text" id="update_aoo_mate" :value="(data.aoo_mate.indexOf('暂无数据')) > -1 ? '' : data.aoo_mate"></textarea>
+                                        </span>
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <span class="s_title">资格审查地址:</span>
+                                        <span class="s_content block" style="border:none;">
+                                            <textarea type="text" id="update_aoo_check_url" :value="(data.aoo_check_url.indexOf('暂无数据')) > -1 ? '' : data.aoo_check_url"></textarea>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align: top;">
+                                        <span class="s_title">申请材料:</span>
+                                        <span class="s_content block" style="border:none;">
+                                            <textarea type="text" id="update_cailiaoqingdan" :value="(data.cailiaoqingdan.indexOf('暂无数据')) > -1 ? '' : data.cailiaoqingdan"></textarea>
+                                        </span>
+                                    </td>
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <span class="s_title">申请邮寄地址:</span>
+                                        <span class="s_content block" style="border:none;">
+                                            <textarea type="text" id="update_mail_to"  :value="(data.mail_to.indexOf('暂无数据')) > -1 ? '' : data.mail_to"></textarea>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="editPart datapoint">
+                                <span class="s_title" style="display: block;">项目卖点:</span>
+                                <span class="s_content">
+                                    <textarea id="update_point" style="margin-top: 15px; margin-left: 13px; width: 87%;" type="text" :value="(data.point.indexOf('暂无数据')) > -1 ? '' : data.point"></textarea>
+                                </span>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="col-md-4" style="border-left: 1px solid #f4f4f4; padding-top: 10px;">
+                        <template v-if="!update">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">招生主页:</span>
+                                        <span class="s_content" v-if="data.homepage != '暂无数据'"><a :href="data.homepage" target="_blank" class="blue_a">点击进入</a></span>
+                                        <span class="nodata" v-else>暂无数据</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">官方咨询邮箱:</span>
+                                        <span class="s_content" v-html="data.zx_email"></span>
+                                        <span class="nodata" v-else>暂无数据</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">官方咨询电话:</span>
+                                        <span class="s_content" v-if="data.zx_tel != '暂无数据'">
+                                            <a :href="'tel:'+data.zx_tel">{{data.zx_tel}}</a>
+                                        </span>
+                                        <span class="nodata" v-else>暂无数据</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">项目划分:</span>
+                                        <span class="s_content" v-html="data.program_category"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">专业分类:</span>
+                                        <span class="s_content" v-html="data.major_category"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">招生人数:</span>
+                                        <span class="s_content" v-html="data.volume"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">中国区人数:</span>
+                                        <span class="s_content" v-html="data.volume_cn"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">学费(万日元):</span>
+                                        <span class="s_content" v-html="data.tuition"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">减免(万日元):</span>
+                                        <span class="s_content" v-html="data.derate"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">资格审查时间:</span>
+                                        <span class="s_content" v-html="data.aoo_time"></span>
+                                    </td>
+                                </tr>
+                                <!-- 申请时间没有 -->
+                                <tr>
+                                    <td>
+                                        <span class="s_title">材料截止时间:</span>
+                                        <span class="s_content" v-html="data.deadline"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">考试时间:</span>
+                                        <span class="s_content" v-html="data.exam_time"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">入学时间:</span>
+                                        <span class="s_content" v-html="data.start_time"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">推荐导师:</span>
+                                        <span class="s_content block" v-html="data.person"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="dataperson">
+                                <span class="s_title">项目负责人:</span>
+                                <span class="s_content" v-html="data.person"></span>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <table class="editPart">
+                                <tr>
+                                    <td>
+                                        <span class="s_title">招生主页:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.homepage.indexOf('暂无数据')) > -1 ? '' : data.homepage" id="update_homepage">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">官方咨询邮箱:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.zx_email.indexOf('暂无数据')) > -1 ? '' : data.zx_email" id="update_zx_email">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">官方咨询电话:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.zx_tel.indexOf('暂无数据')) > -1 ? '' : data.zx_tel" id="update_zx_tel">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">项目划分:</span>
+                                        <select name="" id="update_program_category">
+                                            <option value="">请选择</option>
+                                            <option :value="n.id" v-for="n in select_data.program_category">{{n.name}}</option>
+                                        </select>
+                                        <input type="hidden" :value="data.program_category" id="update_program_category_hidden">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">专业分类:</span>
+                                        <!-- <span class="s_content" v-html="data.major_category"></span> -->
+                                        <select name="" id="update_major_category">
+                                            <option value="">请选择</option>
+                                            <option :value="n.id" v-for="n in select_data.major_category">{{n.name}}</option>
+                                        </select>
+                                        <input type="hidden" :value="data.major_category" id="update_major_category_hidden">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">招生人数:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.volume.indexOf('暂无数据')) > -1 ? '' : data.volume" id="update_volume">
+                                        </span>
+                                    </td>
+                                </tr>
+                               <tr>
+                                    <td>
+                                        <span class="s_title">中国区人数:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.volume_cn.indexOf('暂无数据')) > -1 ? '' : data.volume_cn" id="update_volume_cn">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">学费(万日元):</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.tuition.indexOf('暂无数据')) > -1 ? '' : data.tuition" id="update_tuition">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">减免(万日元):</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.derate.indexOf('暂无数据')) > -1 ? '' : data.derate" id="update_derate">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">资格审查时间:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.aoo_time.indexOf('暂无数据')) > -1 ? '' : data.aoo_time" id="update_aoo_time">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">材料截止时间:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.deadline.indexOf('暂无数据')) > -1 ? '' : data.deadline" id="update_deadline">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">考试时间:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.exam_time.indexOf('暂无数据')) > -1 ? '' : data.exam_time" id="update_exam_time">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">入学时间:</span>
+                                        <span class="s_content">
+                                            <input type="text" :value="(data.start_time.indexOf('暂无数据')) > -1 ? '' : data.start_time" id="update_start_time">
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="s_title">推荐导师:</span>
+                                        <span class="s_content block">
+                                            <input type="text" :value="(data.person.indexOf('暂无数据')) > -1 ? '' : data.person" id="update_person">
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="dataperson editPart">
+                                <span class="s_title">项目负责人:</span>
+                                <span class="s_content">
+                                    <input type="text" :value="(data.person.indexOf('暂无数据')) > -1 ? '' : data.person">
+                                </span>
+                            </div>
+                        </template>
+                    </div>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">完成</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function resetCity(that)
+    {
+        // 当前地区id
+        var area_id             =   $(that).val(),
+            citys               =   fetchJapanCityData( area_id ),
+            newHtml             =   "<option value=''>选择城市</option>",
+            city_id             =   $('#city_id_update');
+
+        if(citys != undefined ){
+            $.each( citys,function(k,item){
+                newHtml += "<option value='"+item.id+"'>--"+item.name+"--</option>";
+            } );
+        }
+        // console.log(city_id);
+
+        city_id.html( newHtml );
+    }
+$(function() {
+
+   
+    var eModal = new Vue({
+        el: ".eModal",
+        data: {
+            select_data:"",
+            data:{},
+            term:[],
+            update:false
+        },
+        methods: {
+            save:function(){
+                var _this = this;
+                var _send = {};
+                _send.id = this.data.id;
+
+
+                _send.area_id  = $("#area_id_update").val();
+                _send.city_id  = $("#city_id_update").val();
+
+                _send.school_name = $("#update_school_name").val()
+                _send.include_major = $("#update_include_major").val()
+                _send.recommend_level = $("#update_recommend_level").val()
+
+                _send.nature_id = $("#update_nature").val()
+                _send.school_rank = $("#update_school_rank").val()
+
+                _send.address = $("#update_address").val()
+
+
+                var arr = [];
+                $('[name="terms[]"]:checked').each(function(i){
+                        arr[i] = $(this).val();
+                });
+                _send.terms = arr
+
+
+                _send.specialty_enable = $("[name='specialty_enable[]']:checked").val()
+                _send.whether_abroad = $("[name='whether_abroad[]']:checked").val()
+                _send.is_aoo_check = $("[name='is_aoo_check[]']:checked").val()
+                _send.taoci = $("[name='taoci[]']:checked").val()
+
+
+                _send.required_jp = $("#update_required_jp").val()
+                _send.required_en = $("#update_required_en").val()
+                _send.special = $("#required_special").val()
+
+
+
+                _send.required_download_url = $("#update_required_download_url").val();
+                _send.filter_plan = $("#update_filter_plan").val();
+                _send.sign_type = $("#update_sign_type").val();
+                _send.yanjiufangxiang = $("#update_yanjiufangxiang").val();
+                _send.aoo_mate = $("#update_aoo_mate").val();
+                _send.aoo_check_url = $("#update_aoo_check_url").val();
+                _send.cailiaoqingdan = $("#update_cailiaoqingdan").val();
+                _send.mail_to = $("#update_mail_to").val();
+                _send.point = $("#update_point").val();
+
+
+
+                _send.homepage = $("#update_homepage").val();
+                _send.zx_email = $("#update_zx_email").val();
+                _send.zx_tel = $("#update_zx_tel").val();
+                _send.program_category = $("#update_program_category").val();
+                _send.major_category = $("#update_major_category").val();
+                _send.volume = $("#update_volume").val();
+                _send.volume_cn = $("#update_volume_cn").val();
+                _send.tuition = $("#update_tuition").val();
+                _send.derate = $("#update_derate").val();
+                _send.aoo_time = $("#update_aoo_time").val();
+                _send.deadline = $("#update_deadline").val();
+                _send.exam_time = $("#update_exam_time").val();
+                _send.start_time = $("#update_start_time").val();
+                _send.person = $("#update_person").val();
+
+// console.log("xxx",_send);
+                $.ajax({
+                    url:"/index.php?m=programadmin&a=program_edit",
+                    method:"post",
+                    dataType:"json",
+                    data:_send,
+                    success:function(res){
+                        if (res.status) {
+                            //修改完立即刷新数据
+                            // _this.getDetail(_send.id);
+                            _this.update = false;
+                            $(".eModal").modal('hide');
+                            // alert("修改成功")
+                        }else{
+                            alert("修改失败")
+                        }
+                    }
+                })
+            },
+            close:function(){
+                this.update = false
+            },
+            startUpdate:function(){
+                var _this = this;
+                this.update = true;
+                if (_this.select_data == "") {
+                    $.ajax({
+                        methods:"post",
+                        url:"/index.php?m=programadmin&a=select_data",
+                        dataType:"json",
+                        success:function(res){
+                            if (res) {
+                                _this.select_data = res;
+                                _this.$nextTick(function(){
+                                    _this.addSelectVal();
+                                })
+                            }
+                        }
+                    })
+                }else{
+                    _this.$nextTick(function(){
+                        _this.addSelectVal();
+                    })
+                }
+            },
+            addSelectVal: function(){
+                var _update_nature_hidden = $("#update_nature_hidden").val();
+                $("#update_nature option").each(function(){
+                    if ($(this).text() == _update_nature_hidden) {
+                        $(this).attr("selected","selected");
+                    }
+                })
+
+                var _update_recommend_level_hidden = $("#update_recommend_level_hidden").val();
+                $("#update_recommend_level option").each(function(){
+                    if ($(this).text() == _update_recommend_level_hidden) {
+                        $(this).attr("selected","selected");
+                    }
+                })
+
+                var _update_sign_type_hidden = $("#update_sign_type_hidden").val();
+                $("#update_sign_type option").each(function(){
+                    if ($(this).text() == _update_sign_type_hidden) {
+                        $(this).attr("selected","selected");
+                    }
+                })
+
+                var _update_major_category_hidden = $("#update_major_category_hidden").val();
+                $("#update_major_category option").each(function(){
+                    if ($(this).text() == _update_major_category_hidden) {
+                        $(this).attr("selected","selected");
+                    }
+                })
+
+                var _update_program_category_hidden = $("#update_program_category_hidden").val();
+                $("#update_program_category option").each(function(){
+                    if ($(this).text() == _update_program_category_hidden) {
+                        $(this).attr("selected","selected");
+                    }
+                })
+
+                var _trem = $("#term_hidden").val().split(',');
+                var _a = this.select_data.term;
+                for(var i = 0; i < _trem.length; i++){
+                      for (var key in _a){
+                        if (_trem[i] == _a[key].id) {
+                            // console.log("xxx",_a[key].id);
+                            $(".term_"+_a[key].id).attr("checked","checked")
+                        }
+                      }
+                    // for(var j = 0; j < _a.length; j++){
+                    //         console.log("xxx",_trem[i],_a[j].id);
+                    //     if (_trem[i] == _a[j].id) {
+                    //     }
+                    // }
+                }
+
+
+                var area_id         =   this.data.area_id,
+                    current_area_id =   isProvinceByNowid(area_id) ? area_id : getProvinceidByCityid(area_id),
+                    current_city_id =   isProvinceByNowid(area_id) ? 0 : area_id;
+                $('#area_id_update').find('option[value="'+current_area_id+'"]').attr('selected',true);
+                resetCity('#area_id_update');
+                $('#city_id_update').find('option[value="'+current_city_id+'"]').attr('selected',true);
+                $("#u_area").text($('#area_id_update').find('option[value="'+current_area_id+'"]').text)
+                
+
+            },
+            getDetail: function(schoolId) {
+                var _this = this;
+                $.ajax({
+                    url: "{:U('program/showitem')}&id="+schoolId,
+                    dataType: 'JSON',
+                    success: function(res) {
+                        if (res.status == true) {
+                            _this.term = res.termData;
+                            _this.filterData(res);
+                        }
+                    }
+                });
+            },
+            filterData:function(res){
+                var _this = this;
+                for (var key in res.info){
+                     if (typeof(res.info[key]) == 'undefined' || res.info[key] == null ||res.info[key] == "") {
+                        if (key == "homepage" || key == "aoo_check_url" || key == "required_download_url" || key == "cailiaoqingdan"  || key == "yanjiufangxiang" || key == 'mail_to' || key == "zx_tel") {
+                            res.info[key] = "暂无数据";
+                        }else{
+                            res.info[key] = "<span class='nodata'>暂无数据</span>";
+                        }
+                     }
+                  }
+                    var original_area_id;
+                  if (_this.data.area_id == "") {
+                    original_area_id = ""
+                  }else{
+                    original_area_id = _this.data.area_id
+                  }
+
+
+
+                // _this.data.address=address;
+                _this.data = res.info;
+                // _this.$nextTick(function(){
+                                   
+                //     var area_id         =   _this.data.area_id,
+                //         current_area_id =   isProvinceByNowid(area_id) ? area_id : getProvinceidByCityid(area_id),
+                //         current_city_id =   isProvinceByNowid(area_id) ? 0 : area_id;
+                //     resetCity('#area_id_update');
+                //     $("#u_area").text($('#area_id_update').find('option[value="'+current_area_id+'"]').text)
+                
+
+                // })
+            }
+        }
+    });
+
+    $('.eModal').on('show.bs.modal', function (ele) {
+        eModal.data = {};
+        $("#update_nature_hidden").val("");
+        $("#update_recommend_level_hidden").val("");
+        $("#update_sign_type_hidden").val("");
+        $("#update_major_category_hidden").val("");
+        eModal.getDetail(ele.relatedTarget);
+    });
+    $('.eModal').on('shown.bs.modal', function (ele) {
+        var _h = parseInt($(".eModal .modal-dialog").width() / 1.7);
+        $(".eModal .modal-dialog").height(_h);
+    });
+    $(window).resize(function(){
+        var _h = parseInt($(".eModal .modal-dialog").width() / 1.7);
+        $(".eModal .modal-dialog").height(_h);
+    })
+    $(".modal-dialog").niceScroll({
+        cursorcolor: "#999",//#CC0071 光标颜色
+        cursoropacitymax: 0.4, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0
+        touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备
+        cursorwidth: "4px", //像素光标的宽度
+        cursorborder: "0", //     游标边框css定义
+        cursorborderradius: "3px",//以像素为光标边界半径
+        zindex:100,
+        horizrailenabled:false,
+        background:"#66CCFF",//滚动条背景色
+    });
+
+});
+</script>

@@ -1,0 +1,26 @@
+<!-- 便笺 -->
+<div class="col-sm-6 sort-item " rel="999" style="padding:0px;">
+    <div class="dash-border" >
+        <div class="dash-title" style="padding-left:15px;padding-right:15px;">
+            <img src="__PUBLIC__/img/hetong.png" style="width:14.5px;" />&nbsp;&nbsp;{$title}&nbsp;
+        </div>
+        <ul class="index_oa_Block clearfix">
+            <foreach name="items" item="item">
+                <li class="">
+                    <div class="inner">
+                        <a href="{$item.url}">
+                            <i class="fa"></i>
+                            <span>{$item.name}</span>
+                        </a>
+                    </div>
+                </li>
+            </foreach>
+        </ul>
+    </div>
+</div>
+<script>
+//    $(function(){
+//        var _height = $(".index_oa_Block .inner").outerheight();
+//        $(".index_oa_Block li .inner").width(_height);
+//    });
+</script>

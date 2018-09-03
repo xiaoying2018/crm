@@ -1,0 +1,100 @@
+<!-- <if condition="$Think.get.leads eq 'leads'">
+	<div id="leads_id" style="display:none;">{$Think.get.id}</div>
+</if> -->
+<div class="clearfix">
+	<form class="form-inline" id="dd">
+		<if condition = "$_GET['leads'] eq 'leads'">
+			<input type="hidden" name="leads" value="leads"/>
+			<input type="hidden" name="id" id="leads_id" value="{$_GET['id']}"/>
+		</if>
+		<ul class="nav pull-left form-inline">
+			<li class="pull-left">
+				<select style="width:auto;" class="form-control" name="d_department" id="d_department" >
+					<option class="all" value="all">{:L('ALL')}</option>
+					<volist name="departmentList" id="vo">
+						<option value="{$vo.department_id}" <if condition = "$search_field['d_department'] eq $vo['department_id']">selected</if> >{$vo.name}</option>
+					</volist>
+				</select>&nbsp;&nbsp;
+			</li>
+			<li class="pull-left">
+				<input class="form-control" id="d_name" type="text" name="d_name" value="{$search_field['d_name']}" placeholder="{:L('USER_NAME')}" onkeydown="if(event.keyCode==13)changeCondition1(0)"/>&nbsp;&nbsp;
+			</li> 
+			<li class="pull-left">
+				<input type="hidden" name="m" value="user"/>
+				<input type="hidden" name="a" value="listdialog"/>
+				<input type="hidden" name="by" id="dialog_by" value="{$by}"/>
+				<input type="button" onclick="changeCondition1(0)" class="btn btn-primary" value="{:L('SEARCH')}"/>
+			</li>
+		</ul>
+	</form>
+</div>
+<if condition="$role_list">
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>&nbsp;</th>
+				<th>{:L('STAFF')}</th>
+				<th>{:L('DEPARTMENT')}</th>
+				<th>{:L('POSITION')}</th>
+				<th>{:L('SEX')}</th>
+				<th>Email</th>
+				<th>{:L('TELPHONE')}</th>
+			</tr>
+		</thead>
+		<tfoot id="footers">
+			<tr>
+				<td colspan="7">
+					{$page}
+				</td>
+			</tr>
+		</tfoot>
+		<tbody id="data2">
+			<if condition="role_list neq null">
+				<volist name="role_list" id="vo">
+					<tr style="cursor:pointer">
+						<td>
+							<div class="radio radio-info radio-inline" style="margin-left:15px;">
+								<input name="owner" class="owner" type="radio" rel="{$vo['user_name']}" rel2="{$vo['img']}" value="{$vo.role_id}"><label for=""></label>
+							</div>
+						</td> 
+						<td>{$vo.user_name}</td>
+						<td>{$vo.department_name}</td>
+						<td>{$vo.role_name}</td>
+						<td><if condition="$vo['sex'] eq 1">{:L('MALE')}<elseif condition="$vo['sex'] eq 2"/>{:L('FEMALE')}</if></td>
+						<td>{$vo.email}</td>
+						<td>{$vo.telephone}</td>
+					</tr>
+				</volist>
+			<else />
+				<tr>
+					<td>{:L('EMPTY_DATA')}</td>
+				</tr>
+			</if>
+		</tbody>
+	</table>
+<else />
+	<div style="clear:both">
+		<include file="Public:nodata" />
+	</div>
+</if>
+<script type="text/javascript">
+	$('#go_page').change(function(){
+		var sel = $(this).val();
+		$('#dialog-role-list2').load(sel);
+		return false;
+	});
+	$(function(){
+		$('#footers a').click(function(){ 
+			var rel = $(this).attr('href'); 
+			$('#dialog-role-list2').load(rel);   
+			return false;
+		});
+	});
+	
+	$("#data2 tr").click(function(){
+		$(this).find('td:first-child .owner').prop('checked', true);
+	});
+	function changeCondition1(){
+		$('#dialog-role-list2').load('index.php?'+$("#dd").serialize());
+	}
+</script>

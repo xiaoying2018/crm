@@ -1,0 +1,502 @@
+<include file="Shop:header_shoping"/>
+<style type="text/css">
+    .secondary-menu .active { color: #00A7F2; }
+    .page-sidebar { background:#CCC7C7; margin-top: 1em; padding: 10px 0; border: 1px solid #999; border-radius:4px; }
+    .img-block{width: 200px;height: 120px;}
+    .form-control{margin:3px 0;}
+</style>
+<div class="col-xs-2 page-sidebar">
+    <div class="sidebar-menu sticky-bottom sticking" data-sticky="true">
+        <div class="food-menu">
+            <!-- <ul class="primary-menu"> -->
+               <!--  <volist name="product_category_list" id="vo">
+                    <li class="primary-menu-item">
+                        <div class="primary-top">
+                            <a class="primary-menu-item-target" href="">
+                                <span>
+                                    {$vo['name']}
+                                </span> 
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </div> -->
+                        <!-- <ul class="secondary-menu">
+                            <volist name="product_category_list" id="vo">
+                                <li class="secondary-menu-item ">
+                                    <a class="secondary-menu-item-target " href="{:U('shop/index')}">
+                                        <i class="fa fa-circle">
+                                        </i>
+                                        <span>
+                                            {$vo['name']}
+                                        </span>
+                                    </a>
+                                </li>
+                            </volist>
+                        </ul> -->
+                    <!-- </li>
+                </volist> -->
+            <!-- </ul> -->
+            <ul class="secondary-menu">
+                <volist name="product_category_list" id="vo">
+                    <li class="secondary-menu-item ">
+                        <a class="secondary-menu-item-target <if condition = "$vo['category_id'] eq $_GET['category_id']">active</if>" href="{:U('shop/index','category_id='.$vo['category_id'])}">
+                            <i class="fa fa-circle">
+                            </i>
+                            <span>
+                                {$vo['name']}
+                            </span>
+                        </a>
+                    </li>
+                </volist>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="col-xs-10 pull-right">
+    <div class="clearfix">
+        <div class="col-xs-4 page-bread pull-left">
+            <ol class="bread type-sans">
+                <li class="active">
+                    数码产品
+                </li>
+                <li class="active">
+                    >
+                </li>
+                <li class="active">
+                    笔记本电脑
+                </li>
+            </ol>
+        </div>
+        <div class="col-xs-8 page-breadcrumbs pull-right">
+            <ol class="breadcrumb type-sans">
+                <li class="active">
+                    快速购买3步走
+                </li>
+                <li class="active">
+                    <a href="ware.html" class="on">
+                        1.挑选产品
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="dact.html">
+                        2.填写配送地址
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="place.html">
+                        3.提交订单并支付
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="page-content">
+        <div class="row row-narrow">
+            <div class="col-xs-8">
+                <div id="product-cards" class="product-cards" data-equal-height=".product-card--standard .product-title">
+                    <div class="row row-narrow">
+                        <volist name="product_list" id="vo">
+                            <div class=" col-xs-6 product-card product-card--standard">
+                                <div class="panel panel-default panel-product">
+                                    <div class="panel-body" id="item_{$vo['product_id']}">
+                                        <img src="{$vo['product_img_info']['thumb_path']}" class="img-block">
+                                        <div class="product-badges">
+                                            <h5 class="product-title">
+                                                {$vo['name']}
+                                            </h5>
+                                            <p title="{$vo['sketch']}" style="height: 40px;line-height: 20px;">
+                                                {:cutString($vo['sketch'],55)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="panel-footer">
+                                        <div class="row row-narrow">
+                                            <div class="col-xs-6">
+                                                <div class="product-details">
+                                                    <div class="product-cost">
+                                                        <span class="starting-price">
+                                                            ¥{$vo['suggested_price']}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6 product-conts">
+                                                <a href="#signin" data-toggle="modal" data-target="#signin"
+                                                class="btn btn-block action-create btn-red" onclick="addProduct({ 'name':&quot;{$vo['name']}&quot;,'id':'{$vo['product_id']}','price':'{$vo['suggested_price']}','thumb_path':'{$vo['product_img_info']['thumb_path']}','sketch':'{$vo['sketch']}'})">
+                                                    添加
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </volist>
+                    </div>
+                    <div id="tfoot_div" class="clearfix" style="float:left;margin-bottom:20px;padding-bottom: 20px;">
+                        <div class="clearfix" id="tfoot_page">
+                            {$page}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-4  panel panel-default panel-product">
+                <div class="panel-body">
+                    <div class="product-badges">
+                        <h4 id="end" >
+                            我的订单
+                        </h4>
+                    </div>
+                </div>
+                <div class=" panel-dress">
+                    <if condition = "$address_info['id']">
+                        <div class="row row-narrow">
+                            <div class="col-xs-6 product-Distribution">
+                                <span>
+                                    配送地址
+                                    <br/>
+                                    <a href="javascript:void(0)" onclick="addAddress(this)">
+                                        <!-- <img src="__PUBLIC__/img/shoping/tj.png"> -->
+                                        更换配送地址
+                                    </a>
+                                </span>
+                            </div>
+                            <input type="hidden" id="address_id" value="{$address_info['id']}" />
+                            <div class="col-xs-6 product-details" id="address_content">
+                                <p>
+                                    {$address_info['address']}
+                                </p>
+                            </div>
+                        </div>
+                    <else />
+                        <div class="product-bades">
+                            <input type="hidden" id="address_id" value="{$address_info['id']}" />
+                            <a href="javascript:void(0)" onclick="addAddress(this)">
+                                <img src="__PUBLIC__/img/shoping/tj.png">
+                                选择配送地址
+                            </a>
+                        </div>
+                    </if>
+                </div>
+                <div class=" panel-total">
+                    <div class="row-menu">
+                        <div class="col-xs-6 product-control">
+                            <p>
+                                总计:
+                            </p>
+                        </div>
+                        <div class="col-xs-6 product-cost">
+                            <input type="hidden" id="total_price_val" />
+                            <span class="starting-price" id="total_price"></span>
+                        </div>
+                    </div>
+                    <div class="product-settle">
+                        <a href="">
+                            立即结账
+                        </a>
+                    </div>
+                    <div class="product_more" style="display: none;">
+                        <a data-productid="789" href="#signin" data-toggle="modal" data-target="#signin"
+                        class="btn btn-block action-create btn-red" onclick="onProductClick()">
+                            立即结账
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-payment">
+                    <div class="product-bades shopping-cart">
+                        <h4>
+                            订单明细
+                        </h4>
+                        <!-- <a href="javascript:void(0);" class="clear_cookie" >请空Cookie</a>
+                        <a href="javascript:void(0);" class="show_cookie" >展示Cookie</a> -->
+                    </div>
+                </div>
+                <input type="hidden" id="now_rows" />
+                <div id="order_list">
+                    <p id="empty_message">
+                        购物车是空的
+                    </p>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 模态框 -->
+<div class="modal inmodal fade" id="Modal" tabindex="-1"  style=" overflow:auto; border:1px solid #000000;" role="dialog" >
+    <div class="modal-dialog modal-md" style="width:700px;">
+        <div class="modal-content" id="address_modal">
+
+        </div>
+    </div>
+</div>
+
+<script src="__PUBLIC__/js/jquery-ui-1.10.0.custom.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+//地址
+function addAddress(obj){
+    $.ajax({
+        type: "POST",
+        url: "{:U('shop/selAddress')}",
+        async: true,
+        success: function(data) {
+            if(data.status == 2){
+                $("#login_modal").parent().removeClass("modal-lg").addClass("modal-md");
+                $url = "{:U('shop/login_ajax')}";
+                $('#Modal1').modal('show');
+                $('#login_modal').load($url);
+            }else{
+                 $("#address_modal").parent().removeClass("modal-lg").addClass("modal-md");
+                var dep_id = $(obj).parent().parent().attr('rel');
+                $url = "{:U('shop/selAddress')}";
+                $('#Modal').modal('show');
+                $('#address_modal').load($url);
+            }
+        }
+    });
+}
+$(document).on('click','#payment',function(){
+    $.ajax({
+        type: "POST",
+        url: "{:U('shop/orderadd')}",
+        async: true,
+        success: function(data) {
+            if(data.status == 1){
+                alert('操作成功！');
+            }else if(data.status == 2){
+                $("#login_modal").parent().removeClass("modal-lg").addClass("modal-md");
+                $url = "{:U('shop/login_ajax')}";
+                $('#Modal1').modal('show');
+                $('#login_modal').load($url);
+            }else{
+                alert('操作失败！');
+                return false;
+            }
+        }
+    });
+});
+//判断cookie
+$(document).ready(function(){
+    var cookie_val = '';
+    cookie_val = Read();
+    var now_rows = cookie_val.Items.length ? cookie_val.Items.length : 0;
+    $('#now_rows').val(now_rows);
+// console.log(cookie_val.Items);
+    if(cookie_val.Count != 0 && cookie_val.Items != ''){
+        //追加信息
+        $('#empty_message').css('display','none');
+        //結賬開啓
+        $('.product-settle').hide();
+        $('.product_more').show();
+        var temp = '';
+        $.each(cookie_val.Items,function(k, v){
+            now_rows += 1;
+            temp += '<div class="panel-payment">'+
+                        '<div class="row row-narrow">'+
+                            '<div class="col-xs-4 coat">'+
+                                '<input type="hidden" name="product['+now_rows+'][product_id]" rel="'+now_rows+'" id="product_id_'+now_rows+'" class="cproduct_id" value="'+v.Id+'" />'+
+                                '<input type="hidden" name="product['+now_rows+'][num]" class="cproduct_num" id="cproduct_num_'+now_rows+'" value="'+v.Count+'" />'+
+                                '<input type="hidden" name="product['+now_rows+'][price]" class="cproduct_price" id="cproduct_price_'+now_rows+'" value="'+v.Price+'" />'+
+                                '<input type="hidden" name="product['+now_rows+'][subtotal]" class="cproduct_subtotal" id="cproduct_subtotal_'+now_rows+'" value="'+v.Subtotal+'" />'+
+                                '<img id="cproduct_img_'+now_rows+'" src="'+v.Img+'">'+
+                            '</div>'+
+                            '<div class="col-xs-8 product-det">'+
+                                '<div class="product-cost">'+
+                                    '<h5 id="product_name_'+now_rows+'">'+v.Name+'</h5>'+
+                                    '<p id="cproduct_sketch_'+now_rows+'">'+v.Sketch+'</p>'+
+                                    '<div class="pagelist">'+
+                                        '<span class="current">数量</span>'+
+                                        '<a class="min" rel="'+now_rows+'" rel1="min" class="min_'+now_rows+'" href="javascript:void(0);">-</a>'+
+                                        '<a class="next" id="next_'+now_rows+'" >'+v.Count+'</a>'+
+                                        '<a class="add" rel="'+now_rows+'" rel1="add" href="javascript:void(0);">+</a>'+
+                                    '</div>'+
+                                    '<span class="start">¥'+v.Price+'</span>'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>';
+        });
+        $('#order_list').append(temp);
+        //计算价格
+        //合计小计
+        var total_subtotal = 0.00;
+        $('.cproduct_subtotal').each(function(k, v){
+            if($(v).val() != '' ||  $(v).val() != '0'){
+                total_subtotal += new Number($(v).val());
+            }
+        });
+        $('#total_price').text('￥'+total_subtotal.toFixed(2));  
+        $('#total_price_val').val(total_subtotal.toFixed(2));
+    }
+});
+var now_rows = new Number($('#now_rows').val());
+// 购物车动画
+
+function addProduct(array) {
+    var product_id = array['id'];
+    var img = array['thumb_path'];
+    var name = array['name'];
+    var price = array['price'];
+    var sketch = array['sketch'];
+    var cart = $('.shopping-cart');
+    var imgtodrag = $('#item_'+product_id).find('img').eq(0);
+    if (imgtodrag) {
+        var imgclone = imgtodrag.clone().offset({
+            top: imgtodrag.offset().top,
+            left: imgtodrag.offset().left
+        }).css({
+            'opacity': '0.5',
+            'position': 'absolute',
+            'height': '150px',
+            'width': '150px',
+            'z-index': '100'
+        }).appendTo($('body')).animate({
+            'top': cart.offset().top + 10,
+            'left': cart.offset().left + 10,
+            'width': 75,
+            'height': 75
+        }, 1000, 'easeInOutExpo');
+        setTimeout(function () {
+            // cart.effect('shake', { times: 2 }, 200);
+        }, 1500);
+        imgclone.animate({
+            'width': 0,
+            'height': 0
+        }, function () {
+            $(this).detach();
+        });
+        //追加信息
+        $('#empty_message').css('display','none');
+        //結賬開啓
+        $('.product-settle').hide();
+        $('.product_more').show();
+        var temp = '';
+        //判斷已存在則增加數量
+        var muns = 0;
+        $('.cproduct_id').each(function(k, v){
+            if($(v).val() == product_id){
+                var rows = $(this).attr('rel');
+                var num = new Number($('#cproduct_num_'+rows).val());
+                num += 1;
+                $('#cproduct_num_'+rows).val(num);
+                $('#next_'+rows).html(num);
+                muns += 1;
+                calculate(rows);
+            }else{
+                now_rows += 1;
+            }
+        });
+        if(muns == 0){
+            temp += '<div class="panel-payment">'+
+                        '<div class="row row-narrow">'+
+                            '<div class="col-xs-4 coat">'+
+                                '<input type="hidden" name="product['+now_rows+'][product_id]" rel="'+now_rows+'" id="product_id_'+now_rows+'" class="cproduct_id" value="'+product_id+'" />'+
+                                '<input type="hidden" name="product['+now_rows+'][num]" class="cproduct_num" id="cproduct_num_'+now_rows+'" value="1" />'+
+                                '<input type="hidden" name="product['+now_rows+'][price]" class="cproduct_price" id="cproduct_price_'+now_rows+'" value="'+price+'" />'+
+                                '<input type="hidden" name="product['+now_rows+'][subtotal]" class="cproduct_subtotal" id="cproduct_subtotal_'+now_rows+'" value="'+price+'" />'+
+                                '<img id="cproduct_img_'+now_rows+'" src="'+img+'">'+
+                            '</div>'+
+                            '<div class="col-xs-8 product-det">'+
+                                '<div class="product-cost">'+
+                                    '<h5 id="product_name_'+now_rows+'">'+name+'</h5>'+
+                                    '<p id="cproduct_sketch_'+now_rows+'">'+sketch+'</p>'+
+                                    '<div class="pagelist">'+
+                                        '<span class="current">数量</span>'+
+                                        '<a class="min" rel="'+now_rows+'" rel1="min" class="min_'+now_rows+'" href="javascript:void(0);">-</a>'+
+                                        '<a class="next" id="next_'+now_rows+'" >1</a>'+
+                                        '<a class="add" rel="'+now_rows+'" rel1="add" href="javascript:void(0);">+</a>'+
+                                    '</div>'+
+                                    '<span class="start">¥'+price+'</span>'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>';
+            $('#order_list').append(temp);
+            calculate(now_rows);
+        }
+    }
+};
+//計算價格
+function calculate(param,par){
+    par = par || 0;
+    if($('#product_id_'+param).val() != '' && $('#product_id_'+param).val() != '0'){
+        //先对当前Row进行计算
+        var product_id = $('#product_id_'+param).val();
+        var name = $('#product_name_'+param).html();
+        var sketch = $('#cproduct_sketch_'+param).html();//描述
+        var img = $('#cproduct_img_'+param).attr('src');//描述
+
+        var amount = $('#cproduct_num_'+param).val();//数量
+        var product_price = $('#cproduct_price_'+param).val();//價格
+        var total_price = parseFloat(product_price * amount).toFixed(2);
+        $('#cproduct_subtotal_'+param).val(total_price);
+        //合计数量
+        var total_amount = 0;
+        $('.cproduct_num').each(function(k, v){
+            if($(v).val() != '' ||  $(v).val() != '0'){
+                total_amount += new Number($(v).val());
+            }
+        });
+        
+        //合计小计
+        var total_subtotal = 0.00;
+        $('.cproduct_subtotal').each(function(k, v){
+            if($(v).val() != '' ||  $(v).val() != '0'){
+                total_subtotal += new Number($(v).val());
+            }
+        });
+        $('#total_price').text(total_subtotal.toFixed(2));  
+        $('#total_price_val').val(total_subtotal.toFixed(2));
+
+        //cookie处理
+        Add(product_id,name,amount,product_price,total_price,sketch,img);
+        var cookie_val = Read();
+        console.log(cookie_val);          
+        // alert(cookie_val);
+    }else{
+        return false;
+    }
+}
+function onProductClick(){
+    var address_id = $('#address_id').val();
+    window.location.href = "{:U('shop/orderadd','address_id=')}"+address_id;
+}
+
+
+
+// $(document).on('click','.clear_cookie',function(){
+//     Del('');
+//     Del(1);
+//     Del(2);
+//     Del(8);
+//     Del(10);
+//     Del(12);
+//     // removeCookie();
+// });
+// $(document).on('click','.show_cookie',function(){
+//     var cookie_val = Read();
+//         console.log(cookie_val);
+// });
+
+
+
+
+//商品加减计算
+$(document).on('click','.add, .min',function(){
+    var row = $(this).attr('rel');
+    var type = $(this).attr('rel1');
+    var t = $("#next_"+row);
+    var old_num = new Number(t.html());
+    if(type == 'add'){
+        t.html(parseInt(old_num) + 1);
+        var new_num = parseInt(old_num) + 1;
+    }else{
+        if(old_num > 0){
+            t.html(parseInt(old_num) - 1);
+            var new_num = parseInt(old_num) - 1;
+        }
+    }
+    $('#cproduct_num_'+row).val(new_num);
+    calculate(row);
+});
+
+</script> 
+<include file='Shop:footer_shoping' />

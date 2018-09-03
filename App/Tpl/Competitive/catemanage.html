@@ -1,0 +1,318 @@
+<include file="Public:header" />
+<style>
+    #ids{width: 200px;height: 200px;border: 1px solid red}
+</style>
+
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="title-bar" style="position: relative;z-index: 99;">
+                    <div class="row " id="title-show">
+                        <ul class="nav pull-left" style="margin:2px 0 0 15px;">
+                            <a href="{:U('competitive/addcate')}" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 新建竞品机构分类</a>
+                        </ul>
+                    </div>
+                </div>
+                <div class="ibox-content clearfix" id="table_container" style="z-index: 1;">
+                    <table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
+                        <tr id="childNodes_num" class="tabTh">
+                            <!-- 表头 -->
+                            <td>分类ID</td>  
+                            <td>分类名称</td>
+                            <td>分类描述</td>
+                            <!--<td>所属分类</td>-->
+                            <!--<td>创建时间</td>-->
+                            <td>操作</td>
+                        </tr>
+
+                        <!--                        <tr>
+                                                    <td>机构名称</td>
+                                                    <td>机构类别</td>
+                                                    <td>地址</td>
+                                                    <td>联系人</td>
+                                                    <td>职位</td>
+                                                    <td>电话</td>
+                                                    <td>邮箱</td>
+                                                    <td>QQ/微信</td>
+                                                    <td>合作维护人</td>
+                                                    <td>数据录入人</td>
+                                                    <td>
+                                                        <button type='button' onclick='showEdit(this)' class='btn btn-default'>编辑</button>
+                                                        <button type='button' onclick='showEdit(this)' class='btn btn-default'>删除</button>
+                                                    </td>
+                                                </tr>-->
+                        <tbody id="dataStore">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div style="display:none" id="dialog-block-add" title="新建线索区">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+<div style="display:none" id="dialog-block-edit" title="编辑线索区">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+<!--详情-->
+
+
+<script>
+    $(function(){
+        $('.detail').click(function(){
+            layer.open({
+  type: 1, 
+  content: '传入任意的文本或html' //这里content是一个普通的String
+});
+        })
+    })
+</script>
+
+
+<script>
+    $('#dialog-block-add').dialog({
+        autoOpen: false,
+        width: "40%",
+        maxHeight: 600,
+        position: ["center", 100],
+        buttons: {
+            "提交": function () {
+                var form = $('#block-create-form'),
+                        formData = form.serializeArray(),
+                        data = [],
+                        that = this;
+
+                $.each(formData, function (k, v) {
+                    if (data[v.name] != 'undefined') {
+                        var old = data[v.name];
+                        data[v.name] = [];
+                        data[v.name].push(old);
+                        data[v.name].push(v.value);
+                    }
+                    data[v.name] = v.value;
+                });
+
+                if (!data['name'] || !data['person_id']) {
+                    layer.msg('数据填写不完整');
+                    return;
+                }
+
+                $.ajax({
+                    url: "{:U('clueblock/add')}",
+                    data: formData,
+                    dataType: "JSON",
+                    type: "POST",
+                    success: function (obj) {
+                        if (obj.status == true) {
+                            $(that).dialog("close");
+                            search();
+                            return;
+                        } else {
+                            layer.msg(obj.remark);
+                        }
+                    }
+                });
+            },
+            "取消": function () {
+                $(this).dialog("close");
+            }
+        },
+        close: function () {
+            $(this).html('');
+        }
+    });
+
+    $('#dialog-block-edit').dialog({
+        autoOpen: false,
+        width: "40%",
+        maxHeight: 600,
+        position: ["center", 100],
+        buttons: {
+            "提交": function () {
+                var form = $('#block-create-form'),
+                        formData = form.serializeArray(),
+                        data = [],
+                        that = this;
+
+                $.each(formData, function (k, v) {
+                    if (data[v.name] != 'undefined') {
+                        var old = data[v.name];
+                        data[v.name] = [];
+                        data[v.name].push(old);
+                        data[v.name].push(v.value);
+                    }
+                    data[v.name] = v.value;
+                });
+
+                if (!data['id'] || !data['name'] || !data['person_id']) {
+                    layer.msg('数据填写不完整');
+                    return;
+                }
+
+                $.ajax({
+                    url: "{:U('clueblock/edit')}",
+                    data: formData,
+                    dataType: "JSON",
+                    type: "POST",
+                    success: function (obj) {
+                        if (obj.status == true) {
+                            $(that).dialog("close");
+                            search();
+                            return;
+                        } else {
+                            layer.msg(obj.remark);
+                        }
+                    }
+                });
+            },
+            "取消": function () {
+                $(this).dialog("close");
+            }
+        },
+        close: function () {
+            $(this).html('');
+        }
+    });
+
+    function search()
+    {
+        $.ajax({
+            url: "{:U('competitive/catesearch')}",
+            data: "",
+            dataType: "JSON",
+            type: "POST",
+            success: function (obj) {
+                if (obj.status == true) {
+                    renderView(obj.data);
+                    return;
+                } else {
+                    layer.msg(obj.remark);
+                }
+            }
+        });
+    }
+
+    function showAdd()
+    {
+        var url = "{:U('Clueblock/add')}";
+        $('#dialog-block-add').dialog('open');
+        $('#dialog-block-add').load(url);
+    }
+
+    function renderView(obj)
+    {
+        var newHtml = '';
+        if (obj != '') {
+            $.each(obj, function (k, v) {
+                newHtml += createItem(v);
+            });
+//            layer.msg('刷新成功!');
+        } else {
+            layer.msg('无数据!');
+        }
+
+        $('#dataStore').html(newHtml);
+    }
+
+    function createItem(item)
+    {
+        var itemHtml = "<tr class='controls_tr' data-id='" + item.id + "'>";
+
+        itemHtml += "<td>" + item.competitive_cate_id + "</td>";
+        itemHtml += "<td>" + item.competitive_cate_name + "</td>";
+        itemHtml += "<td>" + item.desc + "</td>";
+//        itemHtml += "<td>" + item.cate_id + "</td>";
+//        itemHtml += "<td>" + item.add_ts + "</td>";
+//        itemHtml += "<td>" + item.position + "</td>";
+//        itemHtml += "<td>" + item.tel + "</td>";
+//        itemHtml += "<td>" + item.email + "</td>";
+//        itemHtml += "<td>" + item.onlineNum + "</td>";
+//        itemHtml += "<td>" + item.manage_p + "</td>";
+//        itemHtml += "<td>" + item.from_p + "</td>";
+        itemHtml += "<td data-id='" + item.id + "'  title='操作'>";
+        itemHtml += "<a href='/competitive/editcate?id=" + item.competitive_cate_id + "'}'><button type='button'  class='btn btn-default'>编辑</button></a>";
+        itemHtml += "<button type='button' onclick='delThis(" + item.competitive_cate_id + ")' class='btn btn-default'>删除</button>";   
+        itemHtml += "</td>";
+        itemHtml += "</tr>";
+        return itemHtml;
+    }
+
+    function showEdit(that) {
+        var id = $(that).parent().attr('data-id'),
+                url = "{:U('Clueblock/edit')}";
+        $('#dialog-block-edit').dialog('open');
+        $('#dialog-block-edit').load(url, 'id=' + id);
+    }
+
+    function delThis(that) {
+        layer.alert('', {
+            icon: 2, title: '删除确认', content: '您确定要删除这条记录吗？', closeBtn: 1}, function (index) {
+            //business logic
+            $.ajax({
+                type: 'post',
+                url: 'index.php?m=competitive&a=deletecate&id=' + that,
+                async: false,
+                success: function (data) {
+//                    console.log(data);return;
+                    if(data.status == 3){
+                        layer.msg('该分类下有竞品机构，无法删除');
+                        return false;
+                    }
+                    if (data.status == true) {
+                        layer.msg('删除成功！')
+
+                        window.location.reload()
+                    } else {
+                        layer.msg('删除失败！请重试！');
+                        window.location.reload()
+                    }
+                },
+                dataType: 'json'
+            });
+//            alert(22)
+            layer.close(index);
+        });
+//        layer.confirm("确认要删除吗，删除后不能恢复", { title: "删除确认" }, function (index) {  
+//                layer.close(index);  
+//                $.post("/competitive/delete", { gid: $(e.currentTarget).data("gid") }, function (data) {  
+//                    layer.alert(data, {  
+//                        title: "删除操作",  
+//                        btn: ['确定']  
+//                    },  
+//                        function (index, item) { 
+//                            alert(1)
+//                            //layer.close(index);  
+//                            location.reload();  
+//                        });  
+//                });  
+//            });   
+    }
+
+    function cluecate(that) {
+
+    }
+
+    search();
+</script>
+
+<include file="Public:footer" />

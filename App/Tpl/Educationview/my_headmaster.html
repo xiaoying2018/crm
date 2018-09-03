@@ -1,0 +1,303 @@
+<include file="Public:header" />
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<link href="__PUBLIC__/css/page/leadsIndex.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<!-- nice-scroll -->
+<!-- <script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script> -->
+<script src="https://nicescroll.areaaperta.com/wp-content/plugins/jnicescroll/js/jquery.nicescroll.min.js?ver=1"></script>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/mxcrm_more.js" type="text/javascript"></script>
+<style>
+    body{
+        overflow-y: hidden;
+    }
+    .option{padding-left:-30px;}
+    #oDivL_tab_Test3{background-color: #fff;border-right: 1px solid #ececec; z-index: 8 !important;}
+    .table{max-width: none;}
+    #tab_Test3{opacity: 1}
+    input[type=text],select{
+        appearance:none;
+        -moz-appearance:none;
+        -webkit-appearance:none;
+    }
+    .crm_status{
+        padding: 2px 3px;
+        border-radius: 3px;
+    }
+    /*跟进中*/
+    .status_ing{
+        border: 1px solid #00CE67;
+        background-color: none;
+        color: #00CE67;
+    }
+    /*作废*/
+    .status_no{
+        border: 1px solid #ccc;
+        background-color: #ccc;
+        color: #fff;
+    }
+    /*待跟进*/
+    .status_waning{
+        border: 1px solid #F9D10B;
+        background-color: none;
+        color: #F9D10B;
+    }
+    /*已转换*/
+    .status_tanseformed{
+        border: 1px solid #0080FF;
+        background-color: #0080FF;
+        color: #fff;
+    }
+</style>
+<style>
+    .chhose_item{
+        padding: 5px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        border-radius: 3px;
+        color: #3197ff;
+        border:1px solid #3197ff;
+        margin:0px 5px;
+    }
+    .chhose_item.choose{
+        background: #3197ff;
+        color: #fff;
+    }
+    .chhose_item .fa{
+        margin-right: 5px;
+    }
+    .li_item {
+        display: inline-block !important;
+        vertical-align: top;
+    }
+    .li_item.bt {
+        /*width: 300px;*/
+        position: relative;
+    }
+    .li_item.bt .fa {
+        position: absolute;
+        right: 10px;
+        top: 0;
+        width: 40px;
+        height: 34px;
+        line-height: 34px;
+        text-align: center;
+        cursor: pointer;
+    }
+</style>
+<script>
+    var choose = [];
+    $(document).on('click', '.chhose_item', function() {
+        var _val = $(this).attr("data-val");
+        if ($(this).hasClass("choose")) {
+            $(this).removeClass("choose");
+            $(this).find("i").attr("class","fa fa-square-o");
+            if (choose.indexOf(_val) > -1) {
+                console.log("xxx",choose);
+                choose.splice(choose.indexOf(_val),1)
+            }
+        }else{
+            $(this).addClass("choose");
+            $(this).find("i").attr("class","fa fa-check-square-o");
+            choose.push(_val)
+        }
+        var data        =   {role_id:choose};
+
+        period_container.getLists(data);
+
+    });
+</script>
+<div class="wrapper wrapper-content">
+    <include file="Public:alert" />
+    <div class="row" id="period_container">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+
+                <div class="ibox-content clearfix" style="z-index: 1;">
+                    <form id="form1" action="" method="post" style="position:relative;">
+                        <input type="hidden" name="owner_id" id="hidden_owner_id" value="0"/>
+                        <input type="hidden" name="message" id="hidden_message" value="0"/>
+                        <input type="hidden" name="sms" id="hidden_sms" value="0"/>
+                        <input type="hidden" name="email" id="hidden_email" value="0"/>
+                        <!-- class="nicescroll" -->
+                        <div id="table_div" style="overflow-x: scroll;">
+                            <table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
+                                <tr id="childNodes_num" class="tabTh">
+                                    <td style="width:30px;padding-left: 20px">
+                                        <div class="checkbox checkbox-primary">
+                                            <input type="checkbox" class="check_all"/>
+                                            <label for=""></label>
+                                        </div>
+                                    </td>
+
+                                    <td>课期(班级)名称</td>
+                                    <td>班级周期</td>
+                                    <td>课程总时长</td>
+                                    <td>班主任</td>
+                                </tr>
+                                <!-- 我的线索 -->
+                                <tr class="controls_tr" v-for="(item,index) in periods" data-target="#period_container"  :data-id="item.id">
+                                    <td style="width: 30px;padding-left: 20px" nowrap="nowrap">
+                                        <div class="checkbox checkbox-primary">
+                                            <input name="ids[]" class="check_list" type="checkbox" :value="item.id">
+                                            <label for=""></label>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <a :href="'{:U('educationview/headmaster_period')}&id='+item.id" target="_blank" title="班级详情">
+                                            {{item.period_name}}
+                                        </a>
+                                    </td>
+                                    <td>{{item.start_day}} - {{item.end_day}} ({{item.cycle}}天) </td>
+                                    <td>{{item.time_long}}</td>
+                                    <td>{{item.headmaster}}</td>
+                                </tr>
+                            </table>
+                            <div v-if="nodata" style="text-align:center;color:#E4E4E4;font-size:16px;font-weight:700;padding-top:15px;">
+                                <img src="/Public/img/exclamation_mark.png" style="margin-top:-3px;width:25px;">&nbsp;&nbsp;暂无更多数据
+                            </div>
+                        </div>
+
+                        <div class="cover"></div>
+                        <div class="loader" id="loader">
+                            <div class="loader-inner pacman">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 弹框模板 -->
+<div style="display:none" id="dialog-period-add" title="添加学生">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none" id="dialog-period-edit" title="学员信息修改">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none" id="dialog-period-detail" title="学员详情">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script>
+    //下拉刷新
+    var period_container = new Vue({
+        el: "#period_container",
+        data: {
+            periods:{},
+            nodata:{},
+        },
+        methods:{
+            getLists: function (data) {
+                var _this		=	this;
+                data        =   data ? data : {};
+                $.ajax({
+                    url:"{:U('education/my_period')}",
+                    data:data,
+                    dataType:"JSON",
+                    type:"POST",
+                    success:function(res){
+                        if( res.result == false || !res.lists ){
+                            _this.nodata = true;
+                        }else{
+                            _this.nodata = false;
+                        }
+                        _this.periods = res.periods;
+                    }
+                });
+            },
+        },
+    });
+    period_container.getLists();
+
+    /**
+     * @ 详情
+     * @param a
+     */
+    function showDetail(a) {
+        var id = $(a).parent().parent().data('id');
+        if( !id ) return ;
+        $('#dialog-period-detail').dialog('open');
+        $('#dialog-period-detail').load('{:U("educationview/period_detail")}&id='+id);
+    }
+    /**
+     * @编辑
+     * @param btn
+     */
+    function gotoEdit (btn){
+        var id = $(btn).parent().parent().data('id');
+        if( !id ) {
+            layer.msg('ERROR 参数缺失');return ;
+        }
+        $('#dialog-period-edit').dialog('open');
+        $('#dialog-period-edit').load('{:U("educationview/period_edit")}&id='+id);
+    }
+
+    function dd(data){
+        console.log(data);
+        return ;
+    }
+</script>
+
+<script type="text/javascript">
+
+    /*让复选框默认取消选择*/
+    $(':checkbox').prop('checked', false);
+    $('[data-toggle="tooltip"]').tooltip({html:true});
+
+    $(".controls_tr").mouseenter(function(){
+        $(this).find(".controls").show();
+    }).mouseleave(function(){
+        $(this).find(".controls").hide();
+    });
+
+
+    $(document).on('click','.rem_search',function(){
+        var num = $(this).attr('rel');
+        $('#con_search_'+num).remove();
+    });
+
+</script>
+
+<!-- loading加载 -->
+<style type="text/css">
+    #box{
+        position:absolute;
+        top:0;
+        bottom:0;
+        left:0;
+        right:0;
+        background:#000;
+        opacity:0.7;
+
+        padding-top: 200px;
+        padding-left: 45%;
+    }
+</style>
+
+
+<include file="Public:footer" />

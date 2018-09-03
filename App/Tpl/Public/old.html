@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{:C('defaultinfo.name')}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="author" content="{:L('AUTHOR')}"/>
+	<!-- 360浏览器默认使用Webkit内核 -->
+	<meta name="renderer" content="webkit">
+	<link rel="shortcut icon" href="__PUBLIC__/ico/favicon.png"/>
+	<script src="__PUBLIC__/style/js/jquery-2.1.1.js"></script>
+	<link type="text/css" href="__PUBLIC__/css/jquery-ui-1.10.0.custom.css" rel="stylesheet" />
+	<link type="text/css" href="__PUBLIC__/css/bootstrap-responsive.min.css" rel="stylesheet">
+	<link href="__PUBLIC__/style/css/bootstrap.min.css" rel="stylesheet">
+	<link href="__PUBLIC__/style/font-awesome/css/font-awesome.css" rel="stylesheet">
+	<link href="__PUBLIC__/css/font-awesome.min.css" rel="stylesheet">
+	<link type="text/css" href="__PUBLIC__/css/hovershow.css" rel="stylesheet"/>
+	<!-- animate -->
+	<link rel='stylesheet' href='__PUBLIC__/css/animate/animate.min.css'>
+	<link rel="stylesheet" href="__PUBLIC__/css/animate/notification.css">
+	<style type="text/css">
+		a.active{
+			font-weight: bold;
+			color: #777;
+		}
+		.nobr{
+			white-space:nowrap;
+		}
+		#header-top{
+		    position: fixed;
+		    /*width: 87.3%;*/
+		    right:0px;
+		    z-index: 102;
+		}
+		
+
+		.sidebar-collapse{z-index:9999; border-right: 1px solid #dbdbdb;}
+		.tooltip{width:88px;line-height:36px;}
+		.tooltip-inner{padding:3px 12px;text-align:left;}
+		.table{margin-bottom:0px;}
+		@media (max-width: 768px){
+			.nav.left-side{
+				display: none;
+			}
+		}
+		.navbar{margin-bottom:0px;}
+		.check_list{width: 20px;height: 20px;}
+		.check_all{width: 20px;height: 20px;}
+		.check_all{width: 20px;height: 20px;}
+		input[type=checkbox], input[type=radio]{margin-top:0px;}
+		.radio.radio-inline {padding-left: 0px;}
+		.alert-error{margin:20px;line-height:30px;}
+		.text{color:#000;}
+		.notification{top:150px;z-index:9999;}
+
+		.checkbox, .radio{margin:0 auto;}
+		
+		/*闪烁效果*/
+		.crm_heart{
+		    animation:heart 1s ease infinite;
+		}
+
+		@keyframes heart {
+	        0% {color:#FF6D57;}
+	        100%{color:#93A6B5;}
+		}
+	</style>
+	<!-- Toastr style -->
+	<link href="__PUBLIC__/style/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+	<!-- Sweet Alert -->
+	<link href="__PUBLIC__/style/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+	<link href="__PUBLIC__/style/css/style.css" rel="stylesheet">
+    <link href="__PUBLIC__/style/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+	<!-- Mainly scripts -->
+	<script src="__PUBLIC__/style/js/bootstrap.min.js"></script>
+	<script src="__PUBLIC__/js/daterangepicker/moment.min.js"></script>
+	<script src="__PUBLIC__/style/js/jquery.form.js" type="text/javascript"></script>
+	<!-- <script src="__PUBLIC__/style/js/plugins/metisMenu/jquery.metisMenu.js"></script> -->
+	<script src="__PUBLIC__/style/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	<!-- Toastr -->
+	<script src="__PUBLIC__/style/js/plugins/toastr/toastr.min.js"></script>
+	<!-- Custom and plugin javascript -->
+	<script src="__PUBLIC__/style/js/plugins/pace/pace.min.js"></script>
+	<script src="__PUBLIC__/style/js/inspinia.js"></script>
+	<script src="__PUBLIC__/js/mxcrm_zh-cn.js" type="text/javascript"></script>
+	<script src="__PUBLIC__/js/mxcrm.js" type="text/javascript"></script>
+	<!-- jQuery UI -->
+	<script src="__PUBLIC__/js/jquery-ui-1.10.0.custom.min.js" type="text/javascript"></script>
+	<script src="__PUBLIC__/js/WdatePicker.js" type="text/javascript"></script>
+	<!-- Sweet alert -->
+	<script src="__PUBLIC__/style/js/plugins/sweetalert/sweetalert.min.js"></script>
+	<!-- Jquery Validate -->
+	<script src="__PUBLIC__/style/js/plugins/validate/jquery.validate.min.js"></script>
+	<script src="__PUBLIC__/style/js/plugins/validate/messages_zh.min.js"></script>
+	<script src="__PUBLIC__/js/bootstrap-tooltip.js"></script>
+	<!-- 下拉筛选 -->
+	<link rel="stylesheet" href="__PUBLIC__/css/bootstrap-select.css">
+	<script type="text/javascript" src="__PUBLIC__/js/bootstrap-select.js" charset="UTF-8"></script>
+	<!-- select2 -->
+	<link href="__PUBLIC__/style/css/plugins/select2/select2.min.css" rel="stylesheet">
+	<script src="__PUBLIC__/style/js/plugins/select2/select2.full.min.js"></script>
+	<link href="__PUBLIC__/css/new.css">
+	<script src="https://cdn.bootcss.com/vue/2.5.13/vue.min.js"></script>
+</head>
+<script>
+$(function(){
+	var innerHeight = window.innerHeight;
+	if(innerHeight < 768){
+		innerHeight = 768;
+	}
+	$("#page-wrapper").css("min-height",innerHeight);
+	$(window).resize(function(){
+		var innerHeight = window.innerHeight;
+		if(innerHeight < 768){
+			innerHeight = 768;
+		}
+		$("#page-wrapper").css("min-height",innerHeight);
+	});
+	$(".select2").select2({
+        placeholder: "--请选择--"
+        // allowClear: true
+    });
+});
+</script>
+<!-- <body class="navbar fixed-sidebar"> -->
+<body class="navbar">
+	<div id="wrapper">
+		<nav class="navbar-default navbar-static-side" role="navigation" style="width: 190px; z-index: 103">
+	        <div class="sidebar-collapse">
+	        	<?php
+					$module_name = strtolower(MODULE_NAME);
+					$action_name = strtolower(ACTION_NAME);
+					$t = strtolower($_GET['t']);
+					//模块展示
+					$module_list = array('customer','business','product','contract','finance','analytics','log','contacts','sendsms','setting','programadmin');
+					$new_module_list = array();
+					foreach($module_list as $k=>$v){
+						switch($v){
+							case 'customer' :
+								if (checkPerByAction('leads','index')) {
+									$new_module_list[] = 'customer';
+								} elseif (checkPerByAction('customer','index')) {
+									$new_module_list[] = 'customer';
+								} elseif (checkPerByAction('contacts','index')) {
+									$new_module_list[] = 'customer';
+								} elseif (checkPerByAction('member','index')) {
+									$new_module_list[] = 'customer';
+								}
+								break;
+							case 'business' :
+								if (checkPerByAction('business','index')) {
+									$new_module_list[] = 'business';
+								}
+								break;
+							case 'product' :
+								if (checkPerByAction('product','index')) {
+									$new_module_list[] = 'product';
+								}
+								break;
+							case 'contract' :
+								if (checkPerByAction('contract','index')) {
+									$new_module_list[] = 'contract';
+								} elseif (checkPerByAction('order','index')) {
+									$new_module_list[] = 'contract';
+								}
+								break;
+							case 'finance' :
+								if (checkPerByAction('finance','index_receivables')) {
+									$new_module_list[] = 'finance';
+								} elseif (checkPerByAction('finance','index_receivingorder')) {
+									$new_module_list[] = 'finance';
+								} elseif (checkPerByAction('finance','index_payables')) {
+									$new_module_list[] = 'finance';
+								} elseif (checkPerByAction('finance','index_paymentorder')) {
+									$new_module_list[] = 'finance';
+								} elseif (checkPerByAction('invoice','index')) {
+									$new_module_list[] = 'finance';
+								}
+								break;
+							case 'analytics' :
+								if (checkPerByAction('customer','analytics')) {
+									$new_module_list[] = 'analytics';
+								} elseif (checkPerByAction('business','analytics')) {
+									$new_module_list[] = 'analytics';
+								} elseif (checkPerByAction('finance','analytics')) {
+									$new_module_list[] = 'analytics';
+								} elseif (checkPerByAction('product','analytics')) {
+									$new_module_list[] = 'analytics';
+								} elseif (checkPerByAction('leads','analytics')) {
+									$new_module_list[] = 'analytics';
+								} elseif (checkPerByAction('contract','analytics')) {
+									$new_module_list[] = 'analytics';
+								} elseif (checkPerByAction('log','analytics')) {
+									$new_module_list[] = 'analytics';
+								} elseif (checkPerByAction('kaoqin','analytics')) {
+									$new_module_list[] = 'analytics';
+								} elseif (checkPerByAction('kaoqin','record')) {
+									$new_module_list[] = 'analytics';
+								}
+								break;
+							case 'log' :
+								if (checkPerByAction('log','index')) {
+									$new_module_list[] = 'log';
+								} elseif (checkPerByAction('examine','index')) {
+									$new_module_list[] = 'log';
+								} elseif (checkPerByAction('knowledge','index')) {
+									$new_module_list[] = 'log';
+								} elseif (checkPerByAction('announcement','index')) {
+									$new_module_list[] = 'log';
+								} elseif (checkPerByAction('sign','index')) {
+									$new_module_list[] = 'log';
+								} elseif (checkPerByAction('event','index')) {
+									$new_module_list[] = 'log';
+								} elseif (checkPerByAction('task','index')) {
+									$new_module_list[] = 'log';
+								} elseif (checkPerByAction('kaoqin','index')) {
+									$new_module_list[] = 'log';
+								}
+								break;
+							case 'contacts' :
+								if (checkPerByAction('user','contacts')) {
+									$new_module_list[] = 'contacts';
+								}
+								break;
+							case 'sendsms' :
+								if (checkPerByAction('setting','sendsms')) {
+									$new_module_list[] = 'sendsms';
+								}
+								break;
+							case 'setting' :
+								if (checkPerByAction('user','index')) {
+									$new_module_list[] = 'setting';
+								} elseif (checkPerByAction('kaoqin','setting')) {
+									$new_module_list[] = 'setting';
+								}
+								break;
+							case 'programadmin' :
+								if ( checkPerByAction('programadmin','index') ){
+									$new_module_list[] = 'programadmin';
+								}
+								break;
+						}
+					}
+					//客户列表默认场景
+					$m_scene_default = M('SceneDefault');
+					$m_scene = M('Scene');
+					$customer_default_scene = $m_scene_default->where(array('role_id'=>session('role_id'),'module'=>'customer'))->getField('scene_id');
+					if (!$customer_default_scene) {
+						$customer_default_info = $m_scene->where(array('module'=>'customer','type'=>1))->order('id asc')->find();
+					} else {
+						$customer_default_info = $m_scene->where(array('id'=>$customer_default_scene))->find();
+					}
+					if ($customer_default_info['type'] == 1) {
+						$customer_url = U('customer/index','by='.$customer_default_info['by']);
+					} else {
+						$customer_url = U('customer/index','scene_id='.$customer_default_info['id']);
+					}
+					
+					//版本、到期
+	        		$authorize_setting = C('AUTHORIZE_SETTING');
+					$days_remaining = '100';
+					if ($authorize_setting['NUM'] <= 5 && !empty($authorize_setting['OPENTIME']) && $authorize_setting['OPENTIME'] > '20171116') {
+						if ($authorize_setting['NUM'] > 2) {
+							$days_remaining = round((strtotime($authorize_setting['ENDTIME'])-time())/86400);
+							$authorize_setting['ENDTIME'] = date('Y年m月d日',strtotime($authorize_setting['ENDTIME']));
+						} else {
+							$authorize_setting['ENDTIME'] = '永久免费';
+						}
+					} else {
+						if (($authorize_setting['NUM'] > 5)) {
+							$days_remaining = round((strtotime($authorize_setting['ENDTIME'])-time())/86400);
+							$authorize_setting['ENDTIME'] = date('Y年m月d日',strtotime($authorize_setting['ENDTIME']));
+						} else {
+							$authorize_setting['ENDTIME'] = '永久免费';
+						}
+					}
+				?>
+	            <ul class="nav metismenu left-side" id="side-menu" >
+	                <li class="nav-header" style="padding:6px 21px 21px; background: #FFF;">
+	                    <br>
+	                    <?php 
+	                    	$img = M('User')->where('user_id = %d', session('user_id'))->getField('img');
+	                    	$defaultinfo_info = M('Config')->where('name = "defaultinfo"')->find();
+							$defaultinfo = unserialize($defaultinfo_info['value']);
+						?>
+	                    <div class="logo-element" style="margin: -17px -25px;">
+	                    	
+	                    		<img class="" src="__PUBLIC__/img/logo-crm.svg" style="margin-bottom:0px;height:45px;margin-top:-9px;" alt="MXCRM">
+	                    	
+	                    </div>
+	                </li>
+	                <li >
+	                	<a data-toggle="tooltip" data-placement="right" data-original-title="CRM首页" <if condition="$module_name eq 'index'"> class="active"</if> href="{:U('index/index')}"><i class="fa fa-home"></i><span>CRM首页</span></a>
+	                </li>
+
+	                <?php if (in_array('customer',$new_module_list)): ?>
+	                <li >
+	                	<a data-toggle="tooltip" data-placement="right" data-original-title="销售线索"
+							<if condition="($module_name eq 'leads' && $action_name neq 'analytics') || $module_name eq 'contacts' || $module_name eq 'member'">
+								class="active"
+							</if>
+
+                            <if condition="checkPerByAction('leads','index')">
+								href="{:U('leads/index')}"
+							</if>
+						><i class="fa fa-user"></i><span>销售线索</span></a>
+	                </li>
+	                <?php endif; ?>
+
+					<li>
+						<a data-toggle="tooltip" data-placement="right" data-original-title="项目查询"
+						<if condition="$module_name eq 'program'"> class="active"</if>
+						href="{:U('program/index')}"><i class="glyphicon glyphicon-rub"></i><span>项目查询</span></a>
+					</li>
+
+	                <?php if (in_array('business',$new_module_list)): ?>
+	                <li >
+	                	<a data-toggle="tooltip" data-placement="right" data-original-title="商机" <if condition="$module_name eq 'business' && $action_name neq 'analytics'"> class="active"</if> href="{:U('business/index')}" ><i class="fa fa-suitcase"></i><span>商机</span></a>
+	                </li>
+	                <?php endif; ?>
+	                <?php if (in_array('product',$new_module_list)): ?>
+	                <li>
+	                	<a data-toggle="tooltip" data-placement="right" data-original-title="产品" <if condition="$module_name eq 'product' && $action_name neq 'category'"> class="active"</if> href="{:U('product/index')}"><i class="fa fa-inbox"></i><span>产品</span></a>
+	                </li>
+	            	<?php endif; ?>
+					<?php if (in_array('customer',$new_module_list)): ?>
+					<li >
+						<a data-toggle="tooltip" data-placement="right" data-original-title="我的客户"
+						<if condition="($module_name eq 'customer' && $action_name neq 'analytics')">
+							class="active"
+						</if>
+						<if condition="checkPerByAction('leads','index')">
+							href="{:U('customer/index')}"
+						</if>
+						><i class="fa fa-user"></i><span>我的客户</span></a>
+					</li>
+					<?php endif; ?>
+	                <?php if (in_array('contract',$new_module_list)): ?>
+					<li>
+	                	<a data-toggle="tooltip" data-placement="right" data-original-title="合同订单" <if condition="($module_name eq 'contract' && $action_name neq 'analytics' && $action_name neq 'collection' && $action_name neq 'examine') || $module_name eq 'order'"> class="active"</if> <if condition="checkPerByAction('contract','index')">href="{:U('contract/index')}"<elseif condition ="checkPerByAction('order','index')" />href="{:U('order/index')}"</if>><i class="fa fa-file-text"></i><span>合同订单</span></a>
+	                </li>
+	                <?php endif; ?>
+	                <?php if (in_array('finance',$new_module_list)): ?>
+					<li>
+	                	<a data-toggle="tooltip" data-placement="right" data-original-title="回款" <if condition="$module_name eq 'finance' && $action_name neq 'analytics' && $action_name neq 'collection' || $module_name eq 'invoice'"> class="active"</if> <if condition="checkPerByAction('finance','index_receivables')">href="{:U('finance/index','t=receivables')}"<elseif condition ="checkPerByAction('finance','index_receivingorder')" />href="{:U('finance/index','t=receivingorder')}"</if>><i class="fa fa-credit-card"></i><span>回款</span></a>
+	                </li>
+	                <?php endif; ?>
+	                <?php if (in_array('analytics',$new_module_list)): ?>
+					<li>
+	                	<a data-toggle="tooltip" data-placement="right" data-original-title="数据分析" <if condition="$action_name eq 'collection' || $action_name eq 'analytics' || $action_name eq 'record'"> class="active"</if> <if condition="checkPerByAction('leads','analytics')">href="{:U('leads/analytics','content_id=1')}"<elseif condition = "checkPerByAction('customer','analytics')" />href="{:U('customer/analytics','content_id=1')}"<elseif condition = "checkPerByAction('business','analytics')" />href="{:U('business/analytics','content_id=1')}"<elseif condition = "checkPerByAction('finance','analytics')" />href="{:U('finance/analytics','content_id=1')}"<elseif condition = "checkPerByAction('product','analytics')" />href="{:U('product/analytics','content_id=1')}"<elseif condition = "checkPerByAction('log','analytics')" />href="{:U('log/analytics','content_id=1')}"<else />href="{:U('customer/analytics','content_id=1')}"</if> ><i class="fa fa-area-chart"></i><span>数据分析</span></a>
+	                </li>
+	                <?php endif; ?>
+	                <?php if (in_array('sendsms',$new_module_list)): ?>
+					<li>
+	                	<a data-toggle="tooltip" data-placement="right" data-original-title="营销" <if condition="$action_name eq 'sendsms' || $action_name eq 'smsrecord' || $action_name eq 'sendemail' || $module_name eq 'email' || $module_name eq 'sms'"> class="active"</if> href="{:U('setting/sendemail')}"><i class="fa fa-envelope"></i><span>营销</span></a>
+	                </li>
+	                <?php endif; ?>
+
+					<li>
+						<a data-toggle="tooltip" data-placement="right" data-original-title="销售培训"><i class="fa fa-cog"></i><span>销售培训(开发)</span></a>
+					</li>
+					<!-- 销售FAQ -->
+					<?php if ( checkPerByAction('salefaq','index') ): ?>
+					<li>
+						<a data-toggle="tooltip" data-placement="right" data-original-title="销售FAQ" href="{:U('salefaq/index')}"><i class="fa fa-cog"></i><span>销售FAQ</span></a>
+					</li>
+					<?php endif; ?>
+					<!-- 销售FAQ end -->
+					<!-- 留学规划服务 -->
+					<?php if ( checkPerByAction('cooperate','index') ): ?>
+					<li>
+						<a data-toggle="tooltip" data-placement="right" data-original-title="留学规划" href="{:U('cooperate/index')}"><i class="fa fa-paper-plane"></i><span>留学规划服务</span></a>
+					</li>
+					<?php endif; ?>
+					<!-- 留学规划服务 end -->
+					<?php if ( checkPerByAction('cooperations','index') ): ?>
+					<li>
+						<a data-toggle="tooltip" data-placement="right" data-original-title="合作机构" href="{:U('Cooperations/index')}" ><i class="fa fa-group"></i><span>合作机构竞品机构</span></a>
+					</li>
+					<?php endif; ?>
+
+
+	            </ul>
+	        </div>
+	    </nav>
+		<div id="page-wrapper" class="gray-bg" style="background:#e6e9f0">
+    		<div class="row border-bottom white-bg" style="z-index: 102;">
+				
+				<!-- 顶部菜单栏 -->
+				<nav class="navbar navbar-default nav-head navbar-static-top" role="navigation" style="padding:0;margin-bottom: 0px; border-bottom:2px solid #f7f7f7">
+					<?php
+						$module_name = strtolower(MODULE_NAME);
+						$action_name = strtolower(ACTION_NAME);
+						$t = strtolower($_GET['t']);
+					 ?>
+					 <div class="lineone clearfix">
+						<ul class="nav navbar-nav navbar-left navbar-form-custom col-md-9" >
+							<!-- <li class=""><a href=""><i class="fa fa-home" style="color: #FFB173"></i>&nbsp;&nbsp;首页</a></li> -->
+							<li class="miniLi <if condition="$module_name eq 'index'">actstyle</if>">
+								<a href="{:U('index/index')}">
+									<span><i class="fa fa-pie-chart"></i>CRM</span>
+								</a>
+							</li>
+							<?php if (in_array('log',$new_module_list)): ?>
+								<li class="miniLi <if condition="$module_name eq 'log' &&  $action_name neq 'analytics' || ($module_name eq 'examine' && $action_name neq 'analytics') || $module_name eq 'announcement' || ($module_name eq 'knowledge' && $action_name neq 'category') || $module_name eq 'sign' || $module_name eq 'event' || $module_name eq 'task' || ($module_name eq 'kaoqin' && $action_name eq 'index')">actstyle</if>" style="">
+									<a class="" href="{:U('log/index')}" title="OA办公">
+										<span><i class="fa fa-desktop"></i>OA办公</span>
+										<div class="label label-info" style="background-color: #FA7252;" id=""></div>
+									</a>
+								</li>
+							<?php endif;?>
+
+							<?php if (in_array('contacts',$new_module_list)): ?>
+								<li class="miniLi <if condition="$module_name eq 'user' && ($action_name eq 'contacts' || $action_name eq 'view')">actstyle</if>" style="">
+									<a class="" href="{:U('user/contacts')}" title="通讯录">
+										<span><i class="fa fa-phone"></i>通讯录</span>
+										<div class="label label-info" style="background-color: #FA7252;" id=""></div>
+									</a>
+								</li>
+							<?php endif;?>
+
+							<?php if (in_array('setting',$new_module_list)): ?>
+								<li class="miniLi <if condition="($module_name eq 'setting' && ($action_name neq 'sendsms' && $action_name neq 'smsrecord' && $action_name neq 'sendemail')) || ($module_name eq 'user' && $action_name neq 'contacts' && $action_name neq 'view') || $action_name eq 'category' || ($module_name eq 'kaoqin' && $action_name neq 'analytics' && $action_name neq 'record' && $action_name neq 'index') || ($module_name eq 'contract' && $action_name eq 'examine')">actstyle</if>" style="">
+									<a class=""
+										<if condition = "session('?admin')">
+											href="{:U('setting/defaultinfo')}"
+											<elseif condition = "checkPerByAction('user','index')" />
+											href="{:U('user/index')}"
+											<elseif condition = "checkPerByAction('kaoqin','setting')" />
+											href="{:U('kaoqin/setting')}"<else />href="{:U('setting/defaultinfo')}"
+										</if>
+									title="设置">
+										<span><i class="fa fa-cog"></i>设置</span>
+										<div class="label label-info" style="background-color: #FA7252;" id=""></div>
+									</a>
+								</li>
+							<?php endif;?>
+						</ul>
+						<ul class="col-md-3 nav navbar-top-links navbar-right mini_header" style="margin-right:0px;">
+							<li class="dropdown" style="">
+								<a class="dropdown-toggle count-info" id="todo_url"  data-toggle="dropdown" href="#" title="待办事项">
+									<img src="__PUBLIC__/img/remain.png" alt="" /><div class="label label-info" style="background-color: #FA7252;" id="todo_num"></div>
+								</a>
+								<ul class="dropdown-menu dropdown-alerts folder-list m-b-md" style="width:250px;">
+									<?php $contract_examine_role_ids = M('ContractExamine')->getField('role_id',true); ?>
+									<?php if (checkPerByAction('contract','check') || in_array(session('role_id'),$contract_examine_role_ids)): ?>
+									<li style="border-bottom:1px dashed #e7eaec !important;"><a href="{:U('contract/index','contract_checked=1&by=all')}"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;待审核的合同<span class="label label-info pull-right" style="background-color: #FA7252;" id="header_check_contract_num"></span></a></li>
+									<?php endif; ?>
+									<?php if (checkPerByAction('finance','check')): ?>
+									<li style="border-bottom:1px dashed #e7eaec !important;"><a href="{:U('finance/index','t=receivingorder&status[value]=0&by=all')}"><i class="fa fa-money"></i>&nbsp;&nbsp;待审核的回款<span class="label label-info pull-right" style="background-color: #FA7252;" id="header_receivables_num"></span></a></li>
+									<?php endif; ?>
+									<?php if (checkPerByAction('examine','index')): ?>
+									<li style="border-bottom:1px dashed #e7eaec !important;"><a href="{:U('examine/index','by=me_examine&examining=1')}"><i class="fa fa-check-square-o"></i>&nbsp;&nbsp;待处理的审批流<span class="label label-info pull-right" style="background-color: #FA7252;" id="header_examine_num"></span></a></li>
+									<?php endif; ?>
+									<?php if (checkPerByAction('contract','index')): ?>
+									<li style="border-bottom:1px dashed #e7eaec !important;"><a href="{:U('contract/index','by=dqcontact')}"><i class="fa fa-user"></i>&nbsp;&nbsp;合同到期提醒<span class="label label-info pull-right" style="background-color: #FA7252;" id="header_dqcontact_num"></span></a></li>
+									<?php endif; ?>
+
+									<?php if (checkPerByAction('finance','index_receivables')): ?>
+									<li style="border-bottom:1px dashed #e7eaec !important;"><a href="{:U('finance/index','t=receivables&r_status=1&by=me')}"><i class="fa fa-money"></i>&nbsp;&nbsp;应收款提醒<span class="label label-info pull-right" style="background-color: #FA7252;" id="receivables_num"></span></a></li>
+									<?php endif; ?>
+									<?php if (checkPerByAction('customer','index')): ?>
+									<li style="border-bottom:1px dashed #e7eaec !important;"><a href="{:U('customer/index','by=todaycontact')}"><i class="fa fa-user"></i>&nbsp;&nbsp;今日需跟进客户<span class="label label-info pull-right" style="background-color: #FA7252;" id="header_follow_customer_num"></span></a></li>
+									<?php endif; ?>
+								</ul>
+							</li>
+
+			                <li class="dropdown" style="">
+			                    <a class="dropdown-toggle count-info" id="event_url" data-toggle="dropdown" href="#" title="今日日程">
+			                        <img src="__PUBLIC__/img/event.png" alt="" /><span class="label label-warning" id="event_num"></span>
+			                    </a>
+		                   		<ul class="dropdown-menu dropdown-alerts">
+				            		<li class="list-group" role="presentation" id="event_group" style="height:220px;display:none;">
+		                        		<div class="full-height-scroll" id="event_list" data-height="220px" data-plugin="slimScroll" style="overflow: hidden; width: auto;">
+	                                    </div>
+	                        		</li>
+	                        		<li>
+				                        <div class="text-center link-block">
+				                            <a href="{:U('event/index')}">
+				                                <strong>查看全部日程</strong>
+				                                <i class="fa fa-angle-right"></i>
+				                            </a>
+				                        </div>
+				                    </li>
+				            		<li class="divider" style="height:0px;"></li>
+		                   		</ul>
+			                </li>
+
+			                <li class="dropdown">
+			                    <a class="dropdown-toggle count-info" id="message_url" data-toggle="dropdown" href="#" title="站内信">
+			                        <img src="__PUBLIC__/img/bell.png" alt="" /><span class="label label-primary" id="message_num"></span>
+			                    </a>
+		                    	<ul class="dropdown-menu dropdown-alerts" style="width:365px;">
+		                    		<li class="list-group" role="presentation" id="message_group" style="height:220px;display:none;">
+		                        		<div class="full-height-scroll" id="message_list" data-height="220px" data-plugin="slimScroll" style="overflow: hidden; width: auto;">
+		                        		</div>
+		                        	</li>
+		                    		<li>
+				                        <div class="text-center link-block">
+				                            <a href="{:U('message/index')}">
+				                                <strong>站内信列表</strong>
+				                                <i class="fa fa-angle-right"></i>
+				                            </a>
+				                        </div>
+				                    </li>
+				                    <li class="divider" style="height:0px;"></li>
+		                    	</ul>
+			                </li>
+
+			                <li style="padding-left: 15px; margin-right: 0">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 2px;">
+									<?php
+									$img = M('User')->where('user_id = %d', session('user_id'))->getField('thumb_path');
+									?>
+									<if condition = "$img neq ''">
+										<img alt="头像" style="height:38px;width:38px" class="img-circle" src="{$img}" />
+									<else />
+										<img alt="头像" style="height:38px;width:38px" class="img-circle" src="__PUBLIC__/img/avatar_default.png" />
+									</if>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="{:U('user/edit')}">个人资料</a></li>
+	                                <li><a href="{:U('setting/lockscreen')}">一键锁屏</a></li>
+									<li class="divider"></li>
+									<li><a class="logout" href="javascript:void(0);">{:L('EXIT')}</a></li>
+								</ul>
+							</li>
+			            </ul>
+		            </div>
+				<!-- 二级导航显示 -->
+					<?php
+						$module_name = strtolower(MODULE_NAME);
+						$action_name = strtolower(ACTION_NAME);
+						$t = strtolower($_GET['t']);
+					 ?>
+					<ul class="linetwo nav navbar-nav navbar-left col-md-12">
+						<?php if ($module_name == 'index'): ?>
+						<li <if condition = "$module_name eq 'index' && $action_name eq 'index'">class="active"</if> ><a href="{:U('index/index')}"><span class="fa fa-home" style="display:inline"></span>&nbsp;&nbsp;首页</a></li>
+						<?php elseif($action_name == 'analytics' || $action_name == 'collection' || $action_name == 'city_analytics' || $action_name == 'record'): ?>
+						<li <if condition = "$action_name == 'analytics' || $action_name == 'city_analytics' || $action_name == 'record'">class="active"</if>>
+						<a href="{:U('customer/analytics')}"><span class="fa fa-area-chart" style="display:inline"></span>&nbsp;&nbsp;数据分析</a></li>
+						<?php elseif ($module_name == 'customer' && $action_name != 'analytics' && $action_name != 'city_analytics' || $module_name == 'contacts' || $module_name == 'member' || $module_name == 'leads') : ?>
+						<li <if condition = "$module_name eq 'leads' && $_GET['by'] neq 'public'">class="active"</if> >
+						<a href="{:U('leads/index')}"><span class="fa fa fa-child" style="display:inline"></span>&nbsp;&nbsp;我的线索</a>
+						</li>
+						<li <if condition = "$module_name eq 'leads' && $_GET['by'] eq 'public'">class="active"</if> >
+						<a href="{:U('leads/index','by=public')}"><span class="fa fa fa-child" style="display:inline"></span>&nbsp;&nbsp;公共线索池</a>
+						</li>
+						<li <if condition = "$module_name eq 'customer' && $_GET['content'] neq 'resource' && $_GET['content'] neq 'city_analytics'">class="active"</if> >
+						<a href="{$customer_url}"><span class="fa fa-user" style="display:inline"></span>&nbsp;&nbsp;我的客户</a>
+						</li>
+						<li <if condition = "$_GET['content'] eq 'resource'">class="active"</if>>
+						<a href="{:U('customer/index','by=me&content=resource')}"><span class="fa fa-group" style="display:inline"></span>&nbsp;&nbsp;公共客户池</a>
+						</li>
+						<li <if condition = "$module_name eq 'contacts'">class="active"</if>>
+						<a href="{:U('contacts/index')}"><span class="fa fa-phone-square" style="display:inline"></span>&nbsp;&nbsp;客户联系人</a>
+						</li>
+						<?php elseif($module_name == 'business' && $action_name != 'analytics'): ?>
+						<li class="active"><a href="{:U('business/index')}"><span class="fa fa-suitcase" style="display:inline"></span>&nbsp;&nbsp;商机</a></li>
+						<?php elseif($module_name == 'product' && $action_name != 'category'): ?>
+						<li class="active"><a href="{:U('product/index')}"><span class="fa fa-inbox" style="display:inline"></span>&nbsp;&nbsp;产品</a></li>
+						<?php elseif($module_name == 'contract' || $module_name == 'order'): ?>
+						<li <if condition = "$module_name eq 'contract'">class="active"</if>><a href="{:U('contract/index')}"><span class="fa fa-list-alt" style="display:inline"></span>&nbsp;&nbsp;合同</a></li>
+						<!-- 合作机构 -->
+						<?php elseif( $module_name == 'cooperate' ): ?>
+						<?php if ( checkPerByAction('cooperate','index') ): ?>
+						<li <if condition = "$module_name eq 'cooperate' && $action_name eq 'index'">class="active"</if>><a href="{:U('cooperate/index')}">&nbsp;&nbsp;留学规划</a></li>
+						<?php endif; ?>
+						<?php if ( checkPerByAction('cooperate','cooperateData') ): ?>
+						<li <if condition = "$module_name eq 'cooperate' && $action_name eq 'cooperatedata'">class="active"</if>><a href="{:U('cooperate/cooperateData')}">&nbsp;&nbsp;数据列表</a></li>
+						<?php endif; ?>
+						<?php if ( checkPerByAction('cooperate','course') ): ?>
+						<li <if condition = "$module_name eq 'cooperate' && $action_name eq 'course'">class="active"</if>><a href="{:U('cooperate/course')}">&nbsp;&nbsp;课程管理</a></li>
+						<?php endif; ?>
+						<?php if ( checkPerByAction('cooperate','school') ): ?>
+						<li <if condition = "$module_name eq 'cooperate' && $action_name eq 'school'">class="active"</if>><a href="{:U('cooperate/school')}">&nbsp;&nbsp;学校管理</a></li>
+						<?php endif; ?>
+						<?php if ( checkPerByAction('cooperate','plan') ): ?>
+						<li <if condition = "$module_name eq 'cooperate' && $action_name eq 'plan'">class="active"</if>><a href="{:U('cooperate/plan')}">&nbsp;&nbsp;方案管理</a></li>
+						<?php endif; ?>
+						<!-- 合作机构 end dragon -->
+						<!-- 添加头部标题 -->
+						<?php elseif($module_name == 'apply'): ?>
+						<li <if condition = "$module_name eq 'apply'">class="active"</if>><a href="{:U('apply/index')}"><span class="fa fa-sitemap" style="display:inline"></span>&nbsp;&nbsp;申请服务</a></li>
+						<!-- 添加头部标题 end dragon -->
+						<?php elseif($module_name == 'finance' || $module_name == 'financevoucher' || $module_name == 'invoice'): ?>
+						<li <if condition = "$module_name eq 'finance' && $t eq 'receivables'">class="active"</if>><a href="{:U('finance/index','t=receivables')}"><span class="fa fa-credit-card" style="display:inline"></span>&nbsp;&nbsp;应收款</a></li>
+						<li <if condition = "$module_name eq 'finance' && $t eq 'receivingorder'">class="active"</if>><a href="{:U('finance/index','t=receivingorder')}"><span class="fa fa-money" style="display:inline"></span>&nbsp;&nbsp;回款单</a></li>
+						<li <if condition = "$module_name eq 'finance' && $t eq 'payables'">class="active"</if>><a href="{:U('finance/index','t=payables')}"><span class="fa fa-credit-card" style="display:inline"></span>&nbsp;&nbsp;应付款</a></li>
+						<li <if condition = "$module_name eq 'finance' && $t eq 'paymentorder'">class="active"</if>><a href="{:U('finance/index','t=paymentorder')}"><span class="fa fa-money" style="display:inline"></span>&nbsp;&nbsp;付款单</a></li>
+						<li <if condition = "$module_name eq 'invoice'">class="active"</if>><a href="{:U('invoice/index')}"><span class="fa fa-bookmark" style="display:inline"></span>&nbsp;&nbsp;发票</a></li>
+						<?php elseif($module_name == 'log' || $module_name =='examine' || ($module_name == 'knowledge' && $action_name != 'category') || $module_name == 'announcement' || $module_name == 'sign' || $module_name == 'event' || $module_name == 'task' || ($module_name == 'kaoqin' && $action_name == 'index') ): ?>
+						<li <if condition = "$module_name eq 'log'">class="active"</if>><a href="{:U('log/index')}"><span class="fa fa-pencil-square" style="display:inline"></span>&nbsp;&nbsp;工作日志</a></li>
+						<li <if condition = "$module_name == 'examine'">class="active"</if>><a href="{:U('examine/index')}"><span class="fa fa-check-square-o" style="display:inline"></span>&nbsp;&nbsp;审批</a></li>
+						<li <if condition = "$module_name eq 'knowledge' && $action_name neq 'category'">class="active"</if>><a href="{:U('knowledge/index')}"><span class="fa fa-book" style="display:inline"></span>&nbsp;&nbsp;知识</a></li>
+						<li <if condition = "$module_name eq 'announcement'">class="active"</if>><a href="{:U('announcement/index')}"><span class="fa fa-volume-up" style="display:inline"></span>&nbsp;&nbsp;公告</a></li>
+						<li <if condition = "$module_name eq 'sign'">class="active"</if>><a href="{:U('sign/index')}"><span class="fa fa-map-pin" style="display:inline"></span>&nbsp;&nbsp;定位签到</a></li>
+						<li <if condition = "$module_name eq 'event'">class="active"</if>><a href="{:U('event/index')}"><span class="fa fa-calendar" style="display:inline"></span>&nbsp;&nbsp;日程</a></li>
+						<li <if condition = "$module_name eq 'task'">class="active"</if>><a href="{:U('task/index')}"><span class="fa fa-tasks" style="display:inline"></span>&nbsp;&nbsp;任务</a></li>
+						<!-- <li <if condition = "$module_name eq 'kaoqin'">class="active"</if>><a href="{:U('kaoqin/index')}"><span class="fa fa-hand-pointer-o" style="display:inline"></span>&nbsp;&nbsp;考勤月历</a></li> -->
+						<?php elseif(($module_name == 'setting' && ($action_name =='sendsms' || $action_name =='smsrecord' || $action_name =='sendemail'))|| $module_name == 'email' || $module_name == 'sms'): ?>
+						<!-- <li <if condition = "($module_name eq 'setting' && $action_name eq 'sendsms')|| $module_name eq 'sms'">class="active"</if>><a href="{:U('setting/sendsms')}"><span class="fa fa-comments-o" style="display:inline"></span>&nbsp;&nbsp;{:L('SEND_SMS')}</a></li> -->
+						<!-- <li <if condition = "$module_name eq 'setting' && $action_name eq 'smsrecord'">class="active"</if>><a href="{:U('setting/smsrecord')}"><span class="fa fa-envelope" style="display:inline"></span>&nbsp;&nbsp;{:L('SMS_RECORD')}</a></li> -->
+						<li <if condition = "($module_name eq 'setting' && $action_name eq 'sendemail')|| $module_name eq 'email'">class="active"</if>><a href="{:U('setting/sendemail')}"><span class="fa fa-folder" style="display:inline"></span>&nbsp;&nbsp;{:L('SEND_EMAIL')}</a></li>
+						<!-- 销售FAQ -->
+						<?php elseif($module_name == 'salefaq'):?>
+						<li class="active"><a href="{:U('salefaq/index')}"><span class="fa fa-bank" style="display:inline"></span>&nbsp;&nbsp;销售FAQ</a></li>
+						<!-- 销售FAQ end -->
+						<?php elseif(($module_name == 'user' && $action_name != 'contacts' && $action_name != 'view') || ($module_name == 'setting' && ($action_name !='sendsms' && $action_name !='smsrecord' && $action_name !='sendemail')) || $action_name == 'category' || ($module_name == 'accountsetting') || ($module_name == 'kaoqin' && $action_name == 'setting') ): ?>
+						<li <if condition = "$module_name eq 'user' && $action_name eq 'edit' && ($_GET['id'] eq '' || $_GET['id'] eq session('role_id'))">class="active"</if>>
+						<a href="{:U('user/edit')}"><span class="fa fa-user" style="display:inline"></span>&nbsp;&nbsp;个人中心</a>
+						</li>
+						<li <if condition = "$module_name eq 'setting' || ($module_name eq 'user' && $action_name neq 'edit') || $action_name eq 'category' || ($module_name eq 'user' && $action_name eq 'edit' && $_GET['id'] neq session('role_id') && $_GET['id'] neq '') || ($module_name eq 'accountsetting') || ($module_name eq 'kaoqin' && $action_name eq 'setting')">class="active"</if>><a href="{:U('user/index')}"><span class="fa fa-cog" style="display:inline"></span>&nbsp;&nbsp;系统设置</a></li>
+						<?php elseif($module_name == 'user' && ($action_name == 'contacts' || $action_name == 'view')): ?>
+						<li <if condition = "$module_name == 'user'">class="active"</if>><a href="{:U('user/contacts')}"><span class="fa fa-phone-square" style="display:inline"></span>&nbsp;&nbsp;通讯录</a></li>
+						<?php elseif($module_name == 'message'): ?>
+						<li <if condition = "$module_name == 'message'">class="active"</if>><a href="{:U('message/index')}"><span class="fa fa-bank" style="display:inline"></span>&nbsp;&nbsp;消息中心</a></li>
+						<?php elseif($module_name == 'program'):?>
+						<li class="active"><a href="{:U('program/index')}"><span class="fa fa-bank" style="display:inline"></span>&nbsp;&nbsp;项目列表</a></li>
+						<?php endif; ?>
+
+						<?php if($module_name == 'cooperations'):?>
+                        <li class="active"><a href="{:U('cooperations/index')}"><span class="fa fa-bank" style="display:inline"></span>&nbsp;&nbsp;合作机构</a></li>
+						<?php endif; ?>
+
+					</ul>
+					<!-- <ul class="nav navbar-top-links navbar-right" style="margin-right:0px;">
+
+                    </ul> -->
+				</nav>
+
+			</div>
+			<div class="modal inmodal" id="Profile" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content animated bounceInRight">
+
+					</div>
+				</div>
+			</div>
+			<!-- 模态框 -->
+			<div class="modal inmodal fade" id="Modal_login" tabindex="-1"  style=" overflow:auto; border:1px solid #000000;" role="dialog" >
+			    <div class="modal-dialog modal-md" style="width:700px;">
+			        <div class="modal-content" id="login_modal">
+
+			        </div>
+			    </div>
+			</div>
+
+<script type="text/javascript">
+
+$(document).on('click','#authorize',function(){
+	$('#Modal_anthorize').modal('show');
+});
+
+$('[data-toggle="tooltip"]').tooltip({html:true});
+/*时间插件*/
+$('.date').datepicker({
+  format: "yyyy-mm-dd",
+  todayBtn: "linked",
+  keyboardNavigation: false,
+  forceParse: false,
+  calendarWeeks: true,
+  autoclose: true
+});
+$("#dialog-message-send").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 800,
+	maxHeight: 600,
+	position: ["center",100]
+});
+
+$("#dialog-program-search").dialog({
+    autoOpen: false,
+    modal: true,
+    width: '80%',
+    maxHeight: 700,
+    position: ["center",100]
+});
+
+$(function(){
+    /* 项目搜索 */
+    $("#program-search").click(function(){
+		$("#dialog-program-search").dialog('open');
+		$("#dialog-program-search").load("{:U('program/index')}");
+	});
+
+	/*站内信*/
+	message_tips();
+	login_tips();
+	$("#header_send_message").click(function(){
+		$('#dialog-message-send').dialog('open');
+		$('#dialog-message-send').load('{:U("message/send")}');
+	});
+	/*让复选框默认取消选择*/
+	//$(':checkbox').prop('checked', false);
+
+	/*记录菜单隐藏状态*/
+	$(".navbar-minimalize").click(function(){
+		var arr,reg = new RegExp("(^| )mini-navbar=([^;]*)(;|$)");
+		arr = document.cookie.match(reg);
+		if(arr){
+			var nav_status = unescape(arr[2]) == 1 ? 0:1;
+		}else{
+			var nav_status = 1;
+		}
+		document.cookie = "mini-navbar="+nav_status;
+	});
+});
+
+function salert(){
+	var txt = "<foreach name='alert.content' item='v' key='k'><foreach name='v' item='vv' key='kk'>{$vv}</foreach></foreach>";
+	if(txt != ''){
+		swal(txt, "", "{$alert['type'][0]}")
+	}
+}
+
+/*退出提示*/
+$('.logout').click(function () {
+	swal({
+		title: "确定退出登录?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "确定",
+		cancelButtonText: "取消",
+		closeOnConfirm: false
+        },
+		function (isConfirm) {
+			if (isConfirm) {
+				window.location="{:U('user/logout')}";
+			}
+		}
+	);
+});
+
+/*提交失败返回前一页*/
+var href = "{$error}";
+if(href != '' && href != null){
+	swal({
+		title: "添加失败!",type: "error",
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "返回",
+		closeOnConfirm: false 
+	}, 
+	function(){
+		location.href = 'javascript:history.back(-1)';
+	});
+}
+var login_show = 0;
+function login_tips(){
+	$.get("{:U('message/logintips')}", function(data){
+		var is_login = data.data['is_login'];
+        if(is_login == 0 && login_show != 1){
+        	 $.ajax({
+		        type: "GET",
+		        url: "{:U('user/loginajax')}",
+		        async: true,
+		        success: function(data) {
+		            if(data.status != 2){
+		                $("#login_modal").parent().removeClass("modal-lg").addClass("modal-md");
+			            $url = "{:U('user/loginajax')}";
+			            $('#Modal_login').modal('show');
+			            login_show = 1;
+			            $('#login_modal').load($url);
+		            }else{
+		            	 login_show = 1;
+		            }
+		        }  
+		    });
+        }
+	},'json')
+	setTimeout('login_tips()',20000);
+}
+
+/*轮询*/
+var mark_count = 1;//标记第一次弹出
+/*初始默认值*/
+var msg_num = '0,0';
+
+function message_tips(){
+	$.get("{:U('message/tips')}", function(data){
+        var is_lock = data.data['is_lock'];
+        if(is_lock == 1){
+            location.href = "{:U('setting/lockscreen')}";
+        }
+		//卡片提醒显示与隐藏
+		var message_html = '';
+		var new_num = data.data['message']+','+data.data['contract_count'];
+
+		//待办事项
+		$('#header_check_contract_num').html(data.data['check_contract_num']);
+		$('#header_dqcontact_num').html(data.data['contract_num']);
+		$('#header_examine_num').html(data.data['examine_num']);
+		$('#header_receivables_num').html(data.data['receivingorder_num']);
+		$('#receivables_num').html(data.data['receivables_num']);
+		$('#header_follow_customer_num').html(data.data['today_customer']);
+		if (data.data['todo_num']) {
+			$('#todo_num').html(data.data['todo_num']);
+		} else {
+			$('#todo_num').html('');
+		}
+
+		//导航提醒实时写入数值
+		if(data.data['message'] != 0 && data.data['message'] != ''){
+			$('#message_group').show();
+			//桌面提醒
+			if(data.data['data_list']){
+				$(data.data['data_list']).each(function(k, v){
+					if (data.data['data_list_count'] < 3) {
+						animateMessage(v.role_info.thumb_path, v.role_info.full_name, v.content_msubstr);
+					}
+				    aaa(v.role_info.thumb_path, v.role_info.full_name, v.content, v.url_link);
+				});
+			}
+			$('#message_num').html(data.data['message']);
+			$('#message_list').html('');
+			if(data.data['message_num'] != 0 && data.data['message_num'] != ''){
+				message_html += '<a href="{:U('message/index')}" style="width:100%;color:#676a6c;padding:5px !important;border-bottom:1px dashed #ddd;float:left;margin-bottom:5px;">\
+		                    <div style="padding:0 10px;">\
+		                        <img src="__PUBLIC__/img/Messenger.png" title="小助手"> 您有<strong>'+data.data['message_num']+'</strong>条消息待查看\
+		                        <span class="pull-right text-muted small" style="line-height:30px;">'+data.data['message_time']+'前</span>\
+		                    </div>\
+		                </a>';
+			}
+
+			if(data.data['message_announcement_count'] != 0 && data.data['message_announcement_count'] != ''){
+				message_html += '<a href="{:U('message/index','by=announcement')}" style="width:100%;color:#676a6c;padding:5px !important;border-bottom:1px dashed #ddd;float:left;margin-bottom:5px;">\
+		                    <div style="padding:0 10px;">\
+		                        <img src="__PUBLIC__/img/System.png" title="系统公告"> 您有<strong>'+data.data['message_announcement_count']+'</strong>条公告信息待查看\
+		                        <span class="pull-right text-muted small" style="line-height:30px;">'+data.data['announcement_time']+'前</span>\
+		                    </div>\
+		                </a>';
+			}
+			if(data.data['role_message_list']){
+				$(data.data['role_message_list']).each(function(k, v){
+				    message_html += '<a href="{:U('message/message_view','to_role_id=')}'+v.role_id+'" title="点击回复" style="width:100%;color:#676a6c;padding:5px !important;border-bottom:1px dashed #ddd;float:left;margin-bottom:5px;" >\
+	                            <div class="dropdown-messages-box" style="padding:0 10px;">\
+	                                <div class="pull-left">\
+	                                    <img alt="image" class="img-circle" src="'+v.thumb_path+'">&nbsp;\
+	                                </div>\
+	                                <div style="overflow:hidden;">\
+	                                    <span>'+v.full_name+'</span><span class="label label-warning pull-right" style="margin-right: 3px;border-radius:50% !important;">'+v.unread_num+'</span><br>\
+	                                    <span style="word-wrap: break-word;word-break: normal;float:left;margin-top:10px;width:100%;">'+v.content+'</span><br>\
+	                                    <small class="text-muted pull-right" style="margin-top: 5px;">'+v.send_time+'</small>\
+	                                </div>\
+	                            </div>\
+	                        </a>';
+				});
+			}
+			$('#message_list').append(message_html);
+		}else{
+			$('#message_group').hide();
+		}
+		//日程提醒
+		var event_temp = '';
+		if(data.data['event_list'] != 0 && data.data['event_list'] != ''){
+			$('#event_group').show();
+			$('#event_list').html('');
+			$('#event_num').html(data.data['event_num']);
+			$.each(data.data['event_list'], function(k, v){
+				event_temp += '<a href="{:U('event/index')}" title="点击查看" style="padding:5px !important;border-bottom:1px dashed #ddd;float:left;margin-bottom:5px;width:100%;">\
+	                                <div style="overflow:hidden;padding:0 10px;">\
+	                                	<span class="pull-left" style="color:'+v.color+';line-height:26px;"><i class="fa fa-circle"></i>&nbsp;&nbsp;'+v.subject+'</span><br>\
+	                                    <small class="text-muted pull-right" style="margin-top: 5px;">'+v.between_date+'</small>\
+	                                </div>\
+	                            </a>';
+			});
+			$('#event_list').append(event_temp);
+		}else{
+			$('#event_group').hide();
+		}
+	},'json')
+	setTimeout('message_tips()',30000);
+}
+
+/*head 特效*/
+// $('.nav-head .navbar-left li').mouseover(function(){
+// 	$(this).find('a span').css("color", '#ffb173');
+// });
+
+// $('.nav-head .navbar-left li').mouseout(function(){
+// 	$(this).find('a span').css("color", '#e6e9f2');
+// });
+</script>
+
+<script type="text/javascript">
+function aaa(icon, name, content, url_link){
+    var t = new Date().toLocaleString();
+    var options={
+        dir: "ltr",
+        lang: "utf-8",
+        icon: icon,
+        body: content
+    };
+    if(Notification && Notification.permission === "granted"){
+        var n = new Notification(name + t, options);
+        //5秒后自动关闭 
+        n.onshow = function(){
+            setTimeout(function () {
+	            n.close();
+	        }, 5000)
+        };
+        n.onclick = function() {
+            // alert("You clicked me!");
+            window.location = url_link;
+            n.close();
+        };
+        n.onclose = function(){
+            console.log("notification closed!");
+        };        
+        n.onerror = function() {
+            console.log("An error accured");
+        }        
+    }
+}
+</script>

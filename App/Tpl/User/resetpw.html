@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{:L('RESET_PASSWORD')}</title>
+    <meta name="author" content="{:L('AUTHOR')}">
+    <link rel="shortcut icon" href="__PUBLIC__/ico/favicon.png">
+    <link href="__PUBLIC__/style/css/bootstrap.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/style/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="__PUBLIC__/style/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="__PUBLIC__/style/css/animate.css" rel="stylesheet">
+    <link href="__PUBLIC__/style/css/style.css" rel="stylesheet">
+</head>
+<body class="gray-bg">
+    <include file="Public:alert" />
+    <div class="middle-box text-center loginscreen animated fadeInDown" style="width: 500px;">
+        <div>
+            <div>
+                <h1 class="logo-name">
+	                <img src="<if condition='C("defaultinfo.logo_thumb_path")'>{:C('defaultinfo.logo_thumb_path')}<else />__PUBLIC__/img/wk.png</if>" alt="{:C('defaultinfo.name')}" style="width: 234px;height:72px;" />
+	            </h1>
+            </div>
+            <h3>{:L('RESET_PASSWORD')}</h3>
+            <!-- <p>{:C('defaultinfo.name')}</p> -->
+            <form action="" method="post" class="form-signin">  
+                <div class="form-group">
+                    <input type="password" class="form-control" name="password" placeholder="{:L('NEW_PASSWORD')}"/>
+                    <input type="hidden" name="user_id" value="{$Think.get.user_id}"/>
+					<input type="hidden" name="verify_code" value="{$Think.get.verify_code}"/>
+                </div>
+                <input name="submit" class="btn btn-primary block full-width m-b" type="submit" value="{:L('CONFRIM_MODIFY')}"/>
+                <p class="text-muted text-center"><small></small>
+            </form>
+            <a href="{:U('user/login')}">{:L('LOGIN')}</a></p>
+            <!-- <p class="m-t"> <small>{:L('RIGHTS')}</small> </p> -->
+        </div>
+    </div>
+    <!-- Mainly scripts -->
+    <script src="__PUBLIC__/style/js/jquery-2.1.1.js"></script>
+    <script src="__PUBLIC__/style/js/bootstrap.min.js"></script>
+</body>
+</html>

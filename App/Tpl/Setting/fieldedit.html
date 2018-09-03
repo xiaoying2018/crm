@@ -1,0 +1,295 @@
+<script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
+<style>
+	.table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{
+		border:0px;
+	}
+</style>
+<form class="form-horizontal" action="{:U('setting/fieldedit')}" method="post" name="form1" id="form1">
+	<input type="hidden" name="field_id" value="{$fields.field_id}"/>
+	<table class="table form-inline">
+		<!-- <tr>
+			<th colspan="2"><h4><i class="fa fa-edit">&nbsp; {:L('FIELDS_INFORMATION')}</i></h4></th>
+		</tr> -->
+		<tr>
+			<td width="130px;" class="tdleft">{:L('FIELDS_NAMES')}</td>
+			<td>{$fields.name}</td>
+		<tr>
+        <tr>
+			<td class="tdleft">{:L('FIELDS_TYPE')}</td>
+			<td>{$fields.form_type_name}</td>
+		<tr>
+			<td class="tdleft">{:L('WEATHER_INFORMATION')}</td>
+			<td class=""><if condition="$fields.is_main eq 1">{:L('MIAN_INFO')}<else/>{:L('EXTRA_INFO')}</if></td>
+		</tr>
+		<if condition="$fields['form_type'] == 'box'">
+		<tr id="box_type_td" style="">
+			<td class="tdleft">{:L('OPTION_TYPE')}</td>
+			<td>
+				<div class="radio radio-info radio-inline">
+					<input type="radio" name="setting[boxtype]" id="settimg_type_1" value="radio" <if condition="$fields['setting']['type'] == 'radio'">checked="checked"</if>/>
+					<label for="settimg_type_1"> {:L('RADIO')} </label>
+				</div>
+				<div class="radio radio-info radio-inline">
+					<input type="radio" name="setting[boxtype]" id="settimg_type_2" <if condition="$fields['setting']['type'] == 'checkbox'">checked="checked"</if> value="checkbox"/>
+					<label for="settimg_type_2"> {:L('MULTISELECT')} </label>
+				</div>
+				<div class="radio radio-info radio-inline">
+					<input type="radio" name="setting[boxtype]" id="settimg_type_3" <if condition="$fields['setting']['type'] == 'select'">checked="checked"</if> value="select"/>
+					<label for="settimg_type_3"> {:L('COMBOBOX')} </label>
+				</div>
+			</td>
+		</tr>
+		<tr id="box_data_td">
+			<td class="tdleft">{:L('LIST_OF_OPTIONS')}</td>
+			<td>
+				<textarea class="form-control" id="setting_options" name="setting[options]">{$fields.setting.options}</textarea></br>
+				<span style="color:red;padding-top: 10px;">*</span><span id="setting_optionsTip"></span>
+			</td>
+		</tr>
+		</if>
+		<tr id='field_td'>
+			<td class="tdleft">{:L('FIELDS_NAME')}：</td>
+			<td><if condition="$fields['operating'] eq 0"><input type="text" id="field" name="field" class="form-control" value="{$fields.field}"/><span style="color:red;">*</span><span id="fieldTip"></span><else />{$fields.field}</if></td>
+		</tr>
+		<tr id="name_td">
+			<td class="tdleft">{:L('ID_NAME')}</td>
+			<td><input type="text" id="name" name="name" class="form-control" value="{$fields.name}"/><span style="color:red;">*</span><span id="nameTip"></span></td>
+		</tr> 
+		<!-- <tr id="max_length_td">
+			<td class="tdleft">{:L('THE_LARGEST_FIELD_LENGTH')}</td>
+			<td><input type="text" name="max_length" class="form-control" id="max_length" value="<if condition="$fields['max_length'] gt 0">{$fields.max_length}</if>"/>
+			<span style="color:red;">*</span><span id="max_lengthTip"></span></td>
+		</tr> -->
+        <if condition="$fields['form_type'] != 'textarea'&& $fields['form_type'] != 'editor' && $fields['form_type'] != 'address' && $fields['form_type'] != 'datetime' ">
+		<tr id="default_value_td">
+			<td class="tdleft">{:L('DEFAULT_VALUE')}</td>
+			<td>
+				<input type="text" name="default_value" id="default_value" class="form-control" value="{$fields.default_value}"/>
+				<if condition="$fields['form_type'] == 'number'">
+					<span style="display:none;color:red;">&nbsp;注：数字类型最大数值为：2147483647</span>
+				</if>
+				<span id="default_valueTip"></span>
+			</td>
+		</tr>
+        </if>
+		<tr id="color_td">
+			<td class="tdleft">{:L('COLOR')}</td>
+			<td><input class="color form-control" name="color" value="{$fields.color|default='333333'}" /></td>
+		</tr>
+        <tr id="is_validate_td">
+			<td class="tdleft">{:L('WHETHER_THE_VALIDATION')}</td>
+			<td>
+				<div class="radio radio-info radio-inline">
+					<input name="is_validate" id="is_validate_1" onclick="validateSwitch(1)" <if condition="$fields.is_validate eq 1">checked="checked"</if> type="radio" value="1"/>
+					<label for="is_validate_1"> {:L('IS')} </label>
+				</div>
+				<div class="radio radio-info radio-inline">
+					<input name="is_validate" id="is_validate_0" onclick="validateSwitch(0)" <if condition="$fields.is_validate neq 1">checked="checked"</if>  type="radio" value="0"/>
+					<label for="is_validate_0"> {:L('ISNOT')} </label>
+				</div>
+			</td>
+		</tr>
+		<tr id="is_unique_td" <if condition="!$fields['is_validate']">style="display:none;"</if>>
+			<td class="tdleft">{:L('WHETHER_ONLY')}</td>
+			<td>
+				<div class="radio radio-info radio-inline">
+					<input name="is_unique" id="is_unique_1" <if condition="$fields.is_unique eq 1">checked="checked"</if> type="radio" value="1"/>
+					<label for="is_unique_1"> {:L('IS')} </label>
+				</div>
+				<div class="radio radio-info radio-inline">
+					<input name="is_unique" id="is_unique_0" <if condition="$fields.is_unique neq 1">checked="checked"</if> type="radio" value="0"/>
+					<label for="is_unique_0"> {:L('ISNOT')} </label>
+				</div>
+			</td>
+		</tr>
+	<if condition="$fields['model'] eq 'customer' or $fields['model'] eq 'leads'">
+		<tr id="is_recheck_td" <if condition="!$fields['is_recheck']">style="display:none;"</if>>
+			<td class="tdleft">是否查重 :</td>
+			<td>
+				<div class="radio radio-info radio-inline">
+					<input name="is_recheck" id="is_recheck_1" <if condition="$fields.is_recheck eq 1">checked="checked"</if> type="radio" value="1"/>
+					<label for="is_recheck_1"> {:L('IS')} </label>
+				</div>
+				<div class="radio radio-info radio-inline">
+					<input name="is_recheck" id="is_recheck_0" <if condition="$fields.is_recheck neq 1">checked="checked"</if> type="radio" value="0"/>
+					<label for="is_recheck_0"> {:L('ISNOT')} </label>
+				</div>
+			</td>
+		</tr>
+	</if>
+		<tr id="is_null_td" <if condition="!$fields['is_validate']">style="display:none;"</if>>
+			<td class="tdleft">{:L('WHETHER_ALLOW_NULL')}</td>
+			<td>
+				<div class="radio radio-info radio-inline">
+					<input name="is_null" id="is_null_0" <if condition="$fields.is_null neq 1">checked="checked"</if> type="radio" value="0"/>
+					<label for="is_null_0"> {:L('IS')} </label>
+				</div>
+				<div class="radio radio-info radio-inline">
+					<input name="is_null" id="is_null_1" <if condition="$fields.is_null eq 1">checked="checked"</if> type="radio" value="1"/>
+					<label for="is_null_1"> {:L('ISNOT')} </label>
+				</div>
+			</td>
+		</tr>
+		<tr id="in_index_td">
+			<td class="tdleft">{:L('LIST_PAGE_DISPLAY')}</td>
+			<td>
+				<div class="radio radio-info radio-inline">
+					<input name="in_index" id="in_index_1" <if condition="$fields.in_index eq 1">checked="checked"</if> type="radio" value="1"/>
+					<label for="in_index_1"> {:L('IS')} </label>
+				</div>
+				<div class="radio radio-info radio-inline">
+					<input name="in_index" id="in_index_0" <if condition="$fields.in_index neq 1">checked="checked"</if> type="radio" value="0"/>
+					<label for="in_index_0"> {:L('ISNOT')} </label>
+				</div>
+			</td>
+		</tr>
+		<tr id="in_index_td">
+			<td class="tdleft">{:L('ADD_PAGE_DISPLAY')}</td>
+			<td>
+				<div class="radio radio-info radio-inline">
+					<input name="in_add" id="in_add_1" <if condition="$fields.in_add eq 1">checked="checked"</if> type="radio" value="1"/>
+					<label for="in_add_1"> {:L('IS')} </label>
+				</div>
+				<div class="radio radio-info radio-inline">
+					<input name="in_add" id="in_add_0" <if condition="$fields.in_add neq 1">checked="checked"</if> type="radio" value="0"/>
+					<label for="in_add_0"> {:L('ISNOT')} </label>
+				</div>
+			</td>
+		</tr>
+		<tr id="tips_td">
+			<td class="tdleft">{:L('INPUT_PROMPT')}</td>
+			<td><input type="text" name="input_tips" class="form-control" value="{$fields.input_tips}"/></td>
+		</tr>
+		<!-- <tr>
+			<td>&nbsp;</td>
+			<td><input class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp;
+			<input class="btn" type="button" onclick="javascript:$('#dialog_field_edit').dialog('close');" value="{:L('CANCEL')}"/></td>
+		</tr> -->
+	</table>
+</form>
+<script type="text/javascript">
+	$(function(){
+        jscolor.bind();
+        $.formValidator.initConfig({formID:"form1",debug:false,submitOnce:true,
+            onError:function(msg,obj,errorlist){
+                $("#errorlist").empty();
+                $.map(errorlist,function(msg){
+                    $("#errorlist").append("<li>" + msg + "</li>")
+                });
+                alert_crm(msg);
+            },
+            submitAfterAjaxPrompt : '<php>echo L('AJAX_VALIDATING_PLEASE_WAIT');</php>'
+        });
+        $("#name").formValidator({
+			tipID:"nameTip",
+			empty:false,
+			onShow:"<php>echo L('FOR_EXAMPLE_THE_ARTICLE_TITLE');</php>",
+			onFocus:"<php>echo L('PLEASE_ENTER_A_NAME');</php>",
+			onCorrect:"√"
+		}).inputValidator({
+			min:1,
+			empty:{
+				leftEmpty:false,
+				rightEmpty:false,
+				emptyError:"<php>echo L('BOTH_SIDES_ARE_NOT_FREE');</php>"
+			},
+			onError:":<php>echo L('LABEL_NAME_CANNOT_BE_EMPTY');</php>"
+		});
+        <if condition="$fields['operating'] eq 0">
+        $("#field").formValidator({
+			tipID:"fieldTip",
+			empty:false,
+			onShow:"请勿随意修改，字段名不能是mysql关键字！",
+			onFocus:"字段名不能是mysql关键字！<php>echo L('CAN_ONLY_CONSIST_OF_LOWERCASE_ENGLISH');</php>",
+			onCorrect:"字段名不能是mysql关键字！<php>echo L('CAN_ONLY_CONSIST_OF_LOWERCASE_ENGLISH');</php>"
+		}).inputValidator({
+			min:1,
+			empty:{
+				leftEmpty:false,
+				rightEmpty:false,
+				emptyError:"<php>echo L('BOTH_SIDES_ARE_NOT_FREE');</php>"
+			},
+			onError:"<php>echo L('LABEL_NAME_CANNOT_BE_EMPTY');</php>"
+		}).regexValidator({
+			regExp:"field",param:'i',
+			dataType:"enum",
+			onError:"<php>echo L('ONLY_CONSIST_OF_LOWERCASE_ENGLISH');</php>"});
+        </if>
+		type_id = '{$fields.form_type}';
+		if(type_id == 'box'){
+			$("#max_length_td").hide();
+			$("#default_value").show();
+			$("#is_unique").hide();
+			$("#setting_options").formValidator({
+				tipID:"setting_optionsTip",
+				empty:false,
+				onShow:"<php> echo L('INPUT_OPTION_VALUE').'<br/>'.L('OPTION1').'<br/>'.L('OPTION2');</php>",
+				onFocus:"<php> echo L('INPUT_OPTION_VALUE').'<br/>'.L('OPTION1').'<br/>'.L('OPTION2');</php>",
+				onCorrect:"格式正确"
+			}).inputValidator({
+				min:1,
+				empty:{
+					leftEmpty:false,
+					rightEmpty:false,
+					emptyError:"<php> echo L('INPUT_OPTION_VALUE').'<br/>'.L('OPTION1').'<br/>'.L('OPTION2');</php>"
+				},
+				onError:"选项不能为空"
+			});
+		}else if(type_id == 'textarea'){
+			$("#box_data").hide();
+			$("#box_type").hide();
+			$("#is_unique").hide();
+		}else if(type_id == 'datetime'){
+			$("#box_data").hide();
+			$("#box_type").hide();
+			$("#default_value").show();
+			$("#is_unique").hide();
+			$("#max_length").hide();
+		}else if(type_id == 'editor'){
+			$("#box_data").hide();
+			$("#box_type").hide();
+			$("#default_value").hide();
+			$("#is_unique").hide();
+			$("#max_length").hide();
+		}else if(type_id == 'address'){
+			$("#box_data").hide();
+			$("#box_type").hide();
+			$("#default_value").hide();
+			$("#is_unique").hide();
+			$("#max_length").hide();
+			$("#max_length").hide();
+		}else{
+			$("#box_data").hide();
+			$("#box_type").hide();
+		}
+        <if condition="$fields['form_type'] == 'text' ">
+        $("#max_length").formValidator({tipID:"max_lengthTip",empty:true,onEmpty:'<php>echo L('EDITING_THE_LENGTH_OF_THE_SMALLE');</php>',onShow:"<php>echo L('EDITING_THE_LENGTH_OF_THE_SMALLE');</php>",onFocus:"<php>echo L('EDITING_THE_LENGTH_OF_THE_SMALLE');</php>",onCorrect:"√"}).regexValidator({regExp:"intege1",param:'i',dataType:"enum",onError:"<php>echo L('ONLY_FILL_IN_POSITIVE_INTEGER');</php>"}).inputValidator({max:1000,type:"value",onError:"<php>echo L('MUST_BE_BETWEEN_1_1000');</php>"});
+        <elseif condition="$fields['form_type'] == 'number' " />
+        $("#default_value").formValidator({tipID:"default_valueTip",empty:true,onEmpty:'',onShow:" ",onFocus:" ",onCorrect:"√"}).regexValidator({regExp:"intege1",param:'i',dataType:"enum",onError:"<php>echo L('ONLY_FILL_IN_POSITIVE_INTEGER');</php>"}).inputValidator({min:-2147483647,max:2147483647,type:"value",onError:"<php>echo L('MUST_BE_BETWEEN');</php>"});
+        $("#max_length").formValidator({tipID:"max_lengthTip",empty:true,onEmpty:'<php>echo L('EDITING_THE_LENGTH_OF_THE_SMALLE');</php>',onShow:"<php>echo L('EDITING_THE_LENGTH_OF_THE_SMALLE');</php>",onFocus:"<php>echo L('EDITING_THE_LENGTH_OF_THE_SMALLE');</php>",onCorrect:"√"}).regexValidator({regExp:"intege1",param:'i',dataType:"enum",onError:"<php>echo L('ONLY_FILL_IN_POSITIVE_INTEGER');</php>"}).inputValidator({max:11,type:"value",onError:"<php>echo L('MUST_BE_BETWEEN_1_11');</php>"});
+        </if>
+	});
+	
+    function validateSwitch(set_val){
+		//1为开启验证，0为关闭验证
+		if(1 == set_val){
+			$('#is_unique_td').show();
+			$('#is_recheck_td').show();
+			$('#is_null_td').show();
+			//开启后设置默值认为不验证‘是否唯一’和‘是否允许为空’
+			$("input[name=is_unique]").last().prop('checked','true');
+			$("input[name=is_null]").first().prop('checked','true');
+			$("input[name=is_recheck]").last().prop('checked','true');
+		}else{
+			//如果选择不验证，则设置‘是否唯一’和‘是否允许为空’的值为不验证
+			$("input[name=is_validate]").last().prop('checked','true');
+			$("input[name=is_unique]").last().prop('checked','true');
+			$("input[name=is_recheck]").last().prop('checked','true');
+			$("input[name=is_null]").first().prop('checked','true');
+			$('#is_unique_td').hide();
+			$('#is_recheck_td').hide();
+			$('#is_null_td').hide();
+		}
+	}
+</script>

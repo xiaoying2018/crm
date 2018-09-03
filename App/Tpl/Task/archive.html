@@ -1,0 +1,320 @@
+<include file="Public:header"/>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<style>
+    body{
+        overflow-y: hidden;
+    }
+    #right-sidebar-task{
+        width: 50% !important;
+        right: -60%;
+        background-color: #fff;
+        overflow: hidden;
+        position: fixed;
+        top: 60px;
+        z-index: 3009;
+        bottom: 0;
+        box-shadow: 0px 2px 1px #888888;
+    }
+    .color-selector>li{
+        position: relative;
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin: 0 5px 0 0;
+        border-radius: 100%;
+    }
+    .bg-blue-600 label:before{
+        background-color: #62a8ea!important;
+    }
+    .bg-green-600 label:before{
+        background-color: #46be8a!important;
+    }
+    .bg-cyan-600 label:before{
+        background-color: #57c7d4!important;
+    }
+    .bg-orange-600 label:before{
+        background-color: #f2a654!important;
+    }
+    .bg-red-600 label:before{
+        background-color: #f96868!important;
+    }
+    .bg-blue-grey-600 label:before{
+        background-color: #526069!important;
+    }
+    .bg-purple-600 label:before{
+        background-color: #926dde!important;
+    }
+
+    .bg-blue-600 label:after{
+        background-color: #62a8ea!important;
+    }
+    .bg-green-600 label:after{
+        background-color: #46be8a!important;
+    }
+    .bg-cyan-600 label:after{
+        background-color: #57c7d4!important;
+    }
+    .bg-orange-600 label:after{
+        background-color: #f2a654!important;
+    }
+    .bg-red-600 label:after{
+        background-color: #f96868!important;
+    }
+    .bg-blue-grey-600 label:after{
+        background-color: #526069!important;
+    }
+    .bg-purple-600 label:after{
+        background-color: #926dde!important;
+    }
+    .radio label:before{
+        width:24px;
+        height:24px;
+    }
+    .radio label:after{
+        left:6px;
+        top: 4px;
+        font-family: "FontAwesome";
+        content: "\f00c";
+        color: #fff;
+    }
+    .text_line{
+        text-decoration:line-through;
+        color:#999 !important;
+    }
+</style>
+<script>
+$(function(){
+    var scroll_width = 5;
+    $("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+    $(window).resize(function(){
+        $("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+        $("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+        $("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+    })
+    $("#tab_Test3").FrozenTable(1,0,0);
+    $("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width).width($("#oTableLH_tab_Test3").width());
+    $("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+})
+</script>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <include file="Public:alert" />
+            <div class="ibox float-e-margins">
+                <div class="title-bar">
+                    <div class="row" id="title-show">
+                        <button class="btn btn-primary btn-sm">归档任务</button>
+                    </div>
+                </div>
+                <div class="row" style="margin: 0px">
+                    <div class="ibox-content" style="padding-bottom:0px;">
+                        <div class="ibox-content clearfix" id="table_container" style="padding:0px;border: none;">
+                            <form id="form1" action="" method="Post" style="position:relative;">
+                                <div id="table_div" class="full-height-scroll" style="left:0px;top:0px;">
+                                    <if condition="$task_list eq null">
+                                        <div style="background-color:#fff;"><include file="Public:nodata" /></div>
+                                    <else/>
+                                    <div class="project-list">
+                                        <table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
+                                            <tr class="tabTh" >
+                                                <td style="width:80px;"></td>
+                                                <td>状态</td>
+                                                <td>主题</td>
+                                                <td>子任务进度</td>
+                                                <td>任务分配人</td>
+                                                <td>操作</td>
+                                            </tr>
+                                            <volist name="task_list" id="vo">
+                                                <tr style="cursor : pointer;" class="" rel="{$vo['task_id']}">
+                                                    <td style="width:80px;">
+                                                        <div class="checkbox checkbox-primary">
+                                                            <input class="check_list" type="checkbox" checked />
+                                                            <label for=""></label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="project-status">
+                                                        <span class="label label-primary text_line" style="color:#fff !important;">{$vo['status']}</span>
+                                                    </td>
+                                                    <td class="project-title">
+                                                        <a class="right-sidebar-toggle-task " href="javascript:void(0)" rel="{$vo['task_id']}" title="点击查看详情">
+                                                            <span class="text_line">{$vo['subject']}</span>
+                                                            <br/>
+                                                            <small><a href="javascript:void(0);" class="role_info" rel="{$vo['creator_info']['role_id']}" style="font-size: 85%;">{$vo['creator_info']['full_name']}</a>&nbsp;&nbsp;创建于 {$vo['create_date']|date='Y-m-d H:i:s',###}</small>
+                                                         </a>
+                                                    </td>
+                                                    <td class="project-completion">
+                                                        <small>子任务进度: {$vo['schedule']}%</small>
+                                                        <div class="progress progress-mini">
+                                                            <div style="width: {$vo['schedule']}%;" class="progress-bar"></div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="project-people" style="text-align:left !important;">
+                                                        <volist name="vo['about_roles']" id="vo1">
+                                                            <a class="role_info" rel="{$vo1['role_id']}" title="{$vo1['full_name']}" href="javascript:void(0);"><img alt="image" class="img-circle" src="{$vo1['thumb_path']}"></a>
+                                                        </volist>
+                                                    </td>
+                                                    <td >
+                                                        <a href="javascript:void(0);" rel="{$vo['task_id']}" class="revert btn btn-white btn-sm" style="float:left;"><i class="fa fa-mail-reply"></i>&nbsp;激活 </a>
+                                                    </td>
+                                                </tr>
+                                            </volist>
+                                        </table>
+                                    </div>
+                                    </if>
+                                </div>
+                                <div id="tfoot_div" class="clearfix">
+                                    <div class="clearfix" id="tfoot_page">              
+                                        {$page}<include file="Public:listrows" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" id="dialog-role-info" title="{:L('DIALOG_USER_INFO')}">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+
+<script>
+$('.check_list').click(function(){
+    return false;
+});
+
+/*任务详情 加载的圈圈效果*/
+var detail_html = '<div class="spiner-example">\
+                    <div class="sk-spinner sk-spinner-fading-circle">\
+                        <div class="sk-circle1 sk-circle"></div>\
+                        <div class="sk-circle2 sk-circle"></div>\
+                        <div class="sk-circle3 sk-circle"></div>\
+                        <div class="sk-circle4 sk-circle"></div>\
+                        <div class="sk-circle5 sk-circle"></div>\
+                        <div class="sk-circle6 sk-circle"></div>\
+                        <div class="sk-circle7 sk-circle"></div>\
+                        <div class="sk-circle8 sk-circle"></div>\
+                        <div class="sk-circle9 sk-circle"></div>\
+                        <div class="sk-circle10 sk-circle"></div>\
+                        <div class="sk-circle11 sk-circle"></div>\
+                        <div class="sk-circle12 sk-circle"></div>\
+                    </div>\
+                </div>';
+//鼠标点击空白处，隐藏右侧滑出
+document.onmousedown=function(event){
+    if($(".litebox-overlay").length > 0) return;
+    // if($(".ui-dialog").css('display') != 'none') return;
+    if(event.target.className == 'right-sidebar-toggle-task') return;
+
+    var div = document.getElementById("right-sidebar-task");
+    var x=event.clientX;
+    var y=event.clientY;
+    var divx1 = div.offsetLeft;
+    var divy1 = div.offsetTop;
+    var divx2 = div.offsetLeft + div.offsetWidth;
+    var divy2 = div.offsetTop + div.offsetHeight;
+    if( x < divx1 || x > divx2 || y < divy1 || y > divy2){
+        if($("#right-sidebar-task").css('right') == '0px'){
+            $("#right-sidebar-task").animate({right:'-60%'}, 400);
+        }
+    }
+}
+//任务详情弹出
+$(document).on('click','.right-sidebar-toggle-task',function(){
+    var task_id = $(this).attr('rel');
+    $(".emoji_container").remove();
+
+    if($("#right-sidebar-task").css('right') != '0px'){
+        $("#right-sidebar-task").animate({right:'0px'}, 600);
+    }
+        
+    $('#task-content').html(detail_html);
+    $('#sidebar-container').load("{:U('task/view','task_id=')}"+task_id);
+});
+
+//激活
+$(document).on('click','.revert',function(){
+    var task_id = $(this).attr('rel');
+    swal({
+        title: "温馨提示",
+        text: "您确定要激活任务信息吗？",
+        type: "warning",   
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "是的，我要激活！",
+        cancelButtonText:'让我再考虑一下…',
+        closeOnConfirm:false,
+        closeOnCancel:false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+            $.ajax({
+                type: "POST",
+                url: "{:U('task/revert')}",
+                data:{task_id:task_id},
+                async: true,
+                success: function (data) {
+                    if (data.status == 1) {
+                        swal("激活成功！", "您已经激活了该任务！", "success");
+                        location.reload();
+                    }else{
+                        swal({
+                            title: "操作失败！",
+                            text:data.info,
+                            type: "error"
+                        })
+                        return false;
+                    }
+                },
+                dataType: 'json'
+            });
+        } else {
+            swal("已取消","您取消了激活操作！","error");
+        }
+    });
+});
+
+$("#dialog-role-info").dialog({
+    autoOpen: false,
+    modal: true,
+    width: 700,
+    maxHeight: 600,
+    position: ["center",100]
+});
+
+$(".role_info").click(function(){
+    $role_id = $(this).attr('rel');
+    $('#dialog-role-info').dialog('open');
+    $('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+});
+</script>
+
+<include file="Public:footer" />
+
+<div id="right-sidebar-task">
+    <!--the css for jquery.mCustomScrollbar-->
+    <link rel="stylesheet" href="__PUBLIC__/emoji/css/jquery.mCustomScrollbar.min.css"/>
+    <!--the css for this plugin-->
+    <link rel="stylesheet" href="__PUBLIC__/emoji/css/jquery.emoji.css"/>
+    <!--(Optional) the js for jquery.mCustomScrollbar's addon-->
+    <script src="__PUBLIC__/emoji/js/jquery.mousewheel-3.0.6.min.js"></script>
+    <!--the js for jquery.mCustomScrollbar-->
+    <script src="__PUBLIC__/emoji/js/jquery.mCustomScrollbar.min.js"></script>
+    <!--the js for this plugin-->
+    <script src="__PUBLIC__/emoji/js/jquery.emoji.js"></script>
+
+    <div class="sidebar-container" id="sidebar-container">
+        
+    </div>
+</div>

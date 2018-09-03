@@ -1,0 +1,562 @@
+<style>
+	.thumb80 {
+		height: 100px;
+		width: 100px
+	}
+	
+	.caseModal .cm_modal {
+		border-radius: 5px;
+		background-color: #fff;
+	}
+	
+	.caseModal .title-bar {
+		border: none;
+		font-size: 16px;
+		padding-bottom: 0;
+		margin-top: 5px;
+	}
+	
+	.caseModal .text-tag {
+		display: inline-block;
+	}
+	
+	.caseModal .text-tag {
+		font-size: 16px;
+		padding-left: 4px;
+		border-left: 4px solid #18a689;
+		line-height: 16px;
+		margin-top: 10px;
+	}
+	
+	.caseModal .table {
+		font-size: 14px;
+		width: 90%;
+		margin: 0 auto;
+		padding: 20px;
+		margin-bottom: 20px;
+	}
+	
+	.caseModal .table td {
+		border-color: #f2f2f2;
+	}
+	
+	.td_title {
+		color: #8d8d8d !important;
+		width: 20%;
+	}
+	
+	textarea {
+		outline: none;
+		border: 1px solid #e7eaec;
+		height: 100px;
+		padding: 10px;
+		overflow-y: scroll;
+		background: #fff !important;
+		width: 100%;
+	}
+	
+	.nodata {
+		color: #ccc;
+	}
+	
+	.download {
+		color: #4865ff;
+		text-decoration: underline;
+	}
+	
+	.ui-dialog[aria-describedby="detail-dialog-file"] {
+		z-index: 2051;
+	}
+	
+	ul,
+	li {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	
+	.r_table {
+		width: 90%;
+		margin: 0 auto;
+		float: none;
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+		overflow: hidden;
+		border-bottom: 1px dotted #D8D8D8;
+	}
+	
+	.r_table>li {
+		font-size: 14px;
+	}
+	
+	.r_table>li>div {
+		padding: 16px;
+		/*border-bottom: 1px solid #e7eaec;*/
+	}
+	
+	.r_table>li:nth-last-of-type(1),
+	.r_table>li:nth-last-of-type(2) {
+		border-bottom: none;
+	}
+	
+	.d_title {
+		color: #8d8d8d;
+	}
+	
+	.td_title {
+		display: inline-block;
+		margin-bottom: 20px;
+	}
+	
+	._row {
+		position: relative;
+	}
+	
+	.item_table {
+		width: 90%;
+		margin: 0 auto;
+		margin-top: 30px;
+		overflow: hidden;
+	}
+	
+	.item_table>div {
+		width: 45%;
+		float: left;
+	}
+	
+	.item_table>div:nth-of-type(2) {
+		margin-left: 5%;
+	}
+	
+	@media only screen and (max-width:998px) {
+		.item_table>div {
+			width: 100%;
+		}
+		.item_table>div:nth-of-type(2) {
+			margin-left: 0;
+		}
+	}
+	
+	._prompt {
+		color: #dc4c4c;
+		white-space: nowrap;
+		font-size: 12px;
+	}
+	
+	.item_table ._scrollbar {
+		max-height: 200px;
+		overflow-y: auto;
+		display: inherit;
+	}
+	
+	.item_table {
+		margin-bottom: 30px;
+	}
+	
+	.item_table ._scrollbar::-webkit-scrollbar {
+		/*滚动条整体样式*/
+		width: 2px;
+		/*高宽分别对应横竖滚动条的尺寸*/
+		height: 10px;
+	}
+	
+	.item_table ._scrollbar::-webkit-scrollbar-thumb {
+		/*滚动条里面小方块*/
+		border-radius: 5px;
+		/*  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);*/
+		background: #d8d8d8;
+	}
+	
+	.item_table ._scrollbar::-webkit-scrollbar-track {
+		/*滚动条里面轨道*/
+		/*-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);*/
+		/*border-radius: 5px;*/
+		background: #F6F6F6;
+	}
+	
+	.modal-dialog {
+		max-height: 90%;
+		overflow: scroll;
+	}
+	
+	.modal-dialog::-webkit-scrollbar {
+		display: none;
+	}
+</style>
+<link href="/Public/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="/Public/js/images-loaded.min.js" type="text/javascript"></script>
+<script src="/Public/js/litebox.min.js" type="text/javascript"></script>
+<!-- 客户详细 -->
+<div class="modal fade bs-example-modal-lg caseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+	<div class="modal-dialog" role="document" style="width: 80%;">
+		<div class="row cm_modal">
+			<div class="col-lg-12">
+				<div class="title-bar">
+					<div class="row " id="title-show">
+						<div class="all-inline clearfix">
+							<div style="float: left;">
+								<span class="text-tag">案例详情</span>
+							</div>
+							<button type="button" class="btn btn-default" data-dismiss="modal" style="float: right;margin-right: 15px;">
+                                关闭
+                            </button>
+						</div>
+					</div>
+				</div>
+				<div class="row _row">
+					<ul class="r_table col-md-12">
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">姓名：</div>
+							<div class="col-md-5" v-html="data.names"></div>
+						</li>
+
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">录入大学：</div>
+							<div class="col-md-5" v-html="data.receive_college"></div>
+						</li>
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">项目分类：</div>
+							<div class="col-md-5" v-html="data.programcate"></div>
+						</li>
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">专业分类：</div>
+							<div class="col-md-5" v-html="data.majorcate"></div>
+						</li>
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">录取专业：</div>
+							<div class="col-md-5" v-html="data.receive_major"></div>
+						</li>
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">本科大学：</div>
+							<div class="col-md-5" v-html="data.undergraduate_college"></div>
+						</li>
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">本科专业：</div>
+							<div class="col-md-5" v-html="data.undergraduate_major"></div>
+						</li>
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">学校级别：</div>
+							<div class="col-md-5" v-html="data.college_lev"></div>
+						</li>
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">日语等級：</div>
+							<div class="col-md-5" v-html="data.japan_language"></div>
+						</li>
+
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">英语等级：</div>
+							<div class="col-md-5" v-html="data.eng_language"></div>
+						</li>
+
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">录入年份：</div>
+							<div class="col-md-5" v-html="data.receive_year"></div>
+						</li>
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">签约产品：</div>
+							<div class="col-md-5" v-html="data.contract_product"></div>
+						</li>
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">学历：</div>
+							<div class="col-md-5" v-html="data.education"></div>
+						</li>
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">案例特点：</div>
+							<div class="col-md-5" v-html="data.character"></div>
+						</li>
+						<li class="col-md-6">
+							<div class="col-md-3 d_title">备注：</div>
+							<div class="col-md-5" v-html="data.remark"></div>
+						</li>
+					</ul>
+					<!--<table class="table">
+                        <tr class="">
+                            <td class="td_title">姓名：</td>
+                            <td v-html="data.names"></td>
+                            
+                        </tr>
+                        <tr>
+                            <td class="td_title">案例特点：</td>
+                            <td v-html="data.character"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">录入大学：</td>
+                            <td v-html="data.receive_college"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">录取专业：</td>
+                            <td v-html="data.receive_major"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">本科大学：</td>
+                            <td v-html="data.undergraduate_college"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">本科专业：</td>
+                            <td v-html="data.undergraduate_major"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">学校级别：</td>
+                            <td v-html="data.college_lev"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">日语等級：</td>
+                            <td v-html="data.japan_language"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">英语等级：</td>
+                            <td v-html="data.eng_language"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">录入年份：</td>
+                            <td v-html="data.receive_year"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">签约产品：</td>
+                            <td v-html="data.contract_product"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">备注：</td>
+                            <td v-html="data.remark"></td>
+                        </tr>-->
+					<div class="item_table">
+						<div class="_scrollbar">
+							<span class="td_title">研究计划书：</span>
+							<div>
+								<table v-if="arry[1]" class="table product-table">
+									<tr>
+										<td>附件名称</td>
+										<td>大小</td>
+										<td>上传人</td>
+										<td>上传时间</td>
+										<td>操作</td>
+									</tr>
+									<!-- 文件列表 -->
+									<tr v-for="n in arry[1]">
+										<td width="40%">
+											<!--<a :href="n.no_p_file_path" class="litebox_file" data-litebox-group="group-1">{{n.name}}</a>-->
+											<a v-if="n.no_p_file_path.split('.')[1] == 'docx'" :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else-if="n.no_p_file_path.split('.')[1] == 'xlsx'" :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else-if="n.no_p_file_path.split('.')[1] == 'doc' " :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else-if="n.no_p_file_path.split('.')[1] == 'xls' " :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else class="litebox_file" :href="n.no_p_file_path" data-litebox-group="group-1">{{n.name}}</a>
+										</td>
+										<td>{{parseInt(n.size/1024)}}kb</td>
+										<td>{{n.from_pp}}</td>
+										<td>{{n.create_time}}</td>
+										<td class="tdleft">
+											<a :file="n.no_p_file_path" class="oDownLoad">下载</a>
+										</td>
+									</tr>
+								</table>
+								<div v-else style="text-align:center;color:#E4E4E4;font-size:22px;font-weight:700;padding-top:15px;">
+									<img src="/Public/img/exclamation_mark.png" style="margin-top:-3px;">&nbsp;&nbsp;暂无数据
+								</div>
+							</div>
+						</div>
+						<div class="_scrollbar">
+							<span class="td_title">附件offer：</span>
+							<div>
+								<table v-if="arry[2]" class="table product-table">
+									<tr>
+										<td>附件名称</td>
+										<td>大小</td>
+										<td>上传人</td>
+										<td>上传时间</td>
+										<td>操作</td>
+									</tr>
+									<!-- 文件列表 -->
+									<tr v-for="n in arry[2]">
+										<td width="40%">
+											<!--<a :href="n.no_p_file_path" class="litebox_file" data-litebox-group="group-2">{{n.name}}</a>-->
+											<a v-if="n.no_p_file_path.split('.')[1] == 'docx' " :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else-if="n.no_p_file_path.split('.')[1] == 'xlsx'" :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else-if="n.no_p_file_path.split('.')[1] == 'doc' " :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else-if="n.no_p_file_path.split('.')[1] == 'xls' " :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else :href="n.no_p_file_path" class="litebox_file" data-litebox-group="group-2">{{n.name}}</a>
+										</td>
+										<td>{{parseInt(n.size/1024)}}kb</td>
+										<td>{{n.from_pp}}</td>
+										<td>{{n.create_time}}</td>
+										<td class="tdleft">
+											<a :file="n.no_p_file_path" class="oDownLoad">下载</a>
+										</td>
+									</tr>
+								</table>
+								<div v-else style="text-align:center;color:#E4E4E4;font-size:22px;font-weight:700;padding-top:15px;">
+									<img src="/Public/img/exclamation_mark.png" style="margin-top:-3px;">&nbsp;&nbsp;暂无数据
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="item_table">
+						<div class="_scrollbar">
+							<span class="td_title">照片：</span>
+							<div>
+								<table v-if="arry[3]" class="table product-table">
+									<tr>
+										<td>附件名称</td>
+										<td>大小</td>
+										<td>上传人</td>
+										<td>上传时间</td>
+										<td>操作</td>
+									</tr>
+									<!-- 文件列表 -->
+									<tr v-for="n in arry[3]">
+										<td width="40%">
+											<!--<a :href="n.no_p_file_path" class="litebox_file" data-litebox-group="group-3">{{n.name}}</a>-->
+											<a v-if="n.no_p_file_path.split('.')[1] == 'docx' " :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else-if="n.no_p_file_path.split('.')[1] == 'xlsx'" :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else-if="n.no_p_file_path.split('.')[1] == 'doc' " :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else-if="n.no_p_file_path.split('.')[1] == 'xls' " :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else :href="n.no_p_file_path" class="litebox_file" data-litebox-group="group-3">{{n.name}}</a>
+										</td>
+										<td>{{parseInt(n.size/1024)}}kb</td>
+										<td>{{n.from_pp}}</td>
+										<td>{{n.create_time}}</td>
+										<td class="tdleft">
+											<a :file="n.no_p_file_path" class="oDownLoad">下载</a>
+										</td>
+									</tr>
+								</table>
+								<div v-else style="text-align:center;color:#E4E4E4;font-size:22px;font-weight:700;padding-top:15px;">
+									<img src="/Public/img/exclamation_mark.png" style="margin-top:-3px;">&nbsp;&nbsp;暂无数据
+								</div>
+							</div>
+						</div>
+						<div class="_scrollbar">
+							<span class="td_title">其他附件上传：</span>
+							<div>
+								<table v-if="arry[4]" class="table product-table">
+									<tr>
+										<td>附件名称</td>
+										<td>大小</td>
+										<td>上传人</td>
+										<td>上传时间</td>
+										<td>操作</td>
+									</tr>
+									<!-- 文件列表 -->
+									<tr v-for="n in arry[4]">
+										<td width="40%">
+											<!--<a :href="n.no_p_file_path" class="litebox_file" data-litebox-group="group-4">{{n.name}}</a>-->
+											<a v-if="n.no_p_file_path.split('.')[1] == 'docx' " :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else-if="n.no_p_file_path.split('.')[1] == 'xlsx'" :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else-if="n.no_p_file_path.split('.')[1] == 'doc' " :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else-if="n.no_p_file_path.split('.')[1] == 'xls' " :href="n.no_p_file_path">{{n.name}}</a>
+											<a v-else class="litebox_file" :href="n.no_p_file_path" data-litebox-group="group-4">{{n.name}}</a>
+										</td>
+										<td>{{parseInt(n.size/1024)}}kb</td>
+										<td>{{n.from_pp}}</td>
+										<td>{{n.create_time}}</td>
+										<td class="tdleft">
+											<a :file="n.no_p_file_path" class="oDownLoad">下载</a>
+										</td>
+									</tr>
+								</table>
+								<div v-else style="text-align:center;color:#E4E4E4;font-size:22px;font-weight:700;padding-top:15px;">
+									<img src="/Public/img/exclamation_mark.png" style="margin-top:-3px;">&nbsp;&nbsp;暂无数据
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	$(function() {
+		var caseModal = new Vue({
+			el: '.caseModal',
+			data: {
+				data: {},
+				arry: {}
+			},
+			methods: {
+				getDetail: function(id) {
+					if(!id)
+						return;
+					var _this = this;
+					$.ajax({
+						url: "/case/detail?id=" + id,
+						dataType: 'JSON',
+						type: 'GET',
+						success: function(res) {
+							//                  	console.log(res.files)
+							if(res) {
+								var _res = res;
+								for(var key in _res) {
+
+									//                          	console.log(key)
+									if(key == 'files') {
+										console.log(_res["files"])
+										_this.arry = _res["files"];
+										//                              	for (var i = 0; i < _res["files"].length; i++) {
+										//                              		_res["files"][i]
+										//                              	}
+
+										//                              	console.log()
+										//                                  _res["update_time"] = timestampToFormat(_res["update_time"], 'yyyy-MM-dd hh:mm:ss');
+									}
+									//                              
+
+									//                                    if (key == 'id') {
+									//                                        for (var i = 0; i < res.catedata.length; i++) {
+									//                                            if (res.catedata[i]["cooperation_cate_id"] == _res[key]) {
+									//                                                _res["cooperation_cate_name"] = res.catedata[i].cooperation_cate_name;
+									//                                            }
+									//                                        }
+									//                                    }
+									//                                    if (_res[key].length == 0) {
+									//                                        _res[key] = "<span class='nodata'>暂无数据</span>"
+									//                                    }
+								}
+
+								_this.data = _res;
+								console.log(_this.data)
+								_this.$nextTick(function() {
+									$('.litebox_file').liteBox({
+										revealSpeed:  400,
+										background:   'rgba(0,0,0,.8)',
+										overlayClose:  true,
+										escKey:  true,
+										navKey:  true,
+										errorMessage:   '图片加载失败.'
+									});
+
+									$(".oDownLoad").click(function() {
+										var src = $(this).attr("file")
+										var $a = document.createElement('a');
+										$a.setAttribute("href", src);
+										$a.setAttribute("download", "");
+
+										var evObj = document.createEvent('MouseEvents');
+										evObj.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, true, false, 0, null);
+										$a.dispatchEvent(evObj);
+									})
+								});
+							}
+						},
+						error: function(e) {
+							console.log(e);
+							alert('网络异常！');
+						}
+					});
+				}
+			},
+			mounted: function() {
+				var _this = this;
+				//关闭浮层
+				$(".caseModal-close").click(function() {
+					$(".caseModal").modal('hide');
+				})
+			}
+		})
+		$('.caseModal').on('show.bs.modal', function(ele) {
+			caseModal.data = {};
+			caseModal.getDetail(ele.relatedTarget);
+		})
+
+	});
+</script>

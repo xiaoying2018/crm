@@ -1,0 +1,155 @@
+<script src="/Public/style/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/Public/js/uploadPreview.js"></script>
+<link rel="stylesheet" href="/Public/css/jquery.fileupload.css">
+<style type="text/css">
+    .templete_Add .form-group {
+        margin: 10px 0;
+    }
+    .radio-info{
+        margin: 0 20px;
+    }
+    .textarea textarea{
+        width: 100%;
+    }
+    .select2-selection{
+        background-color: #FFFFFF !important;
+        background-image: none !important;
+        border: 1px solid #d8e3ef !important;
+        border-radius: 1px !important;
+        height: 32px;
+        line-height: 32px;
+    }
+    .select2-selection__rendered{
+        padding-left: 17px !important;
+    }
+    #main_pic_prev{width: 120px;height: 120px;border: 1px dashed #d3d3d6;}
+    .add_body_title{
+        margin:15px auto 30px auto;
+    }
+</style>
+
+
+
+<form action="" id="teacher_detail" enctype="multipart/form-data">
+    <div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+        <!-- 文本 -->
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label">修改对象</label>
+            <div class="col-md-8">
+                <input class="form-control" readonly="readonly" autocomplete="off" required type="text" aria-required="true"
+                       value="{$userinfo.full_name}" placeholder="" />
+                <input type="hidden" name="user_id" value="{$userinfo.user_id}">
+                <input type="hidden" name="fine_pic" value="{$info.fine_pic}">
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>真实姓名</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="realname"
+                       value="{$info.realname}" placeholder="请输入 真实姓名" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>出生日期</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="birthday"
+                       value="{$info.birthday}" placeholder="请输入 1970-05-08(严格模式)" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>从业年份</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="number" name="year"
+                       value="{$info.year}" placeholder="请输入 1970(严格模式)" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>毕业学校</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="university"
+                       value="{$info.university}" placeholder="请输入 毕业学校" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>就读专业</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="major"
+                       value="{$info.major}" placeholder="请输入 就读专业" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>最高学历</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="edu_level"
+                       value="{$info.edu_level}" placeholder="请输入 最高学历" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>特长</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="special"
+                       value="{$info.special}" placeholder="请输入 特长" />
+            </div>
+        </div>
+
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label">形象照片：</label>
+            <div class="col-md-4">
+                <img id="main_pic_prev" <if condition="$info['fine_pic']">src="{$info.fine_pic}"</if> class="thumb80" />
+            </div>
+            <div class="col-md-4">
+                <div class="btn btn-success fileinput-button">
+                    <span>选择图片</span>
+                    <input type="file" name="fine_pic" id="main_pic"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label">介绍视频：</label>
+            <div class="col-md-4">
+                <input class="form-control" readonly="readonly" autocomplete="off" required type="text" name="video_intro"
+                       value="{$info.video_intro}" placeholder="无" />
+            </div>
+            <div class="col-md-4">
+                <div class="btn btn-success">
+                    <input type="file" name="video_intro" id="video_intro" title="选择视频"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label">教师(优势)卖点</label>
+            <div class="col-md-8">
+                <div class="textarea">
+                    <textarea name="point"  cols="10" rows="5">{$info.point}</textarea>
+                </div>
+            </div>
+        </div>
+        <!-- 文本域 -->
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label">教师详情</label>
+            <div class="col-md-8">
+                <div class="textarea">
+                    <textarea name="detail" id="" cols="30" rows="10">{$info.detail}</textarea>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="id" value="{$info.id}">
+    </div>
+</form>
+
+<script>
+    //初始化上传图片
+    $("#main_pic").click(function () {
+        var selector = $(this).attr('id');
+        $("#"+selector).uploadPreview({ Img: selector+"_prev", Width: 120, Height: 120 });
+    });
+
+    $("#video_intro").click(function (res) {
+        var obj = document.getElementById('main_pic').files;
+        console.log(obj);
+    });
+</script>
+
+

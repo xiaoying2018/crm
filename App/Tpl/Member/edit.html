@@ -1,0 +1,108 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/js/PCASClass.js" ></script>
+<style type="text/css">
+.add_body >div >.full-height-scroll{
+	border-right:1px dotted #ccc
+}
+.add_body_title{
+	margin:20px auto 20px auto;
+	padding-left: 25px;
+}
+.add_body_form{
+	padding-left: 38px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.form-control{
+	float:left;
+}
+.checkbox{float:left;}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+	<form class="form-horizontal" id="form" role="form" action="{:U('member/edit', 'id='.$member_info['member_id'])}" method="post">
+		<input type="hidden" name="member_id" id="member_id" value="{$member_info['member_id']}">
+		<div class="ibox-content add_body" id="add_body" >
+			<div class="row">
+				<div class="col-md-12 add_body" >
+					<div class="full-height-scroll">
+						<div class="row" >
+							<div class="col-md-12 add_body_title">
+								<div class="all-inline">
+									<span class="sq-tag"></span>
+									<div class="text-tag">
+										<span>基础信息</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">客户名称：</label>
+									<div class="col-md-6">
+										<input class="form-control required valid" name="name" value="{$member_info['name']}" type="text" aria-required="true" aria-invalid="false" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-1 pull-right"></div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">尊称：</label>
+									<div class="col-md-6">
+										<input class="form-control required valid" name="honorific" value="{$member_info['honorific']}" type="text" aria-required="true" aria-invalid="false" />
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-1 pull-right"></div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">联系电话：</label>
+									<div class="col-md-6">
+										<input class="form-control required valid" name="telephone" value="{$member_info['telephone']}" type="text" aria-required="true" aria-invalid="false" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-1 pull-right"></div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">出生年月：</label>
+									<div class="col-md-6">
+										<input class="form-control required" aria-required="true" type="text" name="birth" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:&quot;#F{$dp.$D('end_date')||'2038-01-01'}&quot;})" value="{$member_info['birth']}" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-1 pull-right"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="tfoot_div" class="clearfix">
+			<div class="clearfix" id="tfoot_page">
+				<div class="ibox-content" style="border-top: none;">
+					<div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><button type="submit" class="btn btn-primary">保存</button></div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<script>
+	$(document).ready(function(){
+		/*form表单验证*/
+		$("#form").validate({
+		
+		});
+	});
+</script>

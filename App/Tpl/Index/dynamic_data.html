@@ -1,0 +1,159 @@
+<empty name="actionLog">
+	<div class="alert alert-info">没有动态信息</div>
+<else />
+	<div id="list">
+	<volist name="actionLog" id="vo">
+		<div class="dy-content" id="anchor_{$vo.log_id}">
+			<div class="title3">
+				<if condition="empty($vo['creator']['img'])">
+					<img src="__PUBLIC__/img/avatar_default.png" class="avatar"/>
+				<else />
+					<img src="{$vo.creator.img}" class="avatar"/>
+				</if>
+			</div>
+			<div class="role0">
+				<p>
+					<a href="javascript:void(0)" class="role_info" rel="{$vo.creator.role_id}">{$vo.creator.user_name}
+					<if condition="$vo['module_name'] != 'LeadsLog'">
+						（{$vo.creator.department_name} - {$vo.creator.role_name}）
+					</if>
+					</a>
+					|<span style="padding-left:10px;">{$vo.dynamic}</span>
+				</p>
+			</div>
+			<if condition="$vo['module_name'] == 'sign'">
+				<div class="conent0" style="width:100%;">
+					<img style="height:15px;vertical-align:text-bottom;" src="__PUBLIC__/img/location.png"></img>
+					<span style="color:#666">{$vo.address}</span>
+					<input class="longitude" type="hidden" rel="{$vo.y}"/>
+					<a href="javascript:void(0);"style="font-size:12px;" class="pull-right map" >显示地图</a>
+					<div id="allmap{$key+1}" rel="allmap{$key+1}" class="allmap"></div>
+					<input class="latitude" type="hidden" rel="{$vo.x}"/>
+				</div>
+				<div class="conent0">
+					<span style="color:#666">相关客户：<a href="{:U('customer/view','id='.$vo['customer_info']['customer_id'])}">{$vo['customer_info']['name']}</a></span>
+				</div>
+				<div class="conent0">
+					<span style="color:#666">签到说明：{$vo.log}</span>
+				</div>
+				<div class="conent0">
+					<div style="color:#666">现场照片：</div>
+					<volist name="vo['sign_img']" id="v">
+						<div class="box-secondary" rel="{$vo.img_id}" style="width:30%;float:left;">
+							<a href="{$v.path}" target="_self" class="litebox" data-litebox-group="group-1">
+								<img src="{$v.path}" class="thumbnail thumb100">
+							</a>
+						</div>
+					</volist>
+					<div style="clear:both;"></div>
+				</div>
+			<elseif condition = "$vo['module_name'] == 'log'"/>
+				<div class="conent0" style="font-size: 12px;">{$vo.create_time}</div>
+				<div class="conent0" id="content_{$vo['log_id']}" style="word-wrap: break-word;word-break: normal;padding:10px 20px;padding-top: 10px;">{$vo['cut_content']}</div>
+				<if condition = "$vo['content_open'] eq 1">
+					<div class="conent0" style="padding: 0px;">
+				    	<div id="open_{$vo['log_id']}" class="panel-collapse collapse">
+				            <div class="panel-body" style="word-wrap: break-word;word-break: normal;padding-left: 20px;padding-top: 10px;">
+				               {$vo.log_content}
+				            </div>
+				        </div>
+				        <div class="panel-heading" style="padding-left: 20px;">
+			                <a data-toggle="collapse" data-parent="#accordion" 
+			                href="#open_{$vo['log_id']}" class="hide_content" rel="{$vo['log_id']}" rel1="0">展开全文</a>
+				        </div>
+					</div>
+				</if>
+				<if condition = "$vo['log_files']">
+					<div class="conent0" style="padding-left: 20px;padding-right:10px;margin-right: 10px;border: 1px dashed #d8e3ef;">
+						<span class="tsinfo"><img src="__PUBLIC__/img/addFile.png"/><span class="fujian">附件&nbsp;({$vo['file_count']})</span></span>
+						<volist name="vo['log_files']" id="files">
+							<div class="file_tr" style="padding: 6px;">
+								<img src="__PUBLIC__/productImg/{$files['pic']}">&nbsp;
+								<a <if condition="in_array(getExtension($files['name']),imgFormat())">class="litebox_file" href="{$files['file_path']}" title="点击查看大图"<else/>href="javascript:;" file="{$files.file_path}" filename="{$files.name}" onclick="filedown(this);"</if> title="{$files['name']}">{$files.cut_name}</a><span style="color:#646464;">&nbsp;(&nbsp;{$files['size']}KB&nbsp;)</span>&nbsp;&nbsp;<a class="controls_file" style="float: right;display: none;" href="javascript:void(0);" file="{$files.file_path}" filename="{$files.name}" onclick="filedown(this);" title="{$files['name']}">下载</a>
+							</div>
+						</volist>
+					</div>
+				</if>
+				<div class="conent0" style="padding:10px 20px;height: 35px;">
+				<if condition = "$vo['comment_count'] gt 0">
+					<div class="pull-left ">
+		                <a href="javascript:void(0)" class="log_comment" rel="{$vo['log_id']}" rel1="0" rel2 = "{$vo['action_id']}">展开评论</a>
+			        </div>
+				</if>
+				<div class="pull-right" style="margin-right: 5px;">
+					<a href="javascript:void(0)" class="reply" rel="{$vo['action_id']}" rel1="0"><span id="reply_{$vo['action_id']}" style="height:35px;font-size:14px;">回复</span></a>
+				</div>
+				</div>
+				<div class="conent0" id="reparynow_{$vo['action_id']}" style="padding-left: 20px;padding-right: 20px;display: none;">
+					<div id="content_lanage_{$vo['action_id']}" class="content_lanage" rel="{$vo['action_id']}" contenteditable="true" placeholder="添加回复..."></div>
+					<div style="margin-top: 5px;">
+						<input type="image" id="btn_emoji_{$vo['action_id']}" src="__PUBLIC__/img/emoji.png" />
+						<button disabled="true" id="but_sub_{$vo['action_id']}" style="display: none;" class="btn btn-primary subit add_language pull-right" rel="{$vo['action_id']}" type="button">发 表</button>
+					</div>
+				</div>
+				<div class="conent0" style="padding-left: 20px;padding-right: 20px;">
+					<div class="talkcontent" rel="{$vo['log_id']}" id="talkcontent_{$vo['action_id']}">
+						
+					</div>
+				</div>
+			<else/>
+				<div class="conent0" style="font-size: 12px;">{$vo.create_time}</div>
+				<div class="conent0">{$vo.type}</div>
+			</if>
+		</div>
+	</volist>
+	</div>
+	<div class="weui-infinite-scroll">
+		<div class="spiner-example">
+			<div class="sk-spinner sk-spinner-three-bounce">
+				<div class="sk-bounce1"></div>
+				<div class="sk-bounce2"></div>
+				<div class="sk-bounce3"></div>
+			</div>
+		</div>
+	</div>
+</empty>
+<script type="text/javascript">
+	$(document).ready(function (){
+		$('.litebox').liteBox({
+		  revealSpeed: 400,
+		  background: 'rgba(0,0,0,.8)',
+		  overlayClose: true,
+		  escKey: true,
+		  navKey: true,
+		  errorMessage: '图片加载失败.'
+		});
+		
+		$('.litebox_file').liteBox({
+		  revealSpeed: 400,
+		  background: 'rgba(0,0,0,.8)',
+		  overlayClose: true,
+		  escKey: true,
+		  navKey: true,
+		  errorMessage: '图片加载失败.'
+		});
+	});
+
+	//地图
+	$(document).on("click", ".map", function(){
+		$(this).next('.allmap').slideToggle('show');
+		var a =$(this).siblings('.longitude').attr('rel');
+		var b =$(this).siblings('.latitude').attr('rel');
+		var vals = $(this).next('.allmap').attr('rel');
+		var url = "{:U('index/gettranslocation')}"+"&longtitude="+a+"&latitude="+b;
+		$.get(url, function(data){
+			var x = data.data.x;
+			var y = data.data.y;
+			setTimeout("mapInit("+y+","+x+","+vals+")",1000);
+		})
+	});
+	function mapInit(x,y,mapID){
+				var map = new BMap.Map(mapID);
+				var point = new BMap.Point(y, x);
+				map.centerAndZoom(point, 15);
+				var marker = new BMap.Marker(point);  // 创建标注
+				map.addOverlay(marker);               // 将标注添加到地图中
+				map.enableScrollWheelZoom(true);
+				marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+			}
+</script>

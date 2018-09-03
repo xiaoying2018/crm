@@ -1,0 +1,109 @@
+<style>
+	#datas tr{cursor : pointer;}
+</style>
+<div>
+	<ul class="nav pull-left">
+		<li class="pull-left">
+			<select id="field" class="form-control input-sm" style="width:auto" onchange="changeCondition()" name="field">
+				<option class="word" value="">{:L('PLEASE_SELECT_A_FILTER_CONDITION')}</option>
+				<option class="word" value="business.name">{:L('BUSINESS_NAME')}</option>
+				<option class="business_status" value="business.status_id">{:L('BUSINESS_OPPORTUNITIES_PHASE')}</option>
+				<!-- <option class="role" value="business.owner_role_id">{:L('PRINCIPAL')}</option> -->
+				<option class="customer" value="business.customer_id">{:L('CUSTOMER')}</option>
+				<option class="number" value="business.final_price">{:L('THE_TOTAL_AMOUNT_OF')}</option>
+			</select>&nbsp;&nbsp;
+		</li>
+		<li id="conditionContent" class="pull-left" style="margin-left:10px;">
+			<select id="d_condition" class="form-control" style="width:auto" name="condition" onchange="changeSearch()">
+				<option value="contains" <if condition = "$search_field['condition'] eq 'contains'">selected</if>>{:L('CONTAINS')}</option>
+				<option value="not_contain" <if condition = "$search_field['condition'] eq 'not_contain'">selected</if>>{:L('NOT_CONTAIN')}</option>
+				<option value="is" <if condition = "$search_field['condition'] eq 'is'">selected</if>>{:L('IS')}</option>
+				<option value="isnot" <if condition = "$search_field['condition'] eq 'isnot'">selected</if>>{:L('ISNOT')}</option>						
+				<option value="start_with" <if condition = "$search_field['condition'] eq 'start_with'">selected</if>>{:L('START_WITH')}</option>
+				<option value="end_with" <if condition = "$search_field['condition'] eq 'end_with'">selected</if>>{:L('END_WITH')}</option>
+				<option value="is_empty" <if condition = "$search_field['condition'] eq 'is_empty'">selected</if>>{:L('IS_EMPTY')}</option>
+				<option value="is_not_empty" <if condition = "$search_field['condition'] eq 'is_not_empty'">selected</if>>{:L('IS_NOT_EMPTY')}</option>
+			</select>&nbsp;&nbsp;
+		</li>
+		<li id="searchContent" class="pull-left" style="margin-left:10px;">
+			<input id="search" type="text" class="input-medium form-control input-sm search-query" name="search" value="{$search_field['search']}" onkeydown="if(event.keyCode==13)changeCondition1()" />&nbsp;&nbsp;
+		</li>
+		<li class="pull-left" style="margin-left:10px;">
+			<button type="button" class="btn btn-primary" onclick="changeCondition1()">{:L('SEARCH')}</button>
+		</li>
+	</ul>
+</div>
+<p>&nbsp;</p>
+<empty name="businessList">
+	<div style="clear:both">
+		<include file="Public:nodata" />
+	</div>
+<else/>
+	<table class="table table-hover">
+		<thead>
+			<tr style="background-color:#F5F5F6;">
+				<th></th>
+				<th>{:L('BUSINESS_OPPORTUNITY')}</th>
+				<th>{:L('CUSTOMER')}</th>
+				<th>{:L('LINKMAN')}</th>
+				<th>{:L('AMOUNT')}</th>
+				<th>{:L('PHASE')}</th>	
+			</tr>
+		</thead>
+		<tfoot id="footers">
+			<tr>
+				<td colspan="6">
+					{$page}
+				</td>
+			</tr>
+		</tfoot>
+		<tbody id="datas">
+			<volist name="businessList" id="vo">
+				<tr style="cursor:pointer;">
+					<td>
+						<input type="radio" name="business" class="business_rad" value="{$vo.business_id}"/>
+						<input type="hidden" id="dialog_customer_id" value="{$vo.customer_id}"/>
+						<input type="hidden" id="dialog_contacts_id" value="{$vo.contacts_id}"/>
+					</td>
+					<td>{$vo.name}</td>
+					<td><a target="_blank" href="{:U('customer/view','id='.$vo['customer_id'])}">{$vo.customer_name}</a></td>
+					<td><a target="_blank" href="{:U('contacts/view','id='.$vo['contacts_id'])}">{$vo.contacts_name}</a></td>
+					<td><if condition="$vo['final_price'] gt 0">{$vo.final_price}<else />0.00</if></td>
+					<td>{$vo.status_name}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+</empty>
+<script type="text/javascript">
+	$('#go_page').change(function(){
+		var sel = $(this).val();
+		$('#dialog-business').load(sel,function(){
+			changeCondition();
+		});
+		return false;
+	});
+
+	$("#datas tr").click(function(){
+		$(this).find('td:first-child .business_rad').prop('checked', true);
+	});
+
+	$(function(){
+		$('#footers a').click(function(){ 
+			var rel = $(this).attr('href'); 
+			$('#dialog-business').load(rel);   
+			return false;
+		});
+	});
+
+	function changeCondition1(p){
+		var field = $('#field option:selected').val();
+		var condition = $('#d_condition option:selected').val();
+		var search = $('#search').val();
+		var dialog_customer_id = $('#dialog_customer_id').val();
+		var url = "{:U('business/listDialogs')}"+'&field='+field+'&condition='+condition+'&search='+search;
+		$('#dialog-business').load(url,function(){
+			changeCondition();
+		});
+	}
+</script>

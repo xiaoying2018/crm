@@ -1,0 +1,1174 @@
+<link href="/Public/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="/Public/js/images-loaded.min.js" type="text/javascript"></script>
+<script src="/Public/js/litebox.min.js" type="text/javascript"></script>
+<style>
+
+.cooperationsModal .cm_modal {
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.cooperationsModal .title-bar {
+    border: none;
+    font-size: 16px;
+    padding-bottom: 0;
+    margin-top: 5px;
+}
+
+.cooperationsModal .text-tag{
+    display: inline-block;
+}
+.cooperationsModal .text-tag {
+    font-size: 16px;
+    padding-left: 4px;
+    border-left: 4px solid #18a689;
+    line-height: 16px;
+    margin-top: 10px;
+}
+
+.cooperationsModal .table {
+    font-size: 14px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.cooperationsModal .table td{
+    border-color:#f2f2f2;
+}
+.td_title{
+    color: #8d8d8d !important;
+    width: 20%;
+}
+textarea{
+    outline: none;
+    border: 1px solid #e7eaec;
+    height: 100px;
+    padding: 10px;
+    overflow-y: scroll;
+    background: #fff !important;
+    width: 100%;
+}
+.nodata {
+    color: #ccc;
+}
+
+.ul_table{
+    list-style:none;
+    width: 90%;
+    margin: 0 auto;
+    padding: 0px;
+    margin-bottom: 20px;
+}
+.ul_table .tr_50{
+    height:45px;
+    font-size: 0;
+    display: inline-block;
+    /*border-top: 1px solid #e7eaec;*/
+    width: 50%;
+    float: left;
+}
+.ul_table span{
+    line-height:45px;
+    height: 45px;
+    font-size: 14px;
+    padding: 7px;
+    color: #000;
+    vertical-align: middle;
+}
+</style>
+<!-- 客户详细 -->
+<div class="modal fade bs-example-modal-lg cooperationsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="width: 75%;">
+        <div class="row cm_modal">
+            <div class="col-lg-12">
+                <div class="title-bar">
+                    <div class="row " id="title-show">
+                        <div class="all-inline clearfix">
+                            <div style="float: left;">
+                                <span class="text-tag">机构详情</span>
+                            </div>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="float: right;">
+                                关闭
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ">
+                    <ul class="ul_table">
+                        <li class="tr_50">
+                            <span class="td_title">机构名称：</span>
+                            <span v-html="data.cooperation_name"></span>
+                        </li>
+                        <li class="tr_50">
+                            <span class="td_title">机构分类：</span>
+                            <span v-html="data.cooperation_cate_name"></span>
+                        </li>
+
+                        <li class="tr_50">
+                            <span class="td_title">联系人：</span>
+                            <span v-html="data.contacts_name"></span>
+                        </li>
+                        <li class="tr_50">
+                            <span class="td_title">联系人职位：</span>
+                            <span v-html="data.position"></span>
+                        </li>
+                        <li class="tr_50">
+                            <span class="td_title">电话：</span>
+                            <span v-html="data.tel"></span>
+                        </li>
+                        <li class="tr_50">
+                            <span class="td_title">邮箱：</span>
+                            <span v-html="data.email"></span>
+                        </li>
+                        <li class="tr_50">
+                            <span class="td_title">qq/微信：</span>
+                            <span v-html="data.onlineNum"></span>
+                        </li>
+                        <li class="tr_50">
+                            <span class="td_title">合作维护人：</span>
+                            <span v-html="data.manage_p"></span>
+                        </li>
+                        <li class="tr_50" style="">
+                            <span class="td_title">机构录入时间：</span>
+                            <span v-html="data.update_time"></span>
+                        </li>
+                         <li class="tr_100" style="width: 100%;display: block;float: left">
+                            <span class="td_title">机构地址：</span>
+                            <span v-html="data.address"></span>
+                        </li>
+                    </ul>
+
+                    <table class="table">
+                        <tr>
+                            <td class="td_title" style="border: none">备注：</td>
+                            <td  style="border: none">
+                                <textarea name="" id="" cols="30" rows="10" readonly="readonly">{{data.remark}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td_title"  style="border: none">合作协议：</td>
+                            <!--<td v-for="file in filedata" class="" :log-rel="file.file_id">-->
+                                <!--{{file.name}}-->
+                            <!--</td>-->
+                        </tr>
+                        <tr v-if="filedata">
+                            <td style="border: none;width: 30%">名称</td>
+                            <td style="border: none;width: 25%">大小</td>
+                            <td style="border: none;width: 25%">上传人</td>
+                            <td style="border: none">上传时间</td>
+                        </tr>
+                        <!--<div style="height: 100px">-->
+                        <tr v-for="file in filedata" >
+                            <td style="border: none" v-if="file.ext == 1">
+                                <a :href="file.file_path"  class="litebox_file" title="点击查看大图" data-litebox-group="group-1">{{file.name}}</a>
+                            </td>
+                            <td style="border: none" v-else>
+                                <a :href="file.file_path"  title="点击查看大图" data-litebox-group="group-1">{{file.name}}</a>
+                            </td>
+                            <td style="border: none">{{file.size}}Kb</a></td>
+                            <td style="border: none">{{file.role_id}}</a></td>
+                            <td style="border: none">{{file.create_date}}</a></td>
+                        </tr>
+                        <!--</div>-->
+                    </table>
+
+                    <!--start-->
+                    <div class="tabs-container" style="">
+                        <div id="left-content">
+                            <ul class="nav nav-tabs" id="left_list" style="height:40px;">
+                                <li class="active"><a class="active" href="#tab2" data-toggle="tab" type="tab2">跟进日志&nbsp;&nbsp;<span class="badge badge-success"></span></a></li>
+                                <!--<li><a href="#tab6" data-toggle="tab" type="tab6">负责人日志&nbsp;&nbsp;<span class="badge badge-success"></span></a></li>-->
+                                <li><a href="#tab7" data-toggle="tab" type="tab7">联系人列表</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <!-- 沟通日志 -->
+                                <div class="tab-pane fade in active back_box" id="tab2">
+                                    <div class="panel-body" style="height: 35%;overflow-y: auto">
+                                        <div id="form-div">
+                                            <form id="add-form" action="/index.php?m=log&amp;a=add" method="post">
+                                                <input type="hidden" name="r" value="rCoopLog">
+                                                <input type="hidden" name="module" value="coop">
+                                                <input type="hidden" id="leads_id" name="id" :value="data.cooperation_id">
+                                                <input type="hidden" name="role_id" value="1">
+                                                <textarea name="content" placeholder="添加跟进记录" id="log-text" style="resize:none;" class="form-control" cols="30" rows="1"></textarea>
+                                                <div>
+                                                    <div class="text-right" id="log-btn" style="padding-top:8px;display:none;">
+                                                        <button class="btn btn-primary" @click="add_log()" id="add_log" type="button">添加</button>&nbsp;</div>
+                                                    <script>
+                                                        function add_log(){
+                                                            var logs = $('#log-text').val()
+                                                            var _this = this;
+                                                            $.ajax({
+                                                                type:'post',
+                                                                url:"{:U('Log/add')}",
+                                                                async:false,
+                                                                dataType:'json',
+                                                                data: $("#add-form").serialize(),
+                                                                success:function(data){
+//                                                                    console.log(data)
+                                                                    if (data.status == 1) {
+                                                                        var json = {};
+                                                                        json.log_id = data.data.log_id;
+                                                                        json.owner = {};
+                                                                        json.owner.full_name = data.data.owner.full_name;
+                                                                        json.owner.thumb_path = data.data.owner.thumb_path;
+                                                                        json.create_date = data.data.date;
+                                                                        json.status_name = ""
+                                                                        json.content = $("#log-text").val();
+                                                                        _this.logs.unshift(json);
+                                                                        btnHide();
+                                                                    } else {
+                                                                        alert_crm('添加失败, 请重试');
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    </script>
+                                                    <br> </div>
+                                            </form>
+                                        </div>
+                                        <!-- 日志列表 -->
+                                        <div id="log-list">
+                                            <div v-for="log in logs" class="ibox-content" :log-rel="log.log_id" style="background-color: rgb(241,243,246);margin-bottom: 10px;border: 1px solid lightgrey">
+                                                <div>
+                                                <div class="social-feed-separated clearfix">
+                                                    <div class="social-feed-box">
+                                                        <div class="pull-right social-action dropdown">
+                                                                <span data-toggle="dropdown" class="dropdown-toggle">
+                                                                <i style="font-size:20px;cursor:pointer" class="fa fa-angle-down"></i>
+                                                            </span>
+                                                            <ul class="dropdown-menu m-t-xs">
+                                                                <!--<li><a :rel="log.log_id" href="javascript:void(0);" type="rLeadsLog" onclick="del_confirm(this);">删除</a></li>-->
+                                                                <li><a  href="javascript:void(0);" type="rCoopLog" onclick="del_confirm(this);" :rel="log.log_id">删除</a></li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="social-avatar">
+                                                            <img alt="image" style="width:35px;height:35px;" class="img-circle" :src="log.head?log.head:'/Public/img/avatar_default1.png'">
+                                                            <!--<img>-->
+                                                            <a class="role_info name-colors" rel="1" href="javascript:void(0);">{{log.role_id}}</a>&nbsp;&nbsp;
+                                                            <span class="text-muted">发布了一条跟进记录</span>&nbsp;&nbsp;&nbsp;
+                                                            <!--<span class="text-muted">3&nbsp;&nbsp;-->
+                                                                <a title="沟通类型" href="javascript:void(0);">{{log.create_date}}</a></span>
+                                                        </div>
+                                                        <div class="social-body">
+                                                            <span style="word-wrap:break-word;line-height: 21px;color: #000;">{{log.content}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!--联系人列表-->
+                                <div class="tab-pane fade back_box" id="tab7" style="overflow-y: auto">
+                                    <span class="btn btn-primary" style="margin: 10px 0px 0px 40px" id="add_con" onclick="addcon()">新增联系人</span>
+                                    <span class="btn btn-success" style="margin: 10px 0px 0px 40px" id="save_cons" onclick="savedata()">保存</span>
+                                    <script>
+                                        function savedata() {
+                                            var t = $('#con').serializeArray();
+                                            var flag = 1;
+                                            $.each(t,function (ii,kk) {
+                                                if(name.length>1 ){
+//                                                    layer.msg('姓名不能为空');
+                                                    flag = 2;
+                                                }
+                                                console.log('1',ii,kk)
+                                            })
+//                                            console.log('1111',t)
+                                            $.ajax({
+                                                url: "/cooperations/addcon",
+                                                dataType: 'JSON',
+                                                type: 'GET',
+                                                data:t,
+                                                success: function(res) {
+                                                    console.log(res)
+                                                    if (res==1) {
+                                                        layer.msg('修改成功！')
+                                                        window.location.reload()
+                                                    }else{
+                                                        layer.msg('修改失败！')
+                                                    }
+                                                },
+                                                error: function(e) {
+                                                    console.log(e);
+                                                    alert('网络异常！');
+                                                }
+                                            });
+//                                            $('#con').submit()
+                                        }
+                                        function addcon() {
+                                            var _htm = "<tr>\n" +
+                                                " <!--<td><a :href=\"'/index.php?m=case&a=detail_1&id='+n.id\" >{{n.names}}</a></td>-->\n" +
+                                                "<td><input type=\"text\" value=\"\" class=\"form-control\" name=\"names[]\"></td>\n" +
+                                                "<td><input type=\"text\" value=\"\" class=\"form-control\" name=\"position[]\"></td>\n" +
+                                                "<td><input type=\"text\" value=\"\" class=\"form-control\" name=\"tels[]\"></td>\n" +
+                                                "<td><input type=\"text\" value=\"\" class=\"form-control\" name=\"emails[]\"></td>\n" +
+                                                "<td>\n" +
+                                                "<!--<a href=\"\">修改</a>-->\n" +
+                                                "<a href=\"javascript:void(0)\" onclick=\"dele(this)\">删除</a>\n" +
+                                                "</td>\n" +
+                                                "<!--<td>6</td>-->\n" +
+                                                "<!--<td><a :href=\"'/index.php?m=case&a=detail_1&id='+n.id\" >案例详情</a></td>-->\n" +
+                                                "</tr>";
+                                            $("#table1").append(_htm)
+                                        }
+                                        function dele(_ths) {
+                                            $(_ths).parent().parent().remove();
+                                            var conid = $(_ths).parent().siblings(":first").val()
+//                                            alert(conid)
+                                            $.ajax({
+                                                url:   "{:U('cooperations/delcon')}",
+                                                data:  {id:conid},
+                                                dataType:"JSON",
+                                                type:  "GET",
+                                                success:function(res){
+                                                    if(res==1){
+                                                        layer.msg('删除成功')
+                                                    }
+                                                }
+                                            });
+                                        }
+
+                                    </script>
+                                    <!--<div class="panel-body">-->
+                                    <form action="/index.php?m=cooperations&a=addcon" id="con" method="post">
+                                        <div style="height: 35%;overflow-y: auto;margin-top: 5px" class="" >
+                                    <table class="table" id="table1">
+                                            <input type="hidden" name="ids" :value="ids" id="ids">
+                                        <tr>
+                                            <td style="border: none">姓名</td>
+                                            <td style="border: none">职位</td>
+                                            <td style="border: none">电话</td>
+                                            <td style="border: none">邮箱</td>
+                                            <td style="width: 8%;border: none">操作</td>
+                                            <!--<td>签约产品</td>-->
+                                        </tr>
+                                        <!--<tr v-for="n in cases">-->
+                                        <tr v-for="n in condata">
+                                        <!--<td><a :href="'/index.php?m=case&a=detail_1&id='+n.id" >{{n.names}}</a></td>-->
+                                            <input type="hidden" :value="n.id">
+                                            <td><input type="text" :value="n.name" class="form-control" name="names[]"></td>
+                                            <td><input type="text" :value="n.position" class="form-control" name="position[]"></td>
+                                            <td><input type="text" :value="n.tel" class="form-control" name="tels[]"></td>
+                                            <td><input type="text" :value="n.email" class="form-control" name="emails[]"></td>
+                                            <td>
+                                                <a href="javascript:void(0)" onclick="dele(this)">删除</a>
+                                            </td>
+                                        </tr>
+
+                                    </table>
+                                        </div>
+                                    </form>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--end-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(function() {
+    var cooperationsModal = new Vue({
+        el: '.cooperationsModal',
+        data: {
+            data: {},
+            logs:[],
+            filedata:{},
+            ids:{},
+            condata:{}
+        },
+        methods: {
+            getDetail: function(id) {
+                if (!id) return;
+                var _this = this;
+                $.ajax({
+                    url: "/cooperations/detail?id="+id,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    success: function(res) {
+
+//                        console.log(res)
+                        if (res) {
+                            var _res = res.detaildata;
+                            for (var key in _res) {
+                                if (key == 'update_time') {
+                                    _res["update_time"] = timestampToFormat(_res["update_time"], 'yyyy-MM-dd hh:mm:ss');
+                                }
+                                // if (key == 'cooperation_cate_id') {
+                                //     for(var i = 0; i < res.catedata.length; i++){
+                                //         if (res.catedata[i]["cooperation_cate_id"] == _res[key]) {
+                                //             _res["cooperation_cate_name"] = res.catedata[i].cooperation_cate_name;
+                                //         }
+                                //     }
+                                // }
+                                // if (_res[key].length == 0) {
+                                //     _res[key] = "<span class='nodata'>暂无数据</span>"
+                                // }
+                            }
+                            _this.data = _res;
+                            if(res.logdata){
+                                _this.logs = res.logdata
+                            }else{
+                                _this.logs = []
+                            }
+                            _this.filedata = res.filedata
+                            _this.ids = res.id
+                            _this.condata = res.condata;
+
+
+                            _this.$nextTick(function () {
+                                $('.litebox_file').liteBox({
+                                    revealSpeed: 400,
+                                    background: 'rgba(0,0,0,.8)',
+                                    overlayClose: true,
+                                    escKey: true,
+                                    navKey: true,
+                                    errorMessage: '图片加载失败.'
+                                });
+
+//                                $('#log-list').niceScroll({
+//                                    cursorcolor: "#77B8FF",
+//                                    cursoropacitymax: 1,
+//                                    cursorwidth: "4px",
+//                                    cursorborder: "0",
+//                                    cursorborderradius: "0px",
+//                                    autohidemode: false
+//                                });
+                            })
+                        }
+                    },
+                    error: function(e) {
+                        console.log(e);
+                        alert('网络异常！');
+                    }
+                });
+            },
+            add_log:function(){
+                var _this = this;
+                var log_type = 'rLeadsLog';
+                $(this).prop('disabled', true);
+                $.ajax({
+                    type:'post',
+                    url:"{:U('Log/add')}",
+                    async:false,
+                    dataType:'json',
+                    data: $("#add-form").serialize(),
+                    success:function(data){
+//                        _this.$options.methods.getDetail(id);
+                        console.log('222',data)
+                        if (data.status == 1) {
+                            var json = {};
+                            json.log_id = data.data.log_id;
+                            json.owner = {};
+                            json.role_id = data.data.owner.full_name;
+                            json.head = data.data.owner.thumb_path;
+                            json.create_date = data.data.date;
+                            json.status_name = ""
+                              json.content = $("#log-text").val();
+                            _this.logs.unshift(json);
+                            btnHide();
+                        } else {
+                            alert_crm('添加失败, 请重试');
+                        }
+                    }
+                });
+            }
+        },
+        mounted: function() {
+            var _this = this;
+            //关闭浮层
+            $(".cooperationsModal-close").click(function() {
+                $(".cooperationsModal").modal('hide');
+            })
+        }
+    })
+    $('.cooperationsModal').on('show.bs.modal', function(ele) {
+        cooperationsModal.data = {};
+        cooperationsModal.getDetail(ele.relatedTarget);
+    })
+});
+</script>
+<script>
+    $(function() {
+//        var customer_model = new Vue({
+//            el: '.customerModal',
+//            data: {
+//                leads: {},
+//                logs: [],
+//                fields: {},
+//                status: {},
+//                events: {},
+//                records: {},
+//                files: {},
+//                isUpdata: false,
+//                nowdate:"",
+//                cases:[],
+//                update_log:[]
+//            },
+//            methods: {
+//                getNowFormatDate:function() {
+//                    var date = new Date();
+//                    var seperator1 = "-";
+//                    var seperator2 = ":";
+//                    var month = date.getMonth() + 1;
+//                    var strDate = date.getDate();
+//                    if (month >= 1 && month <= 9) {
+//                        month = "0" + month;
+//                    }
+//                    if (strDate >= 0 && strDate <= 9) {
+//                        strDate = "0" + strDate;
+//                    }
+//                    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+//                        + " " + date.getHours() + seperator2 + date.getMinutes()
+//                        + seperator2 + date.getSeconds();
+//                    return currentdate;
+//                },
+//                getDetail: function(id) {
+//                    if (!id) return;
+//                    var _this = this;
+//                    $.ajax({
+//                        url: "{:U('leads/detail')}",
+//                        data: { id: id },
+//                        dataType: 'JSON',
+//                        type: 'get',
+//                        success: function(res) {
+//                            if (res) {
+//                                _this.nowdate = _this.getNowFormatDate();
+//                                _this.status = res.statusList;
+//                                _this.events = res.eventslist;
+//                                _this.records = res.leads.record;
+//                                _this.files = res.leads.file;
+//                                _this.cases = res.cases;
+//                                _this.update_log = res.update_log;
+//
+//                                if (_this.events) {
+//                                    _this.events.forEach(function(v) {
+//                                        // v.styleObject = {style:{color:v.color};
+//                                        v.start_date_1 = timestampToFormat(v.start_date, 'hh:mm');
+//                                        v.start_date_2 = timestampToFormat(v.start_date, 'yyyy-MM-dd');
+//                                        v.end_date_1 = timestampToFormat(v.end_date, 'hh:mm');
+//                                        v.end_date_2 = timestampToFormat(v.end_date, 'yyyy-MM-dd');
+//                                    })
+//                                }
+//                                if (_this.records) {
+//                                    _this.records.forEach(function(v) {
+//                                        v.start_time = timestampToFormat(v.start_time, 'yyyy-MM-dd');
+//                                    })
+//                                }
+//                                if (_this.files) {
+//                                    _this.files.forEach(function(v) {
+//                                        v.create_date = timestampToFormat(v.create_date, 'yyyy-MM-dd');
+//                                    });
+//                                }
+//                                if (res.leads) {
+//
+//                                    var _arr = [];
+//                                    _arr = res.fields.data
+//                                    for (var i = 0; i < res.fields.main.length; i++) {
+//                                        _arr.push(res.fields.main[i]);
+//                                    }
+//                                    for (var key in res.leads) {
+//                                        for (var i = 0; i < _arr.length; i++) {
+//                                            if (_arr[i].field == key) {
+//                                                if (_arr[i].html) {
+//                                                    var _ss = res.leads[key];
+//                                                    res.leads[key] = {};
+//                                                    res.leads[key].content = _ss;
+//                                                    res.leads[key].html = _arr[i].html
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                    $("#leadsMerge").val("");
+//                                    $("#select2-to_role_id-container").text("输入老师姓名后选择老师")
+//                                    // console.log("xxx",res.leads.merge);
+//                                    if(res.leads.merge != '0' && res.leads.merge != '' && res.leads.merge != null){
+//                                        $("#leadsMerge").val(res.leads.merge)
+//                                        $("#select2-to_role_id-container").text(res.leads.merge_name);
+//                                    }
+//                                    if (res.leads.merge_time != '0' && res.leads.merge_time != '' && res.leads.merge_time != null) {
+//                                        res.leads.merge_time = timestampToFormat(res.leads.merge_time, 'yyyy-MM-dd hh:mm:ss');
+//                                    }
+//                                    _this.leads = res.leads;
+//                                }
+//                                $("#detail-dialog-file").dialog({
+//                                    autoOpen: false,
+//                                    modal: true,
+//                                    width: width,
+//                                    maxHeight: 400,
+//                                    position: ["center", 200],
+//                                    buttons: {
+//                                        "确认": function() {
+//                                            window.location.reload();
+//                                        },
+//                                        "取消": function() {
+//                                            $(this).dialog("close");
+//                                        }
+//                                    }
+//                                });
+//                                $(document).on('click', '.add_file', function() {
+//                                    $('#detail-dialog-file').dialog('open');
+//                                    $('#detail-dialog-file').load('/index.php?m=file&a=add&r=RFileLeads&module=leads&id=' + _this.leads.leads_id);
+//                                });
+//
+//                                // logs时间处理
+//                                if (res.leads.log) {
+//                                    res.leads.log.forEach(function(v) {
+//                                        v.create_date = timestampToFormat(v.create_date, 'yyyy-MM-dd h:m:s');
+//                                    });
+//                                    _this.logs = res.leads.log;
+//                                }else{
+//                                    _this.logs = [];
+//                                }
+//                                /**
+//                                 * 附件 如果是图片时 双击可查看大图
+//                                 */
+//                                _this.$nextTick(function() {
+//                                    $('.litebox_file').liteBox({
+//                                        revealSpeed:  400,
+//                                        background:   'rgba(0,0,0,.8)',
+//                                        overlayClose:  true,
+//                                        escKey:  true,
+//                                        navKey:  true,
+//                                        errorMessage:   '图片加载失败.'
+//                                    });
+//                                    $(".customerModal select.form-control").addClass("edit");
+//
+//                                    window.setTimeout(function(){
+//                                        $(".dv_textarea.textarea_edit").txtaAutoHeight();
+//                                    },1000)
+//                                });
+//
+//                                //获取线索
+//                                $.ajax({
+//                                    url:   "{:U('clueblock/cate_search')}",
+//                                    data:  "",
+//                                    dataType:"JSON",
+//                                    type:  "GET",
+//                                    success:function(res){
+//                                        if( res.status == true ){
+//                                            // _this.cluecate = res.data;
+//                                            var _c = "";
+//                                            if (_this.leads.cluecate.content) {
+//                                                _c = _this.leads.cluecate.content
+//                                            }
+//                                            var html    =  '';
+//                                            html       += "<option value=''>--请选择--</option>";
+//                                            res.data.forEach(function(v){
+//                                                // console.log("xxx",_c,v.id);
+//                                                if (_c == v.id) {
+//                                                    _this.leads.cluecate.content = v.name;
+//                                                    html += "<option selected='selected' value='"+v.id+"'>"+v.name+"</option>";
+//                                                }else{
+//                                                    html += "<option value='"+v.id+"'>"+v.name+"</option>";
+//                                                }
+//                                            });
+//                                            $("#cluecate_detail").html(html);
+//                                        }
+//                                    }
+//                                });
+//                            }
+//                        },
+//                        error: function(e) {
+//                            console.log(e);
+//                            alert('网络异常！');
+//                        }
+//                    });
+//                },
+//                add_log:function(){
+//                    var _this = this;
+//                    var log_type = 'rLeadsLog';
+//                    $(this).prop('disabled', true);
+//                    $.ajax({
+//                        type:'post',
+//                        url:"{:U('Log/add')}",
+//                        async:false,
+//                        dataType:'json',
+//                        data: $("#add-form").serialize(),
+//                        success:function(data){
+//                            if (data.status == 1) {
+//                                var json = {};
+//                                json.log_id = data.data.log_id;
+//                                json.owner = {};
+//                                json.owner.full_name = data.data.owner.full_name;
+//                                json.owner.thumb_path = data.data.owner.thumb_path;
+//                                json.create_date = data.data.date;
+//                                json.status_name = ""
+//                                json.content = $("#log-text").val();
+////                                _this.logs.unshift(json);
+//                                btnHide();
+//                            } else {
+//                                alert_crm('添加失败3, 请重试');
+//                            }
+//                        }
+//                    });
+//                }
+//            },
+//            mounted: function() {
+//                var _this = this;
+////                $(".leftPart").mCustomScrollbar();
+////                $(".det_rightPart").height($(window).height()*0.8).mCustomScrollbar();
+//
+//                $('.customerModal .cm_modal').resizable({
+//                    minHeight: 380,
+//                    minWidth: 780,
+//                    resize: function(event, ui) {
+////                        $(".det_rightPart,.leftPart").height($(".customerModal .ui-resizable").height() - 70).mCustomScrollbar();
+//                    }
+//                });
+//                //关闭浮层
+//                $(".customerModal-close").click(function() {
+//                    $(".customerModal").modal('hide');
+//                })
+//            }
+//        });
+
+
+        //模态窗口打开
+        $('.customerModal').on('show.bs.modal', function(ele) {
+            $("#left_list li").eq(0).find("a").click()
+            $("#content").val("");
+            // 清空数据
+            customer_model.leads={};
+            customer_model.logs={};
+            customer_model.events={};
+            $(".modal-dialog").draggable({
+                cursor: "move",
+                handle: ".title-bar"
+            });
+            var id = ele.relatedTarget;
+            customer_model.getDetail(id);
+        });
+        //模态窗口关闭
+        $('.customerModal').on('hide.bs.modal', function(ele) {
+            $(".input_edit").removeClass("edit").attr("disabled", "disabled");
+            $(".textarea_edit").removeClass("edit");
+            $(".click_Update").find("span").text(" 编辑");
+            $(".click_Update").addClass("btn-default").removeClass("btn-danger");
+            customer_model.isUpdata = false;
+        });
+
+        //点击开始编辑
+        $(document).on('click', '.click_Update', function() {
+
+            var _self = $(this);
+            customer_model.isUpdata = true;
+            customer_model.$nextTick(function() {
+                $(".input_edit").addClass("edit").removeAttr("disabled");
+                $(".textarea_edit").addClass("edit");
+                _self.find("span").text(" 保存");
+                _self.addClass("btn-danger").removeClass("btn-default");
+            });
+            $(".customerModal select.form-control").addClass("edit");
+        });
+
+        //点击保存
+        $(document).on('click', '.click_Update.btn-danger', function() {
+            if($("#name").val() == ""){
+                swal({
+                    title: "格式不正确",
+                    text: "姓名不能为空！",
+                    type: "error"
+                })
+                return false;
+            }
+            var _currentId = $("#leadsId").val();
+            var _arr = {
+                id: _currentId,
+            };
+            var _id;
+            $(".edit").each(function(e) {
+                _id = $(this).attr("id");
+                if (_id == 'cluecate_detail') {
+                    _id = "cluecate";
+                }
+                /*
+                 * 多选判读
+                 */
+                if ($(this).hasClass("editcheckbox")) {
+                    var _cStr = "";
+                    for (var i = 0; i < $('input[name="' + _id + '[]"]:checked').length; i++) {
+                        _cStr = _cStr + $('input[name="' + _id + '[]"]:checked').eq(i).val() + "\n"
+                    }
+                    // _json[_id] = _cStr.substr(0,_cStr.length);
+                    _arr[_id] = _cStr
+                }
+                /*
+                 * 时间判断
+                 */
+                else if (_id == "nextstep_time") {
+                    var date = new Date($(this).val().replace(/-/g, '/'));
+                    date = (Date.parse(date)) / 1000;
+                    _arr[_id] = date;
+                }
+                /*
+                 * 普通文本
+                 */
+                else {
+                    _arr[_id] = $(this).val();
+                }
+            })
+            // console.log("xxx", _arr);
+            // 全部修改
+            $.ajax({
+                type: 'post',
+                url: "/index.php/api/edit_leads",
+                data: _arr,
+                dataType: 'json',
+                success: function(data) {
+                    if (data && data.status) {
+                        // 关闭弹框
+                        $(".customerModal").modal('hide');
+
+                        $(".controls_tr[data-id='"+_currentId+"'] td").eq(1).find(".showCustomer").text(_arr['contacts_name'])
+                        $(".controls_tr[data-id='"+_currentId+"'] td").eq(2).find(".showCustomer").text(_arr['name'])
+                        $(".controls_tr[data-id='"+_currentId+"'] td").eq(3).find("a").text(_arr['crm_level'])
+                        $(".controls_tr[data-id='"+_currentId+"'] td").eq(4).find("a").text(_arr['mobile'])
+                        $(".controls_tr[data-id='"+_currentId+"'] td").eq(5).find("span").text(_arr['crm_qq'])
+
+                        $(".controls_tr[data-id='"+_currentId+"'] td").eq(5).find("span").text(_arr['crm_qq'])
+
+                        $(".controls_tr[data-id='"+_currentId+"'] td .citty").text(_arr['crm_city'])
+
+
+                        // 刷新列表
+                        // table_container.clearRequest('all');
+
+                    } else if(!data.status) {
+                        //修改失败
+                        swal({
+                            title: "操作失败！",
+                            text: data.info,
+                            type: "error"
+                        })
+                    }
+                }
+            });
+
+        });
+        $.fn.extend({
+            txtaAutoHeight: function () {
+                return this.each(function () {
+                    var $this = $(this);
+                    if (!$this.attr('initAttrH')) {
+                        $this.attr('initAttrH', $this.outerHeight());
+                    }
+                    setAutoHeight(this).on('input', function () {
+                        setAutoHeight(this);
+                    });
+                });
+                function setAutoHeight(elem) {
+                    var $obj = $(elem);
+                    return $obj.css({ height: $obj.attr('initAttrH'), 'overflow-y': 'hidden' }).height(elem.scrollHeight);
+                }
+            }
+        });
+        // $(document).on('focusin', 'textarea.dv_textarea', function() {
+        // });
+        //textarea失去焦点事件
+        $(document).on('focusout', 'textarea.dv_textarea', function() {
+            var _id = $(this).attr("id");
+            var _html = $(this).val();
+            var _currentId = $("#leadsId").val();
+            var _json = {
+                field: _id,
+                value: _html,
+                id: _currentId
+            }
+
+            // 部分修改
+            $.ajax({
+                type: 'post',
+                url: "/index.php/api/edit_leads",
+                data: _json,
+                dataType: 'json',
+                success: function(data) {
+                    if(!data.status) {
+                        //修改失败
+                        swal({
+                            title: "操作失败！",
+                            text: data.info,
+                            type: "error"
+                        })
+                    }
+                    // if (data && data.status) {
+                    //     swal("保存成功！", "您已经永久保存了信息！", "success");
+                    // } else if(!data.status) {
+                    //     //修改失败
+                    //     swal({
+                    //         title: "操作失败！",
+                    //         text: data.info,
+                    //         type: "error"
+                    //     })
+                    // }
+                }
+            });
+        });
+
+        //删除附件
+        $(document).on('click', '.file_delete', function() {
+            var file_id = $(this).attr('rel');
+            var _self = $(this);
+            swal({
+                    title: "您确定要删除附件信息吗？",
+                    text: "删除后将无法恢复，请谨慎操作！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "是的，我要删除！",
+                    cancelButtonText: '让我再考虑一下…',
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function(isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            type: 'get',
+                            url: "{:U('file/delete','r=RFileLeads&id=')}" + file_id,
+                            async: false,
+                            success: function(data) {
+                                if (data.status == 1) {
+                                    swal("删除成功！", "您已经永久删除了信息！", "success");
+                                    _self.parent().parent().remove();
+                                } else {
+                                    swal({
+                                        title: "操作失败！",
+                                        text: data.info,
+                                        type: "error"
+                                    })
+                                    return false;
+                                }
+                            },
+                            dataType: 'json'
+                        });
+                    } else {
+                        swal("已取消", "您取消了删除操作！", "error");
+                    }
+                });
+        });
+
+        /*ajax 提交记录*/
+        // $(document).on('focus', '#add_log', function() {
+        //     var log_type = 'rLeadsLog';
+        //     $(this).prop('disabled', true);
+        //     $.post("{:U('Log/add')}", $("#add-form").serialize(), function(data) {
+        //         if (data.status == 1) {
+        //             var content = $('#log-text').val().replace('&nbsp', '&NBSP');
+        //             var log_html = "<div class='ibox-content gray-bg' log-rel='" + data.data.log_id + "' style='margin-bottom: 18px'><div class='social-feed-separated clearfix'><div class='social-feed-box'><div class='pull-right social-action dropdown'><span data-toggle='dropdown' class='dropdown-toggle'><i style='font-size:20px;cursor:pointer' class='fa fa-angle-down'></i></span><ul class='dropdown-menu m-t-xs' ><li><a  rel='" + data.data.log_id + "' href='javascript:void(0);' type='" + log_type + "' onclick='del_confirm(this);'>{:L('DELETE')}</a></li></ul></div><div class='social-avatar'><img alt='image' style='width:35px;height:35px;' class='img-circle' src='/Public/img/avatar_default1.png'><a class='role_info name-colors'  rel='" + data.data.owner.role_id + "' href='javascript:void(0)'>" + data.data.owner.full_name + "</a>&nbsp;&nbsp;<span class='text-muted'>添加了一条快快速记录</span>&nbsp;&nbsp;<span class='text-muted' >" + data.data.date + "</span></div><div class='social-body'><span style='word-wrap:break-word;line-height: 21px;color: #000;'>" + content + "</span></div></div></div></div>";
+        //             $('#log-list').prepend(log_html);
+        //             btnHide();
+        //         } else {
+        //             alert_crm('添加失败, 请重试');
+        //         }
+        //     });
+        // });
+
+        $(document).on('focus', '#log-text', function() {
+            $(this).attr('rows', 4);
+            $('#log-btn').show();
+            $('#product-radio').show();
+            $('#add_log').prop('disabled', false);
+        });
+        $(document).on('focusout', '#log-text', function() {
+            var code_id = $("input[name='id']:checked").val();
+            if ($(this).val() == '' && code_id == '') {
+                btnHide();
+            }
+        });
+    });
+    /*跟进记录*/
+    function btnHide() {
+        $('#log-text').attr('rows', 1);
+        $('#log-btn').hide();
+        $('#product-radio').hide();
+        $('#log-text').val('');
+    }
+    /*删除日志*/
+    function del_confirm(e) {
+        swal({
+                title: "确定要删除沟通日志吗？",
+                text: "删除后将无法恢复，请谨慎操作！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是的，我要删除！",
+                cancelButtonText: '让我再考虑一下…',
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function(isConfirm) {
+                if (isConfirm) {
+                    var log_id = $(e).attr('rel');
+                    var type = $(e).attr('type');
+                    $.get("{:U('log/delete')}", { r: type, id: log_id }, function(data) {
+                        if (data != 0) {
+                            swal({
+                                title: "删除成功！",
+                                text: "",
+                                type: "success"
+                            });
+                            $("[log-rel='" + log_id + "']").remove();
+                        } else {
+                            swal({
+                                title: "操作失败！",
+                                text: data.info,
+                                type: "error"
+                            })
+                            return false;
+                        }
+                    });
+                } else {
+                    swal("已取消", "您取消了删除操作！", "error");
+                }
+            });
+    };
+    $(function() {
+        // 选择老师弹框
+        $(".select_name").select2({
+            width:"400px",
+            ajax: {
+                placeholder:'请选择',
+                allowClear:true,
+                url: "{:U('materials/getteachers')}",
+                data: function(params) {
+                    var query = {
+                        "name": params.term
+                    }
+                    // console.log("params",params);
+                    return query;
+                },
+                dataType: 'json',
+                processResults: function(data) {
+                    // console.log('processResults',data)
+                    return {
+                        results: data.data
+                    };
+                },
+                processResults: function(data, params) {
+                    if (data.status) {
+                        var itemList = [];
+                        //当数据对象不是{id:0,text:'ANTS'}这种形式的时候，可以使用类似此方法创建新的数组对象
+                        var arr = data.data
+                        for(var i = 0; i < arr.length; i++){
+                            itemList.push({id: arr[i]['role_id'], text: arr[i]['full_name'], email: arr[i]['email']})
+                        }
+                        var _s = {results: itemList}
+
+                        // console.log('_s',_s)
+                        return _s
+                    }else{
+                        return []
+                    }
+                },
+            },
+            // dataAdapter:function(){
+            //     alert(123)
+            //     $('#to_role_id').val(['36']).trigger('change');
+            // }
+        });
+        // $('#to_role_id').val(['36']).trigger('change');
+        $('.materialsModal').on('show.bs.modal', function(ele) {
+            caseModal.data = {};
+            caseModal.getDetail(ele.relatedTarget);
+        })
+
+
+        // 分配任务
+        $('#send_allot').click(function () {
+            // $('#to_role_id').val(['36']).trigger('change');
+            var _selected = $("#to_role_id").select2("data")[0];
+
+            var _sdd;
+            if (_selected.id == "") {
+                _sdd = $("#leadsMerge").val();
+            }else{
+                _sdd = _selected.id
+            }
+            // 修改联合跟进人
+            $.ajax({
+                type:'post',
+                url: "/index.php/api/edit_leads",
+                data: {
+                    id:$("#leadsId").val(),//
+                    merge:_sdd,
+                },
+                async: true,
+                success: function (data) {
+                    if (data.status == 1) {
+                        $.ajax({
+                            type:'post',
+                            url: "{:U('message/ajaxsend')}", // 请求接口
+                            data: {
+                                email:_selected.email,
+                                to_role_id:_sdd, // 接受者的role_id
+                                content:$('#content').val(), // 站内信内容
+                            },
+                            async: true,
+                            success: function (data) {
+
+                                // TODO 发送邮件 收件人地址为 _selected.email
+                                // $.ajax({
+                                //     type:'post',
+                                //     url: "{:U('api/sendtask')}", // 请求接口
+                                //     data: {
+                                //         to:_selected.email,
+                                //         content:$('#content').val(), // 任务内容
+                                //     },
+                                //     async: true,
+                                //     success: function (data) {
+                                //         console.log(data);
+                                //     },
+                                //     dataType: 'json'
+                                // });
+
+                            },
+                            dataType: 'json'
+                        });
+                        alert('修改成功') // 发送成功
+                    }else{
+                        alert(data.msg) // 发送失败
+                    }
+
+                },
+                dataType: 'json'
+            });
+
+        })
+
+    });
+
+    $(document).on('click','.del_merge',function () {
+        // 修改联合跟进人
+        $.ajax({
+            type: 'post',
+            url: "/index.php/api/edit_leads",
+            data: {
+                id: $("#leadsId").val(),//
+                merge: '0',
+                merge_time: '0',
+            },
+            async: true,
+            success: function (data) {
+                if (data.status) {
+                    $('.del_merge,.merge_time').hide();
+                    alert('已解除联合跟进人');
+                } else {
+                    console.log('解除失败', data.msg);
+                }
+            },
+            dataType: 'json'
+        });
+    });
+
+    // 联合跟进人 END
+</script>

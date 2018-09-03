@@ -1,0 +1,144 @@
+<script src="/Public/style/js/plugins/validate/jquery.validate.min.js"></script>
+
+<style type="text/css">
+    .templete_Add .form-group {
+        margin: 10px 0;
+    }
+    .radio-info{
+        margin: 0 20px;
+    }
+    .textarea textarea{
+        width: 100%;
+    }
+    .select2-selection{
+        background-color: #FFFFFF !important;
+        background-image: none !important;
+        border: 1px solid #d8e3ef !important;
+        border-radius: 1px !important;
+        height: 32px;
+        line-height: 32px;
+    }
+    .select2-selection__rendered{
+        padding-left: 17px !important;
+    }
+</style>
+
+
+
+<form action="" id="teacher_edit_form">
+    <div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>教师名称</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="name" aria-required="true"
+                       value="{$userinfo.full_name}" readonly="readonly" />
+            </div>
+        </div>
+        <table class="table select-table table-bordered">
+            <thead>
+            <tr style="background-color:#f9fafc;text-align:center;">
+                <td style="">角色名称</td>
+                <td style="">操作人</td>
+                <td style="">操作时间</td>
+                <td style="">操作</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="r in roles" data-id="">
+                <template v-if="r.info">
+                    <td style="">{{r.name}}</td>
+                    <td style="">{{r.info.creator_name}}</td>
+                    <td style="">{{r.info.create_at}}</td>
+                    <td style="text-align:center;padding:14px;color:#666">
+                        <button type="button" class="btn btn-danger btn-sm" @click="roleDel(r.info.id)">删除</button>
+                    </td>
+                </template>
+                <template v-else>
+                    <td style="">{{r.name}}</td>
+                    <td style=""> - </td>
+                    <td style=""> - </td>
+                    <td style="text-align:center;padding:14px;color:#666">
+                        <button type="button" class="btn btn-info btn-sm" @click="roleAdd(r.id)">添加</button>
+                    </td>
+                </template>
+            </tr>
+            </tbody>
+        </table>
+
+        <input type="hidden" name="user_id" value="{$userinfo.user_id}">
+    </div>
+</form>
+
+<script>
+    var TMM = new Vue({
+        el: "#teacher_edit_form",
+        data: {
+            roles:{},
+        },
+        methods:{
+            getRoles: function () {
+                var _this		=	this,
+                    user_id     =   $("input[name='user_id']").val();
+                $.ajax({
+                    url:"{:U('education/teacher_role')}",
+                    data:{user_id:user_id},
+                    dataType:"JSON",
+                    type:"POST",
+                    success:function(res){
+                        _this.roles = res.roles;
+                    }
+                });
+            },
+            roleAdd:function(role_id){
+                if( !role_id ){
+                    layer.msg('ERROR 参数缺失');
+                }
+                var data        =   {},
+                    user_id     =   $("input[name='user_id']").val(),
+                    _this       =   this;
+                data['user_id'] =   user_id;
+                data['role_id'] =   role_id;
+                $.ajax({
+                    url:"{:U('education/teacher_add')}",
+                    data:data,
+                    dataType:"JSON",
+                    anysc:false,
+                    type:"POST",
+                    success:function(res){
+                        if( res.result ){
+                            _this.getRoles();
+                            layer.msg('添加成功！');
+                        }else{
+                            layer.msg('ERROR '+res.error);
+                        }
+                    }
+                });
+            },
+            roleDel:function(id){
+                if( !id ){
+                    layer.msg('ERROR 参数缺失');
+                }
+                var _this       =   this;
+                $.ajax({
+                    url:"{:U('education/teacher_del')}",
+                    data:{id:id},
+                    dataType:"JSON",
+                    anysc:false,
+                    type:"POST",
+                    success:function(res){
+                        if( res.result ){
+                            _this.getRoles();
+                            layer.msg('删除成功！');
+                        }else{
+                            layer.msg('ERROR '+res.error);
+                        }
+                    }
+                });
+            }
+        },
+    });
+
+    TMM.getRoles();
+</script>
+
+

@@ -1,0 +1,63 @@
+<!-- nice-scroll -->
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<style>
+    .left_chat-message{
+        float:left;
+        max-width: 90%;
+        background: #EFF1F3 !important;
+        color:#000 !important;
+        margin-left: 34px;
+        margin-top: -22px;
+        border:1px solid #CECECE;
+        border-radius: 3px;
+    }
+    .right_chat-message{
+        float:right;
+        max-width: 90%;
+        background: #EFF1F3 !important;
+        color:#000 !important;
+        margin-right: 50px;
+        margin-top: -22px;
+        border:1px solid #CECECE;
+        border-radius: 3px;
+    }
+    .feedback_content {
+        font-size: 13px;
+        padding: 5px 15px;
+    }
+    .feedback_content .left {
+        text-align: left;
+        clear: both;
+    }
+    .feedback_content .right {
+        text-align: right;
+        clear: both;
+    }
+    .feedback_content > div {
+        padding-bottom: 20px;
+    }
+    .feedback_body{
+        padding:1px !important;
+    }
+</style>
+<script>
+    $(function(){
+        var scroll_width = 5;
+        $(".nicescroll").niceScroll({
+            cursorcolor: "#ccc",//#CC0071 光标颜色 
+            cursoropacitymax: 0.5, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0 
+            touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备 
+            cursorwidth: scroll_width+"px", //像素光标的宽度 
+            cursorborder: "0", //     游标边框css定义 
+            cursorborderradius: "5px",//以像素为光标边界半径 
+            autohidemode: false, //是否隐藏滚动条 
+            zindex:100,
+            background:"#F3F3F5",//滚动条背景色
+        }); 
+    }); 
+</script>
+
+
+
+
+

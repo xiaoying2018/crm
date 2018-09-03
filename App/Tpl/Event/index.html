@@ -1,0 +1,299 @@
+<include file="Public:header"/>
+<link href="__PUBLIC__/style/css/plugins/fullcalendar/fullcalendar2.css" rel="stylesheet">
+<link href="__PUBLIC__/style/css/plugins/fullcalendar/fullcalendar.print.css" rel='stylesheet' media='print'>
+
+<style>
+	.fc-grid .fc-day-number{padding: 0 2px; position:relative} 
+	.fc-grid .fc-day-number span.solarday{float:right;color:#999}     
+	.fc-grid .fc-day-number span.holiday{position:absolute; left:40%} 
+	.fc-event-time, .fc-event-title{color:#fff;}
+
+	.color-selector>li{
+		position: relative;
+	    display: inline-block;
+	    width: 24px;
+	    height: 24px;
+	    margin: 0 5px 0 0;
+	    border-radius: 100%;
+	}
+	.bg-blue-600 label:before{
+		background-color: #62a8ea!important;
+	}
+	.bg-green-600 label:before{
+		background-color: #46be8a!important;
+	}
+	.bg-cyan-600 label:before{
+		background-color: #57c7d4!important;
+	}
+	.bg-orange-600 label:before{
+		background-color: #f2a654!important;
+	}
+	.bg-red-600 label:before{
+		background-color: #f96868!important;
+	}
+	.bg-blue-grey-600 label:before{
+		background-color: #526069!important;
+	}
+	.bg-purple-600 label:before{
+		background-color: #926dde!important;
+	}
+
+	.bg-blue-600 label:after{
+		background-color: #62a8ea!important;
+	}
+	.bg-green-600 label:after{
+		background-color: #46be8a!important;
+	}
+	.bg-cyan-600 label:after{
+		background-color: #57c7d4!important;
+	}
+	.bg-orange-600 label:after{
+		background-color: #f2a654!important;
+	}
+	.bg-red-600 label:after{
+		background-color: #f96868!important;
+	}
+	.bg-blue-grey-600 label:after{
+		background-color: #526069!important;
+	}
+	.bg-purple-600 label:after{
+		background-color: #926dde!important;
+	}
+	.radio label:before{
+		width:24px;
+		height:24px;
+	}
+	.radio label:after{
+		left:6px;
+		top: 4px;
+		font-family: "FontAwesome";
+    	content: "\f00c";
+    	color: #fff;
+	}
+	.fc-button.fc-agendaDay-button, .fc-button.fc-agendaWeek-button, .fc-button.fc-month-button{
+		height: auto;
+	    padding: 8px 14px;
+	    font-size: 14px;
+	    text-transform: capitalize;
+	    background-color: #f6f8f8;
+	    background-image: none;
+	    border-color: #e4eaec;
+	    outline: 0;
+	    -webkit-box-shadow: none;
+	    box-shadow: none;
+	}
+	.fc-state-default{
+		background-image: none;
+	}
+	.ui-dialog{
+		z-index:2300;
+	}
+</style>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<include file="Public:alert" />
+			<div class="ibox float-e-margins">
+				<div class="title-bar">
+					<div class="row " id="title-show">
+						<div class="pull-left breadcrum">
+							<a href="javascript:void(0);" id="add_event" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> &nbsp;{:L('NEW_SCHEDULE')}</a>&nbsp;
+							<!-- <div class="btn-group">
+								<button class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-wrench"></i>  &nbsp;{:L('SCHEDULING_TOOLS')}<span class="caret"></span></button>
+								<ul class="dropdown-menu">
+									<li><a href="javascript:void(0);" id="import_excel"  class="link">导入日程</a></li>
+									<li><a href="javascript:void(0);" id="excelExport" class="link"><i class="fa fa-download"></i>&nbsp;{:L('EXPORT_THE_SCHEDULE')}</a></li>
+								</ul>
+							</div> -->
+						</div>
+					</div>
+				</div>
+				<div class="ibox-content" style="padding-bottom:0px;">
+					<div class="clearfix" style="margin-bottom:10px;"></div>
+					<div class="ibox-content" style="border:none;">
+	                    <div id="calendar"></div>
+	                </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- <div class="context-menu" id="context-menu">
+	<ul class="dropdown-menu" role="menu">
+		<li>
+			<a tabindex="-1" id="event_remark" rel=""><i class="fa fa-flag-o" aria-hidden="true"></i> 标记为已处理</a>
+		</li>
+		<li class="divider"></li>
+	</ul>
+</div> -->
+<div class="" style="display:none;" id="dialog-role-info" title="{:L('DIALOG_USER_INFO')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+
+<div class="modal inmodal fade" id="addNewEvent" aria-hidden="true" aria-labelledby="addNewEvent" role="dialog" style="overflow:auto; border:1px solid #000000;">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content" id="add_modal">
+    		
+    	</div>
+    </div>
+</div>
+<div class="modal inmodal fade" id="editNewEvent" aria-hidden="true" aria-labelledby="editNewEvent" role="dialog" style="overflow:auto; border:1px solid #000000;">
+    <div class="modal-dialog modal-md">
+    	<div class="modal-content" id="edit_event">
+    		
+    	</div>
+    </div>
+</div>
+
+<div class="modal inmodal fade" id="viewNewEvent" aria-hidden="true" aria-labelledby="viewNewEvent" role="dialog" style="overflow:auto; border:1px solid #000000;">
+    <div class="modal-dialog modal-md">
+    	<div class="modal-content form-horizontal" id="view_event">
+    		
+    	</div>
+    </div>
+</div>
+<!-- 右键菜单 -->
+<script src="__PUBLIC__/style/js/plugins/vendor/bootstrap-contextmenu/bootstrap-contextmenu.min.js"></script>
+
+<script src="__PUBLIC__/style/js/plugins/fullcalendar/moment.min.js"></script>
+<!-- Full Calendar -->
+<script src="__PUBLIC__/style/js/plugins/fullcalendar/fullcalendar.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+    /* initialize the calendar
+     -----------------------------------------------------------------*/
+    var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+
+    $('#calendar').fullCalendar({
+    	// events: {$eventlist},
+    	events: "{:U('event/indexdata')}",
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay'
+        },
+        editable: true,//允许拖动 
+        selectHelper: true,
+	    //拖动事件 
+	    eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) { 
+	    	$.ajax({
+				type: "POST",
+				url: "{:U('event/editable')}",
+				data:{event_id:event.id,daydiff:dayDelta,minudiff:minuteDelta,allday:allDay,type:1,module_id:event.module_id},
+				async: true,
+				success: function(data) {
+					if(data.status == 1){
+						$('#calendar').fullCalendar('refetchEvents'); //refetchEvents事件
+					}else{
+						swal({
+							title: "操作失败!",
+							text: data.info,
+							type: "error"
+						});
+						revertFunc(); //恢复原状 
+					}
+				}
+			});
+	    },
+	    eventResize: function(event,dayDelta,minuteDelta,revertFunc) {
+	    	$.ajax({
+				type: "POST",
+				url: "{:U('event/editable')}",
+				data:{event_id:event.id,daydiff:dayDelta,minudiff:minuteDelta,type:2,module_id:event.module_id},
+				async: true,
+				success: function(data) {
+					if(data.status == 1){
+						$('#calendar').fullCalendar('refetchEvents'); //refetchEvents事件
+					}else{
+						swal({
+							title: "操作失败!",
+							text: data.info,
+							type: "error"
+						});
+						revertFunc(); //恢复原状 
+					}
+				}
+			}); 
+		},
+        droppable: true, // this allows things to be dropped onto the calendar
+        drop: function() {
+            // is the "remove after drop" checkbox checked?
+            if ($('#drop-remove').is(':checked')) {
+                $(this).remove();
+            }
+        },
+        
+        dayClick: function(date, allDay, jsEvent, view) {
+			var selDate =$.fullCalendar.formatDate(date,'yyyy-MM-dd');
+			var start_date = selDate;
+			var end_date = selDate;
+			$('#addNewEvent').modal('show');
+			var url = "{:U('event/add','start_date=')}"+start_date+'&end_date='+end_date;
+			$('#add_modal').load(url);
+    	},
+
+    	eventClick: function(calEvent, jsEvent, view) {
+    		var event_id = calEvent.id;
+    		var module = calEvent.module;
+    		var module_id = calEvent.module_id;
+    		//判断点击事件是鼠标左键还是右键
+    		// var mouse_btn = judgeMouseButton();
+    		// event_remark(event_id, module, module_id);
+   			
+			$('#viewNewEvent').modal('show');
+			var url = "{:U('event/view','event_id=')}"+event_id+'&module='+module+'&module_id='+module_id;
+			$('#view_event').load(url);
+    	}
+    });
+});
+
+function event_remark(event_id, module, module_id){
+	var mouse_btn = 1;
+	$('#calendar').on('click','.event_remark',function(){
+		alert(232);
+		mouse_btn = 0;
+	});
+	alert(mouse_btn);
+	if (mouse_btn == 1) {
+		$('#viewNewEvent').modal('show');
+		var url = "{:U('event/view','event_id=')}"+event_id+'&module='+module+'&module_id='+module_id;
+		$('#view_event').load(url);
+	}
+}
+
+//判断点击事件是鼠标左键还是右键
+// document.onmousedown = judgeMouseButton; 
+function judgeMouseButton(e){ 
+    var e = window.event || e;//获取事件对象 
+    var value = e.button;
+    // console.log(value);
+    return value;
+    // if(value == 2 || value == 3){
+    //     alert('点击的是鼠标右键'); 
+    // }else{ 
+    //     alert('点击的是鼠标左键');
+    // } 
+}	
+
+$(function(){
+	$('#add_event').click(function(){
+		var now_date = '{$now_date}';
+		$('#start_date').val(now_date);
+		$('#end_date').val(now_date);
+		$('#addNewEvent').modal('show');
+		var url = "{:U('event/add')}";
+		$('#add_modal').load(url);
+	});
+});
+</script>
+<include file="Public:footer" />

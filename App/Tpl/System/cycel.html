@@ -1,0 +1,128 @@
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/css/validator.css"/>
+<script type="text/javascript" src="__PUBLIC__/js/checkuser.js"></script>
+<style>
+    .close{font-size:34px;font-weight:400;color:#fff;}
+    .close:hover{color:#fff;}
+</style>
+<div class="modal-header" style="padding:3px 10px;">
+    <b style="font-size:16px;">循环周期提醒</b>
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+</div>
+<div class="modal-body clearfix">
+    <form class="form-horizontal m-t" id="edit_Form" action="#" method="post" role="form">
+        <input type="hidden" name="id" id="cycel_id" value="{$cycel_info['id']}" />
+        <input type="hidden" name="module" id="module" <if condition="$cycel_info">value="{$cycel_info['module']}"<else />value="{$_GET['module']}"</if> />
+        <input type="hidden" name="module_id" id="module_id" <if condition="$cycel_info">value="{$cycel_info['module_id']}"<else />value="{$_GET['module_id']}"</if> />
+		<div class="form-group ">
+            <div class="col-sm-1"></div>
+			<label class="control-label col-sm-2" for="type" ><span style="color:#FF0011;">*</span>循环类型：</label>
+			<div class="col-sm-6">
+                <select class="form-control checkit" onchange="changeContent()" name="type" id="type">
+                    <option value="">--请选择--</option>
+                    <option value="3" <if condition = "$cycel_info['type'] eq 3">selected</if> >每年</option>
+                    <option value="2" <if condition = "$cycel_info['type'] eq 2">selected</if> >每月</option>
+                    <option value="1" <if condition = "$cycel_info['type'] eq 1">selected</if> >每周</option>
+                    <option value="4" <if condition = "$cycel_info['type'] eq 4">selected</if> >仅一次</option>
+                </select>
+			</div>
+            <div class="col-sm-3 error_msg" id="typeTip" style="width:23%;"></div>
+        </div>
+        <div class="form-group ">
+            <div class="col-sm-1"></div>
+            <label class="control-label col-sm-2" for="type" ><span style="color:#FF0011;">*</span>循环时间：</label>
+            <div class="col-sm-6">
+                <input class="form-control num_a" id="num_a" readonly="true" type="text" value="" />
+                <input class="Wdate text-input small-input form-control checkit num" name="num" id="num_3" style="display:none;" rel="require" rell="循环周期" type="text" value="{$cycel_info['num']}" onClick="WdatePicker({dateFmt:'MM-dd'})" onblur="checkform(this);" />
+                <input class="Wdate text-input small-input form-control checkit num" name="num" id="num_2" style="display:none;" rel="require" rell="循环周期" type="text" value="{$cycel_info['num']}" onClick="WdatePicker({dateFmt:'dd'})" onblur="checkform(this);" />
+                <select class="form-control checkit num" name="num" id="num_1" style="display:none;">
+                    <option value="日" <if condition = "$cycel_info['num'] eq '日'">selected</if> >星期日</option>
+                    <option value="一" <if condition = "$cycel_info['num'] eq '一'">selected</if> >星期一</option>
+                    <option value="二" <if condition = "$cycel_info['num'] eq '二'">selected</if> >星期二</option>
+                    <option value="三" <if condition = "$cycel_info['num'] eq '三'">selected</if> >星期三</option>
+                    <option value="四" <if condition = "$cycel_info['num'] eq '四'">selected</if> >星期四</option>
+                    <option value="五" <if condition = "$cycel_info['num'] eq '五'">selected</if> >星期五</option>
+                    <option value="六" <if condition = "$cycel_info['num'] eq '六'">selected</if> >星期六</option>
+                </select>
+                <input class="Wdate text-input small-input form-control checkit num" name="num" id="num_4" style="display:none;" rel="require" rell="循环周期" type="text" value="{$cycel_info['num']}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" onblur="checkform(this);" />
+            </div>
+			<div class="col-sm-3 error_msg" id="numTip" style="width:23%;"></div>
+		</div>
+        <div class="form-group">
+            <div class="col-sm-1"></div>
+            <label class="col-sm-2 control-label" for="end_time"><span style="color:#FF0011;">*</span>结束时间：</label>
+            <div class="col-sm-6">
+                <input class="Wdate text-input small-input form-control checkit" name="end_time" id="end_time" rel="require" rell="结束时间" type="text" <if condition = "$cycel_info['end_time'] neq ''">value="{$cycel_info['end_time']|date='Y-m-d',###}"</if> onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" onblur="checkform(this);" />
+            </div>
+            <div class="col-sm-3 error_msg" id="end_timeTip" style="width:23%;"></div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <div class="form-actions">
+        <button class="btn btn-primary" id="editbtn" data-dismiss="modal" type="button">
+            保存
+        </button>
+        <a class="btn btn-sm btn-white" data-dismiss="modal" href="javascript:;">取消</a>
+    </div>
+</div>
+<script>
+changeContent();
+function changeContent(){
+    var type = $('#type').val();
+    var type_a = "{$cycel_info['type']}";
+    $('.num').hide();
+    $('#num').val('');
+    if (type) {
+        $('.num').val('');
+        $('#num_'+type_a).val("{$cycel_info['num']}");
+        $('#num_a').hide();
+        $('#num_'+type).show();
+    } else {
+        $('#num_a').show();
+    }
+}
+
+$("#editbtn").click(function(){
+    if(input_msg && before_submit()){
+        var id = $('#cycel_id').val();
+        var module = $('#module').val();
+        var module_id = $('#module_id').val();
+        var type = $('#type').val();
+        var num = $('#num_'+type).val();
+        var end_time = $('#end_time').val();
+        $.ajax({
+            type: "POST",
+            url: "{:U('system/cycel')}",
+            // data:$("#edit_Form").serialize(),
+            data: {id:id,module:module,module_id:module_id,type:type,num:num,end_time:end_time},
+            async: true,
+            success: function(data) {
+                if(data.status == 1){
+                    $('#editNewEvent').modal('hide');
+                    location.reload();
+                }else{
+                    swal({
+                        title: "修改失败!",
+                        text: data.info,
+                        type: "error"
+                    });
+                    location.reload();
+                }
+            }
+        });
+    }else{
+        var item_id = [];
+        $('.checkit').each(function(k,v){
+            checkform(v);
+            item_id.push($(v).attr('id'));
+        });
+        $.each(item_id,function(k,v){
+            if($('#'+v+'Tip').html() == ''){
+             item_id.splice(k,1);
+            }
+        });
+        $('#'+item_id[0]).focus();
+        return false;
+    }
+});
+</script>

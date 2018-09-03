@@ -1,0 +1,43 @@
+
+
+<div class="col-sm-12 text-center">
+    <form class="form-horizontal" id="cate-create-form">
+
+        <div class="form-group">
+            <!-- name -->
+            <label class="col-sm-3 control-label">线索区名称</label>
+            <div class="col-sm-6">
+                <input value="{$blockInfo.name}" id="department_name" readonly="readonly" type="text" class="form-control required" aria-required="true" placeholder="请输入线索区名称">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- name -->
+            <label class="col-sm-3 control-label">分类名称</label>
+            <div class="col-sm-6">
+                <input id=""
+                <if condition="$is_edit" >value="{$info.name}"</if>
+                type="text" class="form-control required" name="name">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- name -->
+            <label class="col-sm-3 control-label">备注</label>
+            <div class="col-sm-6">
+                <input id=""
+                <if condition="$is_edit" >value="{$info.remark}"</if>
+                type="text" class="form-control required" name="remark">
+            </div>
+        </div>
+
+        <div>
+            <if condition="$is_edit" >
+                <input type="hidden" name="id" value="{$info.id}">
+            </if>
+        </div>
+    </form>
+</div>
+
+
+

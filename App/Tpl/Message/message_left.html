@@ -1,0 +1,96 @@
+<style>
+	.left_content{float:left;}
+	.right_content{float:right;}
+	.pull-left{margin-bottom: 10px;}
+	.con_left{color:#000;font-size: 13px;font-weight: 700;}
+</style>
+<div class="col-lg-3" style="padding:0px;">
+	<div class="ibox-content clearfix" id="message_table_left" style="padding:0px;">
+		<div class="table-content clearfix" style="padding-bottom:5px;">	
+			<div class="ibox-title" style="border: none;line-height:40px;">
+				<div class="nav pull-left" >
+					<span style="font-weight:900;">我的消息</span>
+				</div>
+				<div class="nav pull-right" >
+					<a href="javascript:void(0)" id="to_role" title="选择收件人"><img src="__PUBLIC__/img/icon.png" /></a>
+				</div>
+			</div>
+		</div>
+		<div class="ibox-content" style="padding:0px;border-width: 1px 0px;">
+			<div class="message_left full-height-scroll">
+				<div class="table-content clearfix" style="background-color:#fff;min-height:70px;border: none;" >
+					<div class="ibox-title clearfix" style="padding-top: 4px;border-width:1px 0 0;border: none;">
+						<a href="{:U('message/index')}">
+			            <div class="detail-title clearfix">
+			                <div class="pull-left all-inline">
+			                    <img src="__PUBLIC__/img/Messenger.png" alt="">&nbsp;
+			                    <div class="con_left">
+			                        <span>小助手</span>
+			                    </div>
+			                </div>
+			            </div>
+			            </a>
+					</div>
+					<div class="ibox-title clearfix" style="padding-top: 4px;border-width:1px 0 0;">
+						<a href="{:U('message/index','by=remind')}">
+			            <div class="detail-title clearfix">
+			                <div class="pull-left all-inline">
+			                    <img src="__PUBLIC__/img/Feedback.png" alt="">&nbsp;
+			                    <div class="con_left">
+			                        <span>提醒助手</span>
+			                    </div>
+			                </div>
+			            </div>
+			            </a>
+					</div>
+					<div class="ibox-title clearfix" style="padding-top: 4px;border-width:1px 0 0;">
+						<a href="{:U('message/index','by=announcement')}">
+			            <div class="detail-title clearfix" style="border: none;">
+			                <div class="pull-left all-inline">
+			                    <img src="__PUBLIC__/img/System.png" alt="">&nbsp;
+			                    <div class="con_left">
+			                        <span>系统公告</span>
+			                    </div>
+			                </div>
+							<div class="right_content">
+			                    <div style="float:right;"><if condition = "$no_counts gt 0"><i class="fa fa-circle text-danger"></i></if></div>
+			                </div>
+			            </div>
+			            </a>
+					</div>
+					<volist name="send_list" id="vo">
+						<div class="ibox-title clearfix" style="padding-top: 4px;border-width:1px 0 0 0;">
+							<a class="message_view" href="{:U('message/message_view','to_role_id='.$vo['user_info']['role_id'])}">
+			                <div class="detail-title clearfix">
+			                    <div class="pull-left all-inline" style="width: 55px;">
+			                    	<div class="left_content">
+			                    		<if condition = "$vo['user_info']['thumb_path'] neq ''">
+			                    			<img src="{$vo['user_info']['thumb_path']}" class="img-circle" alt="{$vo['user_info']['full_name']}">&nbsp;
+			                    		<else />
+			                    			<img src="__PUBLIC__/img/avatar_default.png" class="img-circle" alt="{$vo['user_info']['full_name']}">&nbsp;
+			                    		</if>
+			                    	</div>
+			                    </div>
+		                        <div class="pull-left all-inline" style="width: 70%;">
+		                        	<div class="left_content">
+			                        	<span class="con_left" style="float:left;">{$vo['user_info']['full_name']}</span>
+			                        </div>
+			                        <div class="right_content">
+			                            <div style="float:right;"><if condition = "$vo['noread_count'] gt 0"><i class="fa fa-circle text-danger"></i></if></div>
+			                        </div>
+		                        </div>
+		                        <div class="pull-left all-inline" style="width: 70%;">
+		                        	<div class="left_content">
+			                        	<span style="float:left;color:#9D9FA2;margin-top: 0px;">
+			                        	{$vo['message']['content']}</span>
+			                        </div>
+		                        </div>
+			                </div>
+			                </a>
+						</div>
+					</volist>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

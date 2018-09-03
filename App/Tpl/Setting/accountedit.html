@@ -1,0 +1,160 @@
+<style>
+	.error_message{color: #666;text-align: left;}
+</style>
+<form class="form-horizontal" id="account_form" action="{:U('setting/accountedit')}" method="post">
+	<input type="hidden" name="id" id="account_id" value="{$account_info['id']}"/>
+	<table class="table" style="border:none;">
+		<tr>
+			<td style="border:none;text-align:right;min-width: 100px;">上级科目：</td>
+			<td style="border:none;">
+				<select name="parent_id" id="parent_id" onchange="selectParent()" class="form-control select2">
+					<option value="" rel="">--最高级--</option>
+					<volist name="account_list" id="vo">
+						<option value="{$vo['id']}" rel="{$vo['code']}" <if condition = "$account_info['parent_id'] eq $vo['id']">selected</if>>{$vo['code']}&nbsp;&nbsp;{$vo['name']}</option>
+					</volist>
+				</select>
+			</td>
+			<td style="border:none;min-width: 170px;"></td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">科目编码：</td>
+			<td style="border:none;">
+				<div class="input-daterange input-group">
+					<span class="input-group-addon" id="parent_code" style="background-color:#ccc;">{$parent_code}</span>
+					<input type="number" id="max_num" name="max_num" class="form-control code" value="{$parent_code}" />
+					<input type="hidden" id="prefixion" name="prefixion" value="" />
+					<input type="hidden" name="org_code" value="{$parent_code}">
+				</div>
+				<!-- <input type="number" name="code" id="code" class="form-control code" value="{$account_info['code']}" /> -->
+			</td>
+			<td style="border:none;min-width: 170px;"><div class="error_message" id="error_code"></div></td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">科目名称：</td>
+			<td style="border:none;">
+				<input type="text" name="name" id="account_name" class="form-control" value="{$account_info['name']}"/>
+			</td>
+			<td style="border:none;"><div class="error_message" id="error_name"></div></td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">科目类别：</td>
+			<td style="border:none;">
+				<select name="category" class="form-control select2">
+					<option value="">--请选择--</option>
+					<option value="10" <if condition = "$account_info['category'] eq 10">selected</if>>流动资产</option>
+					<option value="11" <if condition = "$account_info['category'] eq 11">selected</if>>非流动资产</option>
+					<option value="20" <if condition = "$account_info['category'] eq 20">selected</if>>流动负债</option>
+					<option value="21" <if condition = "$account_info['category'] eq 21">selected</if>>非流动负债</option>
+					<option value="30" <if condition = "$account_info['category'] eq 30">selected</if>>所有者权益</option>
+					<option value="40" <if condition = "$account_info['category'] eq 40">selected</if>>成本</option>
+					<option value="50" <if condition = "$account_info['category'] eq 50">selected</if>>营业收入</option>
+					<option value="51" <if condition = "$account_info['category'] eq 51">selected</if>>其他收益</option>
+					<option value="52" <if condition = "$account_info['category'] eq 52">selected</if>>期间费用</option>
+					<option value="53" <if condition = "$account_info['category'] eq 53">selected</if>>其他损失</option>
+					<option value="54" <if condition = "$account_info['category'] eq 54">selected</if>>营业成本及税金</option>
+					<option value="55" <if condition = "$account_info['category'] eq 55">selected</if>>以前年度损益调整</option>
+					<option value="56" <if condition = "$account_info['category'] eq 56">selected</if>>所得税</option>
+					<option value="57" <if condition = "$account_info['category'] eq 57">selected</if>>表外科目</option>
+				</select>
+			</td>
+			<td style="border:none;"></td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">借贷方向：</td>
+			<td style="border:none;">
+				<div class="radio radio-info radio-inline" style="padding-left: 20px;">
+					<input class="validate" name="type" id="type_1" type="radio" value="1" <if condition = "$account_info['type'] eq 1">checked</if> />
+					<label for="type_1"> 借 </label>
+				</div>
+				<div class="radio radio-info radio-inline" style="padding-left: 20px;">
+					<input class="validate" name="type" id="type_2"  type="radio" value="2" <if condition = "$account_info['type'] eq 2">checked</if> />
+					<label for="type_2"> 贷 </label>
+				</div>
+			</td>
+			<td style="border:none;"></td>
+		</tr>
+	</table>
+</form>
+<script>
+function selectParent(){
+	var parent_id = $('#parent_id option:selected').val();
+	var parent_code = $('#parent_id option:selected').attr('rel');
+	alert(parent_code);
+	$('#parent_code').html(parent_code);
+	$('#prefixion').val(parent_code);
+	if (parent_code == "") {
+		$("#max_num").val();
+	} else {
+		$("#max_num").val("");
+	}
+}
+
+$(document).ready(function(){
+	$(".select2").select2();
+
+	$(".code").blur(function(){
+		$('#error_code').removeClass('onFocus');
+		$('#error_code').html('');
+
+		var parent_id = $('#parent_id option:selected').val();
+		var account_id = $('#account_id').val();
+		var max_num = $("#max_num").val();
+		var prefixion = $("#prefixion").val();
+		if(prefixion){
+			if(parent_id != '' && max_num == ''){
+				$('#error_code').addClass('onFocus');
+				$('#error_code').html('科目编码不能为空！');
+			}
+			var code = prefixion+max_num;
+		}else{
+			var code = $("#code").val();
+		}
+		if(code != ''){
+			var length = (code.toString().length);
+			if(length == 4 || length == 6 || length == 8){
+				if(!isNaN(code)){
+					$.ajax({
+					type:'get',
+					url:"{:U('setting/accountParent','code=')}"+code+'&account_id='+account_id,
+					async:true,
+					success:function(data){
+						var options = '';
+						if(data.data != '' && data.status == 1){
+							options += '<input type="hidden" name="parent_id" value="'+data.data.id+'" /><input type="text" readonly="readonly" value="'+data.data.code+'&nbsp;&nbsp;'+data.data.name+'" style="width:220px;" placeholder=""/>';
+						}else if(data.status == 3){
+							$('#error_code').addClass('onFocus');
+							$('#error_code').html('该编码已存在，请修改！');
+							$("#code").focus();
+							options += '<input type="text" readonly="readonly" style="width:220px;" placeholder=""/>';
+						}else{
+							options += '<input type="text" readonly="readonly" style="width:220px;" placeholder=""/>';
+						}
+						$("#parent").html(options);
+					},
+					dataType:'json'});
+				}else{
+					$('#error_code').addClass('onFocus');
+					$('#error_code').html('编码必须为数字格式！');
+					$("#code").focus();
+				}
+			}else{
+				$('#error_code').addClass('onFocus');
+				$('#error_code').html('编码必须为4-2-2格式！');
+				$("#code").focus();
+			}
+		}else{
+			$('#error_code').addClass('onFocus');
+			$('#error_code').html('科目编码不能为空！');
+		}
+	});
+	$("#account_name").blur(function(){
+		var name = $('#account_name').val();
+		$('#error_name').removeClass('onFocus');
+		$('#error_name').html('');
+		if(name == ''){
+			$('#error_name').addClass('onFocus');
+			$('#error_name').html('科目名称不能为空！');
+		}
+	});
+});
+</script>

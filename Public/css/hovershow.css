@@ -1,0 +1,24 @@
+@charset 'utf-8';
+.show-txtsub{ 
+	max-width:300px;
+	height:auto; 
+	padding:5px 10px;  
+	background: #ffffff; 
+	top:18px;
+	left:70px;
+	font-style:normal;
+	border-radius: 5px;-ms-border-radius: 5px;-moz-border-radius: 5px;-webkit-border-radius: 5px; color:#000000; text-align:center;
+	position:absolute;  visibility:hidden;word-wrap : break-word ;word-break:break-all;white-space:nowrap;
+	box-shadow: 0 0 3px #333; -ms-box-shadow: 0 0 3px #333; -moz-box-shadow: 0 0 3px #333; -webkit-box-shadow: 0 0 3px #333;
+	z-index:9999;
+	opacity:0; 
+	-ms-opacity:0; 
+	-moz-opacity:0; 
+	-webkit-opacity:0;
+	transition:all .3s ease;
+	-ms-transition:all .3s ease;
+	-moz-transition:all .3s ease;
+	-webkit-transition:all .3s ease;
+ }
+  span.show-txt:hover .show-txtsub{opacity:1;display:block;visibility:visible}
+  span.show-txt{position:relative;display:block;}

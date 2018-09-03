@@ -1,0 +1,82 @@
+<include file="Public:header" />
+<div class="wrapper wrapper-content" >
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-lg-12">
+			<include file="Setting:setting_left" />
+			<div class="col-lg-10 ">
+				<div class="ibox-content clearfix" id="right_height" style="padding-top:0px">
+					<form class="form-horizontal" action="{:U('setting/sms')}" method="post">
+						<table class="table" style="margin-left:10px;">
+							<tbody class="form-inline">				
+								<tr>
+									<th colspan="2"><span style="font-weight:900;line-height:40px;">{:L('SMS_CONFIGURATION_INFORMATION')}</span></th>
+								</tr>
+								<tr>
+									<td style="width:150px;" class="tdleft">{:L('THE_USER_NAME_TEXT_INTERFACE')}</td>  
+									<td >
+										<input name="uid" id="uid" type="text" class="form-control" value="{$sms['uid']}"/>
+									</td>
+								</tr>
+								<tr>
+									<td style="border:none" class="tdleft">{:L('SMS_INTERFACE_PASSWORD')}</td>  
+									<td style="border:none">
+										<input value="{$sms['passwd']}" id="passwd" class="form-control" name="passwd" type="password">
+									</td>
+								</tr>
+								<tr>
+									<td style="border:none" class="tdleft">{:L('CUSTOMER_MESSAGE_SIGNATURE')}</td>  
+									<td style="border:none">
+										<input value="{$sms['sign_name']}" maxlength="8" id="sign_name" name="sign_name" type="text" class="form-control">
+									</td>
+								</tr>
+								<tr>
+									<td style="border:none" class="tdleft">{:L('INTERNAL_NOTIFICATION_MESSAGE_SIGNATURE')}</td>  
+									<td style="border:none">
+										<input value="{$sms['sign_sysname']}" maxlength="8" id="sign_sysname" name="sign_sysname" type="text" class="form-control">
+									</td>
+								</tr>
+								<tr>
+									<td style="border:none" class="tdleft">{:L('TEST_PHONE')}</td>  
+									<td style="border:none">
+										<input name="test_sms_phone" id="test_sms_phone" type="text" class="form-control"/> &nbsp; <input style="background:#fff;border:1px solid #e3e3e3;color:#000;" class="btn btn-primary btn-sm" id="test_sms_btn" type="button" value="{:L('SEND_TEST_SMS')}"/>
+									</td>
+								</tr>
+								
+								<tr>
+									<td style="border:none">&nbsp;</td>
+									<td style="border:none">
+										<input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">		
+	$('#test_sms_btn').click(
+		function(){
+			uid = $('#uid').val();
+			passwd = $('#passwd').val();
+			phone = $('#test_sms_phone').val();
+			if(uid !='' && passwd !='' && phone !=''){
+				$.post('{:U("setting/sms")}',
+				{   uid:uid,
+					passwd:passwd,
+					phone:phone},
+				function(data){
+					alert_crm(data.info);
+				},
+				'json');
+			} else {
+				alert_crm('{:L("PLEASE_FILL_IN_COMPLETE_INFORMATION")}','warning');
+			}
+		}
+	);
+</script>
+<include file="Public:footer" />	

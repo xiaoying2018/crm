@@ -1,0 +1,341 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/js/PCASClass.js" ></script>
+<style type="text/css">
+.add_title{
+	padding-bottom:10px;
+	height: 60px;
+	margin-bottom:15px;
+}
+.add_title>span{
+	border-bottom: 2px solid #1ab394;
+	font-size: 24px;
+}
+.add_body >div >.full-height-scroll{
+	border-right:1px dotted #ccc
+}
+.add_body_title{
+	margin:20px auto 20px auto;
+	padding-left: 25px;
+}
+.add_body_form{
+	padding-left: 38px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.form-control{
+	float:left;
+}
+.checkbox{float:left;}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+	<form class="form-horizontal" id="form_leads" role="form" action="{:U('leads/edit')}" method="post">
+	<input type="hidden" name="leads_id" id="leads_id" value="{$leads.leads_id}"/>
+	<input type="hidden" name="jump_url" value="{$jump_url}"/>
+	<input type="hidden" name="p" value="{$p}">
+	<div class="ibox-content add_body" id="add_body" >
+		<div class="row">
+			<div class="col-md-12 full-height-scroll add_body" >
+				<div class="row" >
+					<div class="col-md-12 add_body_title">
+						<div class="all-inline">
+							<span class="sq-tag"></span>
+							<div class="text-tag">
+								<span>基础信息</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-11 add_body_form">
+						<volist name="field_list['main']" id="vo" key="key">
+							<div class="form-group">
+								<label class="col-md-4 control-label">{$vo.name}：</label>
+								<if condition="$vo['form_type'] == 'textarea'">
+									<if condition = "$vo['tip_start'] eq 1">
+										<div class="col-md-6">
+											{$vo.html}
+										</div>
+										<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+									<else/>
+										<div class="col-md-8">
+											{$vo.html}
+										</div>
+									</if>
+								<elseif condition="$vo['form_type'] == 'address'"/>
+									<if condition = "$vo['tip_start'] eq 1">
+										<div class="col-md-7">
+											{$vo.html}
+										</div>
+										<div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+									<else/>
+										<div class="col-md-8">
+											{$vo.html}
+										</div>
+									</if>
+								<elseif condition="$vo['form_type'] == 'box'"/>
+									<div class="col-md-6">
+										{$vo.html}
+									</div>
+									<if condition = "$vo['tip_start'] eq 1">
+										<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+									<else/>
+										<div class="col-md-2"></div>
+									</if>
+								<elseif condition="$vo['field'] == 'name'"/>
+									<div class="col-md-6">
+										<input class="form-control required" name="name" id="name" onkeyup="checkinfo(name)" value="{$leads['name']}" type="text"/>
+									</div>
+									<if condition = "$vo['tip_start'] eq 1">
+										<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+									<else/>
+										<div class="col-md-2"></div>
+									</if>
+								<else/>
+									<div class="col-md-6">
+										{$vo.html}
+									</div>
+									<if condition = "$vo['tip_start'] eq 1">
+										<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+									<else/>
+										<div class="col-md-2"></div>
+									</if>
+								</if>
+							</div>
+						</volist>
+					</div>
+					<div class="col-md-12 add_body_title">
+						<div class="all-inline">
+							<span class="sq-tag"></span>
+							<div class="text-tag">
+								<span>附加信息</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-11 add_body_form">
+						<volist name="field_list['data']" id="vo" key="key">
+							<div class="form-group">
+								<label class="col-md-4 control-label">{$vo.name}：</label>
+								<if condition="$vo['form_type'] == 'address' || $vo['form_type'] == 'box'">
+									<div class="col-md-7">
+										{$vo.html}
+									</div>
+									<if condition = "$vo['tip_start'] eq 1">
+										<div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+									<else/>
+										<div class="col-md-1"></div>
+									</if>
+								<else/>
+									<div class="col-md-6">
+										{$vo.html}
+									</div>
+									<if condition = "$vo['tip_start'] eq 1">
+										<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+									<else/>
+										<div class="col-md-2"></div>
+									</if>
+								</if>
+							</div>
+						</volist>
+					</div>
+					<div class="col-md-1 pull-right">
+						<!-- <div style="height: 100%; border-right: 1px dashed gray;">&nbsp;sadf</div> -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="tfoot_div" class="clearfix" style="text-align:center">
+		<div class="clearfix" id="tfoot_page">
+			<div class="ibox-content" style="border-top: none;">
+				<div class="col-sm-offset-2" style="margin-left:0px;"><button type="submit" class="btn btn-primary">保存</button></div>
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+<div id="dialog-role-list" class="" style="display:none" title="{:L('CHOOSE_THE_LEADS_OWNER')}">loading...</div>
+<div class="" style="display:none" id="dialog-transform" title="{:L('CONVERT_LEADS')}">
+	<form id="transform" action="{:U('leads/transform')}" method="Post">
+		<input type="hidden" name="leads_id" value="{$leads.leads_id}"/>
+		<p>{:L('CONVERT_TO_CUSTOMER_CONTACTS')}</br>
+		&nbsp; &nbsp; {:L('CUSTOMER_NAME')}&nbsp; {$leads.company}</br>
+		&nbsp; &nbsp; {:L('CONTACTS_NAME')}&nbsp; {$leads.name}</br>
+		<span style="color:red">{:L('NEED_COMPANY_CONTACTS')}</span></p>
+		<h6>{:L('CREATE_BUSINESS_FOR_CUSTOMER')}</h6>
+		</p>
+		<div class="" id="addbusiness">
+			<table class="table">
+				<tr><td class="tdleft">{:L('BUSINESS_NAME')}</td><td><input  type="text" name="business_name" id="name"></td></tr>
+				<tr><td class="tdleft">{:L('EXPECTED_DEAL_DATE')}</td><td><input  type="text"  onclick="WdatePicker()" name="due_date"/></td></tr>
+				<tr><td class="tdleft">{:L('BUSINESS_LEVEL')}</td>
+					<td>
+						<select name="status_id">
+							<volist name="businessStatusList" id="vo"><option value="{$vo.status_id}">{$vo.name}</option></volist>
+						</select>
+					</td>
+				</tr>
+				<tr><td class="tdleft">{:L('PRICE')}</td><td><input type="text" id="total" name="total"/></td></tr>
+			</table>
+		</div>
+		{:L('ASSIGN_TO_SOMEONE_AFTER_CONVERTED')}<input type="hidden" id="tranform_owner_id" name="owner_role_id" value="{$leads.owner_role_id}"/><input type="text" id="tranform_owner_name" name="owner_name"/>
+	</form>
+</div>
+<div class="" style="display:none" id="transform-role-list" title="{:L('CHOOSE_THE_LEADS_OWNER')}">loading...</div>
+<div class="" style="display:none" id="dialog-validate" title="{:L('VALIDATE_COMPANY_RESULT')}">
+	<div id="search_leads_content"></div>
+	<div id="search_customer_content"></div>
+</div>
+<script type="text/javascript">
+//验证重复项
+function checkinfo(param){
+	var field_value = $('#'+param).val();
+	var leads_id = $('#leads_id').val();
+	if(field_value){
+		$.post('{:U("leads/checkinfo")}',
+			{
+				field_value:field_value,
+				field_name:param,
+				leads_id:leads_id,
+			},
+			function(data){
+				if(data.status == 1){
+					$('#'+param+'-error').remove('');
+					$('#'+param).after('<label id="'+param+'-error" class="error" for="source"><i class="fa fa-times-circle"></i></label>');
+					$('#'+param+'-error').html('<i class="fa fa-times-circle"></i>'+data.data);
+				}else{
+					$('#'+param+'-error').remove('');
+				}
+			},
+		'json');
+	}
+}
+$(document).ready(function(){
+	/*form表单验证*/
+	$("#form_leads").validate({
+	
+	});
+});
+$("[data-type='nummber']").keyup(function(){
+	if(isNaN($(this).val())){
+		$(this).val($(this).val().replace(/\D/g,''))
+	}
+});
+<if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else/>width=800;</if>
+$("#dialog-role-list").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	buttons: {
+		"确定": function () {
+			var item = $('input:radio[name="owner"]:checked').val();
+			var name = $('input:radio[name="owner"]:checked').parent().next().html();
+			if(item) {
+				$('#owner_name').val(name);
+				$('#owner_id').val(item);
+			}
+			$(this).dialog("close"); 
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+$("#dialog-validate").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 400,
+	maxHeight: 400,
+	buttons: { 
+		"确定": function () {
+			$(this).dialog("close"); 
+		}
+	},
+	position: ["center", 100]
+});
+$(function(){
+	$('#owner_name').click(
+		function(){
+			$('#dialog-role-list').dialog('open');
+			$('#dialog-role-list').load("{:U('user/listDialog')}");
+		}
+	);
+	$('#validate').click(
+		function(){
+			name = $('#company').val();
+			if(name!=''){
+				$.post('{:U("leads/validate")}',
+					{ 
+						name:name,
+					},
+					function(data){
+						alert(data.info);
+					},
+				'json');
+			} else {
+				alert("{:L('NEED_COMPANY_NAME')}");
+			}
+		}
+	);
+	$('#remove').click(
+		function(){
+			alert("{:L('PUT_LEADS_INTO_THE_POOL_AND_PLEASE_CLICK_SAVE')}");
+			$('#owner_id').attr('value', '');
+			$('#owner_name').attr('value', "{:L('PUT_LEADS_INTO_THE_POOL')}");
+		}
+	);
+	$('#name').blur(
+		function(){
+			name = $('#name').val();
+			leads_id = $('#leads_id').val();
+			if(name!=''){
+				$.post('{:U("leads/check","leads_id=")}'+leads_id,
+					{
+						name:name
+					},
+					function(data){
+						if(data.data != 0){
+							var leads_result = '';
+							var customer_result = '';
+							if(data.data['leads'].length>0){
+								$.each(data.data['leads'], function(k, v){
+									leads_result += (k+1)+'、'+v+'</br>';
+								});
+								$("#search_leads_content").html("<h5>{:L('SAME_LEADS_COMPANY')}</h5>"+leads_result);
+							}
+							if(data.data['customer'].length>0){
+								$.each(data.data['customer'],function(k, v){
+									customer_result += (k+1)+'、'+v+'</br>';
+								});
+								$("#search_customer_content").html("<h5>{:L('SAME_CUSTOMER_COMPANY')}</h5>"+customer_result);
+							}
+							if(data.data['customer'].length>0 || data.data['leads'].length>0)
+								$('#dialog-validate').dialog('open');
+						}
+					},
+				'json');
+			}
+		}
+	);
+});
+$(document).ready(function(){
+	$("#btn_transform1").click(function(){
+		window.close();
+		window.location.href='/index.php?m=customer&a=add&leads_id='+{$leads.leads_id};
+	});
+	$("#btn_transform2").click(function(){
+		window.close();
+		window.location.href='/index.php?m=customer&a=add&leads_id='+{$leads.leads_id};
+	});
+});
+</script>
+<include file="Public:footer" />

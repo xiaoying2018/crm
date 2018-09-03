@@ -1,0 +1,102 @@
+<include file="Public:header" />
+<style type="text/css">
+    .add_title{
+        padding-bottom:10px;
+        height: 60px;
+        margin-bottom:15px;
+    }
+    .add_title>span{
+        border-bottom: 2px solid #1ab394;
+        font-size: 24px;
+    }
+    .add_body >div >.full-height-scroll{
+        border-right:1px dotted #ccc
+    }
+    .add_body_title{
+        margin:15px auto 30px auto;
+        padding-left: 14px;
+    }
+    .add_body_form>form>.form-group{
+        margin-bottom: 25px;
+    }
+    body{overflow-y:hidden;}
+    .form-control{
+        float:left;
+    }
+</style>
+<script>
+    $(function(){
+        $(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+        $(window).resize(function(){
+            $(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+        })
+    })
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+    <form class="form-horizontal" id="form" role="form" action="{:U('apply/formContentEdit')}" method="post" enctype="multipart/form-data">
+        <div class="ibox-content " id="add_body" >
+            <div class="row">
+                <div class="col-md-12 add_body">
+                    <div class="full-height-scroll">
+                        <div class="row" >
+                            <div class="col-md-12 add_body_title" style="margin:20px 0 0 0px;">
+                                <div class="all-inline">
+                                    <span class="sq-tag"></span>
+                                    <div class="text-tag">
+                                        <span>基础信息</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+                                <!-- 名称 -->
+                                <div class="form-group" >
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>字段名称</label>
+                                    <div class="col-md-6">
+                                        <input value="{$info.name}" class="form-control" type="text" name="name" id="name" aria-required="true" placeholder="请输入字段名称,如:日语能力"/>
+                                    </div>
+                                </div>
+                                <!-- 分数 -->
+                                <div class="form-group" >
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>对应分数</label>
+                                    <div class="col-md-6">
+                                        <input value="{$info.score}" class="form-control" type="number" name="score" id="score" aria-required="true" placeholder="请输入对应分数,如:10,5,30..."/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tfoot_div" class="clearfix">
+            <div class="clearfix" id="tfoot_page">
+                <div class="ibox-content" style="border-top: none;">
+                    <input type="hidden" name="id" value="{$info.id}">
+                    <input type="hidden" name="fid" value="{$info.field_id}">
+                    <div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><a href="javascript:void(0)" id="submit" class="btn btn-primary">确认修改</a></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    if ("{:C('isMobile')}" == "1") {
+        width = $('.container').width() * 0.9;
+    } else {
+        width = 800;
+    }
+
+    $(document).ready(function(){
+        /*form表单验证*/
+        $("#form").validate({
+
+        });
+    });
+
+    $("#submit").click(function(){
+        $('#form').submit();
+    });
+
+</script>
+<include file="Public:footer" />

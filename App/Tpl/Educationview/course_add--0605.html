@@ -1,0 +1,143 @@
+<include file="Public:header" />
+<style>
+    body{overflow-y:hidden; }
+    #main_pic_prev{width: 120px;height: 120px;border: 1px dashed #d3d3d6;}
+    .add_body_title{
+        margin:15px auto 30px auto;
+    }
+</style>
+<script type="text/javascript" src="__PUBLIC__/js/PCASClass.js" ></script>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<script>
+    $(function(){
+        $(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+        $(window).resize(function(){
+            $(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+        })
+    })
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+    <form class="form-horizontal" id="form" role="form" action="" method="post" enctype="multipart/form-data">
+        <if condition="$is_edit">
+            <input type='hidden' id="current_id" name="id" value="{$info.id}" />
+            <input type="hidden" name="pic" value="{$info.pic}">
+        </if>
+        <div class="ibox-content add_body" id="add_body">
+            <div class="row">
+                <div class="col-md-12 add_body" >
+                    <div class="full-height-scroll">
+                        <div class="row" >
+                            <div class="col-md-12 add_body_title">
+                                <div class="all-inline">
+                                    <span class="sq-tag"></span>
+                                    <div class="text-tag">
+                                        <span>基础信息</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-11 add_body_form" style="margin-left:15px;">
+                                <!-- name -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">课程名称：</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control required"  name="name" value="<if condition='$is_edit'>{$info.name}</if>" placeholder="" type="text" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span style="color: red;line-height: 32px;margin-left: 10px;">*</span>
+                                    </div>
+                                </div>
+                                <!-- member_type -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">所属分类：</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control"  name="category">
+                                            <option value=''>--请选择--</option>
+                                            <volist name="category" id="item" key="key">
+                                                <option value="{$key}">{$item}</option>
+                                            </volist>
+                                        </select>
+                                        <span style="float: left;line-height: 32px;margin-left: 5%;color:red;"></span>
+                                    </div>
+                                </div>
+                                <!-- category -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">成员类型：</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control"  name="member_type">
+                                            <option value=''>--请选择--</option>
+                                            <volist name="member_type" id="item" key="k">
+                                                <option value="{$k}"
+                                                <if condition="$is_edit && $key == $info['member_type']">selected</if>
+                                                >{$item}</option>
+                                            </volist>
+                                        </select>
+                                        <span style="float: left;line-height: 32px;margin-left: 5%;color:red;"></span>
+                                    </div>
+                                </div>
+                                <!-- logo -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">课程图片：</label>
+                                    <div class="col-md-4">
+                                        <img <if condition="$is_edit && $info['pic']">src='{$info.pic}'</if> id="main_pic_prev" class="thumb80" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="btn btn-success fileinput-button">
+                                            <span>选择图片</span>
+                                            <input type="file" name="file" id="main_pic"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- detail -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">课程详情：</label>
+                                    <div class="col-md-7">
+                                        <textarea rows="5" class="form-control"  name="detail" ><if condition='$is_edit'>{$info.detail}</if></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1 pull-right">
+                                <!-- <div style="height: 100%; border-right: 1px dashed gray;">&nbsp;sadf</div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tfoot_div" class="clearfix">
+            <div class="clearfix" id="tfoot_page">
+                <div class="ibox-content" style="border-top: none;">
+                    <div class="col-sm-offset-2" style="text-align:center;margin-left:0px;">
+                        <button type="submit" id="save_submit" class="btn btn-primary">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="" style="display:none;" id="dialog-validate" title="{:L('TEST_RESULTS')}">
+    {:L('HAVE_THE_FOLLOWING_PRODUCTS_ARE_SIMILAR_TO_THE_PRODUCT_NAME')}
+    <div id="search_content"></div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/js/uploadPreview.js"></script>
+<script type="text/javascript">
+    //初始化上传图片
+    $("body").on('click','input[type="file"]', function(){
+        var selector = $(this).attr('id');
+        $("#"+selector).uploadPreview({ Img: selector+"_prev", Width: 120, Height: 120 });
+    });
+    $(document).ready(function(){
+        $('#save_submit').prop('disabled',false);
+        /*form表单验证*/
+        $("#form").validate({
+            submitHandler:function(form){
+                $('#save_submit').click(function(){
+                    $('#save_submit').prop('disabled',true);
+                });
+                form.submit();
+            }
+        });
+    });
+</script>
+<include file="Public:footer" />

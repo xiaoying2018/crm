@@ -1,0 +1,267 @@
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/css/validator.css"/>
+<script type="text/javascript" src="__PUBLIC__/js/checkuser.js"></script>
+<style>
+	.ui-dialog{
+		z-index:2300;
+	}
+	.addMember-trigger-button{
+        width: 30px;
+        height: 30px;
+        line-height: 28px;
+        color: #fff;
+        text-align: center;
+        cursor: pointer;
+        background-color: #dcdfe3;
+        border-radius: 50%;
+    }
+    .project-people a{
+        float:left;
+    }
+    .priority_task{
+        width:100%;
+        height:100%;
+        cursor:pointer;
+    }
+    .close{font-size:34px;font-weight:400;color:#fff;}
+    .close:hover{color:#fff;}
+</style>
+
+<div class="modal-header" style="border:none;">
+    <b style="font-size:16px;">新增任务</b>
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+</div>
+<div class="modal-body col-sm-12">
+    <form class="form-horizontal m-t" id="ajax_task_Form" action="#" method="post" role="form">
+	<div class="form-group ">
+		<label class="control-label col-sm-2" for="subject" >名称：</label>
+		<div class="col-sm-6">
+			<input type="text" id="subject" name="subject" rel="require" rell="主题" class="form-control checkit" onblur="checkform(this);" />
+		</div>
+		<div class="col-sm-3 error_msg" id="subjectTip"></div>
+	</div>
+	<div class="form-group ">
+		<label class="control-label col-sm-2" for="description" >描述：</label>
+		<div class="col-sm-6">
+			<textarea id="description" name="description" class="form-control" rows="3" style="width:100%;"></textarea>
+		</div>
+		<div class="col-sm-3"></div>
+	</div>
+	<div class="form-group ">
+		<label class="control-label col-sm-2" for="dialog_type" >所属列表：</label>
+		<div class="col-sm-6">
+			<select id="dialog_type" class="form-control checkit" onchange="checkform(this);" style="float:left;width:100%;" rel="require" rell="所属列表" name="type_id">
+				<option value="">--所属列表--</option>
+                <volist name="type_list" key="key" id="vo">
+                    <option value="{$vo['id']}">{$vo['name']}</option>
+                </volist>
+			</select>
+		</div>
+		<div class="col-sm-3 error_msg" id="dialog_typeTip"></div>
+	</div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">优先级：</label>
+        <div class="col-sm-10">
+            <ul class="color-selector" style="padding-left: 0px;">
+        		<li >
+                    <div class="radio bg-red-600" title="高">
+                        <input class="priority_task" id="radio1" type="radio" name="priority" value="高" >
+                        <label for="radio1"></label>
+                    </div>
+                </li>
+                <li>
+                    <div class="radio bg-green-600" title="普通">
+                        <input class="priority_task" id="radio2" type="radio" name="priority" checked="checked" value="普通">
+                        <label for="radio2"></label>
+                    </div>
+                </li>
+                <li>
+                    <div class="radio bg-orange-600" title="低">
+                        <input class="priority_task" id="radio3" type="radio" name="priority" value="低">
+                        <label for="radio3"></label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">相关客户：</label>
+        <div class="col-sm-6">
+            <input type="hidden" name="module_id" id="module_id" />
+            <input type="hidden" name="module" id="module" value="customer" />
+            <input type="text" class="form-control" id="module_name" readonly="true" style="cursor:pointer;width:100%;" title="请点击选择" />
+        </div>
+        <div class="col-sm-3"></div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">分配任务给：</label>
+        <div class="col-sm-10">
+            <input type="hidden" id="about_role_id_dialog" name="about_role_id" value="{$task['about_roles']}"/>
+            <dd class="project-people" id="about_roles">
+                <!-- <a class="role_info" rel="{$task['user_info']['role_id']}" href="javascript:void(0)">
+                    <img alt="image" class="img-circle" <if condition = "$task['user_info']['thumb_path']">src="{$task['user_info']['thumb_path']}"<else />src="__PUBLIC__/img/avatar_default.png"</if>>
+                </a> -->
+                <a id="add_about_role" href="javascript:void(0);" style="margin-left:5px;">
+                    <div class="addMember-trigger-button">
+                        <i class="fa fa-plus"></i>
+                    </div>
+                </a>
+            </dd>
+        </div>
+    </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <div class="form-actions">
+        <button class="btn btn-primary" id="add_task_btn" type="button">
+            保存
+        </button>
+        <a class="btn btn-sm btn-white" data-dismiss="modal" href="javascript:;">取消</a>
+    </div>
+</div>
+
+<div style="display:none;" id="dialog-about_roles_dialog" title="选择任务分配人">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" id="dialog-customer-list" title="选择客户">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script>
+	//任务分配人
+	$(document).on('click','#add_about_role',function(){
+	    var task_id = $(this).attr('rel');
+	    var owner_ids = $('#about_role_id_dialog').val();
+	    $('#dialog-about_roles_dialog').dialog('open');
+	    $('#dialog-about_roles_dialog').load('{:U("user/mutiListDialog","by=task&check_ids=")}'+owner_ids);
+	});
+
+	$("#dialog-about_roles_dialog").dialog({
+	    autoOpen: false,
+	    modal: false,
+	    width: 800,
+	    height:400,
+	    close: function () {
+	        $(this).html(""); 
+	    },
+	    buttons: { 
+	        "确定": function () {
+	            checked_role_id = ',';
+	            temp = '';
+	            $(".muti_role_id:checked").each(function(){
+	                checked_role_id += ($(this).val()+',');
+	                temp += '<a class="role_info" rel="'+$(this).val()+'" title="" href="javascript:void(0)">\
+	                            <img alt="image" class="img-circle" src="'+$(this).attr('rel1')+'">\
+	                        </a>';
+	            });
+	            temp += '<a id="add_about_role" href="javascript:void(0);" >\
+	                        <div class="addMember-trigger-button">\
+	                             <i class="fa fa-plus"></i>\
+	                        </div>\
+	                    </a>';
+	            $('#about_role_id_dialog').val(checked_role_id);
+	            $('#about_roles').html(temp);
+	            $(this).html(""); 
+	            $(this).dialog("close"); 
+	        },
+	        "取消": function () {
+	            $(this).html(""); 
+	            $(this).dialog("close");
+	        }
+	    },
+	    position:["center",100]
+	});
+
+    //添加任务
+    $('#add_task_btn').unbind("click").bind("click",function(){
+        if(input_msg && before_submit()){
+            var task_type = $('#dialog_type').val();
+            $.ajax({
+                type: "POST",
+                url: "{:U('task/add')}",
+                data:$("#ajax_task_Form").serialize(),
+                async: true,
+                success: function(data) {
+                    if(data.status == 1){
+                        $('#addNewTask').modal('hide');
+                        //追加
+                        var temp = '';
+                        temp = '<li class="list-group-item success-element" style="padding:5px 10px;">\
+                                    <a class="right-sidebar-toggle-task" href="javascript:void(0)" rel="'+data.data.task_id+'">\
+                                        <div class="checkbox-custom checkbox checkbox-primary">\
+                                            <input type="checkbox" name="checkbox" rel="'+data.data.task_id+'">\
+                                            <label class="task-title" id="task-title-'+data.data.task_id+'">'+data.data.subject+'</label>\
+                                        </div>\
+                                        <div class="task-badges">\
+                                        </div>\
+                                        <ul class="task-members">\
+                                            \
+                                        </ul>\
+                                    </a>\
+                                </li>';
+                        $('#ul_'+task_type).append(temp);
+                        $('#task_subject_'+task_type).val('');
+                    }else{
+                        swal({
+                            title: "操作失败!",
+                            text: data.info,
+                            type: "error"
+                        });
+                    }
+                    $('#addNewTask').modal('hide');
+                }
+            });
+        }else{
+            var item_id = [];
+            $('.checkit').each(function(k,v){
+                checkform(v);
+                item_id.push($(v).attr('id'));
+            });
+            $.each(item_id,function(k,v){
+                if($('#'+v+'Tip').html() == ''){
+                    item_id.splice(k,1);
+                }
+            });
+            $('#'+item_id[0]).focus();
+            return false;
+        }
+    });
+
+    $(document).on('click','#module_name',function () {
+        $('#dialog-customer-list').dialog('open');
+        $('#dialog-customer-list').load('{:U("customer/listDialog")}');
+    });
+
+    $("#dialog-customer-list").dialog({
+        autoOpen: false,
+        modal: false,
+        width: 800,
+        maxHeight: 400,
+        position: ["center", 100],
+        buttons: { 
+            "确定": function () {
+                var item = $('input:radio[name="customer"]:checked').val();
+                var name = $('input:radio[name="customer"]:checked').parent().next().html();
+                $('#module_id').val(item);
+                $('#module_name').val(name);
+                $(this).dialog("close"); 
+            },
+            "取消": function () {
+                $(this).dialog("close");
+            }
+        },
+        close:function(){
+            $(this).html('');
+        }
+    });
+</script>

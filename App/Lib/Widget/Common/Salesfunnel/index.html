@@ -1,0 +1,178 @@
+<!-- 销售漏斗 -->
+<div class="col-sm-6 sort-item" rel="{$id}" style="padding:0px;">
+	<div class="dash-border" >
+		<div class="dash-title" style="padding-left:15px;padding-right:15px;">
+			<img src="__PUBLIC__/img/chart.png" style="width:17.5px;" />&nbsp;&nbsp;{$title}&nbsp;
+			<small>
+				<a rel="{$id}" class="update" href="javascript:void(0)" id="update_widget"><i class="icon-pencil"></i></a> &nbsp;
+				<a rel="{$id}" class="delete_loudou" style="cursor:pointer"><i class="icon-remove"></i></a> &nbsp; 
+			</small>
+			<a href="{:U('business/analytics','&type_id=2&content_id=1')}" class="dash-swtich"> 切换到商机统计>></a>
+		</div>
+		<div class="content-chart" id="sales_funnel_{$id}">
+			<div class="ibox-content">
+                <div class="spiner-example" style="padding-top: 0px;">
+                    <div class="sk-spinner sk-spinner-three-bounce">
+                        <div class="sk-bounce1"></div>
+                        <div class="sk-bounce2"></div>
+                        <div class="sk-bounce3"></div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(function () {
+		var chart{$id} = new Highcharts.Chart({
+			chart: {
+				renderTo: 'sales_funnel_{$id}',
+				type: 'funnel',
+				marginRight: 100
+			},
+			title:false,
+			plotOptions: {
+				series: {
+					dataLabels: {
+						enabled: true,
+						format: '<b>{point.name}</b> ({point.y:,.0f})',
+						color: 'black',
+						softConnector: true,
+					},
+					neckWidth: '30%',
+					neckHeight: '25%'
+				}
+			},
+			legend: {
+				enabled: false
+			},
+			series: [{
+				name: '数量',
+				data: ''
+			}],
+			credits: {  
+				enabled: false  
+			} 
+		});
+		//使用JQuery从后台获取JSON格式的数据赋值到图标
+		$.ajax({
+			type: "get",
+			url: "{:U('business/getSalesFunnel', 'id='.$id)}",    
+			dataType: "json",
+			success : function(result){
+				chart{$id}.series[0].setData(result.data);
+				chart{$id}.hideLoading();
+				chart{$id}.redraw();
+			}
+		});
+	});
+</script>
+<!-- 销售漏斗 END-->
+<script type="text/javascript">
+//删除控件
+$('.delete_loudou').click(function(){
+	var id = $(this).attr('rel');
+	swal({
+		title: "",
+		text: "确定要删除吗？",
+		type: "warning",
+		showCancelButton: true,
+		closeOnConfirm: false
+	},
+	function(){
+		window.location.href = "index.php?m=index&a=widget_delete&id="+id;
+	});
+});
+
+// var busimyChart = echarts.init(document.getElementById('sales_funnel_{$id}'));
+// busimyChart.setOption({
+//     title: {
+//         text: '',
+//         subtext: ''
+//     },
+//     tooltip: {
+//         trigger: 'item',
+//         formatter: "{a} <br/>{b} : {c}%"
+//     },
+//     toolbox: {
+//         feature: {
+//             dataView: {readOnly: false},
+//             restore: {},
+//             saveAsImage: {}
+//         }
+//     },
+//     legend: {
+//         data: []
+//     },
+//     calculable: true,
+//     series: [
+//         {
+//             name:'商机漏斗',
+//             type:'funnel',
+//             left: '10%',
+//             top: 60,
+//             //x2: 80,
+//             bottom: 60,
+//             width: '80%',
+//             // height: {totalHeight} - y - y2,
+//             min: 0,
+//             max: 100,
+//             minSize: '0%',
+//             maxSize: '100%',
+//             sort: 'descending',
+//             gap: 2,
+//             label: {
+//                 normal: {
+//                     show: true,
+//                     position: 'inside'
+//                 },
+//                 emphasis: {
+//                     textStyle: {
+//                         fontSize: 20
+//                     }
+//                 }
+//             },
+//             labelLine: {
+//                 normal: {
+//                     length: 10,
+//                     lineStyle: {
+//                         width: 1,
+//                         type: 'solid'
+//                     }
+//                 }
+//             },
+//             itemStyle: {
+//                 normal: {
+//                     borderColor: '#fff',
+//                     borderWidth: 1
+//                 }
+//             },
+//             data: [],
+//             toolbox:{
+//             	show: true
+//             }
+//         }
+//     ]
+// });
+// // 使用JQuery从后台获取JSON格式的数据赋值到图标
+// $.ajax({
+// 	type: "get",
+// 	url: "{:U('business/getSalesFunnel', 'id='.$id)}",    
+// 	dataType: "json",
+// 	success : function(result){
+// 		 // 填入数据
+// 		//console.log(result.data.statusList);
+// 	    busimyChart.setOption({
+// 	        series: [{
+// 	            // 根据名字对应到相应的系列
+// 	            name: '商机漏斗',
+// 	            data: result.data.statusList
+// 	        }],
+// 	        legend: {
+// 		        data: result.data.status_name
+// 		    },
+// 	    });
+// 	}
+// });
+// myChart.setOption(option);
+</script>

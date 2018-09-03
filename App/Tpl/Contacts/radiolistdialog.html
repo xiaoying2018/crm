@@ -1,0 +1,113 @@
+<style>
+	#datas tr{cursor : pointer;}
+</style>
+<div class="clearfix form-inline">
+	<ul class="nav pull-left">
+		<li class="pull-left">
+			<input type="hidden" id="dialog_customer_id" value="{$customer_id}" />
+			<select style="width:auto" class="form-control" id="field" name="field" onchange="changeCondition()">
+				<option class="word" value="name">联系人{:L('NAME')}</option>
+				<volist name="field_array" id="v">
+                    <option class="<if condition="$v['form_type'] == 'address'">text<else/>{$v['form_type']}</if>" value="{$v[field]}" rel="contacts" <if condition = "$search_field['field'] eq $v[field]">selected</if>>{$v[name]}</option>
+                </volist>
+				<option class="date" value="create_time" <if condition = "$search_field['field'] eq 'create_time'">selected</if>>{:L('CREATION_TIME')}</option>
+				<option class="date" value="update_time" <if condition = "$search_field['field'] eq 'update_time'">selected</if>>{:L('MODIFICATION_TIME')}</option>
+			</select>&nbsp;&nbsp;
+		</li>
+		<li id="conditionContent" class="pull-left">
+			<select id="d_condition" class="form-control" style="width:auto" name="condition" onchange="changeSearch()">
+				<option value="contains" <if condition = "$search_field['condition'] eq 'contains'">selected</if>>{:L('CONTAINS')}</option>
+				<option value="not_contain" <if condition = "$search_field['condition'] eq 'not_contain'">selected</if>>{:L('NOT_CONTAIN')}</option>
+				<option value="is" <if condition = "$search_field['condition'] eq 'is'">selected</if>>{:L('IS')}</option>
+				<option value="isnot" <if condition = "$search_field['condition'] eq 'isnot'">selected</if>>{:L('ISNOT')}</option>						
+				<option value="start_with" <if condition = "$search_field['condition'] eq 'start_with'">selected</if>>{:L('START_WITH')}</option>
+				<option value="end_with" <if condition = "$search_field['condition'] eq 'end_with'">selected</if>>{:L('END_WITH')}</option>
+				<option value="is_empty" <if condition = "$search_field['condition'] eq 'is_empty'">selected</if>>{:L('IS_EMPTY')}</option>
+				<option value="is_not_empty" <if condition = "$search_field['condition'] eq 'is_not_empty'">selected</if>>{:L('IS_NOT_EMPTY')}</option>
+			</select>&nbsp;&nbsp;
+		</li>
+		<li id="searchContent" class="pull-left">
+			<input id="search" type="text" class="input-medium form-control search-query" name="search" value="{$search_field['search']}" onkeydown="if(event.keyCode==13)d_changeContent(0)"/>&nbsp;&nbsp;
+		</li>
+		<li class="pull-left">
+			<input type="button" onclick="d_changeContent(0)" class="btn btn-primary" value="{:L('SEARCH')}"/>
+		</li>
+	</ul>
+	<!-- <div class="pull-right">
+		<a target="_blank" class="btn btn-primary btn-sm" href="{:U('contacts/add','redirect=customer&redirect_id='.$customer_id)}">{:L('NEW_LINK')}</a>
+	</div> -->
+</div>
+<empty name="contactsList">
+	<div style="clear:both">
+		<include file="Public:nodata" />
+	</div>
+<else/>
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>&nbsp;</th>
+				<th width="15%">{:L('NAME')}</th>
+				<th width="30%">{:L('BELONGS TO THE CUSTOMER')}</th>
+				<th width="15%">{:L('PHONE')}</th>
+				<th width="15%">{:L('EMAIL')}</th>
+				<th width="25%">{:L('POSITION')}</th>
+			</tr>
+		</thead>
+		<tfoot id="footers">
+			<tr>
+				<td colspan="6">
+					{$page}
+				</td>
+			</tr>
+		</tfoot>
+		<tbody id="datas">
+			<volist name="contactsList" id="vo">
+				<tr>
+					<td>
+						<input type="radio" name="contacts" class="contacts_rad" value="{$vo.contacts_id}"/>
+						<input type="hidden" name="customer_id" value="{$vo['customer']['customer_id']}" rel="{$vo['customer']['name']}"/>
+					</td>
+					<td>{$vo.name}</td>
+					<td><a target="_blank" href="{:U('customer/view','id='.$vo['customer']['customer_id'])}">{$vo.customer.name}</a></td>
+					<if condition="C('ismobile') neq 1"><td>{$vo.telephone}</td>
+					<td>{$vo.email}</td></if>			
+					<td>{$vo.post}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<script type="text/javascript">
+		$('#go_page').change(function(){
+			var sel = $(this).val();
+			$('#dialog-contacts-list').load(sel,function(){
+				changeCondition();
+			});
+			return false;
+		});
+
+		$("#datas tr").click(function(){
+			$(this).find('td:first-child .contacts_rad').prop('checked', true);
+		});
+
+		$(function(){
+			$('#footers a').click(function(){ 
+				var rel = $(this).attr('href'); 
+				$('#dialog-contacts-list').load(rel);   
+				return false;
+			});
+		});
+
+		function d_changeContent(p){
+			var field = $('#field option:selected').val();
+			var condition = $('#d_condition option:selected').val();
+			var search = $('#search').val();
+			var dialog_customer_id = $('#dialog_customer_id').val();
+			var url = "{:U('contacts/radiolistdialog','id=')}"+dialog_customer_id+'&field='+field+'&condition='+condition+'&search='+search;
+			$('#dialog-contacts-list').load(url,function(){
+				changeCondition();
+			});
+		}
+
+		$('#search').val('{$search_field['search']}');
+	</script>
+</empty>

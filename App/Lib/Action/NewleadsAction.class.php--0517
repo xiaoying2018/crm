@@ -1,0 +1,296 @@
+<?php
+class NewLeadsAction extends ExtensionAction
+{
+    /**
+     *用于判断权限
+     *@permission 无限制
+     *@allow 登录用户可访问
+     *@other 其他根据系统设置
+     **/
+    public function _initialize()
+    {
+        $action = [
+            'permission'        =>  [],
+            'allow'             =>  ['search'],
+        ];
+        B('Authenticate', $action);
+        $this->_permissionRes = getPerByAction(MODULE_NAME,ACTION_NAME, true);
+    }
+
+    public function search ()
+    {
+        // 参数接收、处理
+        $params                     =   $this->paramsHandle( I('get.') );
+        // 下属ids
+        $params['subIds']           =   array_map('intval',$this->_permissionRes);
+        // model
+        $model                      =   D('LeadsView');
+        // 线索超时处理--放入线索池
+        $this->leadsTimeout($model, $params);
+        // 查询条件,排序
+        $orderby                    =   $params['order'];
+        $conditions                 =   $this->conditionsHandle($params);
+        // 数据量
+        $count                      =   $model->where($conditions)->count();
+        // 偏移,数据
+        $pagesize                   =   15;
+        $offset                     =   ($params['page']-1)*$pagesize;
+        $lists                      =   $model->where($conditions)->order($orderby)->limit($offset, 15)->select();
+        //
+        $results                    =   $this->resultsHandle($params['by'],$lists,$params);
+        // 校区处理
+        $blocks                     =   $this->getBlockLists();
+
+        $this->ajaxReturn( [
+            'params'        =>  $params,
+            'conditions'    =>  $conditions,
+            'count'         =>  $count,
+            'blockLists'    =>  $blocks,
+            'fields'        =>  $results['fields'],
+            'lists'         =>  $results['lists'],
+            'status'        =>  true,
+            '_sql'          =>  $model->getLastSql(),
+            'block'         =>  session('?admin') ? ( $params['block'] ?: 1 ) : (int)session('block'),
+            '_isadmin'      =>  session('?admin'),
+        ] );
+    }
+
+    /**
+     * @ 参数处理
+     */
+    protected function paramsHandle ($params)
+    {
+        // 参数去除前后空格
+        $params                 =   array_map( 'trim', $params );
+        // 请求类型
+        $handled['by']          =   array_key_exists( 'by', $params ) && $params['by']
+            ? $params['by'] : 'me';
+        // 当前页数
+        $handled['page']        =   array_key_exists( 'page', $params )
+            ? (int)$params['page'] > 0 ? (int)$params['page'] : 1
+            : 1;
+        // 校区id
+        $handled['block']       =   array_key_exists( 'block', $params ) && $params['block']
+            ? (int)$params['block'] : false;
+        // 线索分类
+        $handled['cluecate']    =   array_key_exists( 'cluecate', $params ) && $params['cluecate']
+            ? $params['cluecate'] : false;
+        // 模糊搜索
+        $handled['search']      =   array_key_exists( 'search', $params ) && $params['search'] ? $params['search'] : false;
+        // 排序、
+        $handled['order']       =   array_key_exists( 'order', $params ) && $params['order']
+            ? str_replace('-',' ', $params['order'])
+            : "leads_id DESC";
+        return $handled;
+    }
+
+    /**
+     * @ 线索跟进超时处理
+     * @param $model
+     */
+    protected function leadsTimeout ($model,&$params)
+    {
+        // config model
+        $configModel                =   M('Config');
+        // 超时时间
+        $params['outDay']           =   (int)$configModel->field('value')->where('name="leads_outdays"')->getField('value');
+        // 超时时间戳
+        $params['outStamp']         =   $params['outDay'] ? time()-$params['outDay']*24*60*60 : 0;
+
+    }
+
+    /**
+     * @ 查询条件处理
+     * @param $params
+     * @return array
+     */
+    protected function conditionsHandle ($params)
+    {
+        $where          =   [];
+        // 请求类型
+        switch ($params['by'])
+        {
+            case 'today' :
+                $where['nextstep_time'] =  array(array('lt',strtotime(date('Y-m-d', time()))+86400), array('gt',0), 'and');
+                $where['owner_role_id'] = session('role_id');
+                break;
+            case 'week' :
+                $w = date("w", time()); //获取当前周的第几天 周日是 0 周一 到周六是 1 -6
+                $d = $w ? $w - 1 : 6; //如果是周日 -6天
+                $start_week = strtotime("".date("Y-m-d")." -".$d." days"); //本周开始时间
+                $end_week = strtotime("".date("Y-m-d",$start_week)." +7 days"); //本周结束时间
+
+                $where['nextstep_time'] = array(array('gt',$start_week), array('lt', $end_week),'and');
+                break;
+            case 'month' :
+                $where['nextstep_time'] =  array(array('lt',strtotime(date('Y-m-01', strtotime('+1 month')))), array('gt', strtotime(date('Y-m-01'))),'and');
+                break;
+            case 'd7' :
+                $where['update_time'] =  array('lt',strtotime(date('Y-m-d', time()))-86400*6);
+                break;
+            case 'd15' :
+                $where['update_time'] =  array('lt',strtotime(date('Y-m-d', time()))-86400*14);
+                break;
+            case 'd30' :
+                $where['update_time'] =  array('lt',strtotime(date('Y-m-d', time()))-86400*29);
+                break;
+            case 'add' : $order = 'create_time desc';  break;
+            case 'update' : $order = 'update_time desc';  break;
+            case 'sub' : $where['owner_role_id'] = array('in',implode(',', $params['subIds'])); break;
+            case 'subcreate' : $where['creator_role_id'] = array('in',implode(',', $params['subIds'])); break;
+            case 'public' :
+                unset($where['have_time']);
+                $where['_string'] = "leads.owner_role_id=0 or leads.have_time < {$params['outStamp']}";
+                break;
+            case 'deleted': $where['is_deleted'] = 1;unset($where['have_time']); break;
+            case 'transformed' :
+                $where['is_transformed'] = ['eq',1];
+                $allIds     =   array_merge( $params['subIds'], [session('role_id')] );
+                $where['owner_role_id'] = array('in',implode(',', $allIds ));
+                break;
+            case 'me' : $where['owner_role_id'] = session('role_id'); break;
+            case 'all' :
+                $allIds     =   array_merge( $params['subIds'], [session('role_id')] );
+                $where['owner_role_id'] = array('in',implode(',', $allIds ));
+                break;
+            default :
+                $where['owner_role_id'] = array('in',implode(',', $params['subIds']));
+                break;
+        }
+        // 线索分类
+        if( $params['cluecate'] ){
+            $where['cluecate']              =   ['eq', $params['cluecate']];
+        }
+
+        // search
+        if( $search = $params['search'] ){
+            if( preg_match( "/^1[345678][0-9]{9}$/", $search ) ){
+                $where['mobile']        =   ['eq',$search];
+            }elseif( preg_match("/[\x{4e00}-\x{9fa5}]/u", $search) ){
+                $where['name']          =   ['like','%'.$search.'%'];
+            }else{
+                $where['crm_qq']        =   ['eq',$search];
+            }
+        }
+        // 条件补充
+
+        if( $params['by'] != 'deleted' ) {
+            $where['is_deleted']            =   ['neq',1];
+        }elseif( $params['by'] != 'transformed' ){
+            $where['is_transformed']        =   ['neq',1];
+        }
+        // 校区下用户 定向显示
+//        if( ($params['by'] == 'public') && !session('?admin') ){
+//            $blockInfo              =   M('Block')->field('name')->find( (int)session('block') );
+//            $cityname               =   mb_substr( $blockInfo['name'],0, 2 );
+//            $where['crm_city']      =   ['like', "%$cityname%"];
+//        }
+        return $where;
+    }
+
+    /**
+     * @ 查询结果处理
+     * @param $by
+     * @param $lists
+     * @param $params
+     * @return array
+     */
+    protected function resultsHandle ($by,$lists,$params)
+    {
+        $lists      =   $lists ?: [];
+        // 字段信息
+        $fields         =   getIndexFields('leads');
+        // 列显示处理
+        if( $by == 'public' ){
+            $public_only        =   ['nextstep_time','now_university','now_major','expect_major'];
+            // 去除列显示
+            $fields      =   array_filter( $fields, function($v) use($public_only){
+                return (!in_array( $v['field'], $public_only ));
+            } );
+            // 去除集合值、线索分类映射
+            $cateMap        =   [];
+            $cluecate       =   M('LeadCategory')->field('id,name')->select();
+            foreach ($cluecate as $value){
+                $cateMap[$value['id']]  =   $value;
+            }
+
+            foreach( $lists as $key => $value ){
+                foreach( $public_only as $only ){
+                    unset( $lists[$key][$only] );
+                }
+
+                if( array_key_exists( (int)$value['cluecate'], $cateMap ) ){
+                    $lists[$key]['cluecate']    =   $cateMap[(int)$value['cluecate']]['name'];
+                }else{
+                    $lists[$key]['cluecate']    =   '无';
+                }
+            }
+        }else{
+            $self_only          =   ['cluecate','market_activity'];
+            $fields      =   array_filter( $fields, function($v) use($self_only){
+                return (!in_array( $v['field'], $self_only ));
+            } );
+            // 去除集合值
+            foreach( $lists as $key => $value ){
+                foreach( $self_only as $only ){
+                    unset( $lists[$key][$only] );
+                }
+            }
+        }
+        // 数据关联处理
+        if($by == 'deleted') {
+            foreach ($lists as $k => $v) {
+                $lists[$k]["delete_role"] = getUserByRoleId($v['delete_role_id']);
+                $lists[$k]["owner"] = getUserByRoleId($v['owner_role_id']);
+                $lists[$k]["creator"] = getUserByRoleId($v['creator_role_id']);
+            }
+        }elseif($by == 'transformed'){
+            $m_business = M('Business');
+            $m_contacts = M('Contacts');
+            $m_customer = M('Customer');
+            foreach ($lists as $k => $v) {
+                $lists[$k]["owner"] = getUserByRoleId($v['owner_role_id']);
+                $lists[$k]["creator"] = getUserByRoleId($v['creator_role_id']);
+                $lists[$k]["transform_role"] = getUserByRoleId($v['transform_role_id']);
+                $lists[$k]["business_name"] = $m_business->where('business_id = %d', $v['business_id'])->getField('name');
+                $lists[$k]["contacts_name"] = $m_contacts->where('contacts_id = %d', $v['contacts_id'])->getField('name');
+                $lists[$k]["customer_name"] = $m_customer->where('customer_id = %d', $v['customer_id'])->getField('name');
+            }
+        }else{
+            $m_remind = M('Remind');
+            foreach ($lists as $k => $v) {
+                $days = 0;
+                //提醒
+                $remind_info = array();
+                $remind_info = $m_remind->where(array('module'=>'leads','module_id'=>$v['leads_id'],'create_role_id'=>session('role_id'),'is_remind'=>array('neq',1)))->order('remind_id desc')->find();
+                $lists[$k]['remind_time'] = !empty($remind_info) ? $remind_info['remind_time'] : '';
+                $lists[$k]["owner"] = D('RoleView')->where('role.role_id = %d', $v['owner_role_id'])->find();
+                $lists[$k]["creator"] = D('RoleView')->where('role.role_id = %d', $v['creator_role_id'])->find();
+                $days = M('leads')->where('leads_id = %d', $v['leads_id'])->getField('have_time');
+                $lists[$k]["days"] = $params['outDay']-floor((time()-$days)/86400);
+                $lists[$k]["create_time"] = (preg_match('/^1[0-9]{9}$/',$v['create_time']))
+                    ?   $v['create_time']
+                    :   strtotime( $v['create_time'] );
+
+            }
+        }
+
+        return ['fields'=>$fields,'lists'=>$lists];
+    }
+
+    /**
+     * @校区列表
+     * @return array
+     */
+    protected function getBlockLists  ()
+    {
+        $results    =  M('Block')->field('id,name')->select();
+        $handled    =   [];
+        foreach( $results as $key => $value ) {
+            $handled[$value['id']]  =   $value;
+        }
+
+        return $handled;
+    }
+
+}

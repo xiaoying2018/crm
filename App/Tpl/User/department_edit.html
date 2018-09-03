@@ -1,0 +1,92 @@
+<div class="modal-header">
+	<span><if condition="$_GET['move']">移动<else/>修改部门信息</if></span>
+	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+</div>
+<div class="modal-body clearfix">
+	<form id="ed_Form" class="form-horizontal m-t" action="{:U('User/department_edit')}" method="Post">
+	<div class="col-sm-12">
+		<input type="hidden" id="department_id" name="department_id" value="{$department.department_id}"/>
+		<if condition="$_GET['move']">
+			<div class="form-group col-sm-offset-1">
+				<label class="control-label col-sm-3" for="parent_id">移动到父级：</label>
+				<div class="col-sm-4">
+					<select id="parent_id" name="parent_id" class="form-control">
+						<option value="0">{:L('THE_TOP_DEPARTMENT')}</option>
+						<volist name="department_list" id="vo">
+						<option <if condition="$department['parent_id'] eq $vo['department_id']">selected</if> value="{$vo.department_id}">{$vo.name}</option>
+						</volist>
+					</select>
+				</div>
+			</div>
+		<else/>
+			<div class="form-group col-sm-offset-1">
+				<label class="control-label col-sm-2" for="parent_id">{:L('SUPERIORS_DEPARTMENT')}：</label>
+				<div class="col-sm-4">
+					<select id="parent_id" name="parent_id" class="form-control">
+						<option value="0">{:L('THE_TOP_DEPARTMENT')}</option>
+						<volist name="department_list" id="vo">
+						<option <if condition="$department['parent_id'] eq $vo['department_id']">selected</if> value="{$vo.department_id}">{$vo.name}</option>
+						</volist>
+					</select>
+				</div>
+			</div>
+			<div class="form-group col-sm-offset-1">
+				<label class="control-label col-sm-2" for="name">{:L('DEPARTMENT_NAME')}：</label>
+				<div class="col-sm-4">
+					<input type="text" id="name" name="name" value="{$department.name}" class="form-control"/>
+				</div>
+			</div>
+			<div class="form-group col-sm-offset-1">
+				<label class="control-label col-sm-2" for="description">{:L('DEPARTMENT_DESCRIPTION')}：</label>
+				<div class="col-sm-6">
+					<textarea id="description" name="description" class="form-control">{$department.description}</textarea>
+				</div>
+			</div>
+		</if>
+	</div>
+	</form>
+</div>
+<script>
+    $(document).ready(function(){
+		$('.date').datepicker({
+			format: "yyyy-mm-dd",
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true
+        });
+		$("#edbtn").click(function(){
+
+			$.ajax({
+				type: "POST",
+				url: "{:U('department_edit')}",
+				data:$("#ed_Form").serialize(),
+				async: true,
+				success: function(data) {
+					if(data.status == 1){
+						swal({
+							title: "保存成功！",
+							text: "",
+							type: "success"
+						});
+						$('#Modal').modal('hide');
+						top.location.reload();
+						//location.reload();
+						//$("#file").load"{:U('debtor/listFile','id='.$debtor_id)}");
+					}else{
+						 swal({
+							title: "保存修改失败！",
+							text: data.info,
+							type: "error"
+						});
+					}
+				}
+			});
+		})
+	});
+</script>
+<div class="modal-footer">
+	<button type="button" id="edbtn" class="btn btn-primary">保存</button>
+	<button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+</div>

@@ -1,0 +1,93 @@
+<style>
+	.form-horizontal .form-group{margin-left:0px;margin-right:0px;}
+	.control-label{color:#999;font-weight:normal;}
+	input[placeholder]{color:#d8d8d8;}
+	.clickcolor{background:#309dfc;color:#fff!important;}
+	.notcolor{background:#ddd;color:#fff!important;}
+</style>
+<form id="advance_search_form" class="form-horizontal" action="" method="get">
+	<input type="hidden" name="type_id" id="types_id" value="{$type_id}"/>
+	<input type="hidden" name="content_id" id="contents_id" value="{$content_id}"/>
+	<input type="hidden" name="m" value="finance"/>
+	<input type="hidden" name="a" value="analytics"/>
+	<div class="form-group">
+		<label class="col-md-2 control-label">统计人员：</label>
+		<div class="col-md-5">
+			<select class="form-control input-sm select2" style="width:auto" name="department" id="department" onchange="changeRole()">
+				<option class="all" value="all">{:L('ALL')}</option>
+				<volist name="departmentList" id="vo">
+					<option value="{$vo.department_id}">{$vo.name}</option>
+				</volist>
+			</select>
+		</div>
+		<div class="col-md-5" style="margin-left: -35px;">
+			<select class="form-control input-sm select2" style="width:auto" name="role" id="role" onchange="changeCondition()">
+				<option class="all" value="all">{:L('ALL')}</option>
+				<volist name="roleList" id="vo">
+					<option value="{$vo.role_id}" <if condition="$_GET['role'] eq $vo['role_id']">selected</if>>{$vo.role_name}-{$vo.user_name}</option>
+				</volist>
+			</select>
+		</div>
+	</div>
+	<if condition = "$content_id lt 4">
+		<div class="form-group">
+			<label class="col-md-2 control-label">对比时间：</label>
+			<div class="col-md-10">
+				<a href="javascript:void(0);" class="btn select_time" rel="1" style="border:1px solid #DEE5ED;float:left;margin-right:15px;width:80px">本月度</a>
+				<a href="javascript:void(0);" class="btn select_time" rel="2" style="border:1px solid #DEE5ED;float:left;margin-right:15px;width:80px">本季度</a>
+				<a href="javascript:void(0);" class="btn select_time" rel="3" style="border:1px solid #DEE5ED;float:left;margin-right:15px;width:80px">本年度</a>
+				<a href="javascript:void(0);" class="btn select_time" rel="5" style="border:1px solid #DEE5ED;float:left;width:80px">上一年</a>
+				<a href="javascript:void(0);" style="font-size:12px;float:left;line-height:34px;margin-left:10px;" class="geng-d" >高级选项</a>
+			</div>
+		</div>
+	</if>
+	<div class="form-group" id="advance_time" style="display:none;">
+		<label class="col-md-2 control-label"></label>
+		<div class="col-md-8">
+			<input type="text" id="start_date" name="start_date" style="width:130px;float:left;" placeholder="开始时间"  onFocus="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:&quot;#F{$dp.$D('end_date')||'2098-01-01'}&quot;})" class="form-control"/>
+			<input type="text" id="end_date" style="width:130px;float:left;margin-left:10px;"  placeholder="结束时间" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd', minDate:&quot;#F{$dp.$D(\'start_date\')}&quot;,maxDate:'2098-01-01'})" name="end_date" class="form-control"/>
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+	<input type="hidden" name="select_type" id="select_type" >
+</form>
+<script type="text/javascript">
+
+	<if condition="$_GET['department'] and $_GET['department'] neq 'all'">
+		$("#department option[value='{$Think.get.department}']").prop("selected", true); 
+		changeRole();
+	</if>
+	<if condition="$_GET['department'] eq 'all'">
+		$("#role option[value='{$Think.get.role}']").prop("selected", true);
+	</if>
+
+	$(document).on('click','.rem_search',function(){
+		var num = $(this).attr('rel');
+		$('#con_search_'+num).remove();
+	});
+	
+	$('.select_time').click(function(){
+		$(this).addClass('clickcolor').siblings().removeClass('clickcolor');
+		var key_id = $(this).attr('rel');
+		$('#select_type').val(key_id);
+	});
+	$('.geng-d').click(function(){
+		var select_type = $('#select_type').val();
+		if(select_type == 4){
+			$('#select_type').val('');
+			$('.select_time').removeClass('notcolor');
+			$(this).html('高级选项');
+		}else{
+			$('.select_time').removeClass('clickcolor').addClass('notcolor');
+			$('#select_type').val(4);
+			$(this).html('默认选项');
+		}
+		if($('#advance_time').css('display') == 'none'){
+			$('#advance_time').show('1500');
+			$('#remind_type').attr('disabled','true');
+		}else{
+			$('#advance_time').hide('1500');
+			$('#remind_type').removeAttr('disabled');
+		}
+	});
+</script>

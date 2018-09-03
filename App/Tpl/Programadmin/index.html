@@ -1,0 +1,400 @@
+<include file="Public:header" />
+<style>
+body {
+    overflow-y: hidden;
+}
+
+.option {
+    padding-left: -30px;
+}
+
+#oDivL_tab_Test3 {
+    background-color: #fff;
+}
+
+.table {
+    max-width: none;
+}
+
+a:visited {
+    border: none;
+}
+
+.handle {
+    cursor: pointer;
+}
+
+.pageDv {
+    margin: 15px 0
+}
+
+.pageNav {
+    text-align: center;
+    margin: 0
+}
+
+#totalcount {
+    padding: 0 6px
+}
+
+.pageNav a {
+    font-size: 14px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 5px 8px;
+    text-align: center;
+    color: #8b929f;
+    background-color: #fff;
+    border: 1px solid #2f4050;
+    display: inline-block;
+    margin-left: 5px;
+    -moz-transition: all .3s ease-in-out;
+    -webkit-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+    height: 30px;
+    font-weight: normal !important
+}
+
+.pageNav a.page {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    line-height: 28px
+}
+
+.pageNav a.active {
+    color: #fff;
+    background-color: #2f4050;
+    border-color: #2f4050
+}
+
+.pageNav a:hover {
+    cursor: pointer;
+    color: #fff;
+    background-color: #2f4050;
+    border-color: #2f4050
+}
+</style>
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<!-- nice-scroll -->
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/mxcrm_more.js" type="text/javascript"></script>
+<script src="/Public/js/jqPaginator/jqPaginator.min.js"></script>
+<script>
+$(function() {
+    var scroll_width = 10;
+    // var oTableLH_tab_Test3 = 38;
+    $("#table_div").height(window.innerHeight - $("#table_div").offset().top - $("#tfoot_div").height() - parseInt($("#table_container").css("padding-bottom").replace("px", "")) - 10);
+    $(window).resize(function() {
+        $("#table_div").height(window.innerHeight - $("#table_div").offset().top - $("#tfoot_div").height() - parseInt($("#table_container").css("padding-bottom").replace("px", "")) - 10);
+        $("#oDivL_tab_Test3").height($("#table_div").height() - scroll_width - 1).width($("#oTableLH_tab_Test3").width());
+        $("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width() - scroll_width);
+    })
+    $(".nicescroll").niceScroll({
+        cursorcolor: "#999", //#CC0071 光标颜色
+        cursoropacitymax: 0.4, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0
+        touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备
+        cursorwidth: scroll_width + "px", //像素光标的宽度
+        cursorborder: "0", //     游标边框css定义
+        cursorborderradius: "3px", //以像素为光标边界半径
+        autohidemode: false, //是否隐藏滚动条
+        zindex: 100,
+        background: "#F3F3F5", //滚动条背景色
+    });
+    if ("{$Think.get.by}") {
+        $("#filter_ul").prev().html($("#filter_ul>li>a.active").text() + '<span class="fa fa-angle-down small_fa"></span>');
+    }
+    $("#tab_Test3").FrozenTable(1, 0, 4);
+    $("#oDivL_tab_Test3").height($("#table_div").height() - scroll_width - 1).width($("#oTableLH_tab_Test3").width()).css({ 'zIndex': 9 });
+    $("#oDivL_tab_Test3").css({ "background-color": "#fff", "border-right": "1px solid #e7eaec" });
+    $("#oTableLH_tab_Test3").css({ "border-right": "1px solid #e7eaec" });
+    $("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width() - scroll_width).css({ 'zIndex': 9 });
+
+    setHeight();
+    $(window).resize(function() {
+        setHeight();
+    })
+});
+
+function setHeight() {
+    $(".table_rpw").height($(window).height() - ($(".float-e-margins").height() + $(".nav-head").height() + 100))
+}
+</script>
+<div class="wrapper wrapper-content">
+    <div class="row" id="datasourse">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+                <!-- 搜索、按钮 栏 -->
+                <div class="title-bar" style="position: relative;z-index: 99;">
+                    <div class="row " id="title-show">
+                        <ul class="nav pull-left" style="margin:2px 0 0 15px;">
+                            <a href="javascript:;" id="program-create" class="btn btn-primary btn-sm pull-left" style="margin-right:8px">
+                                <i class="fa fa-plus-circle"></i>&nbsp;
+                                {:L('P_BUTTON_CREATE')}
+                            </a>
+
+                        </ul>
+                        <ul class="nav pull-right" style="margin:2px 15px 0 0px;">
+                            <input type="text" placeholder="学校名称" class="form-control input-sm" style="display: inline-block; width: 200px;" v-model="request.school_name" @keyup.enter="search()">
+                        </ul>
+                    </div>
+                </div>
+                <!-- 数据信息 -->
+                <div class="ibox-content clearfix" id="table_container" style="z-index: 1;">
+                    <form id="form1" action="" method="post" style="position:relative;">
+                        <div id="table_div" class="nicescroll">
+                            <table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
+                                    <tr id="childNodes_num" class="tabTh">
+                                        <!-- 表头 -->
+                                        <td>学校</td>
+                                        <td>排名</td>
+                                        <td>包含专业</td>
+                                        <td>操作</td>
+                                    </tr>
+                                    <tr class="controls_tr" v-for="n in list">
+                                        <td v-text="n.school_name.substr(0,n.school_name.length-1)"></td>
+                                        <td>{{n.school_rank}}</td>
+                                        <td>{{n.include_major}}</td>
+                                        <td>
+                                            <!--<span :data-id="n.id" class="handle" onclick="edit(this)">-->
+                                                <!--<i class="fa fa-pencil">&nbsp;</i>-->
+                                                <!--&nbsp;&nbsp;&nbsp;-->
+                                            <!--</span>-->
+                                            <span :data-id="n.id" class="handle" onclick="del(this)">
+                                                <i class="fa fa-times">&nbsp;</i>
+                                                &nbsp;&nbsp;&nbsp;
+                                            </span>
+                                            <!--<span :data-id="n.id" class="handle" onclick="">-->
+                                                <!--<i class="glyphicon glyphicon-th-list"></i>-->
+                                                <!--<a href="javascript:;">案例列表</a>-->
+                                            <!--</span>-->
+                                        </td>
+                                    </tr>
+                            </table>
+                        </div>
+                        <!-- 分页 -->
+                        <div class="pageDv" style="position: fixed;bottom: 0;z-index: 11;width: 100%; height: 30px;">
+                            <span class="pageNav pagination">
+                            </span>
+                            <span href="">
+                                一共检索到<font id="totalcount">{{count}}</font>条数据
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 对话视图定义 -->
+<div style="display:none;" id="dialog-program-create" title="{:L('P_BUTTON_CREATE')}">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" id="dialog-program-update" title="{:L('P_BUTTON_UPDATE')}">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script>
+
+ var model = new Vue({
+    el: "#datasourse",
+    data: {
+        list: [],
+        request:{
+            page: 1,
+            pageSize: 10,
+            school_name:""
+        },
+        count: 0,
+        page:''
+    },
+    methods: {
+        search(){
+            this.request.page = 1;
+            this.initData();
+        },
+        //初始化分页
+        initData(count,size,page){
+            var _this = this;
+            $.ajax({
+                url: "/index.php?m=programadmin&a=index",
+                type: "post",
+                dataType: "json",
+                data: _this.request,
+                success: function(res) {
+                    _this.list = [];
+                    if (res.status) {
+                        _this.count = parseInt(res.data.count)
+                        if (res.data.total != 0) {
+                            _this.list = res.data.list;
+                            $('.pageNav').jqPaginator({
+                                totalCounts: parseInt(res.data.count), //总数
+                                pageSize: _this.request.pageSize, //每页显示条数
+                                visiblePages: 5,
+                                currentPage: _this.request.page, //当前第几页
+                                first: "<a>首页</a>",
+                                last: "<a>末页</a>",
+                                prev: "<a>上一页</a>",
+                                page: "<a class='page'>{{page}}</a>",
+                                next: "<a>下一页</a>",
+                                onPageChange: function(num, type) {
+                                    if (type != 'init') {
+                                        _this.request.page = num;
+                                        _this.initData();
+                                    }
+                                }
+                            });
+                            $(".pageNav").show();
+                        }else{
+                            $(".pageNav").hide();
+                        }
+                    }
+                }
+            })
+        }
+    },
+    mounted:function(){
+        this.initData();
+    }
+});
+
+$('#dialog-program-create').dialog({
+    autoOpen: false,
+    modal: true,
+    width: '60%',
+    maxHeight: 600,
+    position: ["center", 100],
+    buttons: {
+        "提交": function() {
+
+            var form = $('#program-create-form'),
+                formData = form.serializeArray(),
+                data = [],
+                that = $('#dialog-program-create');
+
+            $.each(formData, function(k, v) {
+                if (data[v.name] != 'undefined') {
+                    var old = data[v.name];
+                    data[v.name] = [];
+                    data[v.name].push(old);
+                    data[v.name].push(v.value);
+                }
+                data[v.name] = v.value;
+            });
+
+            if (data.name_cn == '') {
+                alert_crm("请填写中文名称");
+                form.find('input[name="name_cn"]').focus();
+                return false;
+            }
+
+            $.ajax({
+                type: 'post',
+                url: "{:U('programadmin/program_add')}",
+                data: formData,
+                async: false,
+                success: function(res) {
+                    if (res.status == false) {
+                        alert_crm(res.message);
+                        return;
+                    }
+
+                    that.dialog("close");
+                    location.replace(location.href);
+                },
+                dataType: 'json'
+            });
+        },
+        "取消": function() {
+            $(this).dialog("close");
+        }
+    }
+});
+$('#dialog-program-update').dialog({
+    autoOpen: false,
+    modal: true,
+    width: '60%',
+    maxHeight: 600,
+    position: ["center", 100],
+    buttons: {
+        "修改": function() {
+
+            var form = $('#program-create-form'),
+                formData = form.serializeArray(),
+                data = [],
+                that = $('#dialog-program-create');
+            $.each(formData, function(k, v) {
+                data[v.name] = v.value;
+            });
+            if (data.name_cn == '') {
+                alert_crm("请填写中文名称");
+                form.find('input[name="name_cn"]').focus();
+                return false;
+            }
+            $.ajax({
+                type: 'post',
+                url: "{:U('programadmin/program_edit')}",
+                data: formData,
+                async: false,
+                success: function(res) {
+                    if (res.status == false) {
+                        alert_crm(res.message);
+                        return;
+                    }
+
+                    that.dialog("close");
+
+                    location.replace(location.href);
+                },
+                dataType: 'json'
+            });
+        },
+        "取消": function() {
+            $(this).dialog("close");
+        }
+    }
+});
+
+// 事件触发
+$('#program-create').click(function(obj) {
+    // 打开box
+    $('#dialog-program-create').dialog('open');
+    //
+    $('#dialog-program-create').load("{:U('programadmin/program_add')}");
+});
+
+function edit(that) {
+    var id = $(that).attr('data-id');
+    $('#dialog-program-update').dialog('open');
+    $('#dialog-program-update').load("{:U('programadmin/program_edit')}", "id=" + id);
+}
+
+function del(that) {
+    var id = $(that).attr('data-id');
+    layer.confirm('确定要删除此列吗?', { icon: 3, title: '提示' }, function(index) {
+        $.post("{:U('programadmin/program_del')}", { id: id }, function(res) {
+            if (res.status == false) {
+                alert_crm(res.message);
+                return;
+            }
+            $(that).parent().parent().remove();
+        }, 'JSON');
+        layer.close(index);
+    }, function(index) {});
+}
+</script>
+<include file="Public:footer" />

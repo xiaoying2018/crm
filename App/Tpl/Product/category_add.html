@@ -1,0 +1,27 @@
+<form class="form-horizontal" id="category_form1" action="{:U('product/category_add')}" method="post" >
+	<table class="table" style="border:none;">
+		<tr>
+			<td style="border:none;text-align:right">{:L('CLASSIFICATION_OF')}：</td>
+			<td style="border:none;">
+				<input class="form-control" type="text" id="name" name="name"/>
+			</td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">{:L('THE_PARENT_CLASS')}：</td>
+			<td style="border:none;">
+				<select class="form-control" name="parent_id" id="categoryList">
+					<option value="0" >{:L('TOP_CLASSIFICATION')}</option>
+					<volist  name="category_list" id="vo">
+					<option value="{$vo.category_id}">{$vo.name}</option>
+					</volist>						
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">{:L('DESCRIBE')}：</td>
+			<td style="border:none;">
+				<textarea class="form-control" name="description"></textarea>
+			</td>
+		</tr>
+	</table>
+</form>

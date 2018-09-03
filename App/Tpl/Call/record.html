@@ -1,0 +1,304 @@
+<include file="Public:header" />
+<!-- nice-scroll -->
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/chart/highcharts.js"></script>
+<script src="__PUBLIC__/js/chart/modules/exporting.js"></script>
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+
+<style>
+	body{
+		overflow-y: hidden;
+	}
+	table tr td{min-width: 50px;}
+	table tr {height: 50px;}
+	.table{max-width: none;}
+	.tabTh{background-color: #fff;}
+	.more_input {
+		width: 20%;
+		display: inline-block;
+	}
+	.ibox-content {
+		border-style: none;
+	}
+	video {
+	    width: 260px !important;
+	    height: 30px !important;
+	}
+</style>
+
+<script>
+$(function(){
+	var scroll_width = 10;
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-15);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-15);
+		$("#oDivL_tab_Test3").height($("#table_div").height()).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width());
+	});
+	$(".nicescroll").niceScroll({
+		cursorcolor: "#999",//#CC0071 光标颜色 
+	    cursoropacitymax: 0.4, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0 
+	    touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备 
+	    cursorwidth: scroll_width+"px", //像素光标的宽度 
+	    cursorborder: "0", //     游标边框css定义 
+	    cursorborderradius: "3px",//以像素为光标边界半径 
+	    autohidemode: false, //是否隐藏滚动条 
+	    zindex:100,
+	    background:"#F3F3F5",//滚动条背景色
+	});
+	$("#tab_Test3").FrozenTable(1,0,1);
+	$("#oDivL_tab_Test3").height($("#table_div").height()).width($("#oTableLH_tab_Test3").width());
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width());
+})
+</script>
+
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<include file="Public:analytics_left" />
+				<div class="col-lg-10">
+					<div class="ibox-content" style="padding-bottom:0px;border-bottom: none;">
+						<include file="Public:alert" />
+						<div class="row" style="margin-bottom: 15px;">
+							<div class="col-lg-12">
+								<div class="pull-left" >
+									<span style="font-size: 18px;color: #000;font-weight: bolder;">
+										员工电话记录 |
+									</span>  
+									<span style="font-size: 18px;">
+										<a href="{:U('call/analytics','content_id=3')}">电话统计分析</a>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-12">
+								<form action="" method="post">
+									时间：<input onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" id="start_date" value="{:date('Y-m-d').' 00:00'}" type="text" class="form-control more_input Wdate"> - 
+									<input onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" id="end_date" value="{:date('Y-m-d H:i')}" type="text" class="form-control more_input Wdate">
+									&nbsp;&nbsp;&nbsp;&nbsp;分机：
+									<select id="extid" class="form-control more_input" style="padding-top: 4px;width: 15%;">
+										<option value="">全部</option>
+										<volist name="list" id="vo">
+											<option value="{$vo.extid}">{$vo.extid}（{$vo.name}）</option>
+										</volist>
+									</select>
+									<input type="button" id="search" class="btn btn-primary btn-sm" value="搜索">
+								</form>
+							</div>
+						</div>
+						<div class="row" style="margin-top: 10px; font-weight: 600;color: #f10d0d;">
+							<div class="col-lg-12">
+								<div class="btn-group">
+									通话数：<span id="total_count"></span>个
+								</div>
+								&nbsp;&nbsp;
+								<div class="btn-group">
+									接通数：<span id="total_answered"></span>个
+								</div>
+								&nbsp;&nbsp;
+								<div class="btn-group">
+									接通率：<span id="answered_rate"></span>%
+								</div>
+								&nbsp;&nbsp;
+								<div class="btn-group">
+									总通话时长：<span id="total_billable"></span>
+								</div>
+								&nbsp;&nbsp;
+								<div class="btn-group">
+									最大通话时长：<span id="max_billable"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="ibox-content " id="right_height" style="border-top: none;">
+						<div class="th_content" style="position:relative;">
+							<div id="table_div" class="nicescroll" >
+								<table class="table table-hover table-striped table_thead_fixed table-bordered" id="tab_Test3" >
+									<thead>
+										<tr>
+											<th>呼叫时间</th>
+											<th>主叫号码</th>
+											<th>被叫号码</th>
+											<th>通话时长(秒)</th>
+											<th>通话状态</th>									
+											<th style="width: 300px;">录音</th>									   
+											<th>下载录音</th>									   
+										</tr>
+									</thead>
+									<tbody>
+										
+									</tbody>
+									<tfoot id="footers">
+										<tr>
+											<td colspan="7">
+												<div class="row pagination">
+													<div class="span2" style="text-align: right;">
+														<span id="counts">{$count_num}</span> 记录 <span id="ps">1</span>/<span id="total_pages">{$total}</span> 页
+													</div>
+													<div class="span4">
+														<div>
+															<ul id="changepages" class="pagination" style="float:right;margin-top:0px">
+																<li><span class='current'>首页</span></li><li><span>« 上一页</span></li>
+																<if condition="1 lt $total">
+																	<li><a class="page" href="javascript:void(0)" rel="2">下一页 »</a></li>
+																<else />
+																	<li><span>下一页 »</span></li>
+																</if>
+															</ul>
+														</div>
+													</div>
+												</div>
+												<input type="hidden" id='by' value="{$Think.get.by}">
+											</td>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style type="text/css">
+	#box{
+		position:absolute;
+		top:0;
+		bottom:0;
+		left:0;
+		right:0;
+		background:#000;
+		opacity:0.7;
+		
+		padding-top: 200px;
+		padding-left: 45%;
+	}
+</style>
+<div id="box" style="display: block;"><img src="__PUBLIC__/img/loading.gif" width="50px"></div>
+
+<script type="text/javascript">
+	var agent_ip = "{:C('AGENT_IP')}";
+
+	$(document).ready(function(){
+		$('#box').show();
+		var start_date = $('#start_date').val(); 
+		var end_date = $('#end_date').val(); 
+		var extid = $('#extid').val(); 
+		getList(1,start_date,end_date,extid);
+	});
+
+	function getList(p,start_date,end_date,extid){
+		var p = p ? p : 1;
+		$.ajax({
+			type:'get',
+			url: "http://"+agent_ip+"/agent/index.php/home/index/record",
+			data: {p:p,start_date:start_date,end_date:end_date,extid:extid},
+			timeout: 10000,
+			async:true,
+			success:function(data){
+				$('#box').hide();
+				if(data.status == 1){
+					if(data.data != null){
+						temp = '';
+						$.each(data.data.list, function(k, v){
+							temp += '<tr>\
+										<td>'+v.datetime+'</td>\
+										<td>'+v.src+'</td>\
+										<td>'+v.dst+'</td>\
+										<td>'+v.billable+'</td>\
+										<td>'+v.disposition+'</td>\
+										<td>'+v.sound_info+'</td>\
+										<td>'+v.sound_download+'</td>\
+									</tr>';
+						});
+						$('table tbody').html(temp);
+						$('#total_count').html(data.data.total_count);
+						$('#total_answered').html(data.data.total_answered);
+						$('#answered_rate').html(data.data.answered_rate);
+						$('#total_billable').html(data.data.total_billable);
+						$('#max_billable').html(data.data.max_billable);
+
+						var changepage = "";
+						if(data.data.p == 1){
+							changepage = "<li><span class='current'>首页</span></li><li><span>« 上一页</span></li>";
+							if(data.data.p < data.data.total){
+								changepage += "<li><a class='page' href='javascript:void(0)' rel='"+(data.data.p+1)+"'>下一页 »</a></li>";
+							}else{
+								changepage += "<li><span>下一页 »</span></li>";
+							}
+						}else if(data.data.p == data.data.total){
+							changepage = "<li><a class='page' href='javascript:void(0)' rel='1'>首页</a></li><li><a class='page' href='javascript:void(0)' rel='"+(data.data.p-1)+"'>« 上一页</a></li><li><span>下一页 »</span></li>";
+						}else{
+							changepage = "<li><a class='page' href='javascript:void(0)' rel='1'>首页</a></li><li><a class='page' href='javascript:void(0)' rel='"+(data.data.p-1)+"'>« 上一页</a></li><li><a class='page' href='javascript:void(0)' rel='"+(data.data.p+1)+"'>下一页 »</a></li>";
+						}
+					} else {
+						$('table body').html('<tr><td colspan="5">-- 暂无数据 --</td></tr>');
+					}
+					$('#ps').html(data.data.p);
+					$('#changepages').html(changepage);
+					$('#counts').html(data.data.count);
+					$('#total_pages').html(data.data.total);
+					$('.page').click(function(){
+						var p = $(this).attr('rel');
+						var start_date = $('#start_date').val(); 
+						var end_date = $('#end_date').val(); 
+						var extid = $('#extid').val(); 
+						getList(p,start_date,end_date,extid);
+					});
+				} else {
+					alert(data.info);
+				}
+			},
+			error:function(){
+				$('#box').hide();
+				alert('响应失败，请联系管理员检查呼叫配置！');
+			},
+			dataType:'json'
+		});
+	}
+
+	//搜索功能
+	$(document).on('click', '#search', function(){
+		$('#box').show();
+		var start_date = $('#start_date').val(); 
+		var end_date = $('#end_date').val(); 
+		var extid = $('#extid').val(); 
+		getList(1,start_date,end_date,extid);
+	});
+
+	//获取录音
+	$(document).on('click', '.get_sound', function(){
+		var obj_this = $(this);
+
+		//防止重复点击
+		obj_this.css('display', 'none');
+		obj_this.parent().append('正在获取... ...');
+
+		var uniqueid = obj_this.attr('rel');
+		$.ajax({
+			type:'get',
+			url: "http://"+agent_ip+"/agent/index.php/home/index/get_sound",
+			data: {uniqueid:uniqueid},
+			async:true,
+			success:function(data){
+				if (data.status == 1) {
+					obj_this.parent().html('<video style="height:30px; width: 260px;" src="'+data.data+'" controls="controls">您的浏览器不支持 video 标签。</video>');
+				} else {
+					alert(data.info);
+					obj_this.parent().html('<a href="javascript:void(0);" class="get_sound" rel="'+uniqueid+'" >获取录音</a>');
+				}
+			},
+			error:function(){
+				alert('响应失败，请联系管理员检查呼叫配置！');
+			},
+			dataType:'json'
+		});
+	});
+</script>
+<include file="Public:footer" />

@@ -1,0 +1,349 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/chart/highcharts.js"></script>
+<script src="__PUBLIC__/js/chart/modules/exporting.js"></script>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<style>
+	body{
+		overflow-y: hidden;
+	}
+	.pull-left{margin-top: 10px;}
+</style>
+<script>
+$(function(){
+	<if condition = "$_GET['content_id'] eq '' || $_GET['content_id'] eq 1">
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-30);
+		$(window).resize(function(){
+			$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-30);
+			$("#oDivL_tab_Test3").height($("#table_div").height()).width($("#oTableLH_tab_Test3").width());
+			$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width());
+		})
+		$("#tab_Test3").FrozenTable(1,0,0);
+		$("#oDivL_tab_Test3").height($("#table_div").height()).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width());
+	</if>
+})
+
+</script>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<include file="Public:analytics_left" />
+				<input type="hidden" id="type_id" value="{$type_id}">
+				<input type="hidden" id="content_id" value="{$content_id}">
+				<div class="col-lg-10">
+					<div class="ibox-content" style="padding-bottom:10px">
+						<include file="Public:alert" />
+						<div class="row">
+							<div class="col-lg-3">
+								<div class="pull-left" >
+									<a href="javascript:void(0)" id="advance_search">高级筛选</a>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<if condition = "$_GET['content_id'] lt 4">
+									<div style="margin:0 auto;width:300px;">
+										<div class="col-lg-3">
+											<a href="javascript:void(0);" class="select_time_a" rel="1" style="float:left;margin-right:15px;width:80px;font-weight: 500;">本月度</a>
+										</div>
+										<div class="col-lg-3">
+											<a href="javascript:void(0);" class="select_time_a" rel="2" style="float:left;margin-right:15px;width:80px;font-weight: 500;">本季度</a>
+										</div>
+										<div class="col-lg-3">
+											<a href="javascript:void(0);" class="select_time_a" rel="3" style="float:left;width:80px;font-weight: 500;">本年度</a>
+										</div>
+										<div class="col-lg-3">
+											<a href="javascript:void(0);" class="select_time_a" rel="5" style="float:left;width:80px;font-weight: 500;">上一年</a>
+										</div>
+									</div>
+								</if>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="ibox-content full-height-scroll" id="right_height" style="border-top: none;padding-bottom: 35px;">
+						<if condition = "$_GET['content_id'] eq 1">
+							<div id="content_1" class="th_content">
+								<div id="table_div" class="full-height-scroll" style="left:0px;top:0px;">
+									<table class="table table-hover table-striped table_thead_fixed" id="tab_Test3" style="background:#fff;margin-bottom:0px;">
+										<tr class="tabTh">
+											<td style="width:25%">产品</td>
+											<td style="width:25%">销量</td>
+											<td style="width:25%">毛利</td>
+											<td style="width:25%">成本</td>
+											<td style="width:25%">预计收益</td>
+										</tr>
+										<volist name="product_count" id="vo">
+										<tr>
+											<td><a class="role_info" rel="{$vo.user.role_id}" href="{:U('product/view','id='.$vo['product_id'])}">{$vo.name}</a></td>
+											<td>{$vo.sales_num}</td>
+											<td>{$vo.count_sales_price}</td>
+											<td>{$vo.count_cost_price}</td>
+											<td>{$vo.profit_price}</td>
+										</tr>
+										</volist>
+									</table>
+								</div>
+								<div id="tfoot_div" class="clearfix">
+									<div class="clearfix" id="tfoot_page">
+										<table class="table">						
+											<tr style="background: #029BE2;color: #fff;font-size: 13px;">
+												<td style="color:#fff;width:25%">共计：</td>
+												<td style="color:#fff;width:25%">{$product_total.sales_sales}</td>
+												<td style="color:#fff;width:25%">{$product_total.sales_price}</td>
+												<td style="color:#fff;width:25%">{$product_total.sales_cost}</td>
+												<td style="color:#fff;width:25%">{$product_total.sales_profit}</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</div>
+						</if>
+						<if condition = "$_GET['content_id'] eq 2">
+							<div id="content_2" class="th_content" style="overflow:auto;">	
+								<div id="canvas_top" style="min-width: 550px; height: 500px;margin: 0 auto"></div>
+							</div>
+						</if>
+						<if condition = "$_GET['content_id'] eq 3">
+							<div id="content_3" class="th_content" style="overflow:auto;">				
+								<div id="canvas_profitp" style="min-width: 500px; height: 550px;margin: 0 auto"></div>		
+							</div>
+						</if>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+//高级筛选
+$("#advance_search").click(function(){
+	var mokuai_id = $('#type_id').val();
+	var content_id = $('#content_id').val();
+	var module_name = $('#module_name').val();
+	var action_name = $('#action_name').val();
+	var department = "{$_GET['department']}";
+	var role = "{$_GET['role']}";
+	$('#dialog-advance_search').dialog('open');
+	$('#dialog-advance_search').load('{:U("product/advance_search","mokuai_id=")}'+mokuai_id +'&content_id='+content_id+'&module_name='+module_name+'&action_name='+action_name+'&department='+department+'&role='+role); 
+});
+$("#dialog-advance_search").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 450,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+			var select_role = 0;
+			var arys = new Array();
+			var type_id = $('#type_id').val();
+			var content_id = $('#content_id').val();
+			$('#types_id').val(type_id);
+			$('#contents_id').val(content_id);
+			if(select_type == '' || select_type == 0){
+				swal({
+					title: "对比时间不能为空！",
+					type: "error"
+				});
+				return false;
+			}else{
+				$('#advance_search_form').submit();
+				return true;
+			}
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+
+$(".select_time_a").click(function(){
+	var select_time = $(this).attr('rel');
+	var type_id = "{$_GET['type_id']}";
+	var content_id = "{$_GET['content_id']}";  
+	window.location.href="{:U('product/analytics','&type_id=')}"+type_id+'&content_id='+content_id+'&select_type='+select_time+'&department=all&role=all';
+});
+
+function changeRole(){
+	department_id = $("#department option:selected").val();
+	$.ajax({
+		type:'get',
+		url:'index.php?m=user&a=getrolebydepartment&department_id='+department_id,
+		async:true,
+		success:function(data){
+			options = '<option value="">{:L('ALL')}</option>';
+			if(data.data != null){
+				$.each(data.data, function(k, v){
+					options += '<option value="'+v.role_id+'">'+v.role_name+"-"+v.user_name+'</option>';
+				});
+			}
+			$("#role").html(options);
+			<if condition="$_GET['role']">
+			$("#role option[value='{$Think.get.role}']").prop("selected", true);
+			</if>
+		},
+		dataType:'json'
+	});
+}
+
+$(function(){
+	var canvas_width = $('#an_chart').width();
+	var product_count = {$product_count|count};
+	var sales_top = {$sales_top|count};
+	if(sales_top > 10){
+		sales_top = sales_top*100;
+	}else{
+		sales_top = canvas_width;
+	}
+	if(product_count > 10){
+		product_count = product_count*100;
+	}else{
+		product_count = canvas_width;
+	}	
+	var canvas_height = $('#an_chart').height();
+	$('#canvas_top').css({width:sales_top});
+	$('#canvas_profitp').css({width:product_count});
+
+	//销量TOP20
+	$('#canvas_top').highcharts({
+		chart: {
+			type: 'column',
+			margin: [ 50, 50, 100, 80]
+		},
+		title: {
+			text: '销量TOP20'
+		},
+		xAxis: {
+			categories: [
+				<volist name="sales_top" id="vo">
+					'{$vo.name}',
+				</volist>					
+			],
+			labels: {
+				rotation: -45,
+				align: 'right',
+				style: {
+					fontSize: '13px',
+					fontFamily: 'Verdana, sans-serif'
+				}
+			}
+		},
+		yAxis: {
+			min: 0,
+			title: {
+				text: '销量TOP20'
+			}
+		},
+		legend: {
+			enabled: false
+		},
+		tooltip: {
+			pointFormat: '总销量: <b>{point.y}</b>',
+		},
+		series: [{
+			name: 'Population',
+			data: [
+				<volist name="sales_top" id="vo">
+					{$vo.sales_num},
+				</volist>
+			],
+			dataLabels: {
+				enabled: true,
+				rotation: -90,
+				color: '#FFFFFF',
+				align: 'right',
+				x: 4,
+				y: 10,
+				style: {
+					fontSize: '13px',
+					fontFamily: 'Verdana, sans-serif',
+					textShadow: '0 0 3px black'
+				}
+			}
+		}]
+	});
+	
+	//销售额统计
+	$('#canvas_profitp').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '销售额统计'
+        },
+        xAxis: {
+            categories: [
+				<volist name="product_count" id="vo">
+						'{$vo.name}',
+				</volist>	
+			]
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: '销售额统计'
+            },
+            stackLabels: {
+                enabled: true,			
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+        },
+        legend: {
+            align: 'right',
+            x: -70,
+            verticalAlign: 'top',
+            y: 20,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColorSolid) || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false				
+        },
+        tooltip: {
+            formatter: function() {
+                return '<b>'+ this.x +'</b><br>'+
+                    this.series.name +': '+ this.y +'<br>'+
+                    '毛利润: '+ this.point.stackTotal;
+            }
+        },
+        plotOptions: {
+            column: {
+				rotation: -45,
+                stacking: 'normal',
+                dataLabels: {					
+                    enabled: true,
+                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                }
+            }
+        },
+        series: [{
+            name: '利润',
+            data: [
+				<volist name="product_count" id="vo">
+					{$vo.profit_price},
+				</volist>	
+			]
+        }, {
+            name: '成本',
+            data: [
+				<volist name="product_count" id="vo">
+					{$vo.count_cost_price},
+				</volist>
+			]
+        }]
+	});
+})
+
+<if condition="$_GET['department'] and $_GET['department'] neq 'all'">
+$("#department option[value='{$Think.get.department}']").prop("selected", true); 
+changeRole();
+</if>
+<if condition="$_GET['department'] eq 'all'">
+$("#role option[value='{$Think.get.role}']").prop("selected", true);
+</if>
+</script>
+<include file="Public:footer" />

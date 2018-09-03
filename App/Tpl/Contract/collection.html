@@ -1,0 +1,362 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+
+<script src="__PUBLIC__/js/chart/highcharts.js"></script>
+<script src="__PUBLIC__/js/chart/modules/exporting.js"></script>
+
+<!--jQuery导出插件-->
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jquery.base64.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/tableExport.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jspdf/libs/sprintf.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jspdf/jspdf.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jspdf/libs/base64.js"></script>
+<!--jQuery导出插件-->
+
+<style>
+	body{
+		overflow-y: hidden;
+	}
+	.form-horizontal .form-group{margin-left:0px;margin-right:0px;}
+
+	/*该属性若不设为默认属性会影响到"select2"的效果*/
+	.input-group .form-control {
+		position: static;
+	}
+
+	#tab_Test3 tbody tr td {
+		border: 0px;
+		border-top: 1px solid #e7eaec;
+		height: 50px;
+	}
+
+	/*这个是为了固定左上角那个td*/
+	#oDivL_tab_Test3 {background-color: #fff; z-index: inherit !important;}
+
+	.adjust {
+		position: absolute;
+		right: 10px;
+		display: none;
+	}
+	.adjust_td:hover .adjust{
+		display: inline-block;
+	}
+</style>
+<script>
+$(function(){
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-30);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-30);
+		$("#oDivL_tab_Test3").height($("#table_div").height()).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width());
+	});
+	var scroll_width = 10;
+	$(".nicescroll").niceScroll({
+		cursorcolor: "#999",//#CC0071 光标颜色 
+	    cursoropacitymax: 0.4, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0 
+	    touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备 
+	    cursorwidth: scroll_width+"px", //像素光标的宽度 
+	    cursorborder: "0", //     游标边框css定义 
+	    cursorborderradius: "3px",//以像素为光标边界半径 
+	    autohidemode: false, //是否隐藏滚动条 
+	    zindex:100,
+	    background:"#F3F3F5",//滚动条背景色
+	});
+	$("#tab_Test3").FrozenTable(2,0,1);
+	$("#oDivL_tab_Test3").height($("#table_div").height()).width($("#oTableLH_tab_Test3").width());
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width());
+})
+
+</script>
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<include file="Public:analytics_left" />
+				<input type="hidden" id="content_id" value="{$content_id}">
+				<div class="col-lg-10">
+					<div class="ibox-content" style="padding-bottom:10px;border-bottom:none;">
+						<include file="Public:alert" />
+						<form id="" class="form-group" method="get" style="margin-bottom: 0px;">
+							<input type="hidden" name="m" value="contract" />
+							<input type="hidden" name="a" value="collection" />
+							<div class="row" style="height: 45px;">
+								<div class="col-lg-4">
+									<div class="pull-left" >
+										<span style="font-size: 18px;color: #000;">
+											员工业绩目标管理
+										</span>
+									</div>
+								</div>
+								<div class="col-lg-8">
+									<div class="pull-right">
+										<div class="pull-left" style="margin-right: 15px;line-height: 40px;">
+											<a href="javascript:void(0);" class="role_info" rel="1">设置部门目标</a> |
+											<a href="javascript:void(0);" class="role_info" rel="2">设置个人目标</a>
+										</div>
+										<div class="pull-left">
+											<!-- <div class="checkbox checkbox-primary">
+												<input name="user_type" id="user_type" type="checkbox" <if condition="$_GET['user_type'] eq ''">checked="true" value=""<else />value="1"</if> />
+												<label for="user_type">仅显示销售岗数据</label>
+											</div> -->
+										</div>
+										<div class="pull-right" style="margin-left: 15px;line-height: 40px;">
+											<span class="fa fa-download" style="color:#75899D;"></span>
+											<a style="color: #75899D;" onClick ="$('#tab_Test3').tableExport({type: 'excel', escape: 'false'});">导出</a>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row" >
+								<div class="col-lg-12">
+									<div class="nav pull-left">
+										<div class="input-group" style="margin:2px 0 0 0px;">
+											<select class="form-control input-sm" name="year" >
+												<volist name="year_list" id="vo">
+													<option value="{$vo}" <if condition="$vo eq ($_GET['year'] ?: date('Y'))">selected</if> >{$vo}</option>
+												</volist>
+											</select>
+										</div>
+									</div>
+									<div class="nav pull-left">
+										<div class="input-group" style="margin:2px 0 0 15px;">
+											<select class="form-control input-sm" name="target_type" >
+												<option value="1" <if condition="$_GET['target_type'] eq 1">selected</if> >销售额</option>
+												<option value="2" <if condition="$_GET['target_type'] eq 2">selected</if> >回款金额</option>
+											</select>
+										</div>
+									</div>
+									<div class="nav pull-left" style="margin:2px 0 0 15px;width: 165px;">
+										<div class="input-group">
+											<select class="form-control input-sm select2" style="min-width:165px;max-width: 165px;height: 0px;" name="department_id" id="department" onchange="changeRole()">
+												<option class="all" value="all">{:L('ALL')}</option>
+												<volist name="departmentList" id="vo">
+													<option value="{$vo.department_id}" <if condition="$vo['department_id'] eq $_GET['department_id']">selected</if> >{$vo.name}</option>
+												</volist>
+											</select>
+										</div>
+									</div>
+									<div class="nav pull-left" style="margin:2px 0 0 15px;width: 165px;">
+										<div class="input-group">
+											<select class="form-control input-sm select2" style="min-width:165px;max-width: 165px;height: 0px;" name="role_id" id="role" onchange="changeCondition()">
+												<option class="all" value="all">{:L('ALL')}</option>
+												<volist name="roleList" id="vo">
+													<option value="{$vo.role_id}" <if condition="$_GET['role_id'] eq $vo['role_id']">selected</if>>{$vo.role_name}-{$vo.user_name}</option>
+												</volist>
+											</select>
+										</div>
+									</div>
+									<div class="pull-left" style="margin-left: 20px;">
+										<button type="submit" id="analytics_search" class="btn btn-primary">{:L('SEARCH')}</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="ibox-content" id="right_height" style="border-top: none;padding-top: 0px;">
+						<div id="report_content" class="th_content" style="position:relative;">
+							<div id="table_div" class="nicescroll" style="left:0px;top:0px;">
+								<table class="table table-hover table-striped table_thead_fixed table-bordered" id="tab_Test3" style="background:#fff;margin-bottom:0px;">
+									<tr class="tabTh">
+									    <td rowspan="2" style="height: 60px;min-width: 150px;">部门/员工</td>
+									    <td rowspan="2" style="height: 60px;">职务</td>
+									    <td rowspan="2" style="height: 60px; min-width: 80px;border-left:1px solid #e7eaec;">考核目标</td>
+									    <td colspan="3" style="height: 30px;text-align: center;border-left:1px solid #e7eaec;">年度目标</td>
+									    <td colspan="3" style="height: 30px;text-align: center;border-left:1px solid #e7eaec;">第一季度</td>
+									    <td colspan="3" style="height: 30px;text-align: center;border-left:1px solid #e7eaec;">第二季度</td>
+									    <td colspan="3" style="height: 30px;text-align: center;border-left:1px solid #e7eaec;">第三季度</td>
+									    <td colspan="3" style="height: 30px;text-align: center;border-left:1px solid #e7eaec;">第四季度</td>
+									    <for start="1" end="12" comparison="elt">
+									    	<td colspan="3" style="height: 30px;text-align: center;border-left:1px solid #e7eaec;">{:date('Y')}年{$i}月</td>
+										</for>
+									</tr>
+									<tr class="tabTh">
+										<for start="1" end="17" comparison="elt">
+									    	<td style="min-width: 80px;height: 30px;border-left:1px solid #e7eaec;">完成</td>
+										    <td style="min-width: 80px;height: 30px;">目标</td>
+										    <td style="min-width: 80px;height: 30px;">完成率</td>
+										</for>
+									</tr>
+									<tbody>
+										<volist name="list" id="vo">
+										  	<tr>
+												<if condition="$vo['role_name']">
+											  		<td class="adjust_td" style="border-right:1px solid #e7eaec;">
+											  			{$vo.user_name}
+
+											  			<span class="adjust">
+											  				<a href="javascript:void(0)" class="edit_target" rel="4" id="{$vo.role_id}">
+											  					<img src="__PUBLIC__/img/bianj.png">
+											  				</a>&nbsp;
+											  				<!-- <a href="javascript:void(0);"><img src="__PUBLIC__/img/sahnc.png"></a> -->
+											  			</span>
+											  		</td>
+												    <td style="border-right:1px solid #e7eaec;">{$vo.role_name}</td>
+												<else />
+													<td class="adjust_td" style="border-right:1px solid #e7eaec;">
+														<img src="__PUBLIC__/img/001.png" > {$vo.name}
+
+														<span class="adjust">
+											  				<a href="javascript:void(0)" class="edit_target" rel="3" id="{$vo.department_id}">
+											  					<img src="__PUBLIC__/img/bianj.png">
+											  				</a>&nbsp;
+											  				<!-- <a href=""><img src="__PUBLIC__/img/sahnc.png"></a> -->
+											  			</span>
+													</td>
+											    	<td style="border-right:1px solid #e7eaec;"></td>
+												</if>
+											    <td>
+											    	<if condition="$_GET['target_type'] eq 2">回款金额<else />销售额</if>
+											    </td>
+											    <td style="border-left:1px solid #e7eaec;">{$vo.total_finish}</td>
+											    <td>{$vo.total}</td>
+											    <td <if condition="$vo['total_rate'] lt 100">style="color:red;"<else />style="color:green;"</if> >
+											    	{$vo.total_rate}%
+											    </td>
+
+											    <td style="border-left:1px solid #e7eaec;">{$vo.first_quarter_finish}</td>
+											    <td>{$vo.first_quarter_target}</td>
+											    <td <if condition="$vo['first_quarter_rate'] lt 100">style="color:red;"<else />style="color:green;"</if> >
+											    	{$vo.first_quarter_rate}%
+											    </td>
+
+											    <td style="border-left:1px solid #e7eaec;">{$vo.second_quarter_finish}</td>
+											    <td>{$vo.second_quarter_target}</td>
+											    <td <if condition="$vo['second_quarter_rate'] lt 100">style="color:red;"<else />style="color:green;"</if> >
+											    	{$vo.second_quarter_rate}%
+											    </td>
+
+											    <td style="border-left:1px solid #e7eaec;">{$vo.third_quarter_finish}</td>
+											    <td>{$vo.third_quarter_target}</td>
+											    <td <if condition="$vo['third_quarter_rate'] lt 100">style="color:red;"<else />style="color:green;"</if> >
+											    	{$vo.third_quarter_rate}%
+											    </td>
+
+											    <td style="border-left:1px solid #e7eaec;">{$vo.fourth_quarter_finish}</td>
+											    <td>{$vo.fourth_quarter_target}</td>
+											    <td <if condition="$vo['fourth_quarter_rate'] lt 100">style="color:red;"<else />style="color:green;"</if> >
+											    	{$vo.fourth_quarter_rate}%
+											    </td>
+												
+												<for start="1" end="12" comparison="elt" name="a">
+											    	<td style="border-left:1px solid #e7eaec;"><?php echo ($vo['month'.$a.'_finish']); ?></td>
+												    <td><?php echo ($vo['month'.$a.'_target']); ?></td>
+												    <td <if condition="$vo['month'.$a.'_rate'] lt 100">style="color:red;"<else />style="color:green;"</if> >
+												    	<?php echo ($vo['month'.$a.'_rate']); ?>%
+												    </td>
+												</for>
+										  	</tr>
+										</volist>
+									</tbody>
+								</table>
+							</div>
+							<div id="tfoot_div" class="clearfix"></div>
+						</div>
+
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div style="display:none;" id="dialog-set-target" title="设置目标">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	$("#dialog-set-target").dialog({
+		autoOpen: false,
+		//modal: true,  //背景阴影层
+		minWidth: 925,
+		maxHeight: 600,
+		position: ["center",100],
+		buttons: { 
+			"确定": function () {
+				var rel = $("input[name='dep_per']").val();
+		    	if (rel == 2) {
+		    		var id_array = new Array();
+			    	$('.p-choose-user').each(function(){
+			    		id_array.push($(this).attr('role_id'));
+			    	});
+			    	if (id_array.length == 0) {
+			    		alert_crm('至少选择一名员工！');
+			    		return false;
+			    	} else {
+			    		$('#form-target').submit();
+			    	}
+		    	} else {
+		    		$('#form-target').submit();
+		    	}
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+	$(".role_info").click(function(){
+		var rel = $(this).attr('rel');
+		$('#dialog-set-target').dialog('open');
+		$('#dialog-set-target').load('{:U("contract/set_target","rel=")}'+rel);
+	});
+
+	//编辑业绩目标
+	$(document).on('click','.edit_target',function(){
+		var rel = $(this).attr('rel');
+		var id = $(this).attr('id');
+		var year = $('select[name=year]').val();
+		var target_type = $('select[name=target_type]').val();
+		$('#dialog-set-target').dialog('open');
+		$('#dialog-set-target').load('{:U("contract/set_target","rel=")}'+rel+"&id="+id+"&year="+year+"&target_type="+target_type);
+	});
+
+
+	function changeRole(){
+		department_id = $("#department option:selected").val();
+		$.ajax({
+			type:'get',
+			url:'index.php?m=user&a=getrolebydepartment&department_id='+department_id,
+			async:true,
+			success:function(data){
+				options = '<option value="all">{:L('All')}</option>';
+				if(data.data != null){
+					$.each(data.data, function(k, v){
+						options += '<option value="'+v.role_id+'">'+v.role_name+"-"+v.user_name+'</option>';
+					});
+				}
+				$("#role").html(options);
+				<if condition="$_GET['role']">
+				$("#role option[value='{$Think.get.role}']").prop("selected", true);
+				</if>
+			},
+			dataType:'json'});
+	}
+	
+	//是否仅查询销售岗位
+	$("#user_type").click(function(){
+		var user_type = $(this).is(':checked');
+		var year = $('select[name=year]').val();
+		var type = $('select[name=type]').val();
+		if(user_type == true){
+			window.location.href = "{:U('contract/collection','content_id=1'.'&year=')}"+year+'&type='+type;
+		}else{
+			window.location.href = "{:U('contract/collection','&content_id=1'.'&year=')}"+year+'&user_type=1'+'&type='+type;
+		}
+	});
+	
+	<if condition="$_GET['department'] and $_GET['department'] neq 'all'">
+	$("#department option[value='{$Think.get.department}']").prop("selected", true); 
+	changeRole();
+	</if>
+	<if condition="$_GET['department'] eq 'all'">
+	$("#role option[value='{$Think.get.role}']").prop("selected", true);
+	</if>
+</script>
+<include file="Public:footer" />

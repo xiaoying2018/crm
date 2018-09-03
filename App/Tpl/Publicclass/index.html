@@ -1,0 +1,787 @@
+<link rel="stylesheet" href="/Public/js/jqGrid/ui.jqgridffe4.css">
+<link rel="stylesheet" href="/Public/css/page/publicTable.css">
+<include file="Public:header" />
+<style>
+    #ids{width: 200px;height: 200px;border: 1px solid red}
+    .a_name{
+        color: #5C8FFC !important; 
+    }
+    .li_item {
+        display: inline-block !important;
+        vertical-align: top;
+    }
+    .li_item.bt {
+        /*width: 300px;*/
+        position: relative;
+    }
+    .li_item.bt .fa {
+        position: absolute;
+        right: 10px;
+        top: 0;
+        width: 40px;
+        height: 34px;
+        line-height: 34px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .ibox-content {
+        border: none;
+        background: none;
+    }
+    .li_item {
+        display: inline-block !important;
+        vertical-align: top;
+    }
+    .li_item.bt {
+        /*width: 300px;*/
+        position: relative;
+    }
+    .li_item.bt .fa {
+        position: absolute;
+        right: 10px;
+        top: 0;
+        width: 40px;
+        height: 34px;
+        line-height: 34px;
+        text-align: center;
+        cursor: pointer;
+    }
+    .a_name{
+        color: #5C8FFC !important; 
+    }
+    #table_list_2_cb{
+
+    }
+    .ui-jqgrid-bdiv{
+        background-color: #fff;
+        /*overflow-x: scroll !important;*/
+    }
+    #table_list_2{
+        overflow: scroll !important;
+    }
+    .frozen-bdiv{
+        overflow-x: hidden !important;
+    }
+
+    .ui-jqgrid tr.jqgrow td{
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        word-space:nowrap;
+    }
+
+    #allcate a{
+        margin-right: 5px;
+    }
+    .breadcrum .blockLi {
+        margin: 10px 0;
+        display: block;
+    }
+    .breadcrum .blockLi .ul-c {
+        display: inline-block;
+        padding: 0;
+        float: left;
+        width: 90%;
+    }
+    .breadcrum .blockLi .ul-c li {
+        padding: 4px 10px;
+        display: inline-block;
+        cursor: pointer;
+        border: 1px solid #fff;
+        border-radius: 5px;
+        margin-right: 5px;
+    }
+    .breadcrum .blockLi .ul-c li.active {
+        border: 1px solid #1ab394 ;
+        color: #1ab394 ;
+    }
+    .breadcrum .blockLi .colTitle {
+        width: 80px;
+        float: left;
+        padding-top: 5px;
+    }
+    .breadcrum .blockLi:before {
+        content: "";
+        display: none;
+    }
+
+</style>
+<script src="/Public/js/jqGrid/i18n/grid.locale-cnffe4.js" type="text/javascript"></script>
+<script src="/Public/js/jqGrid/jquery.jqGrid.minffe4.js" type="text/javascript"></script>
+
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="title-bar" style="position: relative;z-index: 99;">
+                    <div class="row clearfix" id="title-hide" style="display:none;">
+                        <ul class="breadcrum pull-left">
+                            <li>已选中&nbsp;<span id="icheck_num"></span>&nbsp;项</li>
+                            <!--<li class="single_btn"><a href="javascript:void(0)" id="edit_data"><i class="fa fa-pencil"></i>&nbsp;编辑</a></li>-->
+                            <li><a id="delete" href="javascript:void(0)" onclick="delThis()"><i class="fa fa-times"></i>&nbsp;删除</a></li>
+                            <li class="single_btn" style="display: inline-block;"><a href="javascript:void(0)" class="edit_href"><i class="fa fa-pencil"></i>&nbsp;编辑</a></li>
+                            <li class="last_li" style="bottom:10px;"><big><a class="fa fa-times pull-right" id="back-show"></a></big></li>
+                        </ul>
+                    </div>
+
+
+                    <div class="row" id="title-show">
+                        <ul class="clearfix row" style="margin:0 0; padding: 0; width: 100%; text-align: right;">
+                            <div class="col-lg-8">
+                                <a href="{:U('publicclass/add')}" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 新建公开课</a>
+                                <a href="{:U('publicclass/livecate')}" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 直播类型分类管理</a>
+                                <a href="{:U('publicclass/livecontent')}" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 直播内容分类管理</a>
+                            </div>
+                            
+                            <li class="li_item bt col-lg-2" style="float: none !important;">
+                                <input type="text" placeholder="课程名称" name="search" id="searchInput" class="form-control input-sm"><i class="fa fa-search"></i>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="title-bar clearfix" id="secondPart" style="position: relative;z-index: 99;">
+                    <ul class="breadcrum pull-left" style="margin-bottom: 0px;padding-right:0px;padding: 0 5px;width: 100%;">    
+                        <li class="blockLi clearfix">
+                            <span class="colTitle">直播类型：</span>
+                            <ul data-name="livecate" class="ul-c ul-control">
+                                <li value="" data-value="" class="active">不限</li>
+                                <volist name='livecate' id='vo'>
+                                    <li data-value="{$vo.id}">{$vo.cate_name}</li>
+                                </volist>
+                            </ul>
+                            <input type="hidden" name="livecate" value="">
+                        </li>
+                        <li class="blockLi clearfix">
+                            <span class="colTitle">直播内容：</span>
+                            <ul data-name="livecontent" class="ul-c ul-controls">
+                                <li value="" data-value=""  class="active bx">不限</li>
+                                <volist name='livecontent' id='vo'>
+                                    <li data-value="{$vo.id}" style="margin-top:10px">{$vo.cate_name}</li>
+                                </volist>
+                            </ul>
+                            <input type="hidden" name="livecontent" value="">
+                        </li>
+                    </ul>
+                </div>
+                <div class="table_vue">
+                    <table class="" id="table_list_2"></table>
+                    <!-- 分页 -->
+                    <div id="gridpager"></div>
+                </div>
+                <!--                <div class="ibox-content clearfix" id="table_container" style="z-index: 1;">
+                                    <table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
+                                        <tr id="childNodes_num" class="tabTh">
+                                             表头 
+                                            <td>姓名</td>
+                                            <td>录入大学</td>
+                                            <td>录取专业</td>
+                                            <td>本科大学</td>
+                                            <td>本科专业</td>
+                                            <td>录入年份</td>
+                                            <td>日语</td>
+                                            <td>英语</td>
+                                            <td>签约产品</td>
+                                            <td>QQ/微信</td>
+                                            <td>合作维护人</td>
+                                            <td>数据录入人</td>
+                                            <td>创建时间</td>
+                                            <td>操作</td>
+                                        </tr>
+                
+                                                                <tr>
+                                                                    <td>机构名称</td>
+                                                                    <td>机构类别</td>
+                                                                    <td>地址</td>
+                                                                    <td>联系人</td>
+                                                                    <td>职位</td>
+                                                                    <td>电话</td>
+                                                                    <td>邮箱</td>
+                                                                    <td>QQ/微信</td>
+                                                                    <td>合作维护人</td>
+                                                                    <td>数据录入人</td>
+                                                                    <td>
+                                                                        <button type='button' onclick='showEdit(this)' class='btn btn-default'>编辑</button>
+                                                                        <button type='button' onclick='showEdit(this)' class='btn btn-default'>删除</button>
+                                                                    </td>
+                                                                </tr>
+                                        <tbody id="dataStore">
+                                        </tbody>
+                                    </table>
+                                </div>-->
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div style="display:none" id="dialog-block-add" title="新建线索区">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+<div style="display:none" id="dialog-block-edit" title="编辑线索区">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<include file="Publicclass:detail" />
+<!--详情-->
+
+<script>
+
+    $('#dialog-block-add').dialog({
+        autoOpen: false,
+        width: "40%",
+        maxHeight: 600,
+        position: ["center", 100],
+        buttons: {
+            "提交": function () {
+                var form = $('#block-create-form'),
+                        formData = form.serializeArray(),
+                        data = [],
+                        that = this;
+
+                $.each(formData, function (k, v) {
+                    if (data[v.name] != 'undefined') {
+                        var old = data[v.name];
+                        data[v.name] = [];
+                        data[v.name].push(old);
+                        data[v.name].push(v.value);
+                    }
+                    data[v.name] = v.value;
+                });
+
+                if (!data['name'] || !data['person_id']) {
+                    layer.msg('数据填写不完整');
+                    return;
+                }
+
+                $.ajax({
+                    url: "{:U('clueblock/add')}",
+                    data: formData,
+                    dataType: "JSON",
+                    type: "POST",
+                    success: function (obj) {
+                        if (obj.status == true) {
+                            $(that).dialog("close");
+                            search();
+                            return;
+                        } else {
+                            layer.msg(obj.remark);
+                        }
+                    }
+                });
+            },
+            "取消": function () {
+                $(this).dialog("close");
+            }
+        },
+        close: function () {
+            $(this).html('');
+        }
+    });
+
+    $('#dialog-block-edit').dialog({
+        autoOpen: false,
+        width: "40%",
+        maxHeight: 600,
+        position: ["center", 100],
+        buttons: {
+            "提交": function () {
+                var form = $('#block-create-form'),
+                        formData = form.serializeArray(),
+                        data = [],
+                        that = this;
+
+                $.each(formData, function (k, v) {
+                    if (data[v.name] != 'undefined') {
+                        var old = data[v.name];
+                        data[v.name] = [];
+                        data[v.name].push(old);
+                        data[v.name].push(v.value);
+                    }
+                    data[v.name] = v.value;
+                });
+
+                if (!data['id'] || !data['name'] || !data['person_id']) {
+                    layer.msg('数据填写不完整');
+                    return;
+                }
+
+                $.ajax({
+                    url: "{:U('clueblock/edit')}",
+                    data: formData,
+                    dataType: "JSON",
+                    type: "POST",
+                    success: function (obj) {
+                        if (obj.status == true) {
+                            $(that).dialog("close");
+                            search();
+                            return;
+                        } else {
+                            layer.msg(obj.remark);
+                        }
+                    }
+                });
+            },
+            "取消": function () {
+                $(this).dialog("close");
+            }
+        },
+        close: function () {
+            $(this).html('');
+        }
+    });
+
+    function search()
+    {
+        $.ajax({
+            url: "{:U('case/search')}",
+            data: {"cooperation_cate_id": $('#wheres').val()},
+            dataType: "JSON",
+            type: "POST",
+            success: function (obj) {
+                if (obj.status == true) {
+                    renderView(obj.data);
+                    return;
+                } else {
+                    layer.msg(obj.remark);
+                }
+            }
+        });
+    }
+
+    function showAdd()
+    {
+        var url = "{:U('Clueblock/add')}";
+        $('#dialog-block-add').dialog('open');
+        $('#dialog-block-add').load(url);
+    }
+
+    function renderView(obj)
+    {
+        var newHtml = '';
+        if (obj != '') {
+            $.each(obj, function (k, v) {
+                newHtml += createItem(v);
+            });
+//            layer.msg('刷新成功!');
+        } else {
+            layer.msg('无数据!');
+        }
+
+        $('#dataStore').html(newHtml);
+    }
+
+    function createItem(item)
+    {
+        var itemHtml = "<tr class='controls_tr' data-id='" + item.id + "'>";
+
+//        itemHtml += "<td><a href='/cases/detail?id=" + item.cooperation_id + "'}'>" + item.cooperation_name + "</a></td>";
+        itemHtml += "<td>" + item.names + "</td>";
+        itemHtml += "<td>" + item.receive_college + "</td>";
+        itemHtml += "<td>" + item.receive_major + "</td>";
+        itemHtml += "<td>" + item.undergraduate_college + "</td>";
+        itemHtml += "<td>" + item.undergraduate_major + "</td>";
+        itemHtml += "<td>" + item.receive_year + "</td>";
+        itemHtml += "<td>" + item.japan_language + "</td>";
+        itemHtml += "<td>" + item.eng_language + "</td>";
+        itemHtml += "<td>" + item.contract_product + "</td>";
+//        itemHtml += "<td>" + item.onlineNum + "</td>";
+//        itemHtml += "<td>" + item.manage_p + "</td>";
+//        itemHtml += "<td>" + item.from_p + "</td>";
+//        itemHtml += "<td>" + item.add_ts + "</td>";
+        itemHtml += "<td data-id='" + item.id + "'  title='操作'>";
+        itemHtml += "<a href='/publicclass/edit?id=" + item.id + "'}'><button type='button'  class='btn btn-default'>编辑</button></a>";
+        itemHtml += "<button type='button' onclick='delThis(" + item.id + ")' class='btn btn-default'>删除</button>";
+        itemHtml += "<a href='/case/detail?id=" + item.id + "'}'><button type='button'  class='btn btn-default detail'>详情</button></a>";
+        itemHtml += "</td>";
+        itemHtml += "</tr>";
+        return itemHtml;
+    }
+
+    function showEdit(that) {
+        var id = $(that).parent().attr('data-id'),
+                url = "{:U('Clueblock/edit')}";
+        $('#dialog-block-edit').dialog('open');
+        $('#dialog-block-edit').load(url, 'id=' + id);
+    }
+
+    function delThis(that) {
+        var id_array = new Array();
+        $("input.cbox:checked").each(function () {
+            id_array.push($(this).val());
+        });
+        // 如果为空
+        if (id_array.length == 0) {
+            alert_crm('你没有选择任何数据！');
+            return false;
+        }
+        console.log(id_array);
+        layer.alert('', {
+            icon: 2, title: '删除确认', content: '您确定要删除这条记录吗？', closeBtn: 1}, function (index) {
+            //business logic
+            $.ajax({
+                type: 'post',
+                url: 'index.php?m=publicclass&a=delete&id=' + id_array,
+                async: false,
+                success: function (data) {
+//                    console.log(data);return;
+                    if (data.status == true) {
+                        layer.msg('删除成功！')
+
+                        window.location.reload()
+                    } else {
+                        layer.msg('删除失败！请重试！');
+                        window.location.reload()
+                    }
+                },
+                dataType: 'json'
+            });
+//            alert(22)
+            layer.close(index);
+        });
+//        layer.confirm("确认要删除吗，删除后不能恢复", { title: "删除确认" }, function (index) {  
+//                layer.close(index);  
+//                $.post("/cooperations/delete", { gid: $(e.currentTarget).data("gid") }, function (data) {  
+//                    layer.alert(data, {  
+//                        title: "删除操作",  
+//                        btn: ['确定']  
+//                    },  
+//                        function (index, item) { 
+//                            alert(1)
+//                            //layer.close(index);  
+//                            location.reload();  
+//                        });  
+//                });  
+//            });   
+    }
+
+    function cluecate(that) {
+
+    }
+
+    //search();
+    $(function () {
+        $(document).keyup(function (event) {
+            if (event.keyCode == 13) {
+                reloaddata()
+            }
+        });
+        
+                        // 多选列表刷新触发事件
+                $(".ul-control").on("click","li",function(){
+                    $(this).siblings().removeClass("active");
+                    var _class = $(this).parent().data("name");
+
+                    var _val = "";
+                    if ($(this).attr("data-value") == "") {
+                        $(this).parent().children().removeClass("active");
+                        $(this).addClass("active");
+                        $("input[name='"+_class+"']").val("");
+                    }else{
+                        if ($(this).hasClass("active")) {
+                            $(this).removeClass("active");
+                        }else{
+                            $(this).addClass("active");
+                        }
+                        var _child = $(this).parent().children().length;
+                        for(var i = 0; i < _child; i++){
+                            var _c = $(this).parent().children().eq(i);
+                            if (_c.hasClass("active") && $(_c).data("value")!="") {
+                                _val += $(_c).data("value")+",";
+                            }
+                        }
+                        _val = _val.substring(0,_val.length - 1);
+
+                        if (_val == "") {
+                            $(this).siblings().eq(0).addClass("active");
+                        }
+
+                        $("input[name='"+_class+"']").val(_val);
+                    }   
+                    reloaddata()
+                });
+                $(".ul-controls").on("click","li",function(){
+                    
+                    if(!$(this).hasClass('bx')){
+                        $(this).siblings(":first").removeClass("active");
+                    }
+//                    $(this).siblings().removeClass("active");
+                    var _class = $(this).parent().data("name");
+
+                    var _val = "";
+                    if ($(this).attr("data-value") == "") {
+                        $(this).parent().children().removeClass("active");
+                        $(this).addClass("active");
+                        $("input[name='"+_class+"']").val("");
+                    }else{
+                        if ($(this).hasClass("active")) {
+                            $(this).removeClass("active");
+                        }else{
+                            $(this).addClass("active");
+                        }
+                        var _child = $(this).parent().children().length;
+                        for(var i = 0; i < _child; i++){
+                            var _c = $(this).parent().children().eq(i);
+                            if (_c.hasClass("active") && $(_c).data("value")!="") {
+                                _val += $(_c).data("value")+",";
+                            }
+                        }
+                        _val = _val.substring(0,_val.length - 1);
+
+                        if (_val == "") {
+                            $(this).siblings().eq(0).addClass("active");
+                        }
+
+                        $("input[name='"+_class+"']").val(_val);
+                    }   
+                    reloaddata()
+                });
+        
+
+        $(document).on('click', '.fa-search', function () {
+            reloaddata()
+        });
+
+        function reloaddata() {
+            var _lotwhere = $("#searchInput").val();
+            var _program_category = $("input[name=livecate]").val()
+            var _major_category = $("input[name=livecontent]").val()
+            console.log( _program_category+","+_major_category)
+            var _data = {
+                lotwhere: _lotwhere,
+                livecate:_program_category,
+                livecontent:_major_category
+            };
+            $("#table_list_2").setGridParam({datatype: 'json', postData: _data}).trigger('reloadGrid');
+        }
+        $(window).resize(function () {
+            // $(window).unbind("onresize");  
+            // var _height = $(window).height() - ($(".title-bar").outerHeight() + $("#gridpager").outerHeight() + $("#secondPart").height() + 260);
+            // console.log("xxx",_height);
+            // $("#table_list_2").setGridHeight(_height);  
+            // $(window).bind("onresize", this);  
+        });
+        $("#table_list_2").clearGridData();
+
+        var _height = $(window).height() - ($(".title-bar").outerHeight() + $("#gridpager").outerHeight() + $("#secondPart").height() + 260);
+
+        var d_width = $(".table_vue").width() - 16;
+
+        $.jgrid.defaults.styleUI = "Bootstrap";
+
+        var icheck_num = 0;
+
+        var qdata = {
+            type: ""
+        };
+        if (getQueryString("cateid") != null) {
+            qdata.type = getQueryString("cateid")
+            getQueryString("cateid") == "boss" ? qdata.type = "" : "";
+        }
+
+        $("#table_list_2").jqGrid({
+            url: "{:U('publicclass/search')}",
+            datatype: "JSON",
+            mtype: "post",
+            width: d_width,
+            postData: qdata,
+            height: _height,
+            autowidth: false,
+            shrinkToFit: false,
+            autoScroll: true,
+            multiselect: true,
+            useColSpanStyle: true,
+            colNames: [ "课程名称","直播类型", "直播内容", "开课时间", "讲师", "报名地址", "时长", "学习人数",'创建人', '创建时间', '修改时间',"id"],
+            colModel: [{
+                    name: "names",
+                    index: "names",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    frozen: true
+                },{
+                    name: "livecate",
+                    index: "livecate",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                }, {
+                    name: "livecontent",
+                    index: "livecontent",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                },  {
+                    name: "start_time",
+                    index: "start_time",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                }, {
+                    name: "teacher",
+                    index: "teacher",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                }, {
+                    name: "sign_addr",
+                    index: "sign_addr",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                }, {
+                    name: "timelength",
+                    index: "timelength",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                }, {
+                    name: "studynum",
+                    index: "studynum",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                }, 
+                {
+                    name: "from_p",
+                    index: "from_p",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                },
+                {
+                    name: "add_ts",
+                    index: "add_ts",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                },
+                {
+                    name: "update_time",
+                    index: "update_time",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                },{
+                    name: "id",
+                    index: "id",
+                    hidden: true
+                }],
+            forceFit: true,
+            //分页
+            rowNum: 30,
+            rowList: [5, 10, 30],
+            pager: '#gridpager',
+            viewrecords: true,
+            jsonReader: {
+                repeatitems: false,
+                root: "data.list",
+                records: "data.count",
+                total: "data.total"
+            },
+            hidegrid: false,
+            loadComplete: function (xhr) {
+                console.log("xxx", xhr);
+            },
+            gridComplete: function () {
+                var rowIds = jQuery("#table_list_2").jqGrid('getDataIDs');
+                var s_ahref = "";
+                for (var k = 0; k < rowIds.length; k++) {
+                    //多选
+                    var curRowData = jQuery("#table_list_2").jqGrid('getRowData', rowIds[k]);
+                    var curChk = $("#" + rowIds[k] + "").find("input");
+                    curChk.attr('value', curRowData['id']);//给checkbox赋值   
+
+                    //查看详情name
+                    var _text = $("#" + rowIds[k] + "").find("[aria-describedby='table_list_2_names']").text();
+                    s_ahref = "<a class='a_name' data-href='" + curRowData['id'] + "'>" + _text + "</a>"
+                    $("#" + rowIds[k] + "").find("[aria-describedby='table_list_2_names']").html(s_ahref);
+
+                }
+//                $("#cb_table_list_2").hide();
+            },
+            onSelectRow: function (rowid, status) {
+                if (status) {
+                    icheck_num = icheck_num + 1;
+                } else {
+                    icheck_num = icheck_num - 1;
+                }
+
+                $("#icheck_num").text(icheck_num);
+                if (icheck_num <= 0) {
+                    $('#title-hide').hide();
+                    $('#title-show').show();
+                } else {
+                    $('#title-hide').show();
+                    $('#title-show').hide();
+                }
+                //处理单选时才有的操作
+                if (icheck_num == 1) {
+                    $(".single_btn").show().children().each(function () {
+                        $(this).attr('rel', $("input.cbox:checked").val());
+                        $(".edit_href").attr("href", "/publicclass/edit?id=" + $("input.cbox:checked").val());
+                    })
+                } else {
+                    $(".single_btn").hide().children().each(function () {
+                        $(this).attr('rel', '');
+                    })
+                }
+
+            }, onSelectAll: function (s, sx) {
+                if (sx) {
+                    $('#title-hide').show();
+                    $('#title-show').hide();
+                    icheck_num = s.length
+                } else {
+                    $('#title-hide').hide();
+                    $('#title-show').show();
+                    icheck_num = 0
+                }
+                $("#icheck_num").text(icheck_num)
+            }
+        }).trigger("reloadGrid"); //重新载入
+
+        jQuery("#table_list_2").jqGrid('navGrid', '#gridpager', {edit: false, add: false, del: false, search: false}, {}, {}, {multipleSearch: true, multipleGroup: true});
+
+        jQuery("#table_list_2").jqGrid('setFrozenColumns');
+
+        $('.ui-jqgrid-bdiv').niceScroll({
+            cursorcolor: "#77B8FF",
+            cursoropacitymax: 1,
+            cursorwidth: "4px",
+            cursorborder: "0",
+            cursorborderradius: "0px",
+            autohidemode: false
+        });
+
+        $('.nicescroll-rails').eq(2).remove()
+
+        $(window).bind("resize", function () {
+            _height = $(window).height() - ($(".title-bar").outerHeight() + $("#gridpager").outerHeight()) - 70;
+            width = $(".table_vue").width();
+            $("#table_list_2").setGridWidth(width)
+            $("#table_list_2").setGridHeight(_height)
+        })
+
+        $(document).on('click', '.a_name', function () {
+            $(".professorModal").modal('show', $(this).attr("data-href"));
+        });
+    });
+</script>
+
+<include file="Public:footer" />

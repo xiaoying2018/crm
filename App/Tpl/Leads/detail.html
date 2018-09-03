@@ -1,0 +1,1246 @@
+<link rel="stylesheet" href="/Public/js/scrollBar/jquery.mCustomScrollbar.min.css">
+<link rel="stylesheet" href="/Public/css/page/leadsDetail.css">
+<style type="text/css">
+.ui-dialog[aria-describedby="detail-dialog-file"] {
+    z-index: 2051;
+}
+.customerModal .fullBl select.form-control{
+    width: 100% !important;
+}
+.crm_cityty div span{
+    display: none;
+}
+.select2-container--open{
+    z-index: 9999;
+}
+.select2-container--default .select2-selection--single{
+    border: 1px solid #e7eaec !important;
+}
+
+.select2-container .select2-selection--single{
+    height: 35px !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow{
+    height: 35px !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered{
+    line-height: 35px !important;
+}
+.merge_time{
+    margin-left: 12px;
+    vertical-align: middle;
+    color: #909090;
+}
+.merge_time font{
+    color: #ff5e50;
+}
+
+.del_merge {
+    margin-right: 2px;
+    float: right;
+    vertical-align: middle;
+    color: #f80000;
+    cursor: pointer;
+}
+
+</style>
+<!-- 客户详细 -->
+<div class="modal fade bs-example-modal-lg customerModal" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="width: 80%">
+        <div class="row cm_modal">
+            <div class="col-lg-12">
+                <div class="title-bar">
+                    <div class="row " id="title-show">
+                        <input type="hidden" :value="leads.leads_id" id="leadsId" />
+                        <ul class="nav pull-left">
+                            <span style="font-size:18px;">线索名称:&nbsp;&nbsp;
+                                <input v-if="isUpdata && leads.contacts_name" type="text" style="width: 140px;" class="input_edit" v-if="leads.contacts_name" :value="leads.contacts_name.content" id="contacts_name" disabled="disabled">
+                                <span class="" v-if="!isUpdata && leads.contacts_name" style="display: inline-block; font-size: 18px;" v-html="leads.contacts_name.content"></span>
+                            </span>
+                        </ul>
+                        <ul class="nav pull-left" style="margin-left: 30px;">
+                                <span style="font-size:18px;"><i class="fa fa-star needNotice"></i><font class="needNotice">&nbsp;客户等级:</font>
+                                <div v-if="isUpdata" class="clearstyle" v-html="leads.crm_level.html">
+                                </div>
+                                <input type="text" class="input_edit needNotice" v-if="!isUpdata && leads.crm_level" :value="leads.crm_level.content" id="crm_level" disabled="disabled" style="width: 50px;">
+                            </span>
+                        </ul>
+                        <ul class="nav pull-left">
+                            <span style="font-size:18px;"><i class="fa fa-clock-o needNotice"></i><font class="needNotice">&nbsp;出国时间:</font>
+                                <div v-if="isUpdata" class="clearstyle" v-html="leads.crm_when.html">
+                                </div>
+                                <template  v-if="!isUpdata && leads.crm_when">
+                                    <input v-if="leads.crm_when.content" type="text" class="input_edit needNotice" :value="leads.crm_when.content" id="crm_when" disabled="disabled">
+                                    <span v-else>--</span>
+                                </template>
+                            </span>
+                        </ul>
+                        <div class="pull-right" style="margin-bottom:10px;margin-right: 20px;">
+                            <!-- '/index.php?m=leads&amp;a=edit&amp;id='+leads.leads_id -->
+                            <a href="javascript:void(0)" class="btn btn-outline btn-default click_Update"><i class="icon-pencil"></i><span> 修改</span></a>
+                            <a href="javascript:script:void(0);" class="btn customerModal-close btn-outline btn-default" onclick="javascript:void(0);"><i class="fa fa-close"></i> 关闭</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-md-8 leftPart">
+                        <table class="baseInfo">
+                            <tr>
+                                <td><span>真实姓名:</span>
+                                    <input type="text" class="input_edit" v-if="leads.name" :value="leads.name.content" id="name" disabled="disabled">
+                                </td>
+                                <td><span>目前学历:</span>
+                                    <input type="text" class="input_edit" v-if="leads.grade" :value="leads.grade.content" id="grade" disabled="disabled">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>手机:</span>
+                                    <input type="text" class="input_edit" v-if="leads.mobile" :value="leads.mobile.content" id="mobile" disabled="disabled">
+                                </td>
+                                <td><span>QQ/微信:</span>
+                                    <input type="text" class="input_edit" v-if="leads.crm_qq" :value="leads.crm_qq.content" id="crm_qq" disabled="disabled">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>日语能力:</span>
+                                    <div v-if="isUpdata" v-html="leads.level_jp.html"></div>
+                                    <input v-if="!isUpdata && leads.level_jp" type="text" class="input_edit" :value="leads.level_jp.content" id="level_jp" disabled="disabled">
+                                </td>
+                                <td>
+                                    <span>英语能力:</span>
+                                    <input type="text" class="input_edit" v-if="leads.level_en" :value="leads.level_en.content" id="level_en" disabled="disabled">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><span>所在大学:</span>
+                                    <input type="text" class="input_edit" v-if="leads.now_university" :value="leads.now_university.content" id="now_university" disabled="disabled">
+                                </td>
+                                <td><span>所在专业:</span>
+                                    <input type="text" class="input_edit" v-if="leads.now_major" :value="leads.now_major.content" id="now_major" disabled="disabled">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>GPA:</span>
+                                    <input type="text" class="input_edit" v-if="leads.gpa" :value="leads.gpa.content" id="gpa" disabled="disabled">
+                                </td>
+                                <td class="crm_cityty"><span>所在地区:</span>
+                                    <div v-if="isUpdata" v-html="leads.crm_city.html"></div>
+                                    <input v-if="!isUpdata && leads.crm_city" type="text" class="input_edit" :value="leads.crm_city.content" id="crm_city" disabled="disabled">
+                                    <!-- <input type="text" class="input_edit" v-if="leads.crm_city" :value="leads.crm_city.content" id="crm_city" disabled="disabled"> -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span style="width: 12.3%;margin-top: 2px;">表单来源地址:</span>
+                                    <a v-if="leads.crm_url" :href="leads.crm_url.content" id="crm_url" disabled="disabled" target="_blank" style="line-height: 32px;color: #0af;">
+                                        {{leads.crm_url.content}}
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span style="width: 12.3%;margin-top: 2px;">备注:</span>
+                                    <textarea v-if="leads.description" class="dv_textarea textarea_edit" name="" id="description" rows="1" style="width: 80.5%;height: 80px;padding: 10px;overflow-y: hidden;">{{leads.description.content}}</textarea>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="tabs-container" style="">
+                            <div id="left-content">
+                                <ul class="nav nav-tabs" id="left_list" style="height:40px;">
+                                    <li class="active"><a class="active" href="#tab2" data-toggle="tab" type="tab2">沟通日志&nbsp;&nbsp;<span class="badge badge-success"></span></a></li>
+                                    <li><a href="#tab6" data-toggle="tab" type="tab6">负责人日志&nbsp;&nbsp;<span class="badge badge-success"></span></a></li>
+                                    <li><a href="#tab4" data-toggle="tab" type="tab4">日程&nbsp;&nbsp;<span class="badge badge-success"></span></a></li>
+                                    <li><a href="#tab3" data-toggle="tab" type="tab3">文件</a></li>
+                                    <li><a href="#tab7" data-toggle="tab" type="tab7">推荐相似案例</a></li>
+                                    <li><a href="#tab8" data-toggle="tab" type="tab8">联合跟进人</a></li>
+                                    <li><a href="#tab9" data-toggle="tab" type="tab9">操作记录</a></li>
+                                    <li><a href="#tab10" data-toggle="tab" type="tab10">修改记录</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <!-- 沟通日志 -->
+                                    <div class="tab-pane fade in active back_box" id="tab2">
+                                        <div class="panel-body">
+                                            <div id="form-div">
+                                                <form id="add-form" action="/index.php?m=log&amp;a=add" method="post">
+                                                    <input type="hidden" name="r" value="rLeadsLog">
+                                                    <input type="hidden" name="module" value="leads">
+                                                    <input type="hidden" id="leads_id" name="id" :value="leads.leads_id">
+                                                    <input type="hidden" name="role_id" value="1">
+                                                    <textarea name="content" placeholder="添加跟进记录" id="log-text" style="resize:none;" class="form-control" cols="30" rows="1"></textarea>
+                                                    <div>
+                                                        <div class="text-right" id="log-btn" style="padding-top:8px;display:none;">
+                                                            <button class="btn btn-primary" @click="add_log()" id="add_log" type="button">添加</button>&nbsp;</div>
+                                                        <br> </div>
+                                                </form>
+                                            </div>
+                                            <!-- 日志列表 -->
+                                            <div id="log-list">
+                                                <div v-for="log in logs" class="ibox-content gray-log" :log-rel="log.log_id">
+                                                    <div class="social-feed-separated clearfix">
+                                                        <div class="social-feed-box">
+                                                            <div class="pull-right social-action dropdown">
+                                                                <span data-toggle="dropdown" class="dropdown-toggle">
+                                                                <i style="font-size:20px;cursor:pointer" class="fa fa-angle-down"></i>
+                                                            </span>
+                                                                <ul class="dropdown-menu m-t-xs">
+                                                                    <li><a :rel="log.log_id" href="javascript:void(0);" type="rLeadsLog" onclick="del_confirm(this);">删除</a></li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="social-avatar">
+                                                                <img alt="image" style="width:35px;height:35px;" class="img-circle" :src="log.owner.thumb_path?log.owner.thumb_path:'/Public/img/avatar_default1.png'">
+                                                                <a class="role_info name-colors" rel="1" href="javascript:void(0);">{{log.owner.full_name}}</a>&nbsp;&nbsp;
+                                                                <span class="text-muted">发布了一条快速记录</span>&nbsp;&nbsp;&nbsp;
+                                                                <span class="text-muted">{{log.create_date}}&nbsp;&nbsp;<a title="沟通类型" href="javascript:void(0);">{{log.status_name}}</a></span>
+                                                            </div>
+                                                            <div class="social-body">
+                                                                <span style="word-wrap:break-word;line-height: 21px;color: #000;">{{log.content}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 日程列表 -->
+                                    <div class="tab-pane fade back_box" id="tab4">
+                                        <div class="panel-body">
+                                            <div class="ibox" v-if="events && events.length > 0">
+                                                <div v-for="event in events" style="padding-bottom:20px;border-left:1px solid #ccc;margin: 5px 0 0 15px;">
+                                                    <i class="fa fa-circle pull-left" :style="{ marginLeft: '-5px', fontSize: '12px',color:event.color }"></i>
+                                                    <!-- <i v-else class="fa fa-circle pull-left" style="margin-left:-5px;color:#FB8F7A;font-size:12px;"></i> -->
+                                                    <div class="pull-left" style="margin-left:5px;color:#999">
+                                                        <div>
+                                                            <!--开始日期-->
+                                                            {{event.start_date_1}} {{event.styleObject}}
+                                                        </div>
+                                                        <div>
+                                                            <!--开始时间-->
+                                                            {{event.start_date_2}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="pull-left" style="margin-left:5px;color:#999">
+                                                        <div style="margin-top:11px;">~</div>
+                                                    </div>
+                                                    <div class="pull-left" style="margin-left:5px;color:#999">
+                                                        <div>
+                                                            <!--结束日期-->
+                                                            {{event.end_date_1}}
+                                                        </div>
+                                                        <div>
+                                                            <!--结束时间-->
+                                                            {{event.end_date_2}}
+                                                        </div>
+                                                    </div>
+                                                    <!-- 图片 -->
+                                                    <div class="pull-left" style="margin-left:5px;"><img :src="event.img ? event.img : '/Public/img/avatar_default1.png'" style="width:30px;height:30px;border-radius:50px;margin-top:5px;"></div>
+                                                    <!--创建者角色信息-->
+                                                    <div class="pull-left" style="margin-left:5px;width:60%">
+                                                        <div>
+                                                            {{event.create_role_name}} &nbsp; <span v-if="event.bus_num">({{event.bus_num}})</span>
+                                                        </div>
+                                                        <div>{{event.subject}}</div>
+                                                    </div>
+                                                    <div style="clear:both"></div>
+                                                </div>
+                                            </div>
+                                            <div v-else style="text-align:center;color:#E4E4E4;font-size:22px;font-weight:700;padding-top:15px;">
+                                                <img src="/Public/img/exclamation_mark.png" style="margin-top:-3px;">&nbsp;&nbsp;暂无数据
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 负责人日志 -->
+                                    <div class="tab-pane fade back_box" id="tab6">
+                                        <div class="panel-body">
+                                            <table class="table" v-if="records && records.length > 0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>负责人</td>
+                                                        <td>领取时间</td>
+                                                    </tr>
+                                                    <tr v-for="rec in records">
+                                                        <td>
+                                                            <a class="role_info" :rel="rec.id" href="javascript:void(0)">
+                                                                {{rec.owner.full_name}}
+                                                            </a>
+                                                        </td>
+                                                        <td>{{rec.start_time}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div v-else style="text-align:center;color:#E4E4E4;font-size:22px;font-weight:700;padding-top:15px;">
+                                                <img src="/Public/img/exclamation_mark.png" style="margin-top:-3px;">&nbsp;&nbsp;暂无数据
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--推荐相似案例-->
+                                    <div class="tab-pane fade back_box nicescroll" id="tab7" style="height: 400px;overflow-y: auto">
+                                        <!--<div class="panel-body">-->
+                                        <table class="table">
+                                            <tr>
+                                                <td>姓名</td>
+                                                <td>录取学校</td>
+                                                <td>录取专业</td>
+                                                <td>本科大学</td>
+                                                <td>本科专业</td>
+                                                <td>签约产品</td>
+                                            </tr>
+                                            <tr v-for="n in cases">
+                                                <td><a :href="'/index.php?m=case&a=detail_1&id='+n.id" >{{n.names}}</a></td>
+                                                <td>{{n.receive_college}}</td>
+                                                <td>{{n.receive_major}}</td>
+                                                <td>{{n.undergraduate_college}}</td>
+                                                <td>{{n.undergraduate_major}}</td>
+                                                <td>{{n.contract_product}}</td>
+                                                <!--<td><a :href="'/index.php?m=case&a=detail_1&id='+n.id" >案例详情</a></td>-->
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <!-- 文件 -->
+                                    <div class="tab-pane fade back_box" id="tab3">
+                                        <div class="panel-body">
+                                            <div class="header1">
+                                                <div class="pull-right">
+                                                    <a href="javascript:void(0);" class="add_file btn btn-primary"><i class="fa fa-upload"></i>&nbsp;&nbsp;上传</a>
+                                                </div>
+                                                <div style="clear:both;"></div>
+                                            </div>
+                                            <table v-if="files" class="table product-table">
+                                                <tr>
+                                                    <td>附件名称</td>
+                                                    <td>大小</td>
+                                                    <td>上传人</td>
+                                                    <td>上传时间</td>
+                                                    <td>操作</td>
+                                                </tr>
+                                                <!-- 文件列表 -->
+                                                <tr v-for="file in files">
+                                                    <td>
+                                                        <img :src="'/Public/productImg/'+file.pic" alt="">&nbsp;&nbsp;&nbsp;
+                                                        <!-- 图片文件 -->
+                                                        <a v-if="file.file_path.indexOf('jpg') > 0 || file.file_path.indexOf('png') > 0 || file.file_path.indexOf('gif') > 0 || file.file_path.indexOf('jpeg') > 0" class="litebox_file" :href="file.file_path" title="点击查看大图" data-litebox-group="group-1">{{file.name}}</a>
+                                                        <!-- 其他类型文件 -->
+                                                        <a v-else href="javascript:;" :file="file.file_path" :filename="file.name" onclick="filedown(this);">{{file.name}}</a>
+                                                    </td>
+                                                    <td>
+                                                        {{file.size}}KB
+                                                    </td>
+                                                    <td>
+                                                        <a v-if="file.owner.user_name" class="role_info" :rel="file.owner.role_id" href="javascript:void(0)">{{file.owner.user_name}}</a>
+                                                    </td>
+                                                    <td>
+                                                        {{file.create_date}}
+                                                    </td>
+                                                    <td class="tdleft">
+                                                        <a href="javascript:void(0);" class="file_delete" :rel="file.file_id">{:L('DELETE')}</a>
+                                                        <a href="javascript:void(0);" :file="file.file_path" :filename="file.name" onclick="filedown(this);">下载</a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <div v-else style="text-align:center;color:#E4E4E4;font-size:22px;font-weight:700;padding-top:15px;">
+                                                <img src="/Public/img/exclamation_mark.png" style="margin-top:-3px;">&nbsp;&nbsp;暂无数据
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--联合跟进人-->
+                                    <div class="tab-pane fade back_box nicescroll" id="tab8" style="height: 400px;overflow-y: auto">
+                                        <div class="panel-body" style="padding: 18px;">
+                                            <select class="select_name form-control" name="to_role_id" id="to_role_id">
+                                                <option value="">输入老师姓名后选择老师</option>
+                                            </select>
+                                            <span class="merge_time" v-if="leads.merge_time && leads.merge_time != '0'">添加/修改时间：<font>{{leads.merge_time}}</font></span>
+                                            <span class="del_merge" v-if="leads.merge_time && leads.merge_time != '0'"> X <small>解除</small></span>
+                                            <!-- 任务内容 -->
+                                            <div class="form-group" style="margin: 10px 0;">
+                                                <textarea class="form-control" placeholder="提醒内容" rows="5" name="content" id="content"></textarea>
+                                            </div>
+                                            <div class="form-group" style="margin-top: 15px;">
+                                                <a href="javascript:void(0)" id="send_allot" class="btn btn-primary btn-sm pull-left" style="margin-right: 10px;"> 添加联合跟进人 </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--超时记录-->
+                                    <div class="tab-pane fade back_box nicescroll" id="tab9" style="height: 400px;overflow-y: auto">
+                                        <div class="panel-body" style="padding: 18px;">
+                                            <!-- TODO 超时记录样式 -->
+                                            <!---->
+                                            <div class="col-sm-12" v-for="n in update_log">
+                                                <div class="pull-left">
+                                                    <span style="line-height:32px;margin-right: 10px;">
+                                                        <small>{{n.get_time}}</small>
+                                                    </span>
+                                                </div>
+                                                <div class="pull-left">
+                                                    <div class="vertical-timeline-block" style="margin:0px;border-left:1px solid #ccc;margin-left:20px;">
+                                                        <i class="fa fa-circle pull-left" style="margin-left:-6px;color:#CAD7EF;margin-top:9px;font-size:12px;"></i>
+                                                        <div class="vertical-timeline-content" style="padding-top: 0px;margin-left:20px;">
+                                                            <div class="pull-left">
+                                                                <span class="pull-left" style="line-height:32px;margin-right: 10px;">
+                                                                    <small></small>
+                                                                </span>
+                                                                <span class="pull-left" style="line-height:32px;">
+                                                                    <div class="pull-left">{{n.create_user}}&nbsp;&nbsp;从&nbsp;&nbsp;
+                                                                        <!--<a class="role_info pull-left" :rel="n.old_user.role_id" href="javascript:void(0)" style="margin-right:5px;">-->
+                                                                            <!--<img alt="image" class="img-circle" style="width:32px;height:32px;" :src="n.old_user.thumb_path == '' ? '/Public/img/avatar_default.png':n.old_user.thumb_path">-->
+                                                                        <!--</a>-->
+                                                                        {{n.old_user.full_name}}&nbsp;&nbsp;转到&nbsp;&nbsp;
+                                                                        {{n.current_user.full_name}}</div>
+                                                                    <div style="clear:both;"></div>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--修改记录-->
+                                    <div class="tab-pane fade back_box nicescroll" id="tab10" style="height: 400px;overflow-y: auto">
+                                        <div class="panel-body" style="padding: 18px;">
+                                            <!-- TODO 修改记录样式 -->
+                                            <div class="col-sm-12" v-for="n in field_update_log">
+                                                <div class="pull-left">
+                                                    <div class="vertical-timeline-block" style="margin:0px;border-left:1px solid #ccc;margin-left:20px;">
+                                                        <i class="fa fa-circle pull-left" style="margin-left:-6px;color:#CAD7EF;margin-top:9px;font-size:12px;"></i>
+                                                        <div class="vertical-timeline-content" style="padding-top: 0px;margin-left:20px;">
+                                                            <div class="pull-left">
+                                                                <span class="pull-left" style="line-height:32px;margin-right: 10px;">
+                                                                    <small>{{n.create_time}}</small>
+                                                                </span>
+                                                                <span class="pull-left" style="line-height:32px;margin-right: 10px;">
+                                                                    <small>{{n.action_user}}</small>
+                                                                </span>
+                                                                <br>
+                                                                <span v-html="n.duixiang" class="pull-left" style="line-height:32px;margin-left: 60px;">
+                                                                    <!-- 这里标签会被原样输出,使用VUE绑定的方式渲染数据 -->
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 线索详细信息 -->
+                    <div class="col-md-4 det_rightPart" style="background-color: #fff;">
+                        <div style="color: rgb(25, 170, 141);font-weight: 600;padding-left: 0px;border-bottom: 1px solid #eaeaea;margin-top: 15px;padding-bottom: 14px;">意向度:</div>
+                        <table class="right_table" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td class="std_title">父母是否支持:</td>
+                                    <td class="td_content">
+                                        <input class="input_edit" type="text" v-if="leads.is_allow" :value="leads.is_allow.content" disabled="disabled" id="is_allow" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="std_title">性格类型:</td>
+                                    <td class="td_content">
+                                        <div class="clearfix edit editcheckbox" id="xingge" v-if="isUpdata && leads.xingge" v-html="leads.xingge.html">
+                                        </div>
+                                        <div v-if="!isUpdata && leads.xingge" class="input_edit" id="xingge">{{leads.xingge.content}}</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="std_title">留学决策人:</td>
+                                    <td class="td_content">
+                                        <div class="clearfix edit editcheckbox" id="decision_maker" v-if="isUpdata && leads.decision_maker" v-html="leads.decision_maker.html">
+                                        </div>
+                                        <div v-if="!isUpdata && leads.decision_maker" class="input_edit" id="xingge">{{leads.decision_maker.content}}</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="std_title">决策人联系方式:</td>
+                                    <td class="td_content">
+                                        <input class="input_edit" type="text" v-if="leads.decision_maker_contact" :value="leads.decision_maker_contact.content" id="decision_maker_contact" disabled="disabled" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="std_title">目标大学:</td>
+                                    <td class="td_content">
+                                        <textarea v-if="leads.expect_university" class="textarea_edit dv_textarea" type="text" id="expect_university" rows="1">{{leads.expect_university.content}}</textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="std_title">目标专业:</td>
+                                    <td class="td_content">
+                                        <div class="clearfix edit editcheckbox" id="expect_major" v-if="isUpdata && leads.expect_major" v-html="leads.expect_major.html">
+                                        </div>
+                                        <div v-if="!isUpdata && leads.expect_major" class="input_edit" id="expect_major">{{leads.expect_major.content}}</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="std_title">下次联系时间:</td>
+                                    <td class="td_content">
+                                        <template v-if="leads.nextstep_time && leads.nextstep_time.content != ''">
+                                            <input class="input_edit" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" name="due_date" id="nextstep_time" :value="leads.nextstep_time.content" disabled="disabled">
+                                        </template>
+                                        <template v-else>
+                                            <input class="input_edit" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" name="due_date" id="nextstep_time" :value="nowdate" disabled="disabled">
+                                        </template>
+                                        
+                                    </td>
+                                </tr>
+                                <tr v-if="leads.zh_city && leads.zh_city.content">
+                                    <td class="std_title">参展城市:</td>
+                                    <td class="td_content">
+                                        <input v-if="leads.zh_city" class="input_edit" type="text" id="zh_city" :value="leads.zh_city.content" disabled="disabled">
+                                    </td>
+                                </tr>
+                                <tr v-if="leads.zh_time && leads.zh_time.content">
+                                    <td class="std_title">参展场次:</td>
+                                    <td class="td_content">
+                                        <input v-if="leads.zh_time" class="input_edit" type="text" id="zh_time" :value="leads.zh_time.content" disabled="disabled">
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td class="std_title">来源:</td>
+                                    <td class="td_content">
+                                        <input v-if="!isUpdata && leads.source" class="needNotice" type="text" name="due_date" id="source" :value="leads.source.content" disabled="disabled">
+                                        <div v-if="isUpdata && leads.source" class="clearstyle fullBl" v-html="leads.source.html" style="width: 100%;">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="std_title">线索分类:</td>
+                                    <td class="td_content">
+                                        <input v-if="!isUpdata && leads.cluecate" class="needNotice" type="text" disabled="disabled" :value="leads.cluecate.content">
+                                        <div v-show="isUpdata" class="clearstyle" style="width: 100%;">
+                                            <select name="" id="cluecate_detail" class="form-control" style="width: 100% !important;"></select>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ul class="tableul">
+                            <li class="li">
+                                <p class="spTitle">支付能力预测及理由:</p>
+                                <textarea v-if="leads.pay_ability" class="dv_textarea textarea_edit" name="" id="pay_ability" rows="1">{{leads.pay_ability.content}}</textarea>
+                            </li>
+                            <li class="li">
+                                <p class="spTitle">适合主推方案及理由:</p>
+                                <textarea v-if="leads.plan" class="dv_textarea textarea_edit" name="" id="plan" rows="1">{{leads.plan.content}}</textarea>
+                            </li>
+                            <li class="li">
+                                <p class="spTitle">咨询过哪些中介:</p>
+                                <textarea v-if="leads.liuxuejigou" class="dv_textarea textarea_edit" name="" id="liuxuejigou" rows="1">{{leads.liuxuejigou.content}}</textarea>
+                            </li>
+                            <!-- <li class="li">
+                                <p class="spTitle">备注:</p>
+                                <textarea v-if="leads.description" class="dv_textarea textarea_edit" name="" id="description" rows="1">{{leads.description.content}}</textarea>
+                            </li> -->
+                            <li class="li">
+                                <p class="spTitle">下次联系内容:</p>
+                                <textarea v-if="leads.nextstep" class="dv_textarea textarea_edit" name="" id="nextstep" rows="1">{{leads.nextstep.content}}</textarea>
+                            </li>
+                            <!-- <li class="li">
+                                <p class="spTitle">表单来源地址:</p>
+                                <a v-if="leads.crm_url" :href="leads.crm_url.content" id="crm_url" disabled="disabled" target="_blank">
+                                            {{leads.crm_url.content}}
+                                        </a>
+                            </li> -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="" style="display:none" id="detail-dialog-file" title="添加文件">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="leadsMerge">
+<link href="/Public/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="/Public/js/litebox.min.js" type="text/javascript"></script>
+<script src="/Public/js/images-loaded.min.js" type="text/javascript"></script>
+<script src="/Public/js/scrollBar/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+$(function() {
+
+    var customer_model = new Vue({
+        el: '.customerModal',
+        data: {
+            leads: {},
+            logs: [],
+            fields: {},
+            status: {},
+            events: {},
+            records: {},
+            files: {},
+            isUpdata: false,
+            nowdate:"",
+            cases:[],
+            update_log:[],
+            field_update_log:[]
+        },
+        methods: {
+            getNowFormatDate:function() {
+                var date = new Date();
+                var seperator1 = "-";
+                var seperator2 = ":";
+                var month = date.getMonth() + 1;
+                var strDate = date.getDate();
+                if (month >= 1 && month <= 9) {
+                    month = "0" + month;
+                }
+                if (strDate >= 0 && strDate <= 9) {
+                    strDate = "0" + strDate;
+                }
+                var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+                        + " " + date.getHours() + seperator2 + date.getMinutes()
+                        + seperator2 + date.getSeconds();
+                return currentdate;
+            },
+            getDetail: function(id) {
+                if (!id) return;
+                var _this = this;
+                $.ajax({
+                    url: "{:U('leads/detail')}",
+                    data: { id: id },
+                    dataType: 'JSON',
+                    type: 'get',
+                    success: function(res) {
+                        if (res) {
+                            _this.nowdate = _this.getNowFormatDate();
+                            _this.status = res.statusList;
+                            _this.events = res.eventslist;
+                            _this.records = res.leads.record;
+                            _this.files = res.leads.file;
+                            _this.cases = res.cases;
+                            _this.update_log = res.update_log;
+                            _this.field_update_log = res.field_update_log;
+
+                            if (_this.events) {
+                                _this.events.forEach(function(v) {
+                                    // v.styleObject = {style:{color:v.color};
+                                    v.start_date_1 = timestampToFormat(v.start_date, 'hh:mm');
+                                    v.start_date_2 = timestampToFormat(v.start_date, 'yyyy-MM-dd');
+                                    v.end_date_1 = timestampToFormat(v.end_date, 'hh:mm');
+                                    v.end_date_2 = timestampToFormat(v.end_date, 'yyyy-MM-dd');
+                                })
+                            }
+                            if (_this.records) {
+                                _this.records.forEach(function(v) {
+                                    v.start_time = timestampToFormat(v.start_time, 'yyyy-MM-dd');
+                                })
+                            }
+                            if (_this.files) {
+                                _this.files.forEach(function(v) {
+                                    v.create_date = timestampToFormat(v.create_date, 'yyyy-MM-dd');
+                                });
+                            }
+                            if (res.leads) {
+
+                                var _arr = [];
+                                _arr = res.fields.data
+                                for (var i = 0; i < res.fields.main.length; i++) {
+                                    _arr.push(res.fields.main[i]);
+                                }
+                                for (var key in res.leads) {
+                                    for (var i = 0; i < _arr.length; i++) {
+                                        if (_arr[i].field == key) {
+                                            if (_arr[i].html) {
+                                                var _ss = res.leads[key];
+                                                res.leads[key] = {};
+                                                res.leads[key].content = _ss;
+                                                res.leads[key].html = _arr[i].html
+                                            }
+                                        }
+                                    }
+                                }
+                                $("#leadsMerge").val("");
+                                $("#select2-to_role_id-container").text("输入老师姓名后选择老师")
+                                // console.log("xxx",res.leads.merge);
+                                if(res.leads.merge != '0' && res.leads.merge != '' && res.leads.merge != null){
+                                    $("#leadsMerge").val(res.leads.merge)
+                                    $("#select2-to_role_id-container").text(res.leads.merge_name);
+                                }
+                                if (res.leads.merge_time != '0' && res.leads.merge_time != '' && res.leads.merge_time != null) {
+                                    res.leads.merge_time = timestampToFormat(res.leads.merge_time, 'yyyy-MM-dd hh:mm:ss');
+                                }
+                                _this.leads = res.leads;
+                            }
+                            $("#detail-dialog-file").dialog({
+                                autoOpen: false,
+                                modal: true,
+                                width: width,
+                                maxHeight: 400,
+                                position: ["center", 200],
+                                buttons: {
+                                    "确认": function() {
+                                        window.location.reload();
+                                    },
+                                    "取消": function() {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                            $(document).on('click', '.add_file', function() {
+                                $('#detail-dialog-file').dialog('open');
+                                $('#detail-dialog-file').load('/index.php?m=file&a=add&r=RFileLeads&module=leads&id=' + _this.leads.leads_id);
+                            });
+
+                            // logs时间处理
+                            if (res.leads.log) {
+                                res.leads.log.forEach(function(v) {
+                                    v.create_date = timestampToFormat(v.create_date, 'yyyy-MM-dd h:m:s');
+                                });
+                                _this.logs = res.leads.log;
+                            }else{
+                                _this.logs = [];
+                            }
+                            /**
+                             * 附件 如果是图片时 双击可查看大图
+                             */
+                            _this.$nextTick(function() {
+                                $('.litebox_file').liteBox({
+                                    revealSpeed:  400,
+                                    background:   'rgba(0,0,0,.8)',
+                                    overlayClose:  true,
+                                    escKey:  true,
+                                    navKey:  true,
+                                    errorMessage:   '图片加载失败.'
+                                });
+                                $(".customerModal select.form-control").addClass("edit");
+
+                                window.setTimeout(function(){
+                                     $(".dv_textarea.textarea_edit").txtaAutoHeight();
+                                },1000)
+                            });
+
+                            //获取线索
+                            $.ajax({
+                               url:   "{:U('clueblock/cate_search')}",
+                               data:  "",
+                               dataType:"JSON",
+                               type:  "GET",
+                               success:function(res){
+                                   if( res.status == true ){
+                                    // _this.cluecate = res.data;
+                                    var _c = "";
+                                    if (_this.leads.cluecate.content) {
+                                        _c = _this.leads.cluecate.content
+                                    }
+                                    var html    =  '';
+                                        html       += "<option value=''>--请选择--</option>";
+                                    res.data.forEach(function(v){
+                                        // console.log("xxx",_c,v.id);
+                                        if (_c == v.id) {
+                                            _this.leads.cluecate.content = v.name;
+                                            html += "<option selected='selected' value='"+v.id+"'>"+v.name+"</option>";
+                                        }else{
+                                            html += "<option value='"+v.id+"'>"+v.name+"</option>";
+                                        }
+                                    });
+                                    $("#cluecate_detail").html(html);
+                                  }
+                               }
+                            });
+                        }
+                    },
+                    error: function(e) {
+                        console.log(e);
+                        alert('网络异常！');
+                    }
+                });
+            },
+            add_log:function(){
+                var _this = this;
+                var log_type = 'rLeadsLog';
+                $(this).prop('disabled', true);
+                $.ajax({
+                    type:'post',
+                    url:"{:U('Log/add')}",
+                    async:false,
+                    dataType:'json',
+                    data: $("#add-form").serialize(),
+                    success:function(data){
+                        if (data.status == 1) {
+                            var json = {};
+                            json.log_id = data.data.log_id;
+                            json.owner = {};
+                            json.owner.full_name = data.data.owner.full_name;
+                            json.owner.thumb_path = data.data.owner.thumb_path;
+                            json.create_date = data.data.date;
+                            json.status_name = ""
+                            json.content = $("#log-text").val();
+                            _this.logs.unshift(json);
+                            btnHide();
+                        } else {
+                            alert_crm('添加失败, 请重试');
+                        }
+                    }
+                });
+            }
+        },
+        mounted: function() {
+            var _this = this;
+            $(".leftPart").mCustomScrollbar();
+            $(".det_rightPart").height($(window).height()*0.8).mCustomScrollbar();
+
+            $('.customerModal .cm_modal').resizable({
+                minHeight: 380,
+                minWidth: 780,
+                resize: function(event, ui) {
+                    $(".det_rightPart,.leftPart").height($(".customerModal .ui-resizable").height() - 70).mCustomScrollbar();
+                }
+            });
+            //关闭浮层
+            $(".customerModal-close").click(function() {
+                $(".customerModal").modal('hide');
+            })
+        }
+    });
+
+
+    //模态窗口打开
+    $('.customerModal').on('show.bs.modal', function(ele) {
+        $("#left_list li").eq(0).find("a").click()
+        $("#content").val("");
+        // 清空数据
+        customer_model.leads={};
+        customer_model.logs={};
+        customer_model.events={};
+        $(".modal-dialog").draggable({
+            cursor: "move",
+            handle: ".title-bar"
+        });
+        var id = ele.relatedTarget;
+        customer_model.getDetail(id);
+    });
+    //模态窗口关闭
+    $('.customerModal').on('hide.bs.modal', function(ele) {
+        $(".input_edit").removeClass("edit").attr("disabled", "disabled");
+        $(".textarea_edit").removeClass("edit");
+        $(".click_Update").find("span").text(" 编辑");
+        $(".click_Update").addClass("btn-default").removeClass("btn-danger");
+        customer_model.isUpdata = false;
+    });
+
+    //点击开始编辑
+    $(document).on('click', '.click_Update', function() {
+
+        var _self = $(this);
+        customer_model.isUpdata = true;
+        customer_model.$nextTick(function() {
+            $(".input_edit").addClass("edit").removeAttr("disabled");
+            $(".textarea_edit").addClass("edit");
+            _self.find("span").text(" 保存");
+            _self.addClass("btn-danger").removeClass("btn-default");
+        });
+        $(".customerModal select.form-control").addClass("edit");
+    });
+
+    //点击保存
+    $(document).on('click', '.click_Update.btn-danger', function() {
+        if($("#name").val() == ""){
+            swal({
+                title: "格式不正确",
+                text: "姓名不能为空！",
+                type: "error"
+            })
+            return false;
+        }
+        var _currentId = $("#leadsId").val();
+        var _arr = {
+            id: _currentId,
+        };
+        var _id;
+        $(".edit").each(function(e) {
+            _id = $(this).attr("id");
+            if (_id == 'cluecate_detail') {
+                _id = "cluecate";
+            }
+            /*
+             * 多选判读
+             */
+            if ($(this).hasClass("editcheckbox")) {
+                var _cStr = "";
+                for (var i = 0; i < $('input[name="' + _id + '[]"]:checked').length; i++) {
+                    _cStr = _cStr + $('input[name="' + _id + '[]"]:checked').eq(i).val() + "\n"
+                }
+                // _json[_id] = _cStr.substr(0,_cStr.length);
+                _arr[_id] = _cStr
+            }
+            /*
+             * 时间判断
+             */
+            else if (_id == "nextstep_time") {
+                var date = new Date($(this).val().replace(/-/g, '/'));
+                date = (Date.parse(date)) / 1000;
+                _arr[_id] = date;
+            }
+            /*
+             * 普通文本
+             */
+            else {
+                _arr[_id] = $(this).val();
+            }
+        })
+        // console.log("xxx", _arr);
+        // 全部修改
+        $.ajax({
+            type: 'post',
+            url: "/index.php/api/edit_leads",
+            data: _arr,
+            dataType: 'json',
+            success: function(data) {
+                if (data && data.status) {
+                    // 关闭弹框
+                    $(".customerModal").modal('hide');
+
+                    $(".controls_tr[data-id='"+_currentId+"'] td").eq(1).find(".showCustomer").text(_arr['contacts_name'])
+                    $(".controls_tr[data-id='"+_currentId+"'] td").eq(2).find(".showCustomer").text(_arr['name'])
+                    $(".controls_tr[data-id='"+_currentId+"'] td").eq(3).find("a").text(_arr['crm_level'])
+                    $(".controls_tr[data-id='"+_currentId+"'] td").eq(4).find("a").text(_arr['mobile'])
+                    $(".controls_tr[data-id='"+_currentId+"'] td").eq(5).find("span").text(_arr['crm_qq'])
+
+                    $(".controls_tr[data-id='"+_currentId+"'] td").eq(5).find("span").text(_arr['crm_qq'])
+
+                    $(".controls_tr[data-id='"+_currentId+"'] td .citty").text(_arr['crm_city'])
+
+                    
+                    // 刷新列表
+                    // table_container.clearRequest('all');
+
+                } else if(!data.status) {
+                    //修改失败
+                    swal({
+                        title: "操作失败！",
+                        text: data.info,
+                        type: "error"
+                    })
+                }
+            }
+        });
+
+    });
+    $.fn.extend({
+         txtaAutoHeight: function () {
+             return this.each(function () {
+                 var $this = $(this);
+                 if (!$this.attr('initAttrH')) {
+                     $this.attr('initAttrH', $this.outerHeight());
+                 }
+                 setAutoHeight(this).on('input', function () {
+                     setAutoHeight(this);
+                 });
+             });
+             function setAutoHeight(elem) {
+                 var $obj = $(elem);
+                 return $obj.css({ height: $obj.attr('initAttrH'), 'overflow-y': 'hidden' }).height(elem.scrollHeight);
+             }
+         }
+     });
+    // $(document).on('focusin', 'textarea.dv_textarea', function() {
+    // });
+    //textarea失去焦点事件
+    $(document).on('focusout', 'textarea.dv_textarea', function() {
+        var _id = $(this).attr("id");
+        var _html = $(this).val();
+        var _currentId = $("#leadsId").val();
+        var _json = {
+            field: _id,
+            value: _html,
+            id: _currentId
+        }
+
+        // 部分修改
+        $.ajax({
+            type: 'post',
+            url: "/index.php/api/edit_leads",
+            data: _json,
+            dataType: 'json',
+            success: function(data) {
+                if(!data.status) {
+                    //修改失败
+                    swal({
+                        title: "操作失败！",
+                        text: data.info,
+                        type: "error"
+                    })
+                }
+                // if (data && data.status) {
+                //     swal("保存成功！", "您已经永久保存了信息！", "success");
+                // } else if(!data.status) {
+                //     //修改失败
+                //     swal({
+                //         title: "操作失败！",
+                //         text: data.info,
+                //         type: "error"
+                //     })
+                // }
+            }
+        });
+    });
+
+    //删除附件
+    $(document).on('click', '.file_delete', function() {
+        var file_id = $(this).attr('rel');
+        var _self = $(this);
+        swal({
+                title: "您确定要删除附件信息吗？",
+                text: "删除后将无法恢复，请谨慎操作！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是的，我要删除！",
+                cancelButtonText: '让我再考虑一下…',
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function(isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: 'get',
+                        url: "{:U('file/delete','r=RFileLeads&id=')}" + file_id,
+                        async: false,
+                        success: function(data) {
+                            if (data.status == 1) {
+                                swal("删除成功！", "您已经永久删除了信息！", "success");
+                                _self.parent().parent().remove();
+                            } else {
+                                swal({
+                                    title: "操作失败！",
+                                    text: data.info,
+                                    type: "error"
+                                })
+                                return false;
+                            }
+                        },
+                        dataType: 'json'
+                    });
+                } else {
+                    swal("已取消", "您取消了删除操作！", "error");
+                }
+            });
+    });
+
+    /*ajax 提交记录*/
+    // $(document).on('focus', '#add_log', function() {
+    //     var log_type = 'rLeadsLog';
+    //     $(this).prop('disabled', true);
+    //     $.post("{:U('Log/add')}", $("#add-form").serialize(), function(data) {
+    //         if (data.status == 1) {
+    //             var content = $('#log-text').val().replace('&nbsp', '&NBSP');
+    //             var log_html = "<div class='ibox-content gray-bg' log-rel='" + data.data.log_id + "' style='margin-bottom: 18px'><div class='social-feed-separated clearfix'><div class='social-feed-box'><div class='pull-right social-action dropdown'><span data-toggle='dropdown' class='dropdown-toggle'><i style='font-size:20px;cursor:pointer' class='fa fa-angle-down'></i></span><ul class='dropdown-menu m-t-xs' ><li><a  rel='" + data.data.log_id + "' href='javascript:void(0);' type='" + log_type + "' onclick='del_confirm(this);'>{:L('DELETE')}</a></li></ul></div><div class='social-avatar'><img alt='image' style='width:35px;height:35px;' class='img-circle' src='/Public/img/avatar_default1.png'><a class='role_info name-colors'  rel='" + data.data.owner.role_id + "' href='javascript:void(0)'>" + data.data.owner.full_name + "</a>&nbsp;&nbsp;<span class='text-muted'>添加了一条快快速记录</span>&nbsp;&nbsp;<span class='text-muted' >" + data.data.date + "</span></div><div class='social-body'><span style='word-wrap:break-word;line-height: 21px;color: #000;'>" + content + "</span></div></div></div></div>";
+    //             $('#log-list').prepend(log_html);
+    //             btnHide();
+    //         } else {
+    //             alert_crm('添加失败, 请重试');
+    //         }
+    //     });
+    // });
+
+    $(document).on('focus', '#log-text', function() {
+        $(this).attr('rows', 4);
+        $('#log-btn').show();
+        $('#product-radio').show();
+        $('#add_log').prop('disabled', false);
+    });
+    $(document).on('focusout', '#log-text', function() {
+        var code_id = $("input[name='id']:checked").val();
+        if ($(this).val() == '' && code_id == '') {
+            btnHide();
+        }
+    });
+});
+/*跟进记录*/
+function btnHide() {
+    $('#log-text').attr('rows', 1);
+    $('#log-btn').hide();
+    $('#product-radio').hide();
+    $('#log-text').val('');
+}
+/*删除日志*/
+function del_confirm(e) {
+    swal({
+            title: "确定要删除沟通日志吗？",
+            text: "删除后将无法恢复，请谨慎操作！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "是的，我要删除！",
+            cancelButtonText: '让我再考虑一下…',
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+        function(isConfirm) {
+            if (isConfirm) {
+                var log_id = $(e).attr('rel');
+                var type = $(e).attr('type');
+                $.get("{:U('log/delete')}", { r: type, id: log_id }, function(data) {
+                    if (data != 0) {
+                        swal({
+                            title: "删除成功！",
+                            text: "",
+                            type: "success"
+                        });
+                        $("[log-rel='" + log_id + "']").remove();
+                    } else {
+                        swal({
+                            title: "操作失败！",
+                            text: data.info,
+                            type: "error"
+                        })
+                        return false;
+                    }
+                });
+            } else {
+                swal("已取消", "您取消了删除操作！", "error");
+            }
+        });
+};
+$(function() {
+    // 选择老师弹框
+    $(".select_name").select2({
+        width:"400px",
+        ajax: {
+            placeholder:'请选择',
+            allowClear:true,
+            url: "{:U('materials/getteachers')}",
+            data: function(params) {
+                var query = {
+                    "name": params.term
+                }
+                // console.log("params",params);
+                return query;
+            },
+            dataType: 'json',
+            processResults: function(data) {
+                // console.log('processResults',data)
+                return {
+                    results: data.data
+                };
+            },
+            processResults: function(data, params) {
+                if (data.status) {
+                    var itemList = [];
+                    //当数据对象不是{id:0,text:'ANTS'}这种形式的时候，可以使用类似此方法创建新的数组对象
+                    var arr = data.data
+                    for(var i = 0; i < arr.length; i++){
+                        itemList.push({id: arr[i]['role_id'], text: arr[i]['full_name'], email: arr[i]['email']})
+                    }
+                    var _s = {results: itemList}
+
+                    // console.log('_s',_s)
+                    return _s
+                }else{
+                    return []
+                }
+            },
+        },
+        // dataAdapter:function(){
+        //     alert(123)
+        //     $('#to_role_id').val(['36']).trigger('change');
+        // }
+    });
+    // $('#to_role_id').val(['36']).trigger('change');
+    $('.materialsModal').on('show.bs.modal', function(ele) {
+        caseModal.data = {};
+        caseModal.getDetail(ele.relatedTarget);
+    })
+
+
+    // 分配任务
+    $('#send_allot').click(function () {
+        // $('#to_role_id').val(['36']).trigger('change');
+        var _selected = $("#to_role_id").select2("data")[0];
+
+        var _sdd;
+        if (_selected.id == "") {
+            _sdd = $("#leadsMerge").val();
+        }else{
+            _sdd = _selected.id
+        }
+        // 修改联合跟进人
+        $.ajax({
+            type:'post',
+            url: "/index.php/api/edit_leads",
+            data: {
+                id:$("#leadsId").val(),//
+                merge:_sdd,
+            },
+            async: true,
+            success: function (data) {
+                if (data.status == 1) {
+                    $.ajax({
+                        type:'post',
+                        url: "{:U('message/ajaxsend')}", // 请求接口
+                        data: {
+                            email:_selected.email,
+                            to_role_id:_sdd, // 接受者的role_id
+                            content:$('#content').val(), // 站内信内容
+                        },
+                        async: true,
+                        success: function (data) {
+
+                            // TODO 发送邮件 收件人地址为 _selected.email
+                            // $.ajax({
+                            //     type:'post',
+                            //     url: "{:U('api/sendtask')}", // 请求接口
+                            //     data: {
+                            //         to:_selected.email,
+                            //         content:$('#content').val(), // 任务内容
+                            //     },
+                            //     async: true,
+                            //     success: function (data) {
+                            //         console.log(data);
+                            //     },
+                            //     dataType: 'json'
+                            // });
+
+                        },
+                        dataType: 'json'
+                    });
+                    alert('修改成功') // 发送成功
+                }else{
+                    alert(data.msg) // 发送失败
+                }
+
+            },
+            dataType: 'json'
+        });
+
+    })
+
+});
+
+$(document).on('click','.del_merge',function () {
+        // 修改联合跟进人
+        $.ajax({
+            type: 'post',
+            url: "/index.php/api/edit_leads",
+            data: {
+                id: $("#leadsId").val(),//
+                merge: '0',
+                merge_time: '0',
+            },
+            async: true,
+            success: function (data) {
+                if (data.status) {
+                    $('.del_merge,.merge_time').hide();
+                    alert('已解除联合跟进人');
+                } else {
+                    console.log('解除失败', data.msg);
+                }
+            },
+            dataType: 'json'
+        });
+    });
+
+// 联合跟进人 END
+</script>

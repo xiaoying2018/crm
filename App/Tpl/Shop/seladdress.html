@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel">
+        请选择配送地址
+    </h4>
+</div>
+<div class="modal-body">
+    <div class="modal-tord">
+        <select id="sel_address_id" class="form-control">
+            <volist name="address_list" id="vo">
+                <option value="{$vo.id}" <if condition = "$vo[id] eq $_GET['id']">selected</if>>{$vo.address}</option>
+            </volist>
+        </select>
+    </div>
+    <div class="modal-body-page">
+        <img src="__PUBLIC__/img/shoping/sanjiao.png?">
+        <a href="{:U('shop/stress')}"><span>添加送货地址</span></a>
+    </div>
+</div>
+<div class="modal-footer">
+    <button id="btnAgree" type="button" class="btn btn-primary">确认</button>
+    <button id="btnCancel" type="button" class="btn btn-default">取消</button>
+</div>
+<script type="text/javascript">
+$(function() {
+    $("#btnAgree").click(function(){
+        var address = $('#sel_address_id').find("option:selected").text();
+        var address_id = $('#sel_address_id').val();
+        $('#address_content').html(address);
+        $('#address_id').val(address_id);
+        $("#Modal").modal("hide");
+    })
+    $("#btnCancel").click(function(){
+        $("#Modal").modal("hide");
+    })
+});
+</script>

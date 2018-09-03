@@ -1,0 +1,368 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<style>
+	table tbody tr{cursor:move;padding:0px;}
+	.table thead>tr>th{padding:3px;}
+	.table tbody>tr>td{padding:3px;}
+</style>
+<script>
+$(function(){
+	var scroll_width = 5;
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-10);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-10);
+		$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+	})
+	$("#tab_Test3").FrozenTable(1,0,0);
+	$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width).width($("#oTableLH_tab_Test3").width());
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+})
+</script>
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<include file="Public:alert" />
+		<div class="col-md-12">
+			<include file="Setting:setting_left" />
+			<div class="col-lg-10 ">
+				<div class="table-content" style="padding-bottom:10px">
+					<div class="ibox-content mar-top" style="border-bottom:none;padding-top:20px;">
+						<div class="bulk-actions align-left">
+							<button onclick="del_status(this)" style="background:#fff;border:1px solid #e3e3e3;color:#000;" type="button" class="btn btn-primary" >&nbsp;{:L('DELETE')}</button>
+							<div class="pull-right">
+								<a class="btn btn-primary" id="add">添加银行账户</a>
+							</div>
+						</div>
+					</div>
+					<form action="" id="form1" method="post">
+						<div class="col-sm-12 ibox-content" style="margin-top:0px;padding:0px;">
+							<div class="full-height-scroll" id="table_div" style="left:0px;top:0px;">
+								<table class="table table-hover table-striped table_thead_fixed" id="tab_Test3" >
+									<notempty name="bank_list">
+									<thead>
+										<tr class="tabTh">
+											<td style="width:50px;text-align:center;">
+												<div class="checkbox checkbox-primary">
+													<input type="checkbox" class="check_all"/>
+													<label for=""></label>
+												</div>
+											</td>
+											<td>账户名称（工商银行、招商银行等）</td>
+											<td>账号/卡号</td>
+											<td>账户类别（公司基本账户、公司现金账户等）</td>
+											<td>备注</td>
+											<!-- <td>账户余额</td> -->
+											<td>操作</td>
+										</tr>
+									</thead>
+									<tbody>
+										<volist name="bank_list" id="vo">
+											<tr>
+												<td style="text-align:center;">
+													<div class="checkbox checkbox-primary">
+														<input name="account_id[]" class="check_list" type="checkbox" value="{$vo.account_id}"/>
+														<label for=""></label>
+													</div>
+												</td>
+												<td>{$vo.open_bank}</td>
+												<td>{$vo.bank_account}</td>
+												<td>{$vo.company}</td>
+												<td>{$vo.description}</td>
+												<!-- <td>{$vo.balance}</td> -->
+												<td>
+													<a class="edit" href="javascript:void(0)" rel="{$vo.account_id}">{:L('EDIT')}</a>&nbsp;&nbsp;
+													<!-- <a class="initialize" href="javascript:void(0)" rel="{$vo.account_id}">初始化余额</a> -->
+												</td>
+											</tr> 
+										</volist>
+									</tbody>
+									<else />
+										<tr>
+											<td><include file="Public:nodata" /></td>
+										</tr>
+									</notempty>
+								</table>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="" style="display:none;" id="dialog-add" title="添加银行账户">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div class="" style="display:none;" id="dialog-edit" title="编辑银行账户">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div class="" style="display:none;" id="dialog-initialize" title="初始化金额">
+	<input type="hidden" name="account_id" id="dialog_account_id" value="{$_GET['account_id']}" />
+	<table class="table">
+		<tr>
+			<td id="next_td" style="margin:auto;">
+				<input type="password" name="the_password" id="the_password" class="form-control" value="" placeholder="请输入您的账号密码" style="width:240px;float:left;" />
+				<a href="javascript:void(0)" class="btn btn-primary" id="" onclick="next_form(this)" style="background-color:#3181E2;float:left;margin-left:10px;">下一步</a>
+			</td>
+			<td id="initialize_td" style="display: none;">
+				<input type="text" name="initialize_money" id="initialize_money" class="form-control" value="" placeholder="请输入初始化金额" style="width:240px;float:left;text-align: right;" />
+				<span style="float: left;margin-left: 5px;line-height: 32px;">(元)</span>
+				<a href="javascript:void(0)" class="btn btn-primary" id="" onclick="initialize_form(this)" style="background-color:#3181E2;float:left;margin-left:10px;">确认</a>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align:center;color:#999;"></span>您正在初始化财务金额，请慎重操作！</span></td>
+		</tr>
+	</table>
+</div>
+
+<script type="text/javascript">	
+$("#dialog-add").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 450,
+	maxHeight: 450,
+	position: ["center",100],
+	close:function(){
+		$(this).html("");
+	},
+	buttons: {
+		"确定": function () {
+			if($('#open_bank').val() == ''){
+				alert_crm('开户行不能为空！'); 
+				$("#open_bank").focus(); 
+				return false; 
+			}
+			if($('#bank_account').val() == ''){
+				alert_crm('银行账户不能为空！'); 
+				$("#bank_account").focus(); 
+				return false; 
+			}
+			if($('#company').val() == ''){
+				alert_crm('收款单位不能为空！'); 
+				$("#company").focus(); 
+				return false; 
+			}
+			$('#status_form1').submit();
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+
+$("#dialog-edit").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 450,
+	maxHeight: 450,
+	position: ["center",100],
+	close:function(){
+		$(this).html("");
+	},
+	buttons: {
+		"确定": function () {
+			if($('#open_bank').val() == ''){
+				alert_crm('开户行不能为空！'); 
+				$("#open_bank").focus(); 
+				return false; 
+			}
+			if($('#bank_account').val() == ''){
+				alert_crm('银行账户不能为空！'); 
+				$("#bank_account").focus(); 
+				return false; 
+			}
+			if($('#company').val() == ''){
+				alert_crm('收款单位不能为空！'); 
+				$("#company").focus(); 
+				return false; 
+			}
+			$('#status_form2').submit();
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+
+$("#dialog-initialize").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 450,
+	maxHeight: 450,
+	position: ["center",100]
+});
+
+$(function(){
+	$("#check_all").click(function(){
+		$("input[class='list']").prop('checked', $(this).prop("checked"));
+	});
+
+	$("#add").click(function(){
+		$('#dialog-add').dialog('open');
+		$('#dialog-add').load('{:U("setting/category_add")}');
+	});
+
+	$(".edit").click(function(){
+		var id = $(this).attr('rel');
+		$('#dialog-edit').dialog('open');
+		$('#dialog-edit').load('{:U("setting/category_edit","id=")}'+id);
+	});
+
+	$(".initialize").click(function(){
+		var account_id = $(this).attr('rel');
+		$('#dialog_account_id').val(account_id);
+		$('#dialog-initialize').dialog('open');
+	});
+})
+
+function del_status(obj){
+	var id_array = new Array();
+	$("input.check_list:checked").each(function(){  
+		id_array.push($(this).val());
+	});
+	if(id_array.length == 0){
+		swal({
+			title: "温馨提示",
+			text: "请先选择要删除的银行账户!",
+			type: "warning"
+		})
+		return false;
+	}else{
+		swal({
+			title: "您确定要删除该银行账户吗？",
+   			text: "删除后将无法恢复，请谨慎操作！",
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "是的，我要删除！",
+	        cancelButtonText:'让我再考虑一下…',
+	        closeOnConfirm:false,
+	        closeOnCancel:false
+		},
+		function(isConfirm){
+	        if (isConfirm) {
+				$.ajax({
+					type: "POST",
+					url: "{:U('setting/category_delete')}",
+					data: $("#form1").serialize(),
+					async: true,
+					success: function(data) {
+						if(data.status == 1){
+							swal({
+								title: "删除成功！",
+								text: "即将刷新页面!",
+								type: "success"
+							});
+							window.location.href="{:U('setting/category')}";
+						}else{
+							 swal({
+								title: "操作失败!",
+								text: data.info,
+								type: "error"
+							});
+						}
+					}
+				});
+			} else {
+	            swal("已取消","您取消了删除操作！","error");
+	        }
+	    });
+	}
+}
+
+//验证密码
+function next_form(obj){
+	$.base64.utf8encode = true;
+	if($('#the_password').val() == ''){
+        swal({
+            title: "温馨提示",
+            text: "密码不能为空！"
+        })
+        return false;
+    }
+    $('#the_password').val($.md5($('#the_password').val()));
+	var the_pass = $('#the_password').val();
+	$.ajax({
+		type: "POST",
+		data: {the_password:the_pass},
+		url: "{:U('setting/verify_identity')}",
+		async: true,
+		success: function(data) {
+			if(data.status == 1){
+				$('#next_td').hide();
+				$('#initialize_td').show();
+				$('#initialize_money').focus();
+			}else{
+				swal({
+					title: "操作失败!",
+					text: data.info,
+					type: "error"
+				});
+				$('#the_password').val('');
+				$('#the_password').focus();
+                return false;
+			}
+		}
+	});
+}
+
+function initialize_form(obj){
+	var initialize_money = $('#initialize_money').val();
+	var account_id = $('#dialog_account_id').val();
+	$.ajax({
+		type: "POST",
+		url: "{:U('setting/initialize')}",
+		data: {initialize_money:initialize_money,account_id:account_id},
+		async: true,
+		success: function(data) {
+			if(data.status == 1){
+				swal({
+					title: "初始化成功！",
+					text: "即将刷新页面!",
+					type: "success"
+				});
+				$('#dialog-initialize').dialog("close");
+				location.reload();
+			}else if(data.status == 2){
+				swal({
+					title: "操作失败!",
+					text: data.info,
+					type: "error"
+				});
+				$('#initialize_td').hide();
+				$('#next_td').show();
+			}else{
+				swal({
+					title: "操作失败!",
+					text: data.info,
+					type: "error"
+				});
+			}
+		}
+	});
+}
+
+$("#initialize_money").keyup(function(){
+    $(this).val($(this).val().replace(/[^0-9.]/g,''));
+}).bind("paste",function(){ 
+	//CTR+V事件处理  
+	$(this).val($(this).val().replace(/[^0-9.]/g,''));
+}).css("ime-mode", "disabled"); //CSS设置输入法不可用 
+
+</script>
+<include file="Public:footer" />

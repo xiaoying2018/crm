@@ -1,0 +1,167 @@
+<style>
+	.error_message{color: #666;text-align: left;}
+</style>
+<form class="form-horizontal" id="account_form" action="{:U('setting/accountadd')}" method="post">
+	<table class="table" style="border:none;">
+		<tr>
+			<td style="border:none;text-align:right;min-width: 100px;">科目大类：</td>
+			<td style="border:none;">
+				<if condition="$_GET['by'] eq 1">
+					资产
+				</if>
+				<if condition="$_GET['by'] eq 2">
+					负债
+				</if>
+				<if condition="$_GET['by'] eq 3">
+					权益
+				</if>
+				<if condition="$_GET['by'] eq 4">
+					成本
+				</if>
+				<if condition="$_GET['by'] eq 5">
+					损益
+				</if>
+			</td>
+			<td style="border:none;min-width: 150px;"></td>
+		</tr>
+		<if condition = "$parent_id">
+			<tr>
+				<td style="border:none;text-align:right;min-width: 100px;">上级科目：</td>
+				<td style="border:none;" id="parent">
+					<input type="text" class="form-control" disabled="true" value="{$parent_name}" />
+					<input type="hidden" name="parent_id" value="{$parent_id}" />
+				</td>
+				<td style="border:none;min-width: 150px;"></td>
+			</tr>
+		</if>
+		<tr>
+			<td style="border:none;text-align:right">科目编码：</td>
+			<td style="border:none;">
+				<if condition = "$parent_id">
+					<div class="input-daterange input-group">
+						<span class="input-group-addon" style="background-color:#ccc;">{$parent_code}</span>
+						<input type="number" id="max_num" name="max_num" class="form-control code" value="{$max_num}" />
+						<input type="hidden" id="prefixion" name="prefixion" value="{$parent_code}" />
+					</div>
+				<else />
+					<input type="number" id="code" name="code" class="form-control code" />
+				</if>
+			</td>
+			<td style="border:none;min-width: 150px;"><div class="error_message" id="error_code"></div></td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">科目名称：</td>
+			<td style="border:none;">
+				<input type="text" name="name" id="account_name" class="form-control" />
+			</td>
+			<td style="border:none;"><div class="error_message" id="error_name"></div></td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">科目类别：</td>
+			<td style="border:none;">
+				<select name="category" class="form-control">
+					<if condition="I('get.by') eq 1 || I('get.by') eq ''">
+						<option value="10">流动资产</option>
+						<option value="11">非流动资产</option>
+					</if>
+					<if condition="I('get.by') eq 2">
+						<option value="20">流动负债</option>
+						<option value="21">非流动负债</option>
+					</if>
+					<if condition="I('get.by') eq 3">
+						<option value="30">所有者权益</option>
+					</if>
+					<if condition="I('get.by') eq 4">
+						<option value="40">成本</option>
+					</if>
+					<if condition="I('get.by') eq 5">
+						<option value="50">营业收入</option>
+						<option value="51">其他收益</option>
+						<option value="52">期间费用</option>
+						<option value="53">其他损失</option>
+						<option value="54">营业成本及税金</option>
+						<option value="55">以前年度损益调整</option>
+						<option value="56">所得税</option>
+						<option value="57">表外科目</option>
+					</if>
+				</select>
+			</td>
+			<td style="border:none;"></td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">借贷方向：</td>
+			<td style="border:none;">
+				<div class="radio radio-info radio-inline" style="padding-left: 20px;">
+					<input class="validate" name="type" id="type_1" type="radio" value="1" <if condition = "$type eq 1">checked</if> />
+					<label for="type_1"> 借 </label>
+				</div>
+				<div class="radio radio-info radio-inline" style="padding-left: 20px;">
+					<input class="validate" name="type" id="type_2"  type="radio" value="2" <if condition = "$type eq 2">checked</if> />
+					<label for="type_2"> 贷 </label>
+				</div>
+			</td>
+			<td style="border:none;"></td>
+		</tr>
+	</table>
+</form>
+<script>
+$(document).ready(function(){
+	$(".code").blur(function(){
+		$('#error_code').removeClass('onFocus');
+		$('#error_code').html('');
+		var max_num = $("#max_num").val();
+		var prefixion = $("#prefixion").val();
+		if(prefixion){
+			var code = prefixion+max_num;
+		}else{
+			var code = $("#code").val();
+		}
+		if(code != ''){
+			var length = (code.toString().length);
+			if(length == 4 || length == 6 || length == 8){
+				if(!isNaN(code)){
+					$.ajax({
+					type:'get',
+					url:"{:U('setting/accountParent','code=')}"+code,
+					async:true,
+					success:function(data){
+						var options = '';
+						if(data.data != '' && data.status == 1){
+							options += '<input type="hidden" name="parent_id" value="'+data.data.id+'" /><input type="text" readonly="readonly" value="'+data.data.code+'&nbsp;&nbsp;'+data.data.name+'" style="width:220px;" placeholder=""/>';
+						}else if(data.status == 3){
+							$('#error_code').addClass('onFocus');
+							$('#error_code').html('该编码已存在，请修改！');
+							$("#code").focus();
+							options += '<input type="text" readonly="readonly" style="width:220px;" placeholder=""/>';
+						}else{
+							options += '<input type="text" readonly="readonly" style="width:220px;" placeholder=""/>';
+						}
+						// $("#parent").html(options);
+					},
+					dataType:'json'});
+				}else{
+					$('#error_code').addClass('onFocus');
+					$('#error_code').html('编码必须为数字格式！');
+					$("#code").focus();
+				}
+			}else{
+				$('#error_code').addClass('onFocus');
+				$('#error_code').html('编码必须为4-2-2格式！');
+				$("#code").focus();
+			}
+		}else{
+			$('#error_code').addClass('onFocus');
+			$('#error_code').html('科目编码不能为空！');
+		}
+	});
+	$("#account_name").blur(function(){
+		var name = $('#account_name').val();
+		$('#error_name').removeClass('onFocus');
+		$('#error_name').html('');
+		if(name == ''){
+			$('#error_name').addClass('onFocus');
+			$('#error_name').html('科目名称不能为空！');
+		}
+	});
+});
+</script>

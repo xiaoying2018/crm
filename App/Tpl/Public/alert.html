@@ -1,0 +1,35 @@
+<notempty name="alert['content']">
+<foreach name="alert['content']" item="v"  key="k">
+    <foreach name="v" item="vv"  key="kk">
+        <input type="hidden" class="alert_tishi" rel="{$k}" value="{$vv}">
+    </foreach>  
+</foreach>
+<input type="hidden" id="alert_defaultinfo_name" value="{:C('defaultinfo.name')}" />
+<script>
+    $(document).ready(function() {
+        var tishi = $('.alert_tishi').val();
+        var is_success = $('.alert_tishi').attr('rel');
+        var alert_defaultinfo_name = $('#alert_defaultinfo_name').val();
+        setTimeout(function() {
+            if(is_success == 'error'){
+                toastr.options = {
+                    closeButton: true,
+                    progressBar: true,
+                    showMethod: 'slideDown',
+                    timeOut: 4000,
+                    fadeIn: 7000
+                };
+                toastr.error(alert_defaultinfo_name,tishi);
+            }else{
+                toastr.options = {
+                    closeButton: true,
+                    progressBar: true,
+                    showMethod: 'slideDown',
+                    timeOut: 2000
+                };
+                toastr.success(alert_defaultinfo_name,tishi);
+            }
+        }, 800);
+    });
+</script>
+</notempty>

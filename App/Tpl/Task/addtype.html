@@ -1,0 +1,139 @@
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/css/validator.css"/>
+<script type="text/javascript" src="__PUBLIC__/js/checkuser.js"></script>
+<style>
+    .close{font-size:34px;font-weight:400;color:#fff;}
+    .close:hover{color:#fff;}
+</style>
+<div class="modal-header" style="border:none;">
+    <b style="font-size:16px;">新增列表</b>
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+</div>
+<form class="modal-content m-t" id="ad_Form" action="#" method="post" role="form">
+    <div class="modal-body col-sm-12">
+		<div class="form-group ">
+			<label class="control-label col-sm-1" for="name" ></label>
+			<div class="col-sm-6">
+				<input type="text" id="name" name="name" rel="require" rell="列表名" placeholder="列表名" class="form-control checkit" onblur="checkform(this);" />
+			</div>
+			<div class="col-sm-3 error_msg" id="nameTip"></div>
+		</div>
+    </div>
+    <div class="modal-footer">
+        <div class="form-actions">
+            <button class="btn btn-primary" id="adbtn" type="button">
+                保存
+            </button>
+            <a class="btn btn-sm btn-white" data-dismiss="modal" href="javascript:;">取消</a>
+        </div>
+    </div>
+</form>
+<script>
+//任务列表
+$('#adbtn').unbind("click").bind("click",function(){
+// $(document).on('click','#adbtn',function(){
+    if(input_msg && before_submit()){
+        $.ajax({
+            type: "POST",
+            url: "{:U('task/addtype')}",
+            data:$("#ad_Form").serialize(),
+            async: true,
+            success: function(data) {
+                if(data.status == 1){
+                    var type_id = data.data.id;
+                    var name = data.data.name;
+                    $('#addNewType').modal('hide');
+                    var temp = '';
+                    temp = '<li class="list-group-item taskboard-stage" id="type_li_'+type_id+'" style="padding:0px;margin-right: 15px;border:1px solid #e4eaec;">\
+                                <input type="hidden" class="type_list" name="type_id[]" value="'+type_id+'"/>\
+                                <header class="taskboard-stage-header ui-sortable-handle type_header" rel="'+type_id+'" id="type_header_'+type_id+'" style="">\
+                                    <div class="taskboard-stage-actions pull-right">\
+                                        <div class="dropdown" id="dropdown_'+type_id+'">\
+                                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">\
+                                                <i class="fa fa-angle-down" aria-hidden="true" style="font-size: 20px;"></i>\
+                                            </a>\
+                                            <ul class="dropdown-menu bullet" role="menu">\
+                                                <li role="presentation" class="taskboard-li taskboard-stage-rename">\
+                                                    <a href="javascript:;" role="menuitem" class="rename" rel="'+type_id+'"><i class="icon wb-pencil" aria-hidden="true"></i>重命名</a>\
+                                                </li>\
+                                                <li role="presentation" class="taskboard-li taskboard-stage-delete">\
+                                                    <a href="javascript:;" class="del_type" rel="'+type_id+'" role="menuitem"><i class="icon wb-trash" aria-hidden="true"></i>归档</a>\
+                                                </li>\
+                                            </ul>\
+                                        </div>\
+                                    </div>\
+                                    <h4 class="taskboard-stage-title" id="type_name_'+type_id+'" style="font-weight: 100;">'+name+'</h4>\
+                                </header>\
+                                <header class="taskboard-stage-header ui-sortable-handle" id="edit_header_'+type_id+'" style="display:none;float:left;border-bottom: none;">\
+                                    <form id="form_header_'+type_id+'">\
+                                        <input type="hidden" name="type_id" value="'+type_id+'" />\
+                                        <div class="taskboard-stage-rename-w">\
+                                            <div class="form-group">\
+                                                <input class="form-control taskboard-stage-rename-input" type="text" value="'+name+'" name="name">\
+                                            </div>\
+                                            <div class="form-group">\
+                                                <div class="col-sm-6">\
+                                                    <button class="btn btn-primary btn-block type_save" rel="'+type_id+'" type="button">保存</button>\
+                                                </div>\
+                                                <div class="col-sm-6">\
+                                                    <button class="btn btn-block btn-white type_cancel" rel="'+type_id+'" type="button">取消</button>\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                    </form>\
+                                </header>\
+                                <div class="taskboard-stage-content" style="float: left;width:100%;height: 80%;">\
+                                    <div class="full-height-scroll">\
+                                        <ul class="taskboard-stage sortable-task-list sortable-list taskconnectList agile-list task_content " rel="'+type_id+'" id="ul_'+type_id+'" style="width:100%;margin-right:0px;" >\
+                                        </ul>\
+                                    </div>\
+                                </div>\
+                                <div class="action-wrap">\
+                                    <a class="add-item-toggle" id="toggle_'+type_id+'" rel="'+type_id+'" href="javascript:void(0);">\
+                                        <i class="icon wb-plus" aria-hidden="true"></i>添加任务\
+                                    </a>\
+                                    <div class="add-item-wrap" id="wrap_'+type_id+'" style="display: none;">\
+                                        <form class="add-item" role="form" id="form_'+type_id+'" method="post" action="#" style="margin-top:15px;">\
+                                            <input type="hidden" name="type_id" value="'+type_id+'" />\
+                                            <div class="form-group">\
+                                                <label class="control-label margin-bottom-15" for="subject" style="line-height: 30px;margin-left: 22px;">任务名称：</label>\
+                                                <input class="form-control" type="text" id="task_subject_'+type_id+'" placeholder="任务名称" name="subject" style="width:80%;margin-left:10%;" />\
+                                            </div>\
+                                            <div class="form-group text-right">\
+                                                <a class="btn btn-sm btn-white add-item-cancel" rel="'+type_id+'" href="javascript:void(0);">取消</a>\
+                                                <button type="button" class="btn btn-primary add-item-add add_task" rel="'+type_id+'" style="margin-right:10%;">添加</button>\
+                                            </div>\
+                                        </form>\
+                                    </div>\
+                                </div>\
+                            </li>';
+                    $('#task_type').append(temp);
+                    swal({
+                        title: "创建成功!",
+                        type: "success"
+                    });
+                }else{
+                    swal({
+                        title: "添加失败!",
+                        text: data.info,
+                        type: "error"
+                    });
+                }
+                $('#addNewType').modal('hide');
+            }
+        });
+    }else{
+        var item_id = [];
+        $('.checkit').each(function(k,v){
+            checkform(v);
+            item_id.push($(v).attr('id'));
+        });
+        $.each(item_id,function(k,v){
+            if($('#'+v+'Tip').html() == ''){
+                item_id.splice(k,1);
+            }
+        });
+        $('#'+item_id[0]).focus();
+        return false;
+    }
+});
+</script>

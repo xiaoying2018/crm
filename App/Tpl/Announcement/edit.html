@@ -1,0 +1,116 @@
+<include file="Public:header" />
+<style type="text/css">
+.add_body >div >.full-height-scroll{
+   	border-right:1px dotted #ccc
+}
+.add_body_title{
+	margin:15px auto 30px auto;
+	padding-left: 14px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.form-control{
+	float:left;
+}
+</style>
+<script type="text/javascript" src="__PUBLIC__/js/jscolor/jscolor.js"></script>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+		<form class="form-horizontal" id="form" role="form" action="{:U('announcement/edit')}" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="announcement_id" value="{$announcement.announcement_id}"/>
+			<div class="ibox-content" id="add_body" >
+				<div class="row">
+					<div class="col-md-12 full-height-scroll add_body">
+						<div class="row" >
+							<div class="col-md-12 add_body_title" style="margin:20px 0 0 0px;">
+								<div class="all-inline">
+									<span class="sq-tag"></span>
+									<div class="text-tag">
+										<span>基础信息</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form" style="margin:20px 0 0 21px;">
+								<div class="form-group">
+									<label class="col-md-3 control-label">{:L('HEADLINE')}：</label>
+									<div class="col-md-7">
+										<input type="text" name="title" class="form-control" value="{$announcement.title}"/>
+									</div>
+									<div class="col-md-2">(100字内)</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-3 control-label">{:L('WHETHER ISSUED')}：</label>
+									<div class="col-md-7">
+										<div class="radio radio-info radio-inline" style="padding-left: 20px;">
+											<input type="radio" <if condition="$announcement['status'] == 1">checked</if> value="1" name="status"/><label for="status">{:L('IS')}</label>&nbsp;
+										</div>
+										<div class="radio radio-info radio-inline" style="padding-left: 10px;">
+											<input type="radio" <if condition="$announcement['status'] == 2">checked</if> value="2" name="status"/><label for="status"> {:L('ISNOT')}</label>&nbsp;
+										</div>
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-3 control-label">{:L('INFORM THE DEPARTMENT')}：</label>
+									<div class="col-md-7">
+										<div class="checkbox checkbox-primary pull-left">
+											<input type="checkbox" id="check_all"/>
+											<label for="">{:L('CHECK ALL')}&nbsp;&nbsp;</label>
+										</div>
+										<volist name="department_list" id="vo">
+											<div class="checkbox checkbox-primary pull-left">
+												<input type="checkbox" name="announce_department[]" class="check_list" {$vo['checked']} value="{$vo.department_id}"/>
+												<label for="">&nbsp;{$vo['name']}&nbsp;&nbsp;</label>
+											</div>
+										</volist>
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-3 control-label">{:L('CONTENT')}：</label>
+									<div class="col-md-9">
+										<textarea class="form-control required" rows="5" name="content" id="content">{$announcement.content}</textarea>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-1 pull-right">
+								<div style="height: 100%; border-right: 1px dashed gray;">&nbsp;</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="tfoot_div" class="clearfix">
+				<div class="clearfix" id="tfoot_page">
+					<div class="ibox-content">
+						<div class="col-sm-offset-2" style="text-align:center;margin-left:0px;">
+							<input class="btn btn-primary" name="submit" type="submit" value="{:L('SAVE')}"/> &nbsp; <input class="btn  btn-primary" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+	$("#check_all").click(function(){
+		$("input[class='check_list']").prop('checked', $(this).prop("checked"));
+	});
+	$('.department').each(function(){
+		var subordinates = $(this).is(':checked');
+		if(subordinates){
+			$(this).iCheck('check');
+		}
+	});
+</script>
+<include file="Public:footer" />	

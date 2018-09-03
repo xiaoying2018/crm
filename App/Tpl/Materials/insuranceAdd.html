@@ -1,0 +1,223 @@
+<include file="Public:header" />
+<style type="text/css">
+.add_title {
+    padding-bottom: 10px;
+    height: 60px;
+    margin-bottom: 15px;
+}
+
+.add_title>span {
+    border-bottom: 2px solid #1ab394;
+    font-size: 24px;
+}
+
+.add_body>div>.full-height-scroll {
+    border-right: 1px dotted #ccc
+}
+
+.add_body_title {
+    margin: 15px auto 30px auto;
+    padding-left: 14px;
+}
+
+.add_body_form>form>.form-group {
+    margin-bottom: 25px;
+}
+
+body {
+    overflow-y: hidden;
+}
+
+.form-control {
+    float: left;
+}
+
+#user_list {
+    padding: 0;
+    display: none;
+}
+
+#user_list>li {
+    list-style: none;
+    border: 1px solid #d8e3ef;
+    border-top: none;
+    padding: 6px 12px;
+}
+.select2-container--default .select2-selection--single{
+    border-radius: 0px !important;
+    border: 1px solid #d8e3ef !important;
+}
+
+.select2-container--default .select2-selection--single {
+    border-radius: 0px !important;
+    border: 1px solid #d8e3ef !important;
+}
+.select2-container .select2-selection--single{
+    height: 35px !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow{
+    height: 35px !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered{
+    line-height: 35px !important;
+}
+</style>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script>
+$(function() {
+    $(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+    $(window).resize(function() {
+        $(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+    })
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+    <form class="form-horizontal" id="form" role="form" action="{:U('materials/insuranceAdd')}" method="post" enctype="multipart/form-data">
+        <div class="ibox-content " id="add_body">
+            <div class="row">
+                <div class="col-md-12 add_body">
+                    <div class="full-height-scroll">
+                        <div class="row">
+                            <div class="col-md-12 add_body_title" style="margin:20px 0 0 0px;">
+                                <div class="all-inline">
+                                    <span class="sq-tag"></span>
+                                    <div class="text-tag">
+                                        <span>基础信息</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+                                <!-- 名称 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 学员姓名</label>
+                                    <div class="col-md-6">
+                                        <select class="select_name form-control" name="student_id">
+                                            <option value="">输入学员姓名后选择学员</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- 保险公司名称 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 保险公司名称</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control " type="text" name="insurance_name" id="insurance_name" placeholder="请输入保险公司名称" />
+                                    </div>
+                                </div>
+                                <!-- 保单号 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 保单号</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control " type="text" name="insurance_code" id="insurance_code" aria-required="true" placeholder="请输入保单号" />
+                                    </div>
+                                </div>
+                                <!-- 保险金额 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 保险金额</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control " type="text" name="insurance_sum" id="insurance_sum" aria-required="true" placeholder="请输入保险金额" />
+                                    </div>
+                                </div>
+
+                                <!-- 开始时间 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"> 开始时间</label>
+                                    <div class="col-md-6">
+                                        <input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="start_time" id="start_time" class="input_edit edit form-control">
+                                    </div>
+                                </div>
+                                <!-- 结束时间 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"> 结束时间</label>
+                                    <div class="col-md-6">
+                                        <input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="end_time" id="end_time" class="input_edit edit form-control">
+                                    </div>
+                                </div>
+                                <!-- 备注 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">备注</label>
+                                    <div class="col-md-8">
+                                        <textarea class="form-control" placeholder="备注" rows="5" name="desc" id="desc"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tfoot_div" class="clearfix">
+            <div class="clearfix" id="tfoot_page">
+                <div class="ibox-content" style="border-top: none;">
+                    <input type="hidden" id="student_id" name="student_id" value="">
+                    <div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><a href="javascript:void(0)" id="submit" class="btn btn-primary">确认添加</a></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="__PUBLIC__/js/uploadPreview.js"></script>
+<script type="text/javascript">
+$(function() {
+    $(".select_name").select2({
+        ajax: {
+            placeholder:'请选择',
+            allowClear:true,
+            url: "{:U('materials/getstudents')}",
+            data: function(params) {
+                var query = {
+                    "name": params.term
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function(data) {
+                return {
+                    results: data.data
+                };
+            },
+            processResults: function(data, params) {
+                if (data.status) {
+                    var itemList = [];
+                    //当数据对象不是{id:0,text:'ANTS'}这种形式的时候，可以使用类似此方法创建新的数组对象
+                    var arr = data.data
+                    for(var i = 0; i < arr.length; i++){
+                        itemList.push({id: arr[i]['id'], text: arr[i]['realname']})
+                    }
+                    return {
+                        results: itemList
+                    };
+                }else{
+                    return []
+                }
+            },
+        }
+    });
+})
+if ("{:C('isMobile')}" == "1") {
+    width = $('.container').width() * 0.9;
+} else {
+    width = 800;
+}
+
+$(document).ready(function() {
+    /*form表单验证*/
+    $("#form").validate({
+
+    });
+});
+
+// 是否选中学员
+$("#submit").click(function() {
+    // 赋值
+    $('#student_id').val($(".select_name").val());
+    if (!$('#student_id').val()) {
+        alert('请选择关联学员');
+        return false;
+    }
+    $('#form').submit();
+});
+
+</script>
+<include file="Public:footer" />

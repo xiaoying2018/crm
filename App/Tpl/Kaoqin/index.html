@@ -1,0 +1,135 @@
+<include file="Public:header"/>
+<link href="__PUBLIC__/style/css/plugins/fullcalendar/fullcalendar2.css" rel="stylesheet">
+<link href="__PUBLIC__/style/css/plugins/fullcalendar/fullcalendar.print.css" rel='stylesheet' media='print'>
+
+<style>
+	.fc-grid .fc-day-number{padding: 0 2px; position:relative} 
+	.fc-grid .fc-day-number span.solarday{float:right;color:#999}     
+	.fc-grid .fc-day-number span.holiday{position:absolute; left:40%} 
+	.fc-event-time, .fc-event-title{color:#fff;}
+
+	.color-selector>li{
+		position: relative;
+	    display: inline-block;
+	    width: 24px;
+	    height: 24px;
+	    margin: 0 5px 0 0;
+	    border-radius: 100%;
+	}
+	.bg-blue-600 label:before{
+		background-color: #62a8ea!important;
+	}
+	.bg-green-600 label:before{
+		background-color: #46be8a!important;
+	}
+	.bg-cyan-600 label:before{
+		background-color: #57c7d4!important;
+	}
+	.bg-orange-600 label:before{
+		background-color: #f2a654!important;
+	}
+	.bg-red-600 label:before{
+		background-color: #f96868!important;
+	}
+	.bg-blue-grey-600 label:before{
+		background-color: #526069!important;
+	}
+	.bg-purple-600 label:before{
+		background-color: #926dde!important;
+	}
+
+	.bg-blue-600 label:after{
+		background-color: #62a8ea!important;
+	}
+	.bg-green-600 label:after{
+		background-color: #46be8a!important;
+	}
+	.bg-cyan-600 label:after{
+		background-color: #57c7d4!important;
+	}
+	.bg-orange-600 label:after{
+		background-color: #f2a654!important;
+	}
+	.bg-red-600 label:after{
+		background-color: #f96868!important;
+	}
+	.bg-blue-grey-600 label:after{
+		background-color: #526069!important;
+	}
+	.bg-purple-600 label:after{
+		background-color: #926dde!important;
+	}
+	.radio label:before{
+		width:24px;
+		height:24px;
+	}
+	.radio label:after{
+		left:6px;
+		top: 4px;
+		font-family: "FontAwesome";
+    	content: "\f00c";
+    	color: #fff;
+	}
+	.fc-button.fc-agendaDay-button, .fc-button.fc-agendaWeek-button, .fc-button.fc-month-button{
+		height: auto;
+	    padding: 8px 14px;
+	    font-size: 14px;
+	    text-transform: capitalize;
+	    background-color: #f6f8f8;
+	    background-image: none;
+	    border-color: #e4eaec;
+	    outline: 0;
+	    -webkit-box-shadow: none;
+	    box-shadow: none;
+	}
+	.fc-state-default{
+		background-image: none;
+	}
+	.ui-dialog{
+		z-index:2300;
+	}
+</style>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<include file="Public:alert" />
+			<div class="ibox float-e-margins">
+				<div class="ibox-content" style="padding-bottom:0px;">
+					<div class="clearfix" style="margin-bottom:10px;"></div>
+					<div class="ibox-content" style="border:none;">
+	                    <div id="calendar"></div>
+	                </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 右键菜单 -->
+<script src="__PUBLIC__/style/js/plugins/vendor/bootstrap-contextmenu/bootstrap-contextmenu.min.js"></script>
+
+<script src="__PUBLIC__/style/js/plugins/fullcalendar/moment.min.js"></script>
+<!-- Full Calendar -->
+<script src="__PUBLIC__/style/js/plugins/fullcalendar/fullcalendar.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+    /* initialize the calendar
+     -----------------------------------------------------------------*/
+    var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+
+    $('#calendar').fullCalendar({
+    	events: "{:U('kaoqin/indexdata')}",
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay'
+        },
+        editable: false,//允许拖动 
+        selectHelper: false
+    });
+});
+</script>
+<include file="Public:footer" />

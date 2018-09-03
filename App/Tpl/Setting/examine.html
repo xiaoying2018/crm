@@ -1,0 +1,210 @@
+<include file="Public:header" />
+<style type="text/css">
+.add_body_title{
+	margin:15px auto 30px auto;
+	padding-left: 14px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.product_thead>tr>td{
+	background-color:#FFFFFF;padding:1px;font-size:13px;color:#999;
+}
+#main_pic_prev{width: 120px;height: 120px;border: 1px dashed #d3d3d6;}
+.showfile{
+		padding:6px;
+	}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-20);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-20);
+	})
+})
+</script>
+<div class="wrapper wrapper-content">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-lg-12">
+			<include file="Setting:setting_left" />
+			<div class="col-sm-10 ">
+				<div class="table-content clearfix ibox-title full-height-scroll add_body" id="add_body" style="padding-top:0px">
+					<div class="col-lg-12">
+						<div style="padding:18px 0 10px;border-bottom:1px solid #ddd;font-weight:700;">内部审批流程</div>
+						<div style="padding:10px;font-weight:500;background-color:#ECEFF4;margin-top:10px;">已启用审批流程</div>
+						<volist name="status_list" id="vo">
+							<if condition="$vo['status'] eq 1">
+								<div>
+									<div class="pull-left" style="background:transparent url('__PUBLIC__/img/003.png') no-repeat scroll 0px -50px;width:50px;height:50px;margin:10px;"></div>
+									<div class="pull-left col-lg-2" style="margin-top:8px;min-width: 200px;">
+										<div style="font-size:14px;">普通审批</div>
+										<div style="font-size:13px;color:#999">适用于公司日常审批</div>
+										<div style="font-size:11px;color:#999">{$vo['update_time']|date="Y.m.d H:i",###} 更新</div>
+									</div>
+									<div class="pull-left col-lg-1" style="margin-top:16px;border-left:2px solid #ccc;height:42px;"></div>
+									<div class="pull-right col-lg-2" style="margin-top:10px;padding:15px">
+										<a href="{:U('setting/examinetype','id='.$vo['id'])}" style="margin-right:20px;">审批人&nbsp;(<if condition="$vo['option'] eq 1">设置<else/>自选</if>)</a>
+										<a class="enable" rel2="{$vo['id']}" rel="{$vo['type']}"><if condition="$vo['type'] neq 1">停用<else />启用</if></a>
+									</div>
+									<div style="clear:both"></div>
+								</div>
+							<elseif condition="$vo['status'] eq 5"/>
+								<div style="border-top:1px solid #ccc;">
+									<div class="pull-left" style="background:transparent url('__PUBLIC__/img/003.png') no-repeat scroll 0px 0px;width:50px;height:50px;margin:10px;"></div>
+									<div class="pull-left col-lg-2" style="margin-top:8px;min-width: 200px;">
+										<div style="font-size:14px;">出差申请</div>
+										<div style="font-size:13px;color:#999">适用于公司出差申请</div>
+										<div style="font-size:11px;color:#999">{$vo['update_time']|date="Y.m.d H:i",###} 更新</div>
+									</div>
+									<div class="pull-left col-lg-1" style="margin-top:16px;border-left:2px solid #ccc;height:42px;"></div>
+									<div class="pull-right col-lg-2" style="margin-top:10px;padding:15px">
+										<a href="{:U('setting/examinetype','id='.$vo['id'])}" style="margin-right:20px;">审批人&nbsp;(<if condition="$vo['option'] eq 1">设置<else/>自选</if>)</a>
+										<a class="enable" rel2="{$vo['id']}" rel="{$vo['type']}"><if condition="$vo['type'] neq 1">停用<else/>启用</if></a>
+									</div>
+									<div style="clear:both"></div>
+								</div>
+							<elseif condition="$vo['status'] eq 2"/>
+								<div style="border-top:1px solid #ccc;">
+									<div class="pull-left" style="background:transparent url('__PUBLIC__/img/003.png') no-repeat scroll 0px -100px;width:50px;height:50px;margin:10px;"></div>
+									<div class="pull-left col-lg-2" style="margin-top:8px;min-width: 200px;">
+										<div style="font-size:14px;">请假审批</div>
+										<div style="font-size:13px;color:#999">适用于公司请假审批</div>
+										<div style="font-size:11px;color:#999">{$vo['update_time']|date="Y.m.d H:i",###} 更新</div>
+									</div>
+									<div class="pull-left col-lg-1" style="margin-top:16px;border-left:2px solid #ccc;height:42px;"></div>
+									<div class="pull-right col-lg-2" style="margin-top:10px;padding:15px">
+										<a href="{:U('setting/examinetype','id='.$vo['id'])}" style="margin-right:20px;">审批人&nbsp;(<if condition="$vo['option'] eq 1">设置<else/>自选</if>)</a>
+										<a class="enable" rel2="{$vo['id']}" rel="{$vo['type']}"><if condition="$vo['type'] neq 1">停用<else/>启用</if></a>
+									</div>
+									<div style="clear:both"></div>
+								</div>
+							<elseif condition="$vo['status'] eq 4"/>	
+								<div style="border-top:1px solid #ccc;">
+									<div class="pull-left" style="background:transparent url('__PUBLIC__/img/003.png') no-repeat scroll 0px -150px;width:50px;height:50px;margin:10px;"></div>
+									<div class="pull-left col-lg-2" style="margin-top:8px;min-width: 200px;">
+										<div style="font-size:14px;">差旅报销</div>
+										<div style="font-size:13px;color:#999">适用于公司差旅报销</div>
+										<div style="font-size:11px;color:#999">{$vo['update_time']|date="Y.m.d H:i",###} 更新</div>
+									</div>
+									<div class="pull-left col-lg-1" style="margin-top:16px;border-left:2px solid #ccc;height:42px;"></div>
+									<div class="pull-right col-lg-2" style="margin-top:10px;padding:15px">
+										<a href="{:U('setting/examinetype','id='.$vo['id'])}" style="margin-right:20px;">审批人&nbsp;(<if condition="$vo['option'] eq 1">设置<else/>自选</if>)</a>
+										<a class="enable" rel2="{$vo['id']}" rel="{$vo['type']}"><if condition="$vo['type'] neq 1">停用<else/>启用</if></a>
+									</div>
+									<div style="clear:both"></div>
+								</div>
+							<elseif condition="$vo['status'] eq 6"/>
+								<div style="border-top:1px solid #ccc;border-bottom:1px solid #ccc;">
+									<div class="pull-left" style="background:transparent url('__PUBLIC__/img/003.png') no-repeat scroll 0px -200px;width:50px;height:50px;margin:10px;"></div>
+									<div class="pull-left col-lg-2" style="margin-top:8px;min-width: 200px;">
+										<div style="font-size:14px;">借款申请</div>
+										<div style="font-size:13px;color:#999">适用于公司借款申请</div>
+										<div style="font-size:11px;color:#999">{$vo['update_time']|date="Y.m.d H:i",###} 更新</div>
+									</div>
+									<div class="pull-left col-lg-1" style="margin-top:16px;border-left:2px solid #ccc;height:42px;"></div>
+									<div class="pull-right col-lg-2" style="margin-top:10px;padding:15px">
+										<a href="{:U('setting/examinetype','id='.$vo['id'])}" style="margin-right:20px;">审批人&nbsp;(<if condition="$vo['option'] eq 1">设置<else/>自选</if>)</a>
+										<a class="enable" rel2="{$vo['id']}" rel="{$vo['type']}"><if condition="$vo['type'] neq 1">停用<else/>启用</if></a>
+									</div>
+									<div style="clear:both"></div>
+								</div>
+							<elseif condition="$vo['status'] eq 3"/>
+								<div style="border-top:1px solid #ccc;">
+									<div class="pull-left" style="background:transparent url('__PUBLIC__/img/003.png') no-repeat scroll 0px -250px;width:50px;height:50px;margin:10px;"></div>
+									<div class="pull-left col-lg-2" style="margin-top:8px;min-width: 200px;">
+										<div style="font-size:14px;">普通报销</div>
+										<div style="font-size:13px;color:#999">适用于公司日常报销</div>
+										<div style="font-size:11px;color:#999">{$vo['update_time']|date="Y.m.d H:i",###} 更新</div>
+									</div>
+									<div class="pull-left col-lg-1" style="margin-top:16px;border-left:2px solid #ccc;height:42px;"></div>
+									<div class="pull-right col-lg-2" style="margin-top:10px;padding:15px">
+										<a href="{:U('setting/examinetype','id='.$vo['id'])}" style="margin-right:20px;">审批人&nbsp;(<if condition="$vo['option'] eq 1">设置<else/>自选</if>)</a>
+										<a class="enable" rel2="{$vo['id']}" rel="{$vo['type']}"><if condition="$vo['type'] neq 1">停用<else/>启用</if></a>
+									</div>
+									<div style="clear:both"></div>
+								</div>
+							<elseif condition="$vo['status'] eq 7"/>
+								<div style="border-top:1px solid #ccc;border-bottom:1px solid #ccc;">
+									<div class="pull-left" style="background:transparent url('__PUBLIC__/img/003.png') no-repeat scroll 0px -200px;width:50px;height:50px;margin:10px;"></div>
+									<div class="pull-left col-lg-2" style="margin-top:8px;min-width: 200px;">
+										<div style="font-size:14px;">促销/打折/审批</div>
+										<div style="font-size:13px;color:#999">适用促销/打折申请</div>
+										<div style="font-size:11px;color:#999">{$vo['update_time']|date="Y.m.d H:i",###} 更新</div>
+									</div>
+									<div class="pull-left col-lg-1" style="margin-top:16px;border-left:2px solid #ccc;height:42px;"></div>
+									<div class="pull-right col-lg-2" style="margin-top:10px;padding:15px">
+										<a href="{:U('setting/examinetype','id='.$vo['id'])}" style="margin-right:20px;">审批人&nbsp;(<if condition="$vo['option'] eq 1">设置<else/>自选</if>)</a>
+										<a class="enable" rel2="{$vo['id']}" rel="{$vo['type']}"><if condition="$vo['type'] neq 1">停用<else/>启用</if></a>
+									</div>
+									<div style="clear:both"></div>
+								</div>
+							</if>
+						</volist>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">	
+	$(document).ready(function(){
+		/*form表单验证*/
+		$("#form").validate({
+		
+		});
+	});
+	$('.enable').click(function(){
+		var type = $(this).attr('rel');
+		var id = $(this).attr('rel2');
+		if(type == 1){
+			type_name = '启用';
+		}else{
+			type_name = '停用';
+		}
+		swal({
+		  title: "您确定要"+type_name+"吗?",
+		  type: "warning",
+		  showCancelButton: true,
+		  confirmButtonColor: "#DD6B55",
+		  confirmButtonText: "是的，"+type_name+"！",
+		  cancelButtonText: "不，撤销",
+		  closeOnConfirm: false,
+		  closeOnCancel: false
+		},
+		function(isConfirm){
+		  if (isConfirm) {
+				$.ajax({
+					type:'post',
+					url: "{:U('setting/enable')}",
+					data: {type: type,id:id},
+					async: false,
+					success: function (data) {
+						if (data.status == 1) {
+							swal({
+								title: type_name+"成功！",
+								type: "success"
+							}); 
+							location.reload();
+						}else{
+							swal({
+								title: "失败数据无变化！",
+								type: "error"
+							});
+							return false;
+						}
+					},
+					dataType: 'json'
+				});
+				
+		  } else {
+				swal({
+					title: "已关闭数据无变化！",
+					type: "error"
+				});
+		  }
+		});
+	});
+</script>
+<include file="Public:footer" />	

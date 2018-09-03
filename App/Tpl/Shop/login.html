@@ -1,0 +1,149 @@
+<include file="Shop:header_shoping" />
+<style type="text/css">
+</style>
+<div id="top" class="callbacks_container">
+    <div class="courses_box3">
+        <div class="col-md-8 about_left">
+            <img src="__PUBLIC__/img/shoping/banner.png" class="img-responsive" alt=""
+            />
+        </div>
+        <div class="col-md-4 about_right">
+            <form action="" method="post">
+                <div class="form-group">
+                    <h4>
+                        <a href="#">
+                            <img src="__PUBLIC__/img/shoping/yh.png" width="20px" height="20px" alt="">
+                            开始登录
+                        </a>
+                    </h4>
+                    <input type="text" class="form-control" name="telephone" id="telephone" placeholder="手机号" />
+                    <input type="password" class="form-control" name="password" id="password" placeholder="密码" />
+                    <input type="text" class="form-control" name="img_verify" id="img_verify" placeholder="图片验证码" style="width: 70%;float: left;margin-top: 0px;" />
+                    <span style="float: left;margin-left: 4%;width: 25%;"><img style="float:left;margin-top:5px;height:30px; width:50px" src='./index.php/shop/getImageVerify' onclick="javascript:$(this).attr('src', './index.php/shop/getImageVerify?'+Math.random());" /></span>
+                    <div class="checkbox" style="float: left;width: 100%;">
+                        <label style="float: left;">
+                            <input type="checkbox" name="">
+                            下次自动登录
+                        </label>
+                        <label style="float: right;">
+                            <a href="/cn/forgot-password.html">
+                                忘记密码？
+                            </a>
+                        </label>
+                    </div>
+                    <input class="form-cont" id="confirm" value="登录" type="button">
+                    <p class="action-forgot-password ">
+                        没有账号？
+                        <a class="action-link" href="{:U('shop/register')}">
+                            立即注册
+                        </a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="clearfix">
+    </div>
+</div>
+<!-- <script src="__PUBLIC__/js/mxcrm.iot.js"></script> -->
+<script type="text/javascript">
+    $('#confirm').on('click',
+    function() {
+        var telephone = $('#telephone').val();
+        var img_verify = $('#img_verify').val();
+        var password = $('#password').val();
+        if (telephone == '' || telephone == null) {
+            alert('请输入正确的手机号码');
+            $("#telephone").focus();
+            return false;
+        }else{
+            if (!checktelephone(telephone)) {
+                alert('请输入正确的手机号码');
+                return false;
+            }
+        }
+        if (password == '' || password == null) {
+            alert('请输入您的密码');
+            $("#password").focus();
+            return false;
+        }
+        if (img_verify == '' || img_verify == null) {
+            alert('请输入图片验证码');
+            $("#img_verify").focus();
+            return false;
+        }
+        
+        if (password != '' && password != null) {
+            // $('form').submit();
+            $.ajax({
+                url:'{:U('shop/login')}',
+                data: {
+                    telephone:telephone,
+                    password:password,
+                    img_verify:img_verify
+                },
+                type:'post',
+                dataType:'json',
+                success:function(data){
+                    if(data.status == 1){
+                        alert('登录成功！');
+                        window.location.href = "{:U('shop/index')}";
+                    }else{
+                        alert(data.info);
+                        return false;
+                    }
+                },
+                error:function(data){
+                    alert(data.info);
+                    return false;
+                }
+            });
+        } else {
+            alert('请重新检查您的密码');
+        }
+    });
+    function checktelephone(telephone) {
+        var filter  = /^1[3578][0-9]{9}$/;
+        if (filter.test(telephone)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+</script>
+<div class="barck">
+    <h3 class="section-title">
+        如何下单？
+    </h3>
+    <section class="how-it-works home-section">
+        <div>
+            <img class="img-block" alt="" src="__PUBLIC__/img/shoping/icon.png">
+        </div>
+        <input class="form-contr" id="" value="开始下单" type="button">
+    </section>
+</div>
+<div class="clearfix"></div>
+<!-- <script src="__PUBLIC__/js/responsiveslides.min.js"></script> -->
+<script>
+    // $(function() {
+    //     $("#slider3").responsiveSlides({
+    //         auto: true,
+    //         pager: true,
+    //         nav: true,
+    //         speed: 500,
+    //         namespace: "callbacks",
+    //         before: function() {
+    //             $('.events').append("<li>before event fired.</li>");
+    //         },
+    //         after: function() {
+    //             $('.events').append("<li>after event fired.</li>");
+    //         },
+    //     });
+    // });
+    // var url = window.location.hash;
+    // $("html,body").animate({
+    //     scrollTop: $(url).offset().top
+    // },
+    // 1000);
+</script>
+<include file='Shop:footer_shoping' />

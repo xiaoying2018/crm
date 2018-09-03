@@ -1,0 +1,90 @@
+<style>
+	.checkbox.checkbox-primary{margin-top: -12px;}
+</style>
+<div class="clearfix">
+	<ul class="breadcrum pull-left" style="margin-bottom: 0px">
+		<li>
+			<span style="float: left;">搜索：</span>
+			<div class="input-group" style="top:-7px;">
+				<input type="text" style="width:160px;" placeholder="请输入联系人姓名" onkeydown="if(event.keyCode==13) {d_changeContent(0);}" class="form-control input-sm" name="search" id="search" value="{$search_field['search']}">
+				<span class="input-group-btn" style="float: left;top: 0px;left: 0px;">
+					<button class="btn btn-default btn-search" onclick="d_changeContent(0)" type="button"><i class="fa fa-long-arrow-right" style="font-size: 20px;"></i></button>
+				</span>
+			</div>
+		</li>
+	</ul>
+</div>
+<empty name="contactsList">
+	<div class="alert">{:L('THERE_IS_NO_DATA')}</div>
+<else/>
+<div class="clearfix form-inline">
+	<input type="hidden" id="customer_id" value="{$customer_id}"/> 
+	<input type="hidden" id="business_id" value="{$business_id}"/>
+	<table class="table table-hover">
+		<thead>
+			<tr style="background: #f5f5f5;">
+				<th>&nbsp;</th>
+				<th width="20%">{:L(NAME)}</th>
+				<th width="25%">手机</th>
+				<th width="25%">邮箱</th>
+				<th width="25%">{:L(POSITION)}</th>
+			</tr>
+		</thead>
+		<tbody id="contacts_data">
+			<volist name="contactsList" id="vo">
+				<tr style="cursor:pointer">
+					<td >
+						<div class="checkbox checkbox-primary" >
+							<input type="checkbox" class="contacts_ch" name="contacts_id[]" value="{$vo.contacts_id}"/>
+							<label for=""></label>
+						</div>
+					</td>
+					<td><a target="_blank" href="{:U('contacts/view','id='.$vo['contacts_id'])}">{$vo.name}</a></td>
+					<td>{$vo.telephone}</td>
+					<td>{$vo.email}</td>			
+					<td>{$vo.post}</td>
+				</tr>
+			</volist>
+		</tbody>
+		<tfoot id="footers">
+			<tr>
+				<td colspan="5">
+					{$page}
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+</empty>
+<script type="text/javascript">
+	$('#go_page').change(function(){
+		var sel = $(this).val();
+		$('#dialog-contacts').load(sel);
+		return false;
+	});
+	$("#contacts_data tr").click(function(){
+		var a = $(this).find('td:first-child .contacts_ch').prop('checked');
+		if(a == false){
+			$(this).find('td:first-child .contacts_ch').prop('checked', true);
+		}else{
+			$(this).find('td:first-child .contacts_ch').prop('checked', false);
+		}
+	});
+	$(function(){
+		$('#footers a').click(function(){ 
+			var rel = $(this).attr('href'); 
+			$('#dialog-contacts').load(rel);    
+			return false;
+		});
+	}); 
+	
+	function d_changeContent(p){
+		var customer_id = $('#customer_id').val();
+		var business_id = $('#business_id').val();
+		var field = 'name';
+		var condition = 'contains';
+		var search = $('#search').val();
+		var url = "{:U('contacts/checkListDialog','field=')}"+field+'&condition='+condition+'&search='+search+'&id='+customer_id+'&business_id='+business_id;
+		$('#dialog-contacts').load(url);
+	}
+</script>

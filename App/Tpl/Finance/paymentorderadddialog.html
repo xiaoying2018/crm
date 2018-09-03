@@ -1,0 +1,135 @@
+<form class="form-horizontal" action="{:U('finance/add')}" id="paymentorder_dialog" method="post">
+<input type="hidden" name="t" value="paymentorder"/>
+<input name="payables_id" type="hidden" value="{$payables['payables_id']}" />
+	<div class="ibox-content " id="add_body" style="border-style:none;">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="row" >
+					<div class="col-md-12 add_body_form">
+						<div class="form-group">
+							<label class="col-md-4 control-label" style="text-align:right">负责人：</label>
+							<div class="col-md-6">
+								<input name="owner_role_id" id="owner_role_id" type="hidden" value="{$Think.session.role_id}"/>
+								<input name="owner_name" id="owner_name" class="form-control required" aria-required="true" type="text" value="{$Think.session.full_name}" readonly="true" style="cursor:pointer;" title="请点击选择" readonly="true"/>
+							</div>
+							<div class="col-md-2"></div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-4 control-label" style="text-align:right">账户名称：</label> 
+							<div class="col-md-6">
+								<select name="account_id" id="account_id" class="form-control required" aria-required="true">
+									<option value="">-请选择-</option>
+									<volist name="bank_list" id="vo">
+										<option rel="{$vo['bank_account']}" rel3="{$vo['company']}" value="{$vo['account_id']}">{$vo['open_bank']}</option>
+									</volist>
+								</select>
+							</div> 
+							<div class="col-md-2"></div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-4 control-label" style="text-align:right">账号/卡号：</label>
+							<div class="col-md-6">
+								<input name="receipt_account" readonly class="form-control required" aria-required="true" id="receipt_account" type="text"  value=""/>
+							</div> 
+							<div class="col-md-2"></div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-4 control-label " style="text-align:right">账户类别：</label>
+							<div class="col-md-6">
+								<input name="company" id="company" readonly class="form-control required" aria-required="true" type="text"  value=""/>
+							</div> 
+							<div class="col-md-2"></div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-4 control-label" style="text-align:right">付款金额：</label>
+							<div class="col-md-6">
+								<input class="form-control required" aria-required="true" id="money" placeholder="0.00" name="money" type="text" value="<if condition='$add_money gt 0'>{$add_money}</if>" />
+							</div>
+							<div class="col-md-2"></div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-4 control-label" style="text-align:right">付款时间：</label>
+							<div class="col-md-6">
+								<input onclick="WdatePicker()" class="form-control required" aria-required="true" value="<?php echo date('Y-m-d', time());?>" type="text" id="pay_time" name="pay_time"/>
+							</div>
+							<div class="col-md-2"></div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-4 control-label" style="text-align:right">{:L('DESCRIPTION')}：</label>
+							<div class="col-md-6">
+								<textarea class="form-control" rows="2" name="description" id="description">
+								</textarea>
+							</div>
+						</div>
+					</div>
+					<div style="clear:both"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<div id="dialog-role-list2" title="{:L('SELECT THE LEADER')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$('#account_id').change(function(){
+	var open_bank = $('#account_id :selected').attr('rel');
+	var company = $('#account_id :selected').attr('rel3');
+	if(open_bank){
+		$('#receipt_account').val(open_bank);
+		$('#company').val(company);
+	}
+});
+
+$("#dialog-role-list2").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 800,
+	maxHeight: 400,
+	buttons: {
+		"确定": function () {
+			var item = $('input:radio[name="owner"]:checked').val();
+			var name = $('input:radio[name="owner"]:checked').attr('rel');
+			if(item){
+				$('#owner_name').val(name);
+				$('#owner_role_id').val(item);
+			}
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+
+$(document).ready(function(){
+	$("#owner_name").click(
+		function(){
+			$('#dialog-role-list2').dialog('open');
+			$('#dialog-role-list2').load('{:U("user/listDialog","by=all")}');
+		}
+	);
+
+	$("#money").blur(function(){
+		var total = parseFloat({$payables['price']});
+		var paymentorder_money =parseInt( parseFloat({$paymentorder_money})*100 );
+		var money =parseInt( parseFloat($('#money').val())*100 );
+		if(money == 0){
+			alert_crm('金额不能为空！请重新填写收款金额！');
+		}
+		var addmoney =(paymentorder_money + money)/100;
+		if( addmoney > total){
+			alert_crm('您输入的金额加上付款纪录金额的总和，已超过“应付款总金额”！请重新填写收款金额！');
+			$("#money").val('');
+		}
+	});
+});
+
+</script>

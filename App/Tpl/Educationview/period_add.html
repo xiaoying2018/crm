@@ -1,0 +1,53 @@
+<script src="/Public/style/js/plugins/validate/jquery.validate.min.js"></script>
+
+<style type="text/css">
+    .templete_Add .form-group {
+        margin: 10px 0;
+    }
+    .radio-info{
+        margin: 0 20px;
+    }
+    .textarea textarea{
+        width: 100%;
+    }
+    .select2-selection{
+        background-color: #FFFFFF !important;
+        background-image: none !important;
+        border: 1px solid #d8e3ef !important;
+        border-radius: 1px !important;
+        height: 32px;
+        line-height: 32px;
+    }
+    .select2-selection__rendered{
+        padding-left: 17px !important;
+    }
+</style>
+
+
+
+<form action="" id="section_add_form">
+    <div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+        <!-- 文本 -->
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>课期(班级)名称</label>
+            <div class="col-md-8">
+                <input class="form-control" autocomplete="off" required type="text" name="name" aria-required="true" value="" placeholder="请输入课期(班级)名称" />
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>选择班主任</label>
+            <div class="col-md-8">
+                <select name="headmaster_id" id="" class="form-control">
+                    <option value="">选择班主任</option>
+                    <foreach name="headmaster" item="item">
+                        <option value="{$item.user_id}">&nbsp;&nbsp;&nbsp;&nbsp;{$item.teacher_name}</option>
+                    </foreach>
+                </select>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+

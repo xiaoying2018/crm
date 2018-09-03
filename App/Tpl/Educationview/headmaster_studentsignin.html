@@ -1,0 +1,152 @@
+<script src="/Public/style/js/plugins/validate/jquery.validate.min.js"></script>
+
+<style type="text/css">
+    .templete_Add .form-group {
+        margin: 10px 0;
+    }
+    .radio-info{
+        margin: 0 20px;
+    }
+    .textarea textarea{
+        width: 100%;
+    }
+    .select2-selection{
+        background-color: #FFFFFF !important;
+        background-image: none !important;
+        border: 1px solid #d8e3ef !important;
+        border-radius: 1px !important;
+        height: 32px;
+        line-height: 32px;
+    }
+    .select2-selection__rendered{
+        padding-left: 17px !important;
+    }
+</style>
+
+
+
+<form action="" id="signin_edit_form">
+    <div class="col-md-12 add_body_form" style="margin:20px 0 0 21px;">
+        <div class="form-group clearfix">
+            <div class="col-md-12">
+                <span class="text-success">{$scheduleInfo.period_name}（{$scheduleInfo.course_name}）</span>:
+                <span class="text-danger">{$scheduleInfo.section_name}</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <span class="text-info">{$scheduleInfo.start_time} - {$scheduleInfo.end_time}</span>
+            </div>
+        </div>
+        <table class="table select-table table-bordered">
+            <thead>
+            <tr style="background-color:#f9fafc;text-align:center;">
+                <td style="">学员名称</td>
+                <td style="">创建人</td>
+                <td style="">创建时间</td>
+                <td style="">修改人</td>
+                <td style="">修改时间</td>
+                <td style="">状态</td>
+                <td style="">操作</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="s in signins" :sign-id="s.signin_id" :student-id="s.student_id">
+                <td :title="s.code" ><span class="text-success">{{s.student_name}}</span></td>
+                <td>
+                    <template v-if="s.creator_name">{{s.creator_name}}</template>
+                    <template v-else> - </template>
+                </td>
+                <td>
+                    <template v-if="s.create_at">{{s.create_at}}</template>
+                    <template v-else> - </template>
+                </td>
+                <td>
+                    <template v-if="s.updator_name">{{s.updator_name}}</template>
+                    <template v-else> - </template>
+                </td>
+                <td>
+                    <template v-if="s.update_at">{{s.update_at}}</template>
+                    <template v-else> - </template>
+                </td>
+                <td>
+                    <template v-if="s.status == 1"><span class="text-success">已签到</span></template>
+                    <template v-else-if="s.status == -7"><span class="text-warning">请假</span></template>
+                    <template v-else><span class="text-danger">未签到</span></template>
+                </td>
+                <td>
+                    <!-- 签到、清除、请假 -->
+                    <template v-if="s.status == 1">
+                        <button type="button" class="btn btn-danger btn-sm" onclick="signOperate(this,0)">取消</button>
+                        <button type="button" class="btn btn-warning btn-sm" onclick="signOperate(this,-7)">请假</button>
+                    </template>
+                    <template v-else-if="s.status == -7">
+                        <button type="button" class="btn btn-info btn-sm" onclick="signOperate(this,1)">签到</button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="signOperate(this,0)">取消</button>
+                    </template>
+                    <template v-else>
+                        <button type="button" class="btn btn-info btn-sm" onclick="signOperate(this,1)">签到</button>
+                        <button type="button" class="btn btn-warning btn-sm" onclick="signOperate(this,-7)">请假</button>
+                    </template>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <input type="hidden" name="schedule_id" value="{$scheduleInfo.id}">
+    </div>
+</form>
+
+<script>
+    var TMM = new Vue({
+        el: "#signin_edit_form",
+        data: {
+            signins:{},
+            operate:{},
+        },
+        methods:{
+            getSignins: function () {
+                var _this		=	this,
+                    schedule_id     =   $("input[name='schedule_id']").val();
+                $.ajax({
+                    url:"{:U('education/schedule_index')}",
+                    data:{schedule_id:schedule_id},
+                    dataType:"JSON",
+                    type:"POST",
+                    success:function(res){
+                        _this.signins = res.signins;
+                        _this.operate = res.operate;
+                    }
+                });
+            }
+        },
+    });
+    TMM.getSignins();
+
+    function signOperate(btn,operate){
+        var pp              =   $(btn).parent().parent(),
+            student_id      =   pp.attr('student-id'),
+            schedule_id     =   $("input[name='schedule_id']").val(),
+            data            =   {};
+        if( !student_id || !schedule_id || !(operate || operate === 0) ){
+            layer.msg('ERROR 参数缺失');return ;
+        }
+        data['student_id']  =   student_id;
+        data['schedule_id'] =   schedule_id;
+        data['status']      =   operate;
+        console.log(data);
+        $.ajax({
+            url:"{:U('education/signin_in')}",
+            data:data,
+            dataType:"JSON",
+            type:"POST",
+            success:function (res) {
+                if( res.result ){
+                    TMM.getSignins();
+                    layer.msg('操作成功！');
+                }else{
+                    layer.msg('ERROR '+res.error);
+                }
+            }
+        });
+    }
+</script>
+
+

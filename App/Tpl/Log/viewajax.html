@@ -1,0 +1,484 @@
+<style>
+    .sidebar-container ul.nav-tabs li a{
+        background: #fff;
+        border-right: none;
+        color: #8a959e;
+        padding-left: 0px;
+        margin-right: 10px;
+    }
+    .nav-tabs>li.active>a{
+        border-top: none !important;
+        border-bottom: 3px solid #19aa8d !important;
+        color:#333;
+    }
+    .nav-tabs>li{
+        width: 80px;
+    }
+    .nav-tabs>li a:hover{
+        border-bottom: 3px solid #5cb76f !important;
+        /*color: */
+    }
+    /*详情加载--start--*/
+.filelist{
+    border: 1px dashed #d8e3ef;
+    width: 97.2%;
+    margin-left: 8px;
+    margin-bottom: 65px;
+}
+.filelist .tsinfo{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: block;
+    margin-left: 10px;
+}
+.filelist .fujian{
+    margin-left: 8px;
+    color: #646464;
+}
+#reparynow{
+    border-top: 1px solid #d8e3ef;
+    padding: 10px;
+}
+#content_lanage
+{
+    border: 1px solid #eee;
+    min-height: 51px;
+    padding: 10px;
+    border-radius: 2px;
+}
+#content_lanage:empty::before{  
+    color:#cab0ba;
+    content:attr(placeholder);  
+}
+#but_sub{
+    margin-top: 10px;
+    float: right;
+    margin-bottom: 10px;
+}
+.talkcontent{
+    clear: both;
+    padding:10px;
+}
+.talkcontent .talknow{
+    padding:10px;
+}
+.imgtx{
+    width: 28px;
+    float: left;
+}
+.neirong{
+    margin-left: 42px;
+    word-wrap: break-word;
+    border-bottom:1px solid #eee;
+}
+.reply_talk{
+    margin: 12px 0 12px 0;
+}
+.reply_content{
+    border: 1px solid #aaa;
+    min-height: 80px;
+    padding: 10px;
+    border-radius: 2px;
+    margin-left: 43px;
+}
+.reply_content:empty::before{  
+    color:#cab0ba;
+    content:attr(placeholder);  
+}  
+.btn_reply{
+    margin-top: 0px;
+    float: right;
+}
+/*详情加载--end--*/
+</style>
+<script>
+    $(document).on('click','.btn_emoji',function(){
+        var wind_width = window.innerWidth;
+        left = wind_width/2+60;
+        $(".emoji_container").css("left",left);
+        // console.log(left);
+    });
+</script>
+<div class="full-height">
+    <div class="white-bg border-left" id="content_div">
+        <div class="element-detail-box">
+            <div class="tab-content">
+                <div class="pull-right">
+                    <div class="tooltip-demo">
+                        <button class="btn btn-white btn-xs" id="log_edit" rel="{$log['log_id']}" data-toggle="tooltip" data-placement="top" title="编辑"><i class="fa fa-pencil"></i>&nbsp;编辑</button>
+                        <button class="btn btn-white btn-xs" id="log_view" rel="{$log['log_id']}" data-toggle="tooltip" data-placement="top" title="查看详情数据"><i class="fa fa-eye"></i>&nbsp;查看详情数据</button>
+                        <button class="btn btn-white btn-xs" id="log_del" rel="{$log['log_id']}" data-toggle="tooltip" data-placement="top" title="删除日志" data-original-title="Move to trash"><i class="fa fa-trash-o">&nbsp;删除</i></button>
+                    </div>
+                </div>
+                <div class="small text-muted">
+                    <i class="fa fa-clock-o"></i>&nbsp;{$log['create_date']|date="Y-m-d H:i",###}&nbsp;{$log['week_name']}&nbsp;
+                    <if condition = "$log['file_count'] gt 0">
+                        <a href="#tab-file" class="goDown">
+                            <span><img src="__PUBLIC__/img/addFile.png">&nbsp;&nbsp;附件({$log['file_count']})</span>
+                        </a>
+                    </if>
+                </div>
+                <h1>
+                    {$log['subject']} - {$log['category_name']}
+                </h1>
+                <p>
+                    <a href="{:U('log/mylog_view','id='.$log['log_id'])}" title="查看详情数据" style="color: #000;">
+                        <div class="media-body" id="log-content" style="font-size: 16px;word-break:break-all;word-wrap:break-word;line-height: 25px;">
+                            {$log['content']}
+                        </div>
+                    </a>
+                </p>
+                <div class="m-t-lg tabs-container example" style="min-height: 200px;">
+                    <ul class="nav nav-tabs nav-tabs-line">
+                        <!-- <li >
+                            <a data-toggle="tab" href="#tab-1">工作数据</a>
+                        </li> -->
+                        <li class="active">
+                            <a data-toggle="tab" href="#tab-2"><i class="fa fa-smile-o"></i>评论</a>
+                        </li>
+                        <li id="tab-file">
+                            <a data-toggle="tab" href="#tab-3" id="file_count" style="margin-right: 0px;">
+                                <span><img src="__PUBLIC__/img/addFile.png">&nbsp;附件</span>
+                                <span class="badge badge-radius badge-primary">{$log['file_count']}</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" style="margin-top: 15px;">
+                        <div id="tab-1" class="tab-pane">
+                            <div class="ibox-title" style="border-top: 3px solid #e7eaec;">
+                                <div class="pull-left">
+                                    <span style="font-size:14px;">当日工作汇总</span>
+                                </div>
+                            </div>
+                            <div class="ibox-title-small" >
+                                <div>
+                                    <span style="line-height:35px;">销售简报</span>
+                                </div>
+                            </div>
+                            <div class="ibox-content container-fluid ">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-3">
+                                        <span>新增客户</span>
+                                        <div style="margin-top:10px;"><span style="font-size:20px;">{$anly_count['customer_count']}</span>个</div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>新增联系人</span>
+                                        <div style="margin-top:10px;"><span style="font-size:20px;">{$anly_count['contacts_count']}</span>个</div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>新增商机</span>
+                                        <div style="margin-top:10px;"><span style="font-size:20px;">{$anly_count['business_count']}</span>个</div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span>沟通日志</span>
+                                        <div style="margin-top:10px;"><span style="font-size:20px;">{$anly_count['log_count']}</span>个</div>
+                                    </div>
+                                    <div style="clear:both;"></div>
+                                </div>
+                            </div>
+                            <div class="ibox-title-small" >
+                                <div>
+                                    <span style="line-height:35px;">交易</span>
+                                </div>
+                            </div>
+                            <div class="ibox-content container-fluid ">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <span>签订合同</span>
+                                        <div style="margin-top:10px;color:#1985DC;"><span style="font-size:20px;">{$anly_count['contract_count']}</span>个</div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span>回款总金额</span>
+                                        <div style="margin-top:10px;"><span style="font-size:20px;">{$anly_count['receivingorder_sum']}</span>万元</div>
+                                    </div>
+                                    <div style="clear:both;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-2" class="tab-pane active">
+                            <div id="reparynow">
+                                <div id="content_lanage" contenteditable="true" placeholder="添加回复..."></div>
+                                <div style="margin-top: 5px;">
+                                    <input type="image" id="btn_emoji" class="btn_emoji" src="__PUBLIC__/img/emoji.png" />
+                                </div>
+                                <div id="but_sub" style="display: none;"><button class="btn btn-primary subit" disabled="true" id="add_language" type="button">发 表</button></div>
+                            </div>
+                            <div class="talkcontent" id="talkcontent_{$log['log_id']}">
+                                <div class="spiner-example">
+                                    <div class="sk-spinner sk-spinner-three-bounce">
+                                        <div class="sk-bounce1"></div>
+                                        <div class="sk-bounce2"></div>
+                                        <div class="sk-bounce3"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-3" class="tab-pane">
+                            <!-- <p>
+                                <span><img src="__PUBLIC__/img/addFile.png">&nbsp;附件&nbsp;({$log['file_count']})</span>
+                            </p> -->
+                            <div class="attachment" style="border-top: 1px solid #d8e3ef;">
+                                <empty name="log['file']">
+                                    <div style="background-color:#fff;"><include file="Public:nodata" /></div>
+                                <else />    
+                                    <volist name="log['file']" id="vo">
+                                        <div class="file_tr" style="float: left;width:100%;padding: 6px;">
+                                            <div class="pull-left">
+                                                <img src="__PUBLIC__/productImg/{$vo['pic']}">&nbsp;<a <if condition="in_array(getExtension($vo['name']),imgFormat())">class="litebox_file" href="{$vo['file_path']}" title="点击查看大图" data-litebox-group="group-{$log['log_id']}"</if>>{$vo.name}</a><span style="color:#646464;">&nbsp;(&nbsp;{$vo['size']}KB&nbsp;)</span>&nbsp;&nbsp;
+                                            </div>
+                                            <a class="controls_file" style="float: left;display: none;margin-left: 20px;" href="javascript:;" file="{$vo.file_path}" filename="{$vo.name}" onclick="filedown(this);">下载</a>
+                                        </div>
+                                    </volist>
+                                </empty>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(".file_tr").mouseenter(function(){
+    $(this).find(".controls_file").show();
+}).mouseleave(function(){
+    $(this).find(".controls_file").hide();
+});
+$(function(){
+    $("#content_lanage").emoji({
+        button:"#btn_emoji",
+        showTab: true,
+        animation: 'slide',
+        icons: [{
+            name: "小表情",
+            path: "__PUBLIC__/emoji/img/tieba/",
+            maxNum: 50,
+            file: ".jpg",
+            placeholder: ":{alias}:",
+            alias: {
+                1: "hehe",
+                2: "haha",
+                3: "tushe",
+                4: "a",
+                5: "ku",
+                6: "lu",
+                7: "kaixin",
+                8: "han",
+                9: "lei",
+                10: "heixian",
+                11: "bishi",
+                12: "bugaoxing",
+                13: "zhenbang",
+                14: "qian",
+                15: "yiwen",
+                16: "yinxian",
+                17: "tu",
+                18: "yi",
+                19: "weiqu",
+                20: "huaxin",
+                21: "hu",
+                22: "xiaonian",
+                23: "neng",
+                24: "taikaixin",
+                25: "huaji",
+                26: "mianqiang",
+                27: "kuanghan",
+                28: "guai",
+                29: "shuijiao",
+                30: "jinku",
+                31: "shengqi",
+                32: "jinya",
+                33: "pen",
+                34: "aixin",
+                35: "xinsui",
+                36: "meigui",
+                37: "liwu",
+                38: "caihong",
+                39: "xxyl",
+                40: "taiyang",
+                41: "qianbi",
+                42: "dnegpao",
+                43: "chabei",
+                44: "dangao",
+                45: "yinyue",
+                46: "haha2",
+                47: "shenli",
+                48: "damuzhi",
+                49: "ruo",
+                50: "OK"
+            },
+            title: {
+                1: "呵呵",
+                2: "哈哈",
+                3: "吐舌",
+                4: "啊",
+                5: "酷",
+                6: "怒",
+                7: "开心",
+                8: "汗",
+                9: "泪",
+                10: "黑线",
+                11: "鄙视",
+                12: "不高兴",
+                13: "真棒",
+                14: "钱",
+                15: "疑问",
+                16: "阴脸",
+                17: "吐",
+                18: "咦",
+                19: "委屈",
+                20: "花心",
+                21: "呼~",
+                22: "笑脸",
+                23: "冷",
+                24: "太开心",
+                25: "滑稽",
+                26: "勉强",
+                27: "狂汗",
+                28: "乖",
+                29: "睡觉",
+                30: "惊哭",
+                31: "生气",
+                32: "惊讶",
+                33: "喷",
+                34: "爱心",
+                35: "心碎",
+                36: "玫瑰",
+                37: "礼物",
+                38: "彩虹",
+                39: "星星月亮",
+                40: "太阳",
+                41: "钱币",
+                42: "灯泡",
+                43: "茶杯",
+                44: "蛋糕",
+                45: "音乐",
+                46: "haha",
+                47: "胜利",
+                48: "大拇指",
+                49: "弱",
+                50: "OK"
+            }
+        },
+           { name: "萌萌哒",
+            path: "__PUBLIC__/emoji/img/qq/",
+            maxNum: 91,
+            excludeNums: [41, 45, 54],
+            file: ".gif"
+        }]
+    });
+    //处理日志换行显示
+    var element = $("div[class='media-body']");
+    var temp =  element.text().replace(/\n/g,'<br/>');
+    element.html(temp);
+    //日志详情
+    $('#log_view').click(function() {
+        var log_id = $(this).attr('rel');
+        window.location.href = "{:U('log/mylog_view','id=')}"+log_id;
+    });
+    //日志编辑
+    $('#log_edit').click(function() {
+        var log_id = $(this).attr('rel');
+        window.location.href = "{:U('log/mylog_edit','id=')}"+log_id;
+    });
+    //日志删除
+    $('#log_del').click(function(){
+        var log_id = $(this).attr('rel');
+        swal({
+            title: "您确定要删除日志信息吗？",
+            text: "删除后将无法恢复，请谨慎操作！",
+            type: "warning",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "是的，我要删除！",
+            cancelButtonText:'让我再考虑一下…',
+            closeOnConfirm:false,
+            closeOnCancel:false
+        },
+        function(isConfirm){
+            if (isConfirm) {
+                $.ajax({
+                    type:'get',
+                    url: "{:U('log/log_delete','id=')}"+log_id,
+                    async: false,
+                    success: function (data) {
+                        if (data.status == 1) {
+                            swal("删除成功！", "您已经永久删除了信息！", "success");
+                            location.reload();
+                        }else{
+                            swal({
+                                title: "操作失败！",
+                                text:data.info,
+                                type: "error"
+                            })
+                            return false;
+                        }
+                    },
+                    dataType: 'json'
+                });
+            } else {
+                swal("已取消","您取消了删除操作！","error");
+            }
+        });
+    });
+    
+    //最后一个样式
+    $(".neirong:last").css('border','none');
+    var log_id = $('#log_view').attr('rel');
+    $(function(){
+        var url = "{:U('log/commentShow')}";
+        $('.talkcontent').load(url,{log_id:log_id});
+    });
+    //div 回复 添加
+    $('#content_lanage').focus(function(){
+        $(".subit").removeAttr('disabled');
+        $("#but_sub").fadeIn("3000");
+    });
+    $('#content_lanage').focusout(function(){
+        var content = $(this).html();
+        if(!content){
+            $("#but_sub").fadeOut("3000");
+            $(".subit").prop('disabled',true);
+            $(this).html('');
+        }
+    });
+    //点击发表后
+    function add_after(){
+        $('#content_lanage').html('');
+        $('#content_lanage').attr('placeholder');
+        $("#but_sub").fadeOut("3000");
+        $(".subit").prop('disabled',true);
+    }
+    /*
+    *添加首次回复调用
+     */
+    $('#add_language').click(function(){
+        var content_lanage = $('#content_lanage').html();
+        $('#add_language').attr('disabled', true);
+        $.post("{:U('log/myCommont')}",{content:content_lanage,log_id:log_id},function(data){
+                if(data.status == 1){
+                    add_after();//还原初始状态
+                    var url = "{:U('log/commentShow')}";
+                    $('.talkcontent').load(url,{log_id:log_id});    
+                }else{
+                    alert_crm(data.info);
+                }
+                $('#add_language').attr('disabled', false);
+            },"json"
+        );
+    });
+    /**
+     * 附件 如果是图片时 双击可查看大图
+     */
+    $('.litebox_file').liteBox({
+      revealSpeed: 400,
+      background: 'rgba(0,0,0,.8)',
+      overlayClose: true,
+      escKey: true,
+      navKey: true,
+      errorMessage: '图片加载失败.'
+    });
+});  
+</script>

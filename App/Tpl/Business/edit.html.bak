@@ -1,0 +1,617 @@
+<include file="Public:header" />
+<script type="text/javascript">
+	window.UEDITOR_UPLOAD_URL = "{:U('file/editor')}";
+	$(function(){
+		$("table").addClass("form-inline");
+		$("input[type='text']").addClass('form-control');
+		$(".btn").addClass('btn-sm');
+		$("select").addClass('form-control');
+		$("textarea").removeClass().addClass('form-control').css({'width':'90%'});
+	});
+</script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/ueditor.all.js"> </script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>编辑商机</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{:U('Dynamic/index')}">首页</a>
+            </li>
+            <li>
+                <a href="{:U('Business/index')}">商机</a>
+            </li>
+            <li class="active">
+                <strong>编辑商机</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+<div class="ibox-content"  style="padding-bottom:10x">
+	<a class="active" href="{:U('business/index')}">&nbsp; {:L('BUSINESS')}</a>
+	<a href="{:U('business/analytics')}">&nbsp;{:L('STATISTICS')}</a>
+
+</div>
+<div class="wrapper wrapper-content " style="padding-top:12px">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+				<div class="ibox-title" style="padding-bottom:1px">
+					<h4>{:L('EDIT_BUSINESS_OPPORTUNITIES')}</h4>
+				</div>
+				<div class="ibox-content clearfix" style="padding-top:0px">
+					<div class="">
+						<form action="{:U('business/edit')}" method="post">
+							<input type="hidden" name="p" value="{$p}">
+							<input type="hidden" name="id" value="{$business['business_id']}" />
+							<input type="hidden" name="business_id" id="business_id" value="{$business['business_id']}" />
+							<table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
+								<tfoot>
+									<tr>  
+										<td style="text-align:center;" colspan="4"><input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/>&nbsp;<input class="btn  btn-primary" type="button" onclick="javascript:history.go(-1)"  value="{:L('RETURN')}"/></td>						
+									</tr>
+								</tfoot> 
+								<tbody>
+									<tr><th colspan="4">{:L('BASIC_INFORMATION')}</th></tr>
+									<tr>
+										<td class="tdleft" width="15%">{:L('PRINCIPAL')}</td>
+										<td>	
+											<input type="hidden" id="owner_id" name="owner_role_id" value="{$business.owner_role_id}"/>
+											<input type="text" id="owner_name" value="{$business.owner.user_name}" />
+										</td>
+									<php>$j=0;</php>
+									<volist name="field_list['main']" id="vo">
+									<php>$j++;</php>
+									<if condition="$vo['form_type'] == 'textarea' or $vo['form_type'] == 'editor' or $vo['form_type'] == 'address'">
+										<if condition="$i%2 != 0">
+										<td colspan="2">&nbsp;</td>
+										</tr>
+										</if>
+										<tr>
+											<td class="tdleft" width="15%">{$vo.name}:</td>
+											<td colspan="3">{$vo.html}</td>
+										</tr>
+										<if condition="$i%2 == 0 && count($field_list['main']) != $j">
+										<php>$i++;</php>
+										</if>
+									<else/>
+										<if condition="$i%2 == 0">
+										<tr>
+										</if>
+											<td class="tdleft" width="15%">{$vo.name}:</td>
+											<td width="35%">{$vo.html}</td>
+										<if condition="$i%2 != 0">
+										</tr>
+										</if>
+										<if condition="$i%2 == 0 && count($field_list['main']) == $j">
+											<td colspan="2">&nbsp;</td>
+											</tr>
+										</if>
+									</if>
+									</volist>
+									<tr><th  colspan="4">{:L('ADDITIONAL_INFORMATION')}</th></tr>
+									<php>$j=0;</php>
+									<volist name="field_list['data']" id="vo">
+									<php>$j++;</php>
+									<if condition="$vo['form_type'] == 'textarea' or $vo['form_type'] == 'editor' or $vo['form_type'] == 'address'">
+										<if condition="$i%2 == 0">
+										<td colspan="2">&nbsp;</td>
+										</tr>
+										</if>
+										<tr>
+											<td class="tdleft" width="15%">{$vo.name}:</td>
+											<td colspan="3">{$vo.html}</td>
+										</tr>
+										<if condition="$i%2 != 0 && count($field_list['data']) != $j">
+										<php>$i++;</php>
+										</if>
+									<else/>
+										<if condition="$i%2 != 0">
+										<tr>
+										</if>
+											<td class="tdleft" width="15%">{$vo.name}:</td>
+											<td width="35%">{$vo.html}</td>
+										<if condition="$i%2 == 0">
+										</tr>
+										</if>
+										<if condition="$i%2 != 0 && count($field_list['data']) == $j">
+											<td colspan="2">&nbsp;</td>
+											</tr>
+										</if>
+									</if>
+									</volist>
+								</tbody>
+							</table>
+						</form>		
+					</div>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid mar-top" >
+	<div class="row-fluid" >
+		<div class="span12 container3 pad1" >
+		</div>
+	</div>
+</div>
+<div id="dialog-message" style="display:none" title="{:L('SELECT_THE_CUSTOMER')}">loading...</div>
+<div id="dialog-role-list" style="display:none" title="{:L('SELECT_THE_OWNER')}">loading...</div>
+<div id="dialog-message2" style="display:none" title="{:L('SELECT_A_PRODUCT')}">loading...</div>
+<div style="display:none" id="dialog-message3" title="{:L('SELECT_THE_CONTACT')}">loading...</div>
+<div style="display:none" id="dialog-validate" title="{:L('TEST_RESULTS')}">
+	{:L('HAS_THE_FOLLOWING_BUSINESS_OPPORTUNITIES_ARE_SIMILAR_TO_THE_BUSINESS_NAME')}
+	<div id="search_content"></div>
+</div>
+<script type="text/javascript">
+	$("[data-type='nummber']").keyup(function(){
+		if(isNaN($(this).val())){
+			$(this).val($(this).val().replace(/\D/g,''))
+		}
+	});
+	<if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else/>width=800;</if>
+	$(function(){
+		$('#customer_name').click(function () {
+			$('#dialog-message').dialog('open');
+			$('#dialog-message').load("{:U('Customer/listDialog')}");
+		});
+		$('#product_name').click(function () {
+			$('#dialog-message2').dialog('open');
+			$('#dialog-message2').load('{:U("product/listDialog")}');
+			return false;
+		});
+		$('#contacts_name').click(
+			function(){
+				$customer_name = $('#customer_name').val();
+				$customer_id = $('#customer_id').val();
+				if($customer_name == '' || $customer_name == null){
+					alert('{:L('PLEASE_CHOOSE_THE_CUSTOMER_FIRST')}');
+				}else{
+					$('#dialog-message3').dialog('open');
+					$('#dialog-message3').load('{:U("contacts/radiolistdialog", "id=")}'+$('#customer_id').val());
+				}
+			}
+		);
+	});
+	$('#dialog-message').dialog({
+		autoOpen: false,
+		modal: true,
+		width: width,
+		maxHeight:400,
+		position: ["center",100],
+		buttons: {
+			"{:L('CONFIRM')}": function () {
+				var item = $('input:radio[name="customer"]:checked').val();
+				var name = $('input:radio[name="customer"]:checked').parent().next().html();
+				var contacts_id = $('input:radio[name="customer"]:checked').attr('rel');
+				var contacts_name = $('input:radio[name="customer"]:checked').next().attr('value');
+				$('#customer_name').val(name);
+				$('#customer_id').val(item);
+				$('#contacts_id').val(contacts_id);
+				$('#contacts_name').val(contacts_name);
+				$(this).dialog("close");
+			},
+			"{:L('CANCEL')}": function () {
+				$(this).dialog("close");
+			}
+		}
+	});	
+	$('#dialog-message2').dialog({
+		autoOpen: false,
+		modal: true,
+		width: width,
+		maxHeight:400,
+		position: ["center",100],
+		buttons: {
+			"{:L('CONFIRM')}": function () {
+				var item = $('input:radio[name="product"]:checked').val();
+				var name = $('input:radio[name="product"]:checked').parent().next().html();
+				if(item){
+					$('#product_id').val(item);
+					$('#product_name').val(name);
+				}
+				$(this).dialog("close");
+			},
+			"{:L('CANCEL')}": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+	$("#dialog-message3").dialog({
+		autoOpen: false,
+		modal: true,
+		width: width,
+		maxHeight: 400,
+		buttons: { 
+			"{:L('CONFIRM')}": function () {
+				var item = $('input:radio[name="contacts"]:checked').val();
+				var name = $('input:radio[name="contacts"]:checked').parent().next().html();
+				$('#contacts_id').val(item);
+				$('#contacts_name').val(name);
+				$(this).dialog("close"); 
+			},
+			"{:L('CANCEL')}": function () {
+				$(this).dialog("close");
+			}
+		},
+		position:["center",100]
+	});
+	$("#dialog-role-list").dialog({
+		autoOpen: false,
+		modal: true,
+		width: width,
+		maxHeight:400,
+		buttons: { 
+			"{:L('CONFIRM')}": function () {
+				var item = $('input:radio[name="owner"]:checked').val();
+				var name = $('input:radio[name="owner"]:checked').attr('rel');
+				if(item){
+					$('#owner_name').val(name);
+					$('#owner_id').val(item);
+				}
+				$(this).dialog("close"); 
+			},
+			"{:L('CANCEL')}": function () {
+				$(this).dialog("close");
+			}
+		},
+		position: ["center", 100]
+	});
+	$("#dialog-validate").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 400,
+		maxHeight: 400,
+		buttons: { 
+			"{:L('CONFIRM')}": function () {
+				$(this).dialog("close"); 
+			}
+		},
+		position: ["center", 100]
+	});
+		
+	$(function(){
+		$('#owner_name').click(
+			function(){
+				$('#dialog-role-list').dialog('open');
+				$('#dialog-role-list').load("{:U('user/listDialog')}");
+			}
+		);
+		$('#name').blur(
+			function(){
+				name = $('#name').val();
+				business_id = $('#business_id').val();
+				if(name!=''){
+					$.post('{:U("business/check",'business_id=')}'+business_id,
+						{
+							name:name
+						},
+						function(data){
+							if(data.data != 0){
+								var result = '';
+								$.each(data.data, function(k, v){
+									result += (k+1)+'、'+v+'</br>';
+								});
+								$('#dialog-validate').dialog('open');
+								$("#search_content").html(result);
+							}
+						},
+					'json');
+				} else {
+					alert('{:L('PLEASE_FILL_OUT_THE_BUSINESS_OPPORTUNITY')}');
+				}
+			}
+		);
+	});
+	$('#validate').click(
+		function(){
+			name = $('#name').val();
+			if(name!=''){
+				$.post('{:U("business/validate")}',
+					{
+						name:name
+					},
+					function(data){
+						if(data.data == 0){
+							alert(data.info);
+						}else{
+							$result = '';
+							$.each(data.data, function(k, v){
+								$result += (k+1)+'、'+v+'</br>';
+							});
+							$('#dialog-validate').dialog('open');
+							$("#search_content").html($result);
+						}
+					},
+				'json');
+			} else {
+				alert('{:L('PLEASE_FILL_OUT_THE_BUSINESS_OPPORTUNITY')}');
+			}
+		}
+	);
+$(function(){
+    $.formValidator.initConfig({formID:"form1",debug:false,submitOnce:true,
+			onError:function(msg,obj,errorlist){
+			alert(msg);
+		},
+		submitAfterAjaxPrompt : '{:L('THERE_ARE_DATA_ARE_ASYNCHRONOUS_VALIDATION')}'
+    });
+<volist name="field_list[main]" id="vo">
+    <if condition="$vo['is_validate'] == 1">
+        <if condition="$vo['form_type'] != 'box' || $vo['setting']['type'] == 'select'">
+	        $("#{$vo[field]}").formValidator({
+	            tipID:"{$vo[field]}Tip",
+	            <if condition="$vo['is_null'] == 1">
+					onShow:"<span style='color:red;'>{:L('REQUIRED')}</span>",
+					empty:false,
+	            <else />
+					empty:true,
+					onShow:" ",
+	            </if>
+	            onFocus:" ",
+	            onCorrect:"<span style='color:green;'>√</span>"
+	        }).inputValidator({
+	            <if condition="$vo['is_null'] == 1">
+	            min:1,max:{$vo[max_length]|default="255"},
+	            onshow:"{:L('NOT NULL',array($vo[name]))}",
+	            <else />
+	            min:0,max:{$vo[max_length]|default="255"},
+	            </if>
+	            onErrorMin:"{:L('NOT NULL',array($vo[name]))}",
+	            onErrorMax:"{:L('MAXIMUM_REQUEST_LENGTH_EXCEEDED',array($vo[name]))}"
+	         });
+            <if condition="$vo['form_type'] == 'email'">
+            $("#{$vo[field]}").regexValidator({
+                regExp:"email",
+                dataType:"enum",
+                onError:"{:L('A_OLUTE_OR_SELF_RELATIVE',array($vo[name]))}"
+            });
+            <elseif condition="$vo['form_type'] == 'mobile'"/>
+             $("#{$vo[field]}").regexValidator({
+                regExp:"mobile",
+                dataType:"enum",
+                onError:"{:L('A_OLUTE_OR_SELF_RELATIVE',array($vo[name]))}"
+            });
+            <elseif condition="$vo['form_type'] == 'phone'"/>
+             $("#{$vo[field]}").regexValidator({
+                regExp:"tel",
+                dataType:"enum",
+                onError:"{:L('A_OLUTE_OR_SELF_RELATIVE',array($vo[name]))}"
+            });
+            <elseif condition="$vo['form_type'] == 'datetime'"/>
+             $("#{$vo[field]}").regexValidator({
+                regExp:"date",
+                dataType:"enum",
+                onError:"{:L('A_OLUTE_OR_SELF_RELATIVE',array($vo[name]))}"
+            });
+            <elseif condition="$vo['form_type'] == 'number'"/>
+             $("#{$vo[field]}").regexValidator({
+                regExp:"num",
+                dataType:"enum",
+                onError:"{:L('A_OLUTE_OR_SELF_RELATIVE',array($vo[name]))}"
+            });
+             </if>
+             <if condition="$vo['is_unique'] == 1 && $vo['field']!='name'">
+            $("#{$vo[field]}").ajaxValidator({
+                dataType : "json",
+                type : "GET",
+				isValid : true,
+                data : {
+                    id:{$business.business_id}
+                    },
+                async : false,
+                url : "{:U('business/validate')}",
+                success : function(data){
+                    if( data.status == 1 ) return false;
+                    if( data.status == 0 ) return true;
+                    return false;
+                },
+                error: function(jqXHR, textStatus, errorThrown){alert("{:L('THE_SERVER_DID_NOT_RETURN_DATA_MAY_BE_THE_SERVER_BUSY_PLEASE_TRY_AGAIN')}"+errorThrown);},
+                onError : "{:L('THIS_DISABLED_PLEASE_CHANGE',array($vo['name'],$vo['name']))}",
+                onWait : "{:L('LEGITIMACY_CHECKING_PLEASE_WAIT',array($vo['name']))}"
+            });
+             </if>
+         <else />
+             <if condition="$vo['setting']['type'] == 'checkbox'">
+             $(":checkbox[name='{$vo['field']}[]']").formValidator({
+                 tipID:"{$vo[field]}Tip",
+                 <if condition="$vo['is_null'] == 1">
+                 onShow:"<span style='color:red;'>{:L('WILL_OPTIONS')}</span>",
+                 <else />
+                 onShow:" ",
+                 </if>
+                 onFocus:" ",
+                 onCorrect:"<span style='color:green;'>√</span>"
+             }).inputValidator({
+             	<if condition="$vo['is_null'] == 1">
+                 min:1,
+                 <else/>
+                 min:0,
+                 </if>
+             	onError:"{:L('PLEASE_SELECT',array($vo[name]))}"
+             });
+             <elseif condition="$vo['setting']['type'] == 'select'"/>
+	        	 $("#{$vo[field]}").formValidator({
+	                 tipID:"{$vo[field]}Tip",
+	                 <if condition="$vo['is_null'] == 1">
+	                 onShow:"<span style='color:red;'>{:L('WILL_OPTIONS')}</span>",
+	                 <else />
+	                 onShow:" ",
+	                 </if>
+	                 onFocus:" ",
+	                 onCorrect:"<span style='color:green;'>√</span>"
+	             }).inputValidator({
+	             	<if condition="$vo['is_null'] == 1">
+	                 min:1,
+	                 <else/>
+	                 min:0,
+	                 </if>
+	             	onError:"{:L('PLEASE_SELECT',array($vo[name]))}"
+	             });
+             <else />
+	             $(":radio[name='{$vo['field']}']").formValidator({
+	                 tipID:"{$vo[field]}Tip",
+	                 <if condition="$vo['is_null'] == 1">
+	                 onShow:"<span style='color:red;'>{:L('WILL_OPTIONS')}</span>",
+	                 <else />
+	                 onShow:" ",
+	                 </if>
+	                 onFocus:" ",
+	                 onCorrect:"<span style='color:green;'>√</span>"
+	             }).inputValidator({
+	             	<if condition="$vo['is_null'] == 1">
+	                 min:1,
+	                 <else/>
+	                 min:0,
+	                 </if>
+	             	onError:"{:L('PLEASE_SELECT',array($vo[name]))}"
+	             });
+            </if>
+         </if>
+     </if>
+</volist>
+<volist name="field_list[data]" id="vo">
+    <if condition="$vo['is_validate'] == 1">
+        <if condition="$vo['form_type'] != 'box' || $vo['setting']['type'] == 'select'">
+	        $("#{$vo[field]}").formValidator({
+	            tipID:"{$vo[field]}Tip",
+	            <if condition="$vo['is_null'] == 1">
+					onShow:"<span style='color:red;'>{:L('REQUIRED')}</span>",
+					empty:false,
+	            <else />
+					empty:true,
+					onShow:" ",
+	            </if>
+	            onFocus:" ",
+	            onCorrect:"<span style='color:green;'>√</span>"
+	        }).inputValidator({
+	            <if condition="$vo['is_null'] == 1">
+	            min:1,max:{$vo[max_length]|default="255"},
+	            onshow:"{:L('NOT NULL',array($vo[name]))}",
+	            <else />
+	            min:0,max:{$vo[max_length]|default="255"},
+	            </if>
+	            onErrorMin:"{:L('NOT NULL',array($vo[name]))}",
+	            onErrorMax:"{:L('MAXIMUM_REQUEST_LENGTH_EXCEEDED',array($vo[name]))}"
+	         });
+            <if condition="$vo['form_type'] == 'email'">
+            $("#{$vo[field]}").regexValidator({
+                regExp:"email",
+                dataType:"enum",
+                onError:"{:L('A_OLUTE_OR_SELF_RELATIVE',array($vo[name]))}"
+            });
+            <elseif condition="$vo['form_type'] == 'mobile'"/>
+             $("#{$vo[field]}").regexValidator({
+                regExp:"mobile",
+                dataType:"enum",
+                onError:"{:L('A_OLUTE_OR_SELF_RELATIVE',array($vo[name]))}"
+            });
+            <elseif condition="$vo['form_type'] == 'phone'"/>
+             $("#{$vo[field]}").regexValidator({
+                regExp:"tel",
+                dataType:"enum",
+                onError:"{:L('A_OLUTE_OR_SELF_RELATIVE',array($vo[name]))}"
+            });
+            <elseif condition="$vo['form_type'] == 'datetime'"/>
+             $("#{$vo[field]}").regexValidator({
+                regExp:"date",
+                dataType:"enum",
+                onError:"{:L('A_OLUTE_OR_SELF_RELATIVE',array($vo[name]))}"
+            });
+            <elseif condition="$vo['form_type'] == 'number'"/>
+             $("#{$vo[field]}").regexValidator({
+                regExp:"num",
+                dataType:"enum",
+                onError:"{:L('A_OLUTE_OR_SELF_RELATIVE',array($vo[name]))}"
+            });
+             </if>
+             <if condition="$vo['is_unique'] == 1">
+            $("#{$vo[field]}").ajaxValidator({
+                dataType : "json",
+                type : "GET",
+				isValid : true,
+                data : {
+                    id:{$business.business_id}
+                    },
+                async : true,
+                url : "{:U('business/validate')}",
+                success : function(data){
+                    if( data.status == 1 ) return false;
+                    if( data.status == 0 ) return true;
+                    return false;
+                },
+                error: function(jqXHR, textStatus, errorThrown){alert("{:L('THE_SERVER_DID_NOT_RETURN_DATA_MAY_BE_THE_SERVER_BUSY_PLEASE_TRY_AGAIN')}"+errorThrown);},
+                onError : "{:L('THIS_DISABLED_PLEASE_CHANGE',array($vo['name'],$vo['name']))}",
+                onWait : "{:L('LEGITIMACY_CHECKING_PLEASE_WAIT',array($vo['name']))}"
+            });
+             </if>
+         <else />
+             <if condition="$vo['setting']['type'] == 'checkbox'">
+             $(":checkbox[name='{$vo['field']}[]']").formValidator({
+                 tipID:"{$vo[field]}Tip",
+                 <if condition="$vo['is_null'] == 1">
+                 onShow:"<span style='color:red;'>{:L('WILL_OPTIONS')}</span>",
+                 <else />
+                 onShow:" ",
+                 </if>
+                 onFocus:" ",
+                 onCorrect:"<span style='color:green;'>√</span>"
+             }).inputValidator({
+             	<if condition="$vo['is_null'] == 1">
+                 min:1,
+                 <else/>
+                 min:0,
+                 </if>
+             	onError:"{:L('PLEASE_SELECT',array($vo[name]))}"
+             });
+             <elseif condition="$vo['setting']['type'] == 'select'"/>
+	        	 $("#{$vo[field]}").formValidator({
+	                 tipID:"{$vo[field]}Tip",
+	                 <if condition="$vo['is_null'] == 1">
+	                 onShow:"<span style='color:red;'>{:L('WILL_OPTIONS')}</span>",
+	                 <else />
+	                 onShow:" ",
+	                 </if>
+	                 onFocus:" ",
+	                 onCorrect:"<span style='color:green;'>√</span>"
+	             }).inputValidator({
+	             	<if condition="$vo['is_null'] == 1">
+	                 min:1,
+	                 <else/>
+	                 min:0,
+	                 </if>
+	             	onError:"{:L('PLEASE_SELECT',array($vo[name]))}"
+	             });
+             <else />
+	             $(":radio[name='{$vo['field']}']").formValidator({
+	                 tipID:"{$vo[field]}Tip",
+	                 <if condition="$vo['is_null'] == 1">
+	                 onShow:"<span style='color:red;'>{:L('WILL_OPTIONS')}</span>",
+	                 <else />
+	                 onShow:" ",
+	                 </if>
+	                 onFocus:" ",
+	                 onCorrect:"<span style='color:green;'>√</span>"
+	             }).inputValidator({
+	             	<if condition="$vo['is_null'] == 1">
+	                 min:1,
+	                 <else/>
+	                 min:0,
+	                 </if>
+	             	onError:"{:L('PLEASE_SELECT',array($vo[name]))}"
+	             });
+            </if>
+         </if>
+     </if>
+</volist>
+});
+</script>
+<include file="Public:footer" />

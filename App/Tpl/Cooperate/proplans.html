@@ -1,0 +1,235 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<link href="__PUBLIC__/style/css/plugins/cropper/cropper.min.css" rel="stylesheet">
+<script src="__PUBLIC__/style/js/plugins/cropper/cropper.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<link rel="stylesheet" href="__PUBLIC__/css/page/cooperatePlan.css">
+<div class="wrapper wrapper-content animated fadeIn">
+    <include file="Public:alert" />
+    <div class="container" id="coopDetail">
+        <ul class="tabhead clearfix">
+            <li class="itemLi school active" data-flag="school">
+                <div class="sx-arrow-down"></div>
+                <i class="icon"></i>
+                <span class="name">学校列表</span>
+            </li>
+            <li class="itemLi plan" data-flag="plan">
+                <div class="sx-arrow-down"></div>
+                <i class="icon"></i>
+                <span class="name">时间规划</span>
+            </li>
+            <li class="itemLi classtuijian" data-flag="class">
+                <div class="sx-arrow-down"></div>
+                <i class="icon"></i>
+                <span class="name">课程推荐</span>
+            </li>
+            <li class="itemLi projecttuijian" data-flag="project">
+                <div class="sx-arrow-down"></div>
+                <i class="icon"></i>
+                <span class="name">项目推荐</span>
+            </li>
+        </ul>
+        <div class="maintab">
+            <!-- 学校列表 -->
+            <div class="tabcontent school" style="display: block;">
+                <ul class="schoolList" v-if="school && school.length > 0">
+                    <li class="s_item clearfix" v-for="n in school">
+                        <div class="logo">
+                            <img :src="'http://crm.xiaoying.net'+n.logo" alt="">
+                        </div>
+                        <div class="info">
+                            <div class="headInfo">
+                                <span class="border"></span>
+                                <span class="china_name">{{n.name_cn}}</span>
+                                <span class="en_name">{{n.name_en}}</span>
+                            </div>
+                            <div class="des">
+                                <span :title="n.desc">{{n.desc}}</span>
+                                <p>
+                                    <font>学校官网：</font>
+                                    <a href="javascript:void(0)">{{n.website}}</a>
+                                </p>
+                            </div>
+                            <table class="table">
+                                <tr>
+                                    <td><span class="tt_title">学校排名:</span><span class="tt_content">{{n.rank}}</span></td>
+                                    <td><span class="tt_title">学校性质:</span><span class="tt_content">{{n.xingzhiid}}</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="tt_title">学校地址:</span><span class="tt_content">{{n.address}}</span></td>
+                                    <td><span class="tt_title">学校亮点:</span><span class="tt_content">{{n.one}}</span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><span class="tt_title">包含专业:</span><span class="tt_content">
+                                        <font v-for="marjor in n.major_cate">{{marjor.name}}</font>
+                                    </span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </li>
+                </ul>
+                <div class="nodata" v-else>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <span>暂无相关数据。</span>
+                </div>
+            </div>
+            <!-- 时间规划 -->
+            <div class="tabcontent plan">
+                <ul class="s_choose" v-if="plan.info && plan.info.length > 0">
+                    <li class="li active">
+                        <div class="s_title">时间规划</div>
+                        <ul class="planList" style="display: block;">
+                            <li class="item" v-for="(n,index) in plan.info">
+                                <div class="clearfix inner">
+                                    <div class="num"><span>{{index+1}}</span>.</div>
+                                    <div class="info">
+                                        <div class="time">{{n.time}}</div>
+                                        <div class="des">{{n.name}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="nodata" v-else>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <span>暂无相关数据。</span>
+                </div>
+            </div>
+            <!-- 课程推荐 -->
+            <div class="tabcontent class">
+                <ul class="classList" v-if="course && course.length > 0">
+                    <li class="item" v-for="n in course">
+                        <div class="imgDv"><img v-if="n.logo" :src="'http://crm.xiaoying.net'+n.logo" :alt="n.title"></div>
+                        <p :title="n.title" class="name">{{n.title}}</p>
+                        <div class="class-serve">
+                            <ul class="list-unstyled clearfix">
+                                <li class="active"><a tabindex="0" role="button" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true" title="24小时作业批改 " data-content="24小时内完成作业批改，即时反馈并巩固您的学习效果" class="a_Pop">练</a></li>
+                                <li class="active"><a tabindex="0" role="button" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true" title="24小时阅卷点评 " data-content="24小时内批阅您提交的试卷，给予有针对性的点评" class="a_Pop">试</a></li>
+                                <li class="active"><a tabindex="0" role="button" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true" title="提问必答 " data-content="对于提问做到有问必答，帮您扫清学习过程中的种种障碍" class="a_Pop">问</a></li>
+                                <li class="active"><a tabindex="0" role="button" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true" title="一对一在线答疑 " data-content="提供专属的一对一在线答疑，快速答疑解惑" class="a_Pop">疑</a></li>
+                                <li class="active"><a tabindex="0" role="button" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true" title="班级活动 " data-content="不定期组织各种线上或线下的班级活动，让学习更加生动有趣，同学关系更为紧密" class="a_Pop">动</a></li>
+                                <li class="active"><a tabindex="0" role="button" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true" title="就业指导 " data-content="完成全部学习后，老师对您的学习成果和能力水平给出评估，并提供专业化的就业指导" class="a_Pop">业</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+                <div class="nodata" v-else>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <span>暂无相关数据。</span>
+                </div>
+            </div>
+            <!-- 项目推荐 -->
+            <div class="tabcontent project">
+                <div v-if="school && school.length > 0" class="s_pro" v-for="n in school">
+                    <div class="s_title">
+                        {{n.name_cn}}
+                    </div>
+                    <ul class="listUl clearfix" v-if="n.project_cate.length > 0" v-for="(s,index) in n.project_cate">
+                        <li class="bb_title" :class="s.info.length < 1 ? 'nodata' : ''">
+                            <i class="tra"></i>
+                            <div class="inner">
+                                <p class="name">{{s.name}}</p>
+                            </div>
+                        </li>
+                        <li class="liitem" v-for="item in s.info">
+                            <div class="inner">
+                                <p class="name">{{item.department}}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="nodata" v-else>
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <span>暂无相关数据。</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+var vue = new Vue({
+    el: "#coopDetail",
+    data: {
+        data: {},
+        school: [],
+        course: [],
+        plan: []
+    },
+    methods: {
+        getQueryString: function(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        },
+        getInfo: function(_id) {
+            var _this = this;
+            $.ajax({
+                url: "/api/cooperate/find/promote",
+                type: "POST",
+                data: { id: _id },
+                success: function(res) {
+                    if (res) {
+                        if (res.success) {
+                            _this.school = res.data.school;
+                            _this.course = res.data.course;
+                            _this.plan = res.data.plan;
+                            _this.$nextTick(function() {
+                                $('.a_Pop').popover({
+                                    width: 250,
+                                    animation: 'pop',
+                                });
+                            })
+                        }
+                    }
+                    console.log("xxx", _this.school);
+
+                }
+            });
+        }
+    },
+    mounted: function() {
+        var _id = this.getQueryString("id");
+        this.getInfo(_id);
+    }
+});
+$(document).on('click', '.tabhead .itemLi', function() {
+    $(this).addClass("active").siblings().removeClass("active");
+    var _flag = $(this).data("flag");
+    $(".tabcontent").hide();
+    $(".tabcontent." + _flag).fadeIn();
+    if (_flag == 'plan') {
+        window.setTimeout(function() {
+            setplanItemStyle();
+        }, 200)
+    }
+});
+
+//设置plan item 样式
+function setplanItemStyle() {
+    var _height = 0;
+    var _length = $(".s_choose .li.active .planList .item").length;
+    var _s;
+    if (_length % 2 == 0) {
+        _s = 2;
+    } else {
+        _s = 1
+    }
+    $(".s_choose .li.active .planList .item").each(function(index) {
+        if ((index & 1) == 0) {
+            _height = $(this).next().height();
+            if ($(this).height() > $(this).next().height()) {
+                $(this).next().height($(this).height())
+            } else {
+                $(this).height(_height)
+            }
+        }
+        if (index + 1 > _length - _s) {
+            $(this).css("border", "none");
+        }
+    })
+}
+</script>
+<include file="Public:footer" />

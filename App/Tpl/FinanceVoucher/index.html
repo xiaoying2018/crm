@@ -1,0 +1,263 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/mxcrm_more.js" type="text/javascript"></script>
+<style>
+body{
+	overflow-y: hidden;
+}
+.option{padding-left:-30px;}
+</style>
+<script>
+$(function(){
+	var scroll_width = 5;
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+		$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+	})
+	$("#tab_Test3").FrozenTable(1,0,3);
+	$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width).width($("#oTableLH_tab_Test3").width());
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+	//$("#oDivH_tab_Test3").css('top','-7px');
+})
+</script>
+<div class="wrapper wrapper-content ">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+				<div class="title-bar">
+					<div class="row  clearfix" id="title-hide" style="display:none;">
+						<ul class="breadcrum pull-left">
+							<li>已选中&nbsp;<span id="icheck_num"></span>&nbsp;项</li> 
+							<li><a id="add_voucher" href="javascript:void(0)">生成凭证&nbsp;<i class="fa fa-forward"></i></a></li>
+							<li class="last_li"><big><a class="fa fa-times pull-right" id="back-show"></a></big></li>
+						</ul>
+					</div>
+					<div class="row " id="title-show">
+						<ul class="breadcrum pull-right" style="margin-bottom: 0px">
+							<li>
+								<div class="input-group">
+									<select class="form-control" onchange="window.open(this.options[this.selectedIndex].value,target='_self')" style="text-align: center;">
+										<option value="{:U('financeVoucher/index')}" <if condition = "$_GET['account_id'] eq ''">selected="selected"</if>>--全部--</option>
+										<volist name="bank_list" id="vo">
+											<option value="{:U('financeVoucher/index','account_id='.$vo['account_id'])}" <if condition = "$_GET['account_id'] eq $vo['account_id']">selected="selected"</if>>{$vo['company']}&nbsp;|&nbsp;{$vo['open_bank']}</option>
+										</volist>
+									</select>
+								</div>
+							</li>
+						</ul>
+						<ul class="breadcrum pull-right" style="margin-bottom: 0px">
+							<li>
+								<div class="input-group" style="line-height: 32px;">
+									<div class="pull-left">收入：
+										<span style="color: #00BC7F;">{$receivingorder_money}</span>&nbsp;元
+									</div>
+									<div class="pull-left" style="margin-left: 30px;">支出：
+										<span style="color: #FF7737;">{$paymentorder_money}</span>&nbsp;元
+									</div>
+									<div class="pull-left" style="margin-left: 30px;">结余：
+										<span style="color: #FF7737;">{$balance}</span>&nbsp;元
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="row" style="margin: 0">
+					<div class="ibox-content" style="padding:0px;">
+						<div class="ibox-content clearfix" id="table_container" style="padding:0px;border: none;">
+							<input type="hidden" id="is_show" value="0"/>
+							<form id="form1" action="" method="Post" style="position:relative;"> 
+								<div id="table_div" class="full-height-scroll" style="left:0px;top:0px;">
+								<if condition="$voucher_list eq null">
+									<div style="background-color:#fff;"><include file="Public:nodata" /></div>
+								<else/>
+									<table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
+										<tr class="tabTh" >
+											<td style="width:80px;">
+												<!-- <input class="check_all" type="checkbox" /> -->
+												<div class="checkbox checkbox-primary">
+													<input type="checkbox" class="check_all"/>
+													<label for=""></label>
+												</div>
+											</td>
+											<td>收支内容</td>
+											<td>收入(元)</td>
+											<td>支出(元 )</td>
+											<td>类型</td>
+											<td>事件状态</td>
+											<td>财务状态</td>
+											<td>负责人</td>
+											<td>
+												<if condition="$_GET['desc_order'] == 'create_date'">
+													<a href="{:U('log/index','asc_order=create_date&'.$parameter)}" title="点击按时间正序排列">
+														{:L('CREATE_TIME')}&nbsp;<span class="fa fa-caret-down"></span>
+													</a>
+												<elseif condition="$_GET['asc_order'] == 'create_date'"/>
+													<a href="{:U('log/index','desc_order=create_date&'.$parameter)}"  title="点击按时间倒序排列">
+														{:L('CREATE_TIME')}&nbsp;<span class="fa fa-caret-up"></span>
+													</a>
+												<else/>
+													<a href="{:U('log/index','asc_order=create_date&'.$parameter)}" title="点击按时间正序排列">{:L('CREATE_TIME')}&nbsp;<span class="fa fa-caret-down"></a>
+												</if>
+											</td>
+										</tr>
+										<volist name="voucher_list" id="vo">
+											<tr class="controls_tr">
+												<td style="width:80px;">
+													<div class="checkbox checkbox-primary">
+														<if condition = "$vo['cate'] eq 1">
+															<input name="receivingorder_id" class="check_list" type="checkbox" value="{$vo.order_id}"/>
+															<label for=""></label>
+														<elseif condition = "$vo['cate'] eq 2" />
+															<input name="paymentorder_id" class="check_list" type="checkbox" value="{$vo.order_id}"/>
+															<label for=""></label>
+														</if>
+													</div>
+												</td>
+												<td>
+													<if condition = "$vo['cate'] eq 1">
+														<a href="{:U('finance/view','t=receivingorder'.'&id='.$vo['order_id'])}">
+													<else />
+														<a href="{:U('finance/view','t=paymentorder'.'&id='.$vo['order_id'])}">
+													</if>
+													{$vo['name']}</a>
+												</td>
+												<td>
+													<if condition = "$vo['cate'] eq 1"><span style="color: #5ACD61;">{$vo['money']}</span></if>
+												</td>
+												<td>
+													<if condition = "$vo['cate'] eq 2"><span style="color: #FF6C62;">-{$vo['money']}</span></if>
+												</td>
+												<td></td>
+												<td>
+													<if condition="$vo['status'] eq '2'">
+														<span class="fa fa-circle" style="color:#F5715F"></span>&nbsp;&nbsp;&nbsp;拒绝
+													<elseif condition="$vo['status'] eq '1'"/> 
+														<span class="fa fa-circle" style="color:#7CCA4E"></span>&nbsp;&nbsp;&nbsp;通过
+													<else />
+														<span class="fa fa-circle" style="color:#F5CA00"></span>&nbsp;&nbsp;&nbsp;待审
+													</if> 
+												</td>
+												<td>
+													<if condition="$vo['voucher_status'] eq ''"> 
+														<span class="fa fa-circle" style="color:#fff"></span>&nbsp;&nbsp;&nbsp;
+														<a href="javascript:void(0);" class="voucher_add" rel="$vo['cate']">生成凭证&nbsp;&nbsp;&nbsp;<i class="fa fa-forward"></i></a>
+													<elseif condition="$vo['voucher_status'] eq '1'" /> 
+														<span class="fa fa-circle" style="color:#7CCA4E"></span>&nbsp;&nbsp;&nbsp;凭证待审核
+													<elseif condition="$vo['voucher_status'] eq '2'" />
+														<span class="fa fa-circle" style="color:#F5715F"></span>&nbsp;&nbsp;&nbsp;凭证已通过
+													<elseif condition="$vo['voucher_status'] eq '3'">
+														<span class="fa fa-circle" style="color:#F5715F"></span>&nbsp;&nbsp;&nbsp;凭证已拒绝
+													</if> 
+												</td>
+												<td>
+													<a class="role_info" rel="{$vo.owner_role_info.role_id}" href="javascript:void(0)">{$vo.owner_role_info.full_name}</a>
+												</td>
+												<td>{$vo.update_time|date="Y-m-d H:i",###}</td>
+											</tr>
+										</volist>
+									</table>
+								</if>
+								</div>
+								<div id="tfoot_div" class="clearfix">
+									<tr>
+										<div class="clearfix" id="tfoot_page">				
+											{$page}<include file="Public:listrows" />
+										</div>
+									</tr>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+    		</div>
+        </div>
+    </div>
+</div>
+
+<div style="display:none;" id="dialog-role-info" title="{:L('DIALOG_USER_INFO')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-voucher_add" title="新增财务凭证">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+/*让复选框默认取消选择*/
+$(':checkbox').prop('checked', false);
+<if condition="C('ismobile') eq 1">width=$('.wrapper').width() * 0.9;<else/>width=950;</if>
+$("#dialog-role-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 600,
+	maxHeight: 550,
+	position: ["center",100]
+});
+$("#dialog-voucher_add").dialog({
+    autoOpen: false,
+    // modal: true,
+	width: width,
+	maxHeight: 550,
+	position: ["center",100],
+	close:function(){
+		$(this).html("");
+	},
+	buttons: {
+		"确定": function () {
+			$('#account_form').submit();
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+
+$(".role_info").click(function(){
+	$role_id = $(this).attr('rel');
+	$('#dialog-role-info').dialog('open');
+	$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+});
+
+$(".voucher_add").click(function(){
+	var order_id = $(this).attr('rel');
+	$('#dialog-voucher_add').dialog('open');
+	$('#dialog-voucher_add').load('{:U("financeVoucher/voucheradd","id=")}'+order_id);
+});
+function changeContent(){
+	$module = $('#module').val();
+	if($module == 6){
+		window.location='{:U('Log/index','by='.$_GET['by'].'&type=4')}';
+	}else if($module == 1){
+		window.location='{:U('Log/index','r=rCustomerLog&module=customer&by='.$_GET['by'].'&type=1')}';
+	}else if($module == 2){
+		window.location = '{:U('Log/index','r=rContactsLog&module=contacts&by='.$_GET['by'].'&type=1')}';
+	}else if($module == 3){
+		window.location='{:U('Log/index','r=rBusinessLog&module=business&by='.$_GET['by'].'&type=1')}';
+	}else if($module == 4){
+		window.location='{:U('Log/index','r=rLogTask&module=task&by='.$_GET['by'].'&type=1')}';
+	}else if($module == 5){
+		window.location='{:U('Log/index','r=rEventLog&module=event&by='.$_GET['by'].'&type=1')}';
+	}
+}
+<if condition="$Think.get.field neq null">
+	$("#field option[value='{$Think.get.field}']").prop("selected", true);changeCondition();
+	$("#condition option[value='{$Think.get.condition}']").prop("selected", true);changeSearch();
+	$("#search").prop('value', '{$Think.get.search}');
+</if>
+</script>
+<include file="Public:footer" />

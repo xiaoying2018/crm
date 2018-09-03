@@ -1,0 +1,214 @@
+<include file="Public:header" />
+<style type="text/css">
+.add_title{
+	padding-bottom:10px;
+	height: 60px;
+	margin-bottom:15px;
+}
+.add_title>span{
+	border-bottom: 2px solid #1ab394;
+	font-size: 24px;
+}
+.add_body >div >.full-height-scroll{
+	border-right:1px dotted #ccc
+}
+.add_body_title{
+	margin:15px auto 30px auto;
+	padding-left: 14px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.form-control{
+	float:left;
+}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+		<form class="form-horizontal" id="form" role="form" action="{:U('finance/add','t=payables')}" method="post" enctype="multipart/form-data">
+			<input type='hidden' name="refer_url" value="{$refer_url}"/>
+			<div class="ibox-content " id="add_body" >
+				<div class="row">
+					<div class="col-md-12 add_body">
+						<div class="full-height-scroll">
+							<div class="row" >
+								<div class="col-md-12 add_body_title" style="margin:20px 0 0 0px;">
+									<div class="all-inline">
+										<span class="sq-tag"></span>
+										<div class="text-tag">
+											<span>基础信息</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+									<div class="form-group">
+										<label class="col-md-4 control-label">应付款编号：</label>
+										<div class="col-md-6">
+											<input name="name" id="name" class="form-control required" aria-required="true" type="text" value="{$number}" />
+										</div> 
+										<div class="col-md-2"><span style="color:red">*</span></div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-4 control-label">应付款金额：</label>
+										<div class="col-md-6">
+											<input class="form-control required" aria-required="true" id="price" name="price" type="text" value="" placeholder="0.00" onblur="bu(this)" onkeyup="num_input(this)"/>
+										</div>
+										<div class="col-md-2"><span style="color:red">*</span></div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-4 control-label">应付款类型：</label>
+										<div class="col-md-6">
+											<select class="form-control required" aria-required="true" id="type_id" name="type_id">
+												<option value="">请选择</option>
+												<volist name="type_list" id="vo">
+													<option value="{$vo['id']}">{$vo['name']}</option>
+												</volist>
+											</select>
+										</div>
+										<div class="col-md-2"><span style="color:red">*</span></div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-4 control-label">相关客户：</label>
+										<div class="col-md-6">
+											<input type="hidden" name="customer_id" id="customer_id" value="{$customer.customer_id}" />
+											<input class="form-control" placeholder="请点击选择" type="text" name="customer_name" id="customer_name" value="{$customer.customer_name}" readonly="true" style="cursor:pointer;" title="请点击选择"/>
+										</div>
+										<div class="col-md-2"></div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-4 control-label">{:L('PAYABLES TIME')}：</label>
+										<div class="col-md-6">
+											<input onclick="WdatePicker()" class="form-control required Wdate" aria-required="true" type="text" id="pay_time" name="pay_time" value="<?php echo date('Y-m-d',time()) ?>"/>
+										</div>
+										<div class="col-md-2"><span style="color:red">*</span></div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-4 control-label">付款人：</label>
+										<div class="col-md-6">
+											<input type="hidden" id="owner_role_id" name="owner_role_id" value="{:session('role_id')}" />
+											<input class="form-control required" aria-required="true" id="owner_name" name="owner_name" type="text" value="{$_SESSION['full_name']}" readonly="true" style="cursor:pointer;" title="请点击选择"/>
+										</div>
+										<div class="col-md-2"><span style="color:red">*</span></div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-4 control-label">{:L('DESCRIPTION')}：</label>
+										<div class="col-md-8">
+											<textarea class="form-control" rows="5" name="description" id="description"></textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tfoot_div" class="clearfix">
+				<div class="clearfix" id="tfoot_page">
+					<div class="ibox-content" style="border-top: none;">
+						<div class="col-sm-offset-2" style="text-align:center;margin-left:0px;">
+							<input name="submit" id="save_submit" class="btn btn-primary" type="submit" value="{:L(SAVE)}"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<div id="dialog-role-list2" style="display:none;" title="{:L('SELECT THE LEADER')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;"  id="dialog-customer-list" title="相关客户">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#save_submit').prop('disabled',false);
+	/*form表单验证*/
+	$("#form").validate({
+		submitHandler:function(form){
+            $('#save_submit').click(function(){
+				$('#save_submit').prop('disabled',true);
+			});
+            form.submit();
+        }    
+	});
+});
+
+$("#dialog-role-list2").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 800,
+	maxHeight: 400,
+	buttons: {
+		"确定": function () {
+			var item = $('input:radio[name="owner"]:checked').val();
+			var name = $('input:radio[name="owner"]:checked').attr('rel');
+			if(item){
+				$('#owner_name').val(name);
+				$('#owner_role_id').val(item);
+			}
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+
+$("#dialog-customer-list").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 800,
+	maxHeight: 400,
+	position: ["center", 100],
+	buttons: { 
+		"确定": function () {
+			var item = $('input:radio[name="customer"]:checked').val();
+			var name = $('input:radio[name="customer"]:checked').parent().next().html();
+			$('#customer_id').val(item);
+			$('#customer_name').val(name);
+			$(this).dialog("close"); 
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	close:function(){
+		$(this).html('');
+	}
+});
+
+$(function(){
+	$("#owner_name").click(function(){
+		$('#dialog-role-list2').dialog('open');
+		$('#dialog-role-list2').load('{:U("user/listDialog","by=all")}');
+	});
+
+	$('#customer_name').click(function(){
+		$('#dialog-customer-list').dialog('open');
+		$('#dialog-customer-list').load('{:U("customer/listDialog")}');
+	});
+});
+</script>
+<include file="Public:footer" />	

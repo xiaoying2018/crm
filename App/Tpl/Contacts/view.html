@@ -1,0 +1,381 @@
+<include file="Public:header" />
+<style>
+.title-strip{
+	padding:10px 25px 0px 20px;
+	margin-bottom: 10px;
+}
+.title-strip>span{
+	margin-right: 5px;
+}
+.title-icon>img{
+	margin-bottom:15px;
+}
+</style>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.tagsinput.js"></script>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery.tagsinput.css" />
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+	    <div class="col-lg-12">
+	    	<div class="ibox-content all-inline title-strip">
+				<span class="title-icon"><img src="__PUBLIC__/img/contacts_view_icon.png" alt=""></span>
+				<span><h1>{$contacts['name']}</h1></span>
+				<span class="fa fa-qrcode fa-2x" id="qrcode"></span>
+				<if condition="$contacts['role']">
+				<span class="badge badge-primary m-b-sm m-l-sm" style="padding:4px 12px;"><big>{$contacts['role']}</big></span>
+				</if>
+				<a href="{:U('contacts/edit','id='.$contacts['contacts_id'])}" class="btn btn-outline btn-default pull-right" style="margin-right: 15px;"><i class="fa fa-pencil"></i>&nbsp;&nbsp;编辑</a> 
+	    	</div>
+			<div class="pull-left" style="width:69.7%;">
+			    <div class="tabs-container ibox-title" >
+			    	<ul class="nav nav-tabs"  id="left_list">
+			    	    <li class="active">
+			    	        <a data-toggle="tab" href="#tab-1">基本信息</a>
+			    	    </li>
+						<li><a href="#tab2" data-toggle="tab" type="tab2">日程&nbsp;&nbsp;</a></li>
+			    	</ul>
+			    	<div class="tab-content">
+			    		<div id="tab-1" class="tab-pane active">
+			    		    <div class="panel-body">
+			    		        <div class="ibox">
+									<form role="form" class="form-horizontal view-group" method="post">
+										<?php $tag = 0; ?>
+										<volist name="field_list" id="vo">
+										<if condition="$vo['form_type'] == 'textarea' or $vo['form_type'] == 'editor'">
+											<if condition="$tag%2 neq 0">
+											</div>
+											</if>
+											<div class="form-group">
+												<label class="col-sm-2 control-label">{$vo.name}</label>
+											    <div class="col-sm-10">
+											        <p class="form-p color-a-edit">
+											            <span style="color:#{$vo['color']}">{$contacts[$vo['field']]}</span>
+											        </p>
+											    </div>
+											</div>
+											<?php $tag = 0; ?>
+										<else/>
+											<if condition="$tag%2 eq 0">
+											<div class="form-group">
+											</if>
+											    <label class="col-sm-2 control-label">{$vo.name}</label>
+											    <div class="col-sm-4">
+											        <p class="form-p">
+											            <span style="color:#{$vo['color']}">
+															<if condition="$vo['form_type'] eq 'datetime'">
+																<if condition="$contacts[$vo['field']] neq '0'">{:newTimeDate($contacts[$vo['field']])}</if>
+															<elseif condition="$vo['form_type'] eq 'address'" />
+																{$contacts[$vo['field']]}
+																<a href="javascript:void(0);" class="getMap" rel="{$contacts[$vo['field']]}">
+																	<span class="fa fa-map-marker" style="font-size:16px;"></span>
+																</a>
+															<elseif condition="$vo['field'] eq 'customer_id'" />
+																<a href="{:U('customer/view','&id='.$contacts['customer_id'])}">{$contacts['customer_name']}</a>
+															<else />
+																{$contacts[$vo['field']]}
+															</if>
+											            </span>
+											        </p>
+											    </div>
+											<if condition="$tag%2 neq 0">
+											</div>
+											</if>
+											<?php $tag += 1; ?>
+										</if>
+										</volist>									
+	        						</form>
+			    		        </div> 
+			    		    </div>
+						</div>
+						<div class="tab-pane fade back_box" id="tab2">
+							<div class="panel-body">
+								 <div class="ibox">
+								   <empty name="event_list">
+										<include file="Public:nodata" />
+									<else />
+										<volist name="event_list" id="vo">
+											<div style="padding-bottom:20px;border-left:1px solid #ccc;margin: 5px 0 0 15px;">
+												<if condition="$vo['color']">
+													<i class="fa fa-circle pull-left" style="margin-left:-5px;color:{$vo['color']};font-size:12px;"></i>
+												<else />
+													<i class="fa fa-circle pull-left" style="margin-left:-5px;color:#FB8F7A;font-size:12px;"></i>
+												</if>
+												<div class="pull-left" style="margin-left:25px;color:#999">
+													<div>{$vo['start_date']|date="H:i",###}</div>
+													<div>{$vo['start_date']|date="Y/m/d",###}</div>
+												</div>
+												<div class="pull-left" style="margin-left:25px;color:#999">
+													<div style="margin-top:11px;">~</div>
+												</div>
+												<div class="pull-left" style="margin-left:25px;color:#999">
+													<div>{$vo['end_date']|date="H:i",###}</div>
+													<div>{$vo['end_date']|date="Y/m/d",###}</div>
+												</div> 
+												<div class="pull-left" style="margin-left:25px;"><img src="{$vo['img']}" style="width:30px;height:30px;border-radius:50px;margin-top:5px;"></div>
+												<div class="pull-left" style="margin-left:10px;width:60%">
+													<div>{$vo['create_role_name']} &nbsp;<if condition="$vo['bus_num']">({$vo['bus_num']})</if></div>
+													<div>{$vo['subject']}</div> 
+												</div>
+												<div style="clear:both"></div>
+											</div>
+										</volist>
+									</empty>
+								</div> 
+							</div>
+						</div>
+			    	</div>
+			    </div>
+			</div>
+			<div class="pull-right" style="width:29.7%;">
+				<div class="ibox-title" style="height:55px;padding-top:25px">
+					<span>相关商机</span>
+					<span class="pull-right" id="rel_business"><i class="fa fa-plus m-r-xs"></i><a href="javascript:void(0);">关联商机</a></span>
+				</div>
+				<div class="ibox-content" style="border-top:none;">
+					<table class="table ">
+						<tr style="background-color:#F5F5F6;">
+							<td style="color:#7D919F">商机编号</td>
+							<td style="color:#7D919F">营销阶段</td>
+							<td style="color:#7D919F">操作</td>
+						</tr>
+						<tbody>
+							<volist name="business_list" id="vo">
+								<tr>
+									<td ><a href="{:U('business/view','id='.$vo['business_id'])}">{$vo['code']}</a></td>
+									<td >{$vo['status']}</td>
+									<td class="dropdown">
+										<span class="dropdown-toggle" data-toggle="dropdown" style="cursor:pointer;color:#8FA1B2">
+										    <i class="fa fa-angle-down fa-lg"></i>
+										</span>
+										<ul class="dropdown-menu">
+										    <li>
+										    	<a rel="{:U('contacts/relToBusiness',array('business_id'=>$vo['business_id'],'contacts_id'=>$vo['contacts_id'],'act_n'=>2))}" class="not_rel_business" href="javascript:void(0);" >解除关联</a>
+										    </li>
+										</ul>
+									</td>
+								</tr>
+							</volist>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<include file="Public:alert" />
+<div style="display:none;" id="dialog-file" title="{:L('ADD_ACCESSORY')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" id="dialog-log" title="{:L('DIALOG_ADD_LOG')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" id="dialog-log-edit" title="{:L('DIALOG_EDIT_LOG')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" id="dialog-role-info" title="{:L('DIALOG_USER_INFO')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" id="dialog-map" title="{:L('MAP')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" id="dialog-business" title="关联商机">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Z0Fo0ib1GUgWlylCWeLvQh2U"></script>
+<script type="text/javascript">
+/**
+    * 页面加载时执行Tab start
+     */
+    $(function(){
+        var thisId = window.location.hash;
+        var atype = thisId.substr(1);
+        // $('#left_list a[type="'+atype+'"]').trigger('click');
+        $('#left_list a[type="'+atype+'"]').tab('show');
+     });
+    /**
+    * 页面加载时执行Tab end
+     */
+     $('#left_list a').click(function (e) {
+		var maodian = '#'+$(this).attr('type');
+		url_jump(maodian);
+	});
+	function url_jump(maodian){
+	    var leads_id = "{$contacts['contacts_id']}";
+	    var url = "{:U('contacts/view','id=')}"+leads_id+maodian;
+	    window.history.replaceState({},0,'http://'+window.location.host+url);
+	}
+$("#qrcode").popover({
+    trigger : 'manual',
+    placement : 'bottom',
+    title : '',
+    html: 'true',
+    content : '<div id="" rel=""><p style="text-align:center;background:#fff;"><small>扫一扫下面的二维码就可以把联系人<br/>保存到手机里啦</small></p><img style="margin:0 auto;width:200px;height:200px;" src="{:U(\'contacts/qrcode\', \'contacts_id=\'.$contacts[\'contacts_id\'])}" /></div>',
+    animation: false
+}).on('mouseenter', function(){
+    $(this).popover('show');
+}).on('mouseleave',function(){
+    $(this).popover('hide');
+});
+$(document).on('click','#rel_business',function () {
+	$('#dialog-business').dialog('open');
+	$('#dialog-business').load("{:U('customer/clistDialog','customer_id='.$contacts['customer_id'].'&contacts_id='.$contacts['contacts_id'])}");
+});
+$('#dialog-business').dialog({
+	autoOpen: false,
+	modal: true,
+	width: 660,
+	maxHeight: 400,
+	buttons: {
+		"确定": function () {
+			var business_id = $('input:radio[name="customer"]:checked').parent().next().attr('value');
+			var contacts_id = "{$contacts['contacts_id']}";
+			var to_url = "{:U('contacts/relToBusiness')}&act_n=1&contacts_id="+contacts_id+"&business_id="+business_id;
+			$.get(to_url,{},function(ret){
+			    if (ret[0] == 'success') {
+			        location.reload();
+			    } else {
+			        alert_crm(ret[1]);
+			    }
+			})
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	position:["center",100]
+});
+//解绑联系人
+$(".not_rel_business").click(function(){
+    var _this = this;
+    swal({
+        title: '确定要解除绑定吗？',
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        closeOnConfirm: true,
+        closeOnCancel:  true}, function(isConfirm){
+        if (isConfirm) {
+            // window.location.href = url;
+            $.get($(_this).attr('rel'),{},function(ret){
+                if (ret[0] == 'success') {
+                    location.reload();
+                } else {
+                    alert_crm(ret[1]);
+                }
+            })
+        } else {
+            return false;
+        } 
+    });
+});
+
+if ("{:C('isMobile')}" == "1") {
+	width = $('.container').width() * 0.9;
+} else {
+	width = 800;
+}
+$("#dialog-file").dialog({
+    autoOpen: false,
+    modal: true,
+	width: width,
+	maxHeight: 400,
+	position: ["center",100]
+});
+$("#dialog-log").dialog({
+    autoOpen: false,
+    modal: true,
+	width: width,
+	maxHeight: 400,
+	position: ["center",100]
+});
+$("#dialog-role-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: width,
+	maxHeight: 550,
+	position: ["center",100]
+});
+$("#dialog-log-edit").dialog({
+    autoOpen: false,
+    modal: true,
+	width: width,
+	maxHeight: 400,
+	position: ["center",100]
+});
+$(function(){
+	$(".add_file").click(function(){
+		$('#dialog-file').dialog('open');
+		$('#dialog-file').load('{:U("file/add", "r=RContactsFile&module=contacts&id=".$contacts["contacts_id"])}');
+	});
+	$(".add_log").click(function(){
+		$('#dialog-log').dialog('open');
+		$('#dialog-log').load('{:U("log/add", "r=RContactsLog&module=contacts&id=".$contacts["contacts_id"])}');
+	});
+	$(".edit_log").click(function(){
+		$log_id = $(this).attr('rel');
+		$('#dialog-log-edit').dialog('open');
+		$('#dialog-log-edit').load('{:U("log/edit","id=")}'+$log_id);
+	});
+	$(".role_info").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+	$(".more").click(function(){
+		log_id = $(this).attr('rel');
+		$('#llog_'+log_id).attr('class','');
+		$('#slog_'+log_id).attr('class','hide');
+	});
+	$("#dialog-map").dialog({
+	    autoOpen: false,
+	    modal: true,
+		width: 800,
+		minHeight: 450,
+		position: ["center",100]
+	});
+	$(".getMap").click(function(){
+		var map = $(this).attr('rel');
+		$('#dialog-map').dialog('open');
+		$('#dialog-map').load('{:U("setting/mapdialog","map=")}'+map);
+	});
+});
+</script>
+<include file="Public:footer" />	

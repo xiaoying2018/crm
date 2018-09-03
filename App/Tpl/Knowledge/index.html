@@ -1,0 +1,593 @@
+<include file="Public:header" />
+<link href="__PUBLIC__/style/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+<script src="__PUBLIC__/style/js/plugins/jsTree/jstree.min.js"></script>   
+<link href="__PUBLIC__/style/css/plugins/jsTree/style.min.css" rel="stylesheet">
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/mxcrm_more.js" type="text/javascript"></script>
+<style>
+body{
+	overflow-y: hidden;
+}
+.option{padding-left:-30px;}
+</style>
+<script>
+$(function(){
+	var scroll_width = 5;
+	var oTableLH_tab_Test3 = 38;
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+		$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+	})
+	if ("{$Think.get.by}") {
+		$("#filter_ul").prev().html($("#filter_ul>li>a.active").text()+'<span class="fa fa-angle-down small_fa"></span>');
+	}
+	$("#tab_Test3").FrozenTable(1,0,3);
+	$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+
+	$("#left_list").height(window.innerHeight-$("#left_list").offset().top-30);
+	$(window).resize(function(){
+		$("#left_list").height(window.innerHeight-$("#left_list").offset().top-30);
+	})
+})
+</script>
+<div class="wrapper wrapper-content">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+				<div class="title-bar" style="position: relative;z-index: 99;">
+					<div class="row  clearfix" id="title-hide" style="display:none;">
+						<ul class="breadcrum pull-left">
+							<li>已选中&nbsp;<span id="icheck_num"></span>&nbsp;项</li>
+							<li class="single_btn"><a href="javascript:void(0)" id="edit_knowledge"><i class="fa fa-pencil"></i>&nbsp;编辑</a></li>
+							<li><a id="delete" href="javascript:void(0)"><i class="fa fa-times-circle"></i>&nbsp;{:L('DELETE')}</a></li>
+							<li><a href="javascript:void(0);"  class="excelExport link" ><i class="fa fa-download"></i>&nbsp;导出</a></li>
+							<li class="last_li"><big><a class="fa fa-times pull-right" id="back-show"></a></big></li>
+						</ul>
+					</div>
+					<div class="row " id="title-show">
+						<ul class="nav pull-left" style="margin:2px 0 0 15px;">
+							<a href="{:U('knowledge/add','category_id='.$_GET['category_id'])}" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; {:L('ADD_KNOWLEDGE')}</a>
+						</ul>
+						<form class="form-inline" id="knowledge_search" action="" method="get">
+						<ul class="breadcrum pull-right" style="margin-bottom: 0px">
+							<li>
+								搜索：
+								<div class="input-group">
+									<input type="hidden" name="m" value="knowledge"/>
+									<input type="hidden" name="a" value="index"/>
+									<input type="hidden" name="field" value="title"/>
+									<input type="hidden" name="condition" value="contains"/>
+									<input id="short_search" type="text" style="width:160px;" placeholder="请输入知识标题" onkeydown='if(event.keyCode==13) {$("#short_search_btn").trigger("click");return false;}' class="form-control input-sm" name="search" <if condition = "$_GET['field'] eq 'title'">value="{$_GET['search']}"</if>/>
+
+									<if condition="$_GET['field']">
+										<!-- 导出相关 -->
+										<input type="hidden" name="this_page" value="{$this_page}" />
+										<input type="hidden" name="act" id="act" value="index"/>
+										<input type="hidden" name="daochu" id="daochu"/>
+										<input type="hidden" name="selectexcelxport" id="selectexcelxport"/>
+										<input type="hidden" name="current_page" id="current_page" value=""/>
+										<input type="hidden" name="export_limit" id="export_limit" value=""/>
+										<!-- 导出相关 -->
+									</if>
+									<span class="input-group-btn">
+										<button class="btn btn-default btn-search" id="short_search_btn" type="submit"><i class="fa fa-search"></i></button>
+									</span>
+								</div>
+								&nbsp;&nbsp;<a title="高级搜索" href="javascript:void(0)" id="search_type" class="btn btn-white btn-bitbucket"><i class="fa fa-filter" style="color: #D8E3EF;"></i></a>
+							</li>
+							&nbsp;&nbsp;
+							<div class="btn-group ">
+                                <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" aria-expanded="false">操作 <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                	<if condition = "checkPerByAction('knowledge','excelimport')">
+										<li><a id="import_excel" class="link" href="javascript:void(0);"><i class="fa fa-upload"></i>&nbsp;导入</a></li>
+									</if>
+                                    <if condition = "checkPerByAction('knowledge','excelexport')">
+										<li><a href="javascript:void(0);" class="excelExport link" ><i class="fa fa-download"></i>&nbsp;导出</a></li>
+									</if>
+									<li><a href="{:U('knowledge/category')}" id="" class="link"><i class="fa fa-asterisk"></i>&nbsp;分类设置</a></li>
+                                </ul>
+                            </div>
+						</ul>
+						</form>
+					</div>
+				</div>
+				<div class="row" style="margin: 0;z-index: 1;">
+					<div class="pull-left" style="width:20.222%">
+						<div class="ibox-title clearfix" style="padding-top: 4px">
+			                <div class="detail-title clearfix">
+			                    <div class="pull-left all-inline">
+			                        <img src="__PUBLIC__/img/chanpxx.png" alt="">&nbsp;
+			                        <div class="">
+			                            <span>知识分类</span>
+			                        </div>
+			                    </div>
+			                </div>
+						</div>
+						<div class="ibox-content" style="border-top: none;">
+							<div id="left_list" class="full-height-scroll">
+								<div id="knowledge-tree" >
+									{$tree_code}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="pull-right" style="width:78.7%">
+						<div class="ibox-content" style="padding:0px;">
+							<div class="ibox-content clearfix" id="table_container" style="padding:0px;border: none;">
+								<form id="form1" action="" method="Post" style="position:relative;"> 
+									<div id="table_div" class="full-height-scroll" style="left:0px;top:0px;">
+									<table class="table table-hover table-striped table_thead_fixed" id="tab_Test3" style="background:#fff;margin-bottom:0px;">
+										<if condition="$list eq null">
+											<include file="Public:nodata" />
+										<else/>
+											<tr id="childNodes_num" class="tabTh">
+												<td style="width:6px;padding-left: 20px">
+													<div class="checkbox checkbox-primary">
+														<input type="checkbox" class="check_all"/>
+														<label for=""></label>
+													</div>
+												</td>
+												<td>{:L('TITLE')}</td>
+												<td>{:L('AUTHORS')}</td>
+												<if condition="C('ismobile') neq 1">
+												<td>{:L('CATEGORY')}</td>
+												</if>
+												<td>
+													<if condition="$_GET['asc_order'] == 'hits'">
+														<a href="{:U('knowledge/index','desc_order=hits&'.$parameter)}">{:L('CLICK_NUM')}&nbsp;<img src="__PUBLIC__/img/arrow_up.png"></a>
+													<elseif condition="$_GET['desc_order'] == 'hits'"/>
+														<a href="{:U('knowledge/index','asc_order=hits&'.$parameter)}">{:L('CLICK_NUM')}&nbsp;<img src="__PUBLIC__/img/arrow_down.png"></a>
+													<else/>
+														<a href="{:U('knowledge/index','desc_order=hits&'.$parameter)}">{:L('CLICK_NUM')}</a>
+													</if>
+												</td>
+												<td>
+													<if condition="$_GET['asc_order'] == 'update_time'">
+														<a href="{:U('knowledge/index','desc_order=update_time&'.$parameter)}">{:L('UPDATE_TIME')}&nbsp;<img src="__PUBLIC__/img/arrow_up.png"></a>
+													<elseif condition="$_GET['desc_order'] == 'update_time'"/>
+														<a href="{:U('knowledge/index','asc_order=update_time&'.$parameter)}">{:L('UPDATE_TIME')}&nbsp;<img src="__PUBLIC__/img/arrow_down.png"></a>
+													<else/>
+														<a href="{:U('knowledge/index','desc_order=update_time&'.$parameter)}">{:L('UPDATE_TIME')}</a>
+													</if>
+												</td>
+											</tr>
+											<volist name="list" id="vo">
+												<tr class="controls_tr">
+													<td style="width:6px;padding-left: 20px">
+														<div class="checkbox checkbox-primary">
+															<input name="knowledge_id[]" class="check_list" type="checkbox" value="{$vo.knowledge_id}"/>
+															<label for=""></label>
+														</div>
+													</td>
+													<td><a href="{:U('knowledge/view','id='.$vo['knowledge_id'])}">{$vo.title}</a></td>
+													<td><notempty name="vo.owner.user_name"><a class="role_info" rel="{$vo.owner.role_id}" href="javascript:void(0)">{$vo.owner.user_name}</a></notempty></td>
+													<if condition="C('ismobile') neq 1">
+													<td>{$vo.name}</td>
+													<td>{$vo.hits}</td>
+													<td><notempty name="vo.update_time">{$vo.update_time|date="Y-m-d",###}<notempty></td>
+													</if>
+												</tr>
+											</volist>
+										</if>
+									</table>
+									</div>
+									<div id="tfoot_div" class="clearfix">
+										<tr>
+											<div class="clearfix" id="tfoot_page">	
+												<if condition="$fields_search">
+													<span class="pull-left" style="margin-left:25px;margin-top:10px;">本次搜索结果<span style="color:#F8AC59"> {$count} </span>条数据<a href="{:U('knowledge/index')}" class="btn" style="background:#fff;border:1px solid #ccc;margin-left:10px;color:#999;" id="clearnumber">清除搜索条件</a></span>
+												</if>
+												{$page}<include file="Public:listrows" />
+											</div>
+										</tr>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+    		</div>
+        </div>
+    </div>
+</div>
+<div class="" style="display:none;" id="dialog-import" title="{:L('IMPORT_DATA')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div class="" style="display:none;" id="dialog-role-info" title="{:L('DIALOG_USER_INFO')}">
+	<div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none" id="dialog-field-search" title="高级搜索">
+	<form class="form-inline" id="searchForm" action="" method="get">
+		<div id="search_add" style="width:650px;float:left;padding-bottom:10px;">
+			<empty name="fields_search">
+				<div id="con_search_1" style="float:left;width:650px;margin: 0 10px 0 10px;">
+					<ul class="nav pull-left" style="margin:0px 0 0 23px;width:650px;">
+						<li class="pull-left">
+							<select id="field_1" style="width:auto" class="form-control input-sm field_name new-select" onchange="changeCondition(1)" >
+								<option class="" value="name">--{:L('PLEASE_SELECT_A_FILTER_CONDITION')}--</option>
+								<option class="word" value="title">{:L('TITLE')}</option>
+								<option class="word" value="content">{:L('CONTENT')}</option>
+								<option class="role" value="role_id">{:L('AUTHORS')}</option>
+								<option class="date" value="create_time">{:L('CREATOR_TIME')}</option>
+								<option class="date" value="update_time">{:L('UPDATE_TIME')}</option>
+								<option class="number" value="hits">{:L('CLICK_NUM')}</option>
+							</select>&nbsp;&nbsp;
+						</li>
+						<li class="pull-left" id="conditionContent_1">
+							<select id="condition_1" style="width:auto;" class="form-control input-sm new-select" onchange="changeSearch()" name="name[condition]">
+								<option value="contains">{:L('INCLUDE')}</option>
+								<option value="not_contain">{:L('EXCLUSIVE')}</option>
+								<option value="is">{:L('YES')}</option>
+								<option value="isnot">{:L('ISNOT')}</option>						
+								<option value="start_with">{:L('BEGINNING_CHARACTER')}</option>
+								<option value="end_with">{:L('TERMINATION_CHARACTER')}</option>
+								<option value="is_empty">{:L('Mandatory')}</option>
+								<option value="is_not_empty">{:L('ISNOTEMPTY')}</option>
+							</select>&nbsp;&nbsp;
+						</li>
+						<li class="pull-left" id="searchContent_1">
+							<input id="search_1" type="text" style="width: 160px;" class="input-medium form-control input-sm search-query" name="name[value]"/>&nbsp;&nbsp;
+						</li>
+					</ul>
+				</div>
+				<?php $max_key = 1;?>
+			<else />
+			<volist name="fields_search" key="key1" id="vo">
+				<div id="con_search_{$key1}" style="float:left;width:650px;margin:10px 10px 0 10px;">
+					<div id="rem_{$key1}" class="pull-left" style="line-height:30px;"><a href="javascript:void(0);" class="rem_search" rel="{$key1}" title="移除"><span class="fa fa fa-times-circle"></span></a></div>
+					<ul class="nav pull-left" style="margin:0px 0 0 5px;width:620px;">
+						<li class="pull-left">
+							<select id="field_{$key1}" style="width:auto" class="form-control input-sm field_name new-select" onchange="changeCondition({$key1})" >
+								<option class="" value="name">--{:L('PLEASE_SELECT_A_FILTER_CONDITION')}--</option>
+								<option class="word" <if condition = "$vo['field'] eq 'title'">selected="selected"</if> value="title">{:L('TITLE')}</option>
+								<option class="word" <if condition = "$vo['field'] eq 'content'">selected="selected"</if> value="content">{:L('CONTENT')}</option>
+								<option class="role" <if condition = "$vo['field'] eq 'role_id'">selected="selected"</if> value="role_id">{:L('AUTHORS')}</option>
+								<option class="date" <if condition = "$vo['field'] eq 'create_time'">selected="selected"</if> value="create_time">{:L('CREATOR_TIME')}</option>
+								<option class="date" <if condition = "$vo['field'] eq 'update_time'">selected="selected"</if> value="update_time">{:L('UPDATE_TIME')}</option>
+								<option class="number" <if condition = "$vo['field'] eq 'hits'">selected="selected"</if> value="hits">{:L('CLICK_NUM')}</option>
+							</select>&nbsp;&nbsp;
+						</li>
+						<li class="pull-left" id="conditionContent_{$key1}">
+						<if condition="$vo.form_type eq 'number'">
+							<select id="condition" style="width:auto" class="form-control input-sm" name="{$vo['field']}[condition]">
+								<option value="gt" <if condition="$_GET[$vo['field']][condition] eq 'gt'">selected="selected"</if>>{:L('GT')}</option>
+								<option value="lt" <if condition="$_GET[$vo['field']][condition] eq 'lt'">selected="selected"</if>>{:L('LT')}</option>
+								<option value="eq" <if condition="$_GET[$vo['field']][condition] eq 'eq'">selected="selected"</if>>{:L('EQ')}</option>
+								<option value="neq" <if condition="$_GET[$vo['field']][condition] eq 'neq'">selected="selected"</if>>{:L('NEQ')}</option>
+							</select>
+						<elseif condition="$vo.field eq 'role_id' || $vo.form_type eq 'datetime'"/>
+						<else />
+							<select id="condition" style="width:auto" class="form-control input-sm" name="{$vo['field']}[condition]">
+								<option value="contains" <if condition="$_GET[$vo['field']][condition] eq 'contains'">selected="selected"</if>>{:L('INCLUDE')}</option>
+								<option value="not_contain" <if condition="$_GET[$vo['field']][condition] eq 'not_contain'">selected="selected"</if>>{:L('EXCLUSIVE')}</option>
+								<option value="is" <if condition="$_GET[$vo['field']][condition] eq 'is'">selected="selected"</if>>{:L('YES')}</option>
+								<option value="isnot" <if condition="$_GET[$vo['field']][condition] eq 'isnot'">selected="selected"</if>>{:L('NO')}</option>					
+								<option value="start_with" <if condition="$_GET[$vo['field']][condition] eq 'start_with'">selected="selected"</if>>{:L('BEGINNING_CHARACTER')}</option>
+								<option value="end_with" <if condition="$_GET[$vo['field']][condition] eq 'end_with'">selected="selected"</if>>{:L('TERMINATION_CHARACTER')}</option>
+								<option value="is_empty" <if condition="$_GET[$vo['field']][condition] eq 'is_empty'">selected="selected"</if>>{:L('MANDATORY')}</option>
+								<option value="is_not_empty" <if condition="$_GET[$vo['field']][condition] eq 'is_not_empty'">selected="selected"</if>>{:L('ISNOTEMPTY')}</option>
+							</select>
+						</if>
+						</li>
+						<li class="pull-left" id="searchContent_{$key1}" style="margin-left:5px;">
+						<if condition="$vo.form_type neq 'box' && $vo.form_type neq 'address'">
+							<if condition="$vo.form_type eq 'datetime'">
+								<input id="start_{$vo['field']}" type="text" class="form-control input-sm search-query" name="{$vo['field']}[start]" onclick="WdatePicker()" value="{$fields_search[$vo['field']][start]}" rel="knowledge"/> 至 <input id="end_{$vo['field']}" type="text" class="form-control input-sm search-query" name="{$vo['field']}[end]" onclick="WdatePicker()" value="{$fields_search[$vo['field']][end]}" rel="knowledge"/>
+							<elseif condition="$vo['field'] eq 'role_id'"/>
+								<span id="owner_role_search" rel="{$key1}" rel1="{$vo['field']}[value]" rel2="{$_GET[$vo['field']][value]}"/>
+								<script type="text/javascript">
+									var key_id = $('#owner_role_search').attr('rel');
+									var search_owner_role_id = $('#owner_role_search').attr('rel1');
+									var owner_roleid = $('#owner_role_search').attr('rel2');
+									$.ajax({
+										type:'get',
+										url:'index.php?m=user&a=getrolelist&module=knowledge&action=index',
+										async:false,
+										success:function(data){
+											options = '';
+											$.each(data.data, function(k, v){
+												options += '<option value="'+v.role_id+'" checkedit>'+v.user_name+' ['+v.department_name+'-'+v.role_name+'] </option>';
+											});
+											$("#searchContent_"+key_id+"").html('<select class="selectpicker show-tick form-control input-sm" data-live-search="true" id="search_'+key_id+'" name="'+search_owner_role_id+'" style="width:auto">' + options + '</select>');
+											var owner_roleid = "{$_GET[$vo['field']][value]}";
+											$('#search_'+key_id+' option[value='+owner_roleid +']').prop('selected',true);
+											
+										},
+										dataType:'json'
+									});		
+								</script>
+							<else/>	
+								<input name="{$vo['field']}[value]" type="text" class="form-control input-sm" class="{$vo['form_type']}" value="{$_GET[$vo['field']][value]}" rel="knowledge">
+							</if>
+						</if>
+						</li>
+					</ul>
+				</div>
+				<?php $max_key = $key1;?>
+			</volist>
+		</empty>
+		</div>
+		<div class="clearfix"></div>
+		<div style="margin-left: 35px;margin-top:10px;"><a href="javascript:void(0);" style="display: -moz-stack;margin: 30px 0px 0px; font-size: 12px; color: rgb(62, 133, 233);" id="add_btn">+添加筛选条件</a>
+		</div>
+		<if condition="isset($_GET['category_id'])"><input name="category_id" type="hidden" value="{$_GET['category_id']}" /></if>
+		<input type="hidden" name="this_page" value="{$this_page}" />
+		<input type="hidden" name="daochu" id="daochu"/>
+		<input type="hidden" name="m" value="knowledge"/>
+		<input type="hidden" name="act" id="act" value="index"/>
+		<input type="hidden" name="current_page" id="current_page" value=""/>
+		<input type="hidden" name="export_limit" id="export_limit" value=""/>
+	</form>
+</div>
+<script type="text/javascript">
+/*让复选框默认取消选择*/
+$(':checkbox').prop('checked', false);
+$(document).ready(function(){
+   $('#knowledge-tree').jstree({
+        'core' : {
+            'check_callback' : true
+        },
+        'plugins' : [ 'types', 'dnd' ],
+        'types' : {
+            'default' : {
+                'icon' : '__PUBLIC__/img/knowledge_category.png'//fa fa-folder
+            }
+
+        }
+    });
+    $('.jstree-anchor').click(function(){
+    	window.location.href = $(this).attr('href');
+    });
+    //编辑
+    $("#edit_knowledge").click(function(){
+		window.location.href="{:U('knowledge/edit', 'id=')}"+$(this).attr('rel');
+	})
+	$("#search_type").click(function(){
+		$("#dialog-field-search").dialog('open');
+	})
+});
+</script>
+<script type="text/javascript">
+$("#dialog-field-search").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 700,
+	height: 500,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+			doh();
+			if(dosearch == 1){
+				$(this).dialog("close");
+			}
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+/*添加筛选条件*/
+var m = {$max_key};
+$('#add_btn').click(function(){
+	m += 1;
+	$('#search_add').append('<div id="con_search_'+m+'" style="float:left;width:650px;margin:10px 10px 0 10px;"><div  id="rem_'+m+'" style="float:left;line-height:30px;"><a href="javascript:void(0);" class="rem_search" rel="'+m+'" title="移除"><span class="fa fa-times-circle"></span></a></div><ul class="nav pull-left" style="margin:0px 0 0 5px;width:620px"><li class="pull-left"><select id="field_'+m+'"  style="width:auto" class="form-control input-sm field_name new-select" onchange="changeCondition('+m+')" name=""><option class="" value="name">--{:L('PLEASE_SELECT_A_FILTER_CONDITION')}--</option><option class="word" value="title">{:L('TITLE')}</option> <option class="word" value="content">{:L('CONTENT')}</option> <option class="role" value="role_id">{:L('AUTHORS')}</option> <option class="date" value="create_time">{:L('CREATOR_TIME')}</option> <option class="date" value="update_time">{:L('UPDATE_TIME')}</option> <option class="number" value="hits">{:L('CLICK_NUM')}</option></select>&nbsp;&nbsp;</li><li class="pull-left" id="conditionContent_'+m+'"><select id="condition_'+m+'" style="width:99px" class="form-control input-sm new-select" name="condition" onchange="changeSearch()"><option value="contains">{:L('INCLUDE')}</option><option value="not_contain">{:L('EXCLUSIVE')}</option><option value="is">{:L('YES')}</option><option value="isnot">{:L('ISNOT')}</option><option value="start_with">{:L('BEGINNING_CHARACTER')}</option><option value="end_with">{:L('TERMINATION_CHARACTER')}</option><option value="is_empty">{:L('Mandatory')}</option><option value="is_not_empty">{:L('ISNOTEMPTY')}</option></select>&nbsp;&nbsp;</li><li class="pull-left" id="searchContent_'+m+'"><input id="search_'+m+'" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name="search"/>&nbsp;&nbsp;</li></ul></div>'); 
+});
+$(document).on('click','.rem_search',function(){
+	var num = $(this).attr('rel');
+	$('#con_search_'+num).remove();
+});
+
+// 筛选重复判断
+var dosearch = 1;
+function doh(){
+	var ary = new Array();
+	var field_name = '';
+	var is_submit = 1;
+	$('.field_name').each(function(k, v){
+		field_name = $(this).find("option:selected").val();
+		if(jQuery.inArray(field_name,ary) >= 0){
+			is_submit = 0;
+			alert('筛选条件中有重复项！');
+			dosearch = 0;
+			return false;
+		}
+		ary[k] = field_name;
+	})
+	if(is_submit == 1){
+		$("#searchForm").submit();
+	}
+}
+var url = "{:U('knowledge/getcurrentstatus')}";
+var limit_size = 1000;
+var count = {$count|default=0};
+var ii = 1;  
+function remainTime(){
+	var id_array = new Array(); 
+	// 判断是普通查询还是高级搜索
+	var field = "{$_GET['field']}";
+	$("input[class='check_list']:checked").each(function() {   
+		id_array.push($(this).val());
+	}); 
+	$.get(url,function(data){
+		if(data.data == 0){
+			if (id_array != '') {
+				count = id_array.length;
+			}
+			if((ii-1)*limit_size < count){
+				$("#act").val('excel');	
+				$("#daochu").val(id_array);
+				$("#current_page").val(ii);
+				$("#export_limit").val(limit_size);
+				if (field) {
+					$("#knowledge_search").submit();
+				} else {
+					$("#searchForm").submit();
+				}
+				setTimeout("remainTime()",1000); 
+				ii++; 
+			}else{
+				swal("数据导出成功！","","success");
+				ii = 1;
+			}
+		}else{
+			setTimeout("remainTime()",1000); 
+		}
+	}, 'json');
+}
+
+$("#dialog-import").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 400,
+	position: ["center",100],
+	buttons: {
+		"导入": function () {
+			$('#excelimport_dialog').submit(); 
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+
+$("#dialog-role-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 600,
+	maxHeight: 550,
+	position: ["center",100]
+});
+
+function changeContent(){
+	a = $("#select1 option:selected").val();
+	if(a=='1'){
+		window.location.href="{:U('knowledge/index')}";
+	}else if(a=='2'){
+		window.location.href="{:U('knowledge/category')}";
+	}else if(a=='3'){
+		window.location.href="{:U('knowledge/count')}";
+	}
+}
+
+$('#delete').click(function(){
+	var id_array = new Array();
+	$("input.check_list:checked").each(function(){  
+		id_array.push($(this).val());
+	});
+	if(id_array.length == 0){
+		alert_crm('您没有选中任何知识！');
+		return false;
+	}
+	swal({
+		title: "您确定要删除知识信息吗？",
+		text: "删除后将无法恢复，请谨慎操作！",
+		type: "warning",   
+		showCancelButton: true,   
+		confirmButtonColor: "#DD6B55",   
+		confirmButtonText: "是的，我要删除！",
+        cancelButtonText:'让我再考虑一下…',
+        closeOnConfirm:false,
+        closeOnCancel:false
+	},
+	function(isConfirm){
+        if (isConfirm) {
+        	$.ajax({
+	            type:'post',
+	            url: "{:U('knowledge/delete')}",
+	            data: {knowledge_id: id_array},
+	            async: false,
+	            success: function (data) {
+					if (data.status == 1) {
+						swal("删除成功！", "您已经永久删除了信息！", "success");
+						location.reload();
+					}else{
+						swal({
+							title: "操作失败！",
+							text:data.info,
+							type: "error"
+						})
+						return false;
+					}
+	            },
+	            dataType: 'json'
+	        });
+        } else {
+            swal("已取消","您取消了删除操作！","error");
+        }
+    });
+});
+
+$(function(){
+	$(".excelExport").click(function(){
+		if(count > limit_size){
+			swal({   
+				title: "当前导出量过大，将分几次导出，可能需要您等待一段时间，是否继续?",
+				type: "warning",   
+				showCancelButton: true,   
+				confirmButtonColor: "#DD6B55",   
+				confirmButtonText: "确定",   
+				closeOnConfirm: false, 
+				animation: "slide-from-top", 
+				showLoaderOnConfirm: true
+			}, 
+			function(){
+				remainTime();
+			});
+		}else{
+			swal({   
+				title: "{:L('EXPORT_THE_KNOWLEDGE')}",
+				type: "warning",   
+				showCancelButton: true,   
+				confirmButtonColor: "#DD6B55",   
+				confirmButtonText: "确定",   
+				closeOnConfirm: false, 
+				animation: "slide-from-top", 
+				showLoaderOnConfirm: true
+			}, 
+			function(){
+				remainTime();
+			});
+		}
+	})
+	
+	$("#dosearch").click(function(){
+		result = checkSearchForm();
+		if(result) $("#act").val('search');$("#searchForm").submit();
+	});
+	
+	$("#add_category").click(function(){
+		$('#dialog-message1').dialog('open');
+		$('#dialog-message1').load("{:U('knowledge/categoryAdd')}");
+	});
+	$("#import_excel").click(function(){
+		$('#dialog-import').dialog('open');
+		$('#dialog-import').load('{:U("knowledge/excelimport")}');
+	});
+	$(".role_info").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+});
+</script>
+<include file="Public:footer" />

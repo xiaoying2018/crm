@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>京东购物商城</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="keywords" content="{:C('KEYWORDS')}" />
+        <meta name="description" content="{:C('DESCRIPTION')}" />
+        <link rel="shortcut icon" href="__PUBLIC__/ico/favicon.ico" />
+        <link rel='stylesheet' href="__PUBLIC__/style/shop/jquery.countdown.css"/>
+        <link href="__PUBLIC__/style/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="__PUBLIC__/style/font-awesome/css/font-awesome.css" rel="stylesheet">
+        <link href="__PUBLIC__/css/font-awesome.min.css" rel="stylesheet">
+        <link rel='stylesheet' href="__PUBLIC__/style/shop/shop.css" />
+      
+        <script src="__PUBLIC__/style/js/jquery-2.1.1.js"></script>
+        <script src="__PUBLIC__/style/js/jquery.cookie.js"></script>
+        <script src="__PUBLIC__/style/js/bootstrap.min.js"></script>
+        <script>
+            //login状态
+        </script>
+    </head>
+    <body>
+        <div class="global-navbar navbar navbar-default" role="navigation">
+            <div class="navbar-header">
+                <a href="__ROOT__/index.html">
+                    <img src="__PUBLIC__/img/logo.png" alt="京东">
+                </a>
+            </div>
+            <div class="nav navbar-nav">
+                <a class="menu-item-target" href="{:U('shop/index')}">
+                    <img src="__PUBLIC__/img/shoping/dh_icon.png" alt="">
+                    <i class="fa mcd mcd-burger icon">
+                    </i>
+                    所有商品
+                </a>
+            </div>
+            <div class="my-account-quicklinks">
+                <if condition = "$_SESSION['member_id']">
+                    <ul class="list-inline list-inline-divide">
+                        <li class="list-item">
+                            <a href="{:U('shop/login')}">
+                                欢迎回来&nbsp;{$_SESSION['member_name']}
+                            </a>
+                        </li>
+                        <li>
+                            |
+                        </li>
+                        <li class="list-item">
+                            <a href="{:U('shop/logout')}">
+                                退出
+                            </a>
+                        </li>
+                    </ul>
+                <else />
+                    <ul class="list-inline list-inline-divide">
+                        <li class="list-item">
+                            <a href="{:U('shop/login')}">
+                                登录
+                            </a>
+                        </li>
+                        <li>
+                            |
+                        </li>
+                        <li class="list-item">
+                            <a href="{:U('shop/register')}">
+                                注册
+                            </a>
+                        </li>
+                    </ul>
+                </if>
+            </div>
+        </div>
+        <div class="wrapper">
+            <div class="container">

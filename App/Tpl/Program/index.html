@@ -1,0 +1,663 @@
+<include file="Public:header" />
+<include file="Program:showitem" />
+<link rel="stylesheet" href="/Public/js/jqGrid/ui.jqgridffe4.css">
+<link rel="stylesheet" href="/Public/css/page/publicTable.css?v=12">
+<script src="/Public/js/jqGrid/i18n/grid.locale-cnffe4.js" type="text/javascript"></script>
+<script src="/Public/js/jqGrid/jquery.jqGrid.minffe4.js" type="text/javascript"></script>
+
+<style>
+.nicescroll-rails,.nicescroll-rails-hr {
+    display: block !important;
+}
+.option {
+    padding-left: -30px;
+}
+
+.scene_active {
+    background-color: #e6e9f0;
+}
+
+#tab_Test3>tr {
+    height: 45px;
+    line-height: 45px;
+}
+
+
+.radio label::before {
+    border: none;
+}
+
+.list_detail {
+    list-style: none;
+}
+
+.list_detail table {
+    width: 100%;
+    margin:  0;
+    font-size: 12px;
+    display: block;
+}
+
+.list_detail td{
+    width: 33.3333%;
+    line-height: 24px;
+    border: 1px solid #F5F5F5;
+    padding: 10px;
+}
+
+.list_detail td .s_title {
+    color: #777676;
+    margin-right: 10px;
+}
+
+.list_detail td .s_content {
+    color: #000;
+}
+
+.ibox-content{
+    border:none;
+    background: none;
+}
+.taoci{
+    padding: 2px 3px;
+    border-radius: 3px;
+    border: 1px solid #f95f51;
+    background-color: none;
+    color: #f95f51;
+}
+.no_taoci{
+    border: 1px solid #F9D10B;
+    background-color: none;
+    color: #F9D10B;
+}
+#gridpager{
+    position: fixed;
+    bottom: 0;
+    z-index: 111;
+}
+#ascrail2004-hr{
+    bottom: 0 !important; 
+    top: auto !important;
+    position: fixed !important;
+    z-index: 112 !important;;
+}
+</style>
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<!-- nice-scroll -->
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/mxcrm_more.js" type="text/javascript"></script>
+<script>
+    $(function(){
+        if ("{$Think.get.by}") {
+            $("#filter_ul").prev().html($("#filter_ul>li>a.active").text()+'<span class="fa fa-angle-down small_fa"></span>');
+        }
+    });
+</script>
+<link rel="stylesheet" href="/Public/css/page/programIndex.css">
+<div class="wrapper wrapper-content" id="dataStore"style="padding-right: 10px;">
+    <div class="row" >
+        <div class="col-md-12">
+            <div class="ibox float-e-margins ">
+                <div class="title-bar">
+                    <div class="row " id="title-show">
+                        <form class="form-inline pull-left" id="program_search" action="" method="get">
+                            <ul class="breadcrum pull-left" style="margin-bottom: 0px;padding-right:0px;">
+                                <li class="blockLi clearfix">
+                                    <span class="colTitle">地域：</span>
+                                    <select name="area_id" class="form-control">
+                                        <option value="">--选择地域--</option>
+                                        <volist name="area" id="vo" key="k">
+                                            <option value="{$vo.id}">--{$vo.name}--</option>
+                                        </volist>
+                                    </select>
+                                    <select id="city_id" name="city_id" class="form-control">
+                                        <option value="">--选择城市--</option>
+                                    </select>
+                                </li>
+                                <li class="blockLi clearfix">
+                                    <span class="colTitle">性质：</span>
+                                    <ul data-name="nature_id" class="ul-c ul-control">
+                                        <li class="active" data-value="">不限</li>
+                                        <volist name="nature" id="vo" key="k">
+                                            <li <if condition="$info['nature_id'] eq $vo['id']">selected</if>
+                                                data-value="{$vo.id}">{$vo.name}</li>
+                                        </volist>
+                                    </ul>
+                                    <input type="hidden" name="nature_id" value="">
+                                </li>
+                                <li class="blockLi clearfix">
+                                    <span class="colTitle">项目分类：</span>
+                                    <ul data-name="program_category" class="ul-c ul-control">
+                                        <li value="" class="active">不限</option>
+                                        <volist name="program_category" id="vo" key="k">
+                                            <li data-value="{$vo.id}">{$vo.name}</li>
+                                        </volist>
+                                    </ul>
+                                    <input type="hidden" name="program_category" value="">
+                                </li>
+                                <li class="blockLi clearfix">
+                                    <span class="colTitle">专业分类：</span>
+                                    <ul data-name="major_category" class="ul-c ul-control">
+                                        <li value="" class="active">不限</li>
+                                        <volist name="major_category" id="vo" key="k">
+                                            <li data-value="{$vo.id}">{$vo.name}</li>
+                                        </volist>
+                                    </ul>
+                                    <input type="hidden" name="major_category" value="">
+                                </li>
+                                <li class="blockLi clearfix">
+                                    <span class="colTitle">排名：</span>
+                                    <ul data-name="rank" class="ul-c ul-control-r">
+                                        <li data-value="" class="active">不限</li>
+                                        <volist name="rank" id="vo" key="k">
+                                            <li data-value="{$k}">{$vo}</li>
+                                        </volist>
+                                    </ul>
+                                    <input type="hidden" name="rank" value="">
+                                </li>
+                                <li class="blockLi clearfix">
+                                    <span class="colTitle">学期：</span>
+                                    <ul data-name="term" class="ul-c ul-control-r">
+                                        <li data-value="" class="active">不限</li>
+                                        <volist name="term" id="vo" key="k">
+                                            <li data-value="{$vo.id}">{$vo.name}月</li>
+                                        </volist>
+                                    </ul>
+                                    <input type="hidden" name="term" value="">
+                                </li>
+                                <li class="blockLi clearfix">
+                                    <span class="colTitle">所属等级：</span>
+                                    <ul data-name="level" class="ul-c ul-control">
+                                        <li data-value="" class="active">不限</li>
+                                        <volist name="level" id="vo" key="k">
+                                            <li data-value="{$vo.id}">{$vo.name}</li>
+                                        </volist>
+                                    </ul>
+                                    <input type="hidden" name="level" value="">
+                                </li>
+                                <li class="blockLi clearfix">
+                                    <span class="colTitle">是否需要<br/>教授套磁：</span>
+                                    <ul data-name="taoci" class="ul-c ul-control">
+                                        <li data-value="all" class="active">不限</li>
+                                        <li data-value="1">需要</li>
+                                        <li data-value="0">不需要</li>
+                                    </ul>
+                                    <input type="hidden" name="taoci" value="all">
+                                </li>
+                                
+                                <li class="blockLi clearfix">
+                                    <span class="colTitle">搜索：</span>
+                                    <div class="input-group">
+                                        <input type="text" style="width:180px;" placeholder="项目/专业名称" class="form-control input-sm" name="name" />
+                                        <span class="input-group-btn" @click="triggerSearch()" >
+                                            <button class="btn btn-default btn-search" type="button"><i class="fa fa-search"></i></button>
+                                        </span>
+                                    </div>
+                                </li>
+
+
+                                <input id="page" type="hidden" name="page" value="1">
+                            </ul>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin: 0; z-index: 99999;">
+        <div class="ibox-box" style="padding:0px;border:none;">
+            <div class="table_vue">
+                <table style="position:relative;margin-bottom: 35px;" class="table" id="table_list_2"></table>
+                <!-- 分页 -->
+                <div id="gridpager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display:none" id="" title="">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+<div style="display:none" id="dialog-import" title="导入项目资料">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+<script src="/Public/js/JapanArea.js"></script>
+<script src="/Public/js/jqPaginator/jqPaginator.min.js"></script>
+<script>
+$(function(){
+    $.fn.serializeJson=function(){ 
+            var serializeObj={}; 
+            var array=this.serializeArray(); 
+            // var str=this.serialize(); 
+            $(array).each(function(){ // 遍历数组的每个元素 
+                    if(serializeObj[this.name]){ // 判断对象中是否已经存在 name，如果存在name 
+                          if($.isArray(serializeObj[this.name])){ 
+                                 serializeObj[this.name].push(this.value); // 追加一个值 hobby : ['音乐','体育'] 
+                          }else{ 
+                                  // 将元素变为 数组 ，hobby : ['音乐','体育'] 
+                                  serializeObj[this.name]=[serializeObj[this.name],this.value]; 
+                          } 
+                    }else{ 
+                            serializeObj[this.name]=this.value; // 如果元素name不存在，添加一个属性 name:value 
+                    } 
+            }); 
+            return serializeObj; 
+    }; 
+
+    // $('.eModal').on('hide.bs.modal', function (ele) {
+    //     model.triggerSearch();
+    // });
+
+
+    var model = new Vue({
+        el: "#dataStore",
+        data: {
+            list: {},
+            count: '0',
+            page:''
+        },
+        methods: {
+            triggerSearch (){
+                $("#table_list_2").clearGridData();
+                var data    =   $('#program_search').serializeJson();
+                data.page = 1;
+                $("#table_list_2").jqGrid("setGridParam", { postData: data }).trigger("reloadGrid");
+
+            },
+            initEvent(){
+                var _this = this;
+                $(document).on('click', '.a_name', function() {
+                    $(".eModal").modal('show',$(this).attr("data-id"));
+                });
+                // excel 导入事件
+                $("#import_excel").click(function(){
+                    $('#dialog-import').dialog('open');
+                    $('#dialog-import').load('{:U("program/excelimport")}');
+                });
+                // 导入事件定义
+                $("#dialog-import").dialog({
+                    autoOpen: false,
+                    modal: true,
+                    width: "40%",
+                    maxHeight: 400,
+                    position: ["center",100]
+                });
+                // 阻止表单提交
+                $('form').submit(function (event) {
+                  event.preventDefault();
+                });
+                // 单选列表刷新触发事件
+                $(".ul-control li").click(function(){
+                    $(this).addClass("active").siblings().removeClass("active");
+                    var _class = $(this).parent().data("name");
+                    $("input[name='"+_class+"']").val($(this).data("value"));
+                    _this.triggerSearch();
+                });
+                // 多选列表刷新触发事件
+                $(".ul-control-r li").click(function(){
+                    $(this).siblings().eq(0).removeClass("active");
+                    var _class = $(this).parent().data("name");
+
+
+                    var _val = "";
+
+
+                    if ($(this).attr("data-value") == "") {
+                        $(this).parent().children().removeClass("active");
+                        $(this).addClass("active");
+                        $("input[name='"+_class+"']").val("");
+                    }else{
+                        if ($(this).hasClass("active")) {
+                            $(this).removeClass("active");
+                        }else{
+                            $(this).addClass("active");
+                        }
+                        var _child = $(this).parent().children().length;
+                        for(var i = 0; i < _child; i++){
+                            var _c = $(this).parent().children().eq(i);
+                            if (_c.hasClass("active") && $(_c).data("value")!="") {
+                                _val += $(_c).data("value")+",";
+                            }
+                        }
+                        _val = _val.substring(0,_val.length - 1);
+
+                        if (_val == "") {
+                            $(this).siblings().eq(0).addClass("active");
+                        }
+
+                        $("input[name='"+_class+"']").val(_val);
+                    }    
+
+                    _this.triggerSearch();
+                });
+
+                // 名称搜索触发事件
+                $("input[name='name']").keyup(function(e){
+                    var code = e.charCode || e.keyCode;
+                    if (code == 13) {
+                        _this.triggerSearch();
+                    }
+                });
+
+                $('select[name="area_id"]').change(function(){
+                    $('#page').val(1);
+                    // 当前地区id
+                    var area_id = $(this).val(),
+                        citys = fetchJapanCityData(area_id),
+                        newHtml = "<option value=''>选择城市</option>",
+                        city_id = $('#city_id');
+
+                    if (citys != undefined) {
+                        $.each(citys, function(k, item) {
+                            newHtml += "<option value='" + item.id + "'>--" + item.name + "--</option>";
+                        });
+                    }
+                    city_id.html(newHtml);
+                    _this.triggerSearch();
+                });
+
+                $("#city_id").change(function(){
+                    _this.triggerSearch();
+                })
+
+            }
+        },
+        mounted:function(){
+            this.initEvent();
+            // this.triggerSearch();
+        }
+    });
+    
+    table();
+
+    //table
+    function table(){
+        $("#table_list_2").clearGridData();
+        
+        $.jgrid.defaults.styleUI = "Bootstrap";
+
+        // var _height = $(window).height() - ($(".title-bar").outerHeight() + $("#gridpager").outerHeight() + $("#secondPart").height() + 260);
+
+        var icheck_num = 0;
+        // 定义
+        var nature = {: json_encode($nature) },
+        program_category = {: json_encode($program_category) },
+        major_category = {: json_encode($major_category) };
+        $("#table_list_2").jqGrid({
+            url:"/index.php?m=program&a=search",
+            datatype: "JSON",
+            mtype: "post",
+            // postData: data,
+            autowidth: true,
+            forceFit: true,
+            autoScroll: true,
+            multiselect: false,
+            useColSpanStyle: true,
+            shrinkToFit:false,
+            colNames: ["编号","学校","排名","地区","性质","是否需要教授套磁","研究方向","学部/研究科","项目/专业名","招生主页","专业分类","日语要求","英语要求","特殊要求","选拔方式","招生人数","中国预招人数","截止时间","考试时间","入学时间"],
+            colModel: [{
+                    name: "id",
+                    index: "id",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"50px",
+                },{
+                    name: "school_name",
+                    index: "school_name",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"150px",
+                    formatter:school_nameFormat
+                }, {
+                    name: "school_rank",
+                    index: "school_rank",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"80px"
+                }, {
+                    name: "areaName",
+                    index: "areaName",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"80px",
+                    formatter:function(cellvalue, options, cell){
+                        return CitysCollect[cell.area_id] ? CitysCollect[cell.area_id].name : '';
+                    }
+                }, {
+                    name: "natureName",
+                    index: "natureName",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"80px",
+                    formatter:function(cellvalue, options, cell){
+                        return nature[cell.nature_id] ? nature[cell.nature_id].name : '';
+                    }
+                },{
+                    name:"taoci",
+                    index: "taoci",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"150px",
+                    formatter:function(cellvalue, options, cell){
+                        if (cellvalue == 1) {
+                            return "<span class='taoci'>需要</span>"
+                        }else{
+                            return "<span class='taoci no_taoci'>不需要</span>"
+                        }
+                    }
+                },{
+                    name:"yanjiufangxiang",
+                    index: "yanjiufangxiang",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"250px"
+                },{
+                    name:"department",
+                    index: "department",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"200px"
+                },{
+                    name:"include_major",
+                    index: "include_major",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"200px"
+                },{
+                    name:"homepage",
+                    index: "homepage",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"200px",
+                    formatter:function(cellvalue, options, cell){
+                        if (cellvalue != '') {
+                            return '<a target="_blank" href="'+cellvalue+'" style="color:#5C8FFC;">点击进入</a>'
+                        }else{
+                            return '---'
+                        }
+                    }
+                },{
+                    name:"mcateName",
+                    index: "mcateName",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"200px",
+                    formatter:function(cellvalue, options, cell){
+                        if (cell.major_category) {
+                            var mcateName = ""
+                            var _a = cell.major_category.split(',');
+                            for(var i = 0 ; i <_a.length; i++){
+                                if (major_category[_a[i]]) {
+                                mcateName += major_category[_a[i]].name + ",";
+                                }
+                            }
+                            return mcateName.substr(0,mcateName.length-1);
+                        }else{
+                            return ''
+                        }
+                    }
+                },{
+                    name:"required_jp",
+                    index: "required_jp",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"200px"
+                },{
+                    name:"required_en",
+                    index: "required_en",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"200px"
+                },{
+                    name:"required_special",
+                    index: "required_special",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"200px"
+                },{
+                    name:"filter_plan",
+                    index: "filter_plan",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                    width:"200px"
+                },{
+                    name:"volume",
+                    index: "volume",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                },{
+                    name:"volume_cn",
+                    index: "volume_cn",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                },{
+                    name:"deadline",
+                    index: "deadline",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                },{
+                    name:"exam_time",
+                    index: "exam_time",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                },{
+                    name:"start_time",
+                    index: "start_time",
+                    editable: false,
+                    sorttype: "text",
+                    search: true,
+                }],
+            //分页
+            rowNum: 30,
+            rowList: [5, 10, 30],
+            pager: '#gridpager',
+            viewrecords: true,
+            jsonReader: {
+                repeatitems: false,
+                root: "data",
+                records: "count",
+                total: "total"
+            },
+            hidegrid: false,
+            loadComplete: function (res) {
+                // console.log("res", res);
+            },
+            gridComplete: function () {
+                setWidthHeight();
+                window.setTimeout(function(){
+                    setWidthHeight();
+                },600)
+            },beforeSelectRow: function (rowid, e) {
+               var $myGrid = $(this),  
+                   i = $.jgrid.getCellIndex($(e.target).closest('td')[0]),  
+                   cm = $myGrid.jqGrid('getGridParam', 'colModel');  
+               return (cm[i].name === 'cb');  
+            } 
+        }).trigger("reloadGrid"); //重新载入
+
+
+        jQuery("#table_list_2").jqGrid('navGrid', '#gridpager', {edit: false, add: false, del: false, search: false}, {}, {}, {multipleSearch: true, multipleGroup: true});
+
+        jQuery("#table_list_2").jqGrid('setFrozenColumns');
+        $("body").niceScroll({
+            cursorcolor: "#000",
+            cursorwidth: "8px",
+            autohidemode: false,
+            cursoropacitymax:0.4,
+            cursorborderradius: "0px",
+            horizrailenabled:false
+        })
+        $('.ui-jqgrid-bdiv').niceScroll({
+            cursorcolor: "#77B8FF",
+            cursoropacitymax:1,
+            cursorwidth: "6px",
+            cursorborder: "0",
+            cursorborderradius: "0px",
+            autohidemode: false,
+        });
+
+
+        $('.nicescroll-rails').eq(2).remove()
+
+        $(window).bind("resize", function () {
+            setWidthHeight();
+        })
+    }
+    //设置table高度
+    function setWidthHeight(){
+        var _height,width;
+        // _height = $(window).height() - ($(".title-bar").outerHeight() + $("#gridpager").outerHeight()) + 190;
+        _height = 650;
+        
+        width = $("#dataStore").width();
+        $("#table_list_2").setGridWidth(width)
+        $("#table_list_2").setGridHeight(_height)
+
+    }
+
+    function school_nameFormat(cellvalue, options, cell){
+        return '<a data-target=".eModal" class="a_name" data-id="'+cell.id+'">'+cellvalue+'</a>'
+    }
+});
+
+
+
+
+
+</script>
+<include file="Public:footer" />

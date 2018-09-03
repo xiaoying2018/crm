@@ -1,0 +1,51 @@
+<style>
+	.form-horizontal .form-group{margin-left:0px;margin-right:0px;}
+	.control-label{color:#999;font-weight:normal;}
+	input[placeholder]{color:#d8d8d8;}
+</style>
+<form id="remind_form" class="form-horizontal" action="{:U('remind/add')}" method="post">
+	<input type='hidden' name="module" <present name="module">value="{$module}"</present>/>
+	<input type='hidden' name="module_id" <present name="module_id">value="{$module_id}"</present>/>
+	<div class="form-group">
+		<label class="col-md-2 control-label">提醒内容：</label>
+		<div class="col-md-8">
+			<textarea rows="3" class="form-control" name="content" id="dialog_content" placeholder="请输入提醒内容"></textarea>
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">提醒时间：</label>
+		<div class="col-md-8">
+			<select name="remind_type" class="form-control" id="remind_type" style="width:120px;float:left;">
+				<option value="1">一小时后</option>
+				<option value="2">两小时后</option>
+				<option value="3">三小时后</option>
+				<option value="4">六小时后</option>
+				<option value="5">八小时后</option>
+				<option value="6">一天后</option>
+			</select>
+			<a href="javascript:void(0);" style="font-size:12px;float:left;line-height:34px;margin-left:10px;" class="geng-d" >高级选项</a>
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+	<div class="form-group" id="advance_time" style="display:none;">
+		<label class="col-md-2 control-label"></label>
+		<div class="col-md-8">
+			<input type="text" id="remind_time_a" class="form-control" name="remind_time_a" style="width:210px;float:left;" onfocus="WdatePicker({dateFmt:'yyyy年MM月dd日',minDate:'<?php echo date('Y年m月d日',time()) ?>'})" value="<?php echo date('Y年m月d日',time()) ?>" />
+			<input type="text" id="remind_time_b" class="form-control" name="remind_time_b" style="width:110px;float:left;margin-left:10px" onfocus="WdatePicker({dateFmt:'HH:mm'})" value="<?php echo date('H:i',time()+600) ?>" />
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+</form>
+<script type="text/javascript">
+	$('.geng-d').click(function(){
+		//$('#advance_time').slideToggle('1500');
+		if($('#advance_time').css('display') == 'none'){
+			$('#advance_time').show('1500');
+			$('#remind_type').attr('disabled','true');
+		}else{
+			$('#advance_time').hide('1500');
+			$('#remind_type').removeAttr('disabled');
+		}
+	});
+</script>

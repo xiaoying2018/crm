@@ -1,0 +1,212 @@
+<style>
+	table tbody tr{cursor:move;}
+	.active {color: #000;}
+	.nav.nav-tabs-left li{width:100%;}
+	.nav-tabs-left>li.active>a{border-top:white;color: #19aa8d !important;background-color:#fff;}
+	
+	/*主要样式*/
+	.subNavBox{width:100%;margin-top:0px;margin-bottom:50px;}
+	.subNav{
+		cursor:pointer;
+		font-size:14px;
+		color:#375264;
+		line-height:40px;
+		padding-left:10px;
+		/*background:url(__PUBLIC__/img/jiantou1.jpg) no-repeat;background-position:95% 50%*/
+	}
+	.subNav_text{
+		cursor:pointer;
+		font-size:14px;
+		color:#375264;
+		line-height:40px;
+		padding-left:10px;
+		/*background:url(__PUBLIC__/img/jiantou1.jpg) no-repeat;background-position:95% 50%*/
+	}
+	.subNavBox ul{margin-bottom:18px;}
+	.subNav:hover{color:#375264;}
+	.currentDd{color:#375264}
+	/*.currentDt{background-image:url(__PUBLIC__/img/jiantou.jpg);}*/
+	.navContent{list-style: none;display: none;padding-left: 13px;}
+	.navContent li a{display:block;width:100%;height:32px;text-align:left;font-size:14px;line-height:32px;color:#75899D}
+	.li_text{padding-left:10px;width: 100%;float:left;line-height:32px;margin-bottom:3px;}
+	.li_text:hover{background-color:#f5f5f5;}
+	.li_text_active{float:left;padding-left:10px;background-color:#f5f5f5;width: 100%;border-left:2px solid #03a9f4;line-height:32px;margin-bottom:3px;color:#03a9f4;font-weight:500}
+</style>
+<script type="text/javascript">
+$(function(){
+	$("#left_height").height(window.innerHeight-$("#left_height").offset().top-32);
+	$("#right_height").height(window.innerHeight-$("#right_height").offset().top-50);
+	$(window).resize(function(){
+		$("#left_height").height(window.innerHeight-$("#left_height").offset().top-32);
+		$("#right_height").height(window.innerHeight-$("#right_height").offset().top-50);
+	});
+})
+</script>
+<div class="col-sm-2 ibox-title" id="left_height" style="background-color:#fff;" >
+	<div class="full-height-scroll">
+		<?php
+			$module_name = strtolower(MODULE_NAME);
+			$action_name = strtolower(ACTION_NAME);
+			$content_id = intval($_GET['content_id']);
+		?>
+		<div class="subNavBox">
+			<div rel="leads" class="subNav currentDd currentDt">线索数据分析</div>
+			<ul class="navContent" rel="leads" style="display:block;margin-bottom:0px;">
+				<li >
+					<a class="color1 <if condition = '$module_name eq "leads"'>li_text_active</if>" href="{:U('leads/analytics')}"><span class="li_text">员工线索分析</span></a>
+				</li>
+			</ul>
+			<div rel="customer" class="subNav currentDd currentDt">客户数据分析</div>
+			<ul class="navContent" style="display:block">
+				<li >
+					<a class="color1 <if condition = '$module_name eq "customer" && ($content_id eq 1 || $content_id eq "")'>li_text_active</if>" href="{:U('customer/analytics','content_id=1')}"><span class="li_text">员工客户分析</span></a>
+				</li>
+				<li >
+					<a class="<if condition = '$module_name eq "customer" && $content_id eq 2'>li_text_active</if>" href="{:U('customer/analytics','content_id=2')}"><span class="li_text">客户自定义分析</span></a>
+				</li>
+				<!-- <li >
+					<a class="<if condition = '$module_name eq "customer" && $content_id eq 3'>li_text_active</if>" href="{:U('customer/city_analytics','content_id=3')}"><span class="li_text">客户地区统计分析</span></a>
+				</li> -->
+			</ul>
+			<div rel="business" class="subNav currentDd currentDt">客户过程分析</div>
+			<ul class="navContent" style="display:block">
+				<li >
+					<a class="<if condition = '$module_name eq "business" && ($content_id eq 1 || $content_id eq "")'>li_text_active</if>" href="{:U('business/analytics','content_id=1')}"><span class="li_text">员工商机分析</span></a>
+				</li>
+				<li >
+					<a class="<if condition = '$module_name eq "business" && $content_id eq 2'>li_text_active</if>" href="{:U('business/analytics','content_id=2')}"><span class="li_text">销售漏斗分析</span></a>
+				</li>
+				<!-- <li >
+					<a class="<if condition = '$module_name eq "business" && $content_id eq 3'>li_text_active</if>" href="{:U('business/analytics','content_id=3')}"><span class="li_text">商机金额分布统计</span></a>
+				</li> -->
+				<li >
+					<a class="<if condition = '$module_name eq "business" && $content_id eq 4'>li_text_active</if>" href="{:U('business/analytics','content_id=4')}"><span class="li_text">商机趋势分析（日）</span></a>
+				</li>
+				<li >
+					<a class="<if condition = '$module_name eq "business" && $content_id eq 5'>li_text_active</if>" href="{:U('business/analytics','content_id=5')}"><span class="li_text">商机趋势分析（周）</span></a>
+				</li>
+				<li >
+					<a class="<if condition = '$module_name eq "business" && $content_id eq 6'>li_text_active</if>" href="{:U('business/analytics','content_id=6')}"><span class="li_text">商机趋势分析（月）</span></a>
+				</li>
+			</ul>
+			<div rel="finance" class="subNav currentDd currentDt">客户结果分析</div>
+			<ul class="navContent" style="display:block">
+				<li >
+					<a class="<if condition = '$module_name eq "contract" && $content_id eq 1'>li_text_active</if>" href="{:U('contract/analytics','content_id=1')}"><span class="li_text">合同金额统计</span></a>
+				</li>
+				<li >
+					<a class="<if condition = '$module_name eq "contract" && $content_id eq 2'>li_text_active</if>" href="{:U('contract/analytics','content_id=2')}"><span class="li_text">回款金额统计</span></a>
+				</li>
+				<li >
+					<a class="<if condition = '$module_name eq "contract" && $content_id eq 3'>li_text_active</if>" href="{:U('contract/analytics','content_id=3')}"><span class="li_text">合同金额TOP10</span></a>
+				</li>
+			</ul>
+			<div rel="contract" class="subNav currentDd currentDt">业绩管理分析</div>
+			<ul class="navContent" rel="contract" style="display:block;margin-bottom:0px;">
+				<li >
+					<a class="color1 <if condition = '$module_name eq "contract" && $action_name eq "collection"'>li_text_active</if>" href="{:U('contract/collection')}"><span class="li_text">业绩目标</span></a>
+				</li>
+			</ul>
+			<!-- <div rel="product" class="subNav currentDd currentDt">产品销量分析</div>
+			<ul class="navContent" style="display:block">
+				<li >
+					<a class="<if condition = '$module_name eq "product" && $content_id eq 1'>li_text_active</if>" href="{:U('product/analytics','content_id=1')}"><span class="li_text">产品统计</span></a>
+				</li>
+				<li >
+					<a class="<if condition = '$module_name eq "product" && $content_id eq 2'>li_text_active</if>" href="{:U('product/analytics','content_id=2')}"><span class="li_text">销量TOP20</span></a>
+				</li>
+				<li >
+					<a class="<if condition = '$module_name eq "product" && $content_id eq 3'>li_text_active</if>" href="{:U('product/analytics','content_id=3')}"><span class="li_text">销售额统计</span></a>
+				</li>
+			</ul> -->
+			<div rel="log" class="subNav currentDd currentDt">员工办公统计</div>
+			<ul class="navContent" style="display:block">
+				<li >
+					<a class="<if condition = '$module_name eq "examine" && ($content_id eq 1 || $content_id eq "")'>li_text_active</if>" href="{:U('examine/analytics','content_id=1')}"><span class="li_text">审批统计</span></a>
+				</li>
+<!-- 				<li >
+					<a <if condition = "$module_name eq 'kaoqin' && $action_name eq 'record' ">class="li_text_active"</if> href="{:U('kaoqin/record')}"><span class="li_text">考勤记录</span></a>
+				</li> -->
+<!-- 				<li >
+					<a <if condition = "$module_name eq 'kaoqin' && $action_name eq 'analytics' ">class="li_text_active"</if> href="{:U('kaoqin/analytics')}"><span class="li_text">考勤统计</span></a>
+				</li> -->
+			</ul>
+			<div rel="log" class="subNav currentDd currentDt">员工日志分析</div>
+			<ul class="navContent" style="display:block">
+				<li >
+					<a class="<if condition = '$module_name eq "log" && ($content_id eq 1 || $content_id eq "")'>li_text_active</if>" href="{:U('log/analytics','content_id=1')}"><span class="li_text">工作日志</span></a>
+				</li>
+				<li >
+					<a class="<if condition = '$module_name eq "log" && $content_id eq 2'>li_text_active</if>" href="{:U('log/analytics','content_id=2')}"><span class="li_text">沟通日志</span></a>
+				</li>
+				<?php if(C('CALL_CENTER') == 1): ?>
+					<li>
+						<a class="<if condition = '$module_name eq "call" && $content_id eq 3'>li_text_active</if>" href="{:U('call/record','content_id=3')}"><span class="li_text">电话记录</span></a>
+					</li>
+				<?php endif; ?>
+			</ul>
+		</div>
+	</div>
+</div>
+<div style="display: none;" id="dialog-advance_search" title="高级筛选">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	//高级筛选
+	$("#dialog-advance_search").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 600,
+		maxHeight: 450,
+		position: ["center",100],
+		buttons: {
+			"确定": function () {
+				var select_role = 0;
+				var arys = new Array();
+				var type_id = $('#type_id').val();
+				var content_id = $('#content_id').val();
+				$('#types_id').val(type_id);
+				$('#contents_id').val(content_id);
+				$('#advance_search_form').submit();
+				return true;
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+
+	function changeRole(){
+		department_id = $("#department option:selected").val();
+		$.ajax({
+			type:'get',
+			url:'index.php?m=user&a=getrolebydepartment&department_id='+department_id,
+			async:true,
+			success:function(data){
+				options = '<option value="all">{:L('ALL')}</option>';
+				if(data.data != null){
+					$.each(data.data, function(k, v){
+						options += '<option value="'+v.role_id+'">'+v.role_name+"-"+v.user_name+'</option>';
+					});
+				}
+				$("#role").html(options);
+				<if condition="$_GET['role']">
+				$("#role option[value='{$Think.get.role}']").prop("selected", true);
+				</if>
+			},
+			dataType:'json'});
+	}
+	// <if condition="$_GET['department'] and $_GET['department'] neq 'all'">
+	// 	$("#department option[value='{$Think.get.department}']").prop("selected", true); 
+	// 	changeRole();
+	// </if>
+	// <if condition="$_GET['department'] eq 'all'">
+	// 	$("#role option[value='{$Think.get.role}']").prop("selected", true);
+	// </if>
+</script>

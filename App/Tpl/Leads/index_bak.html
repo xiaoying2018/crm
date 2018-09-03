@@ -1,0 +1,1524 @@
+<include file="Public:header" />
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<link href="__PUBLIC__/css/page/leadsIndex.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<!-- nice-scroll -->
+<!-- <script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script> -->
+<script src="https://nicescroll.areaaperta.com/wp-content/plugins/jnicescroll/js/jquery.nicescroll.min.js?ver=1"></script>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/mxcrm_more.js" type="text/javascript"></script>
+<style>
+body{
+	overflow-y: hidden;
+}
+.option{padding-left:-30px;}
+#oDivL_tab_Test3{background-color: #fff;border-right: 1px solid #ececec; z-index: 8 !important;}
+.table{max-width: none;}
+#tab_Test3{opacity: 0}
+input[type=text],select{
+	    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+}
+.crm_status{
+	padding: 2px 3px;
+	border-radius: 3px;
+}
+/*跟进中*/
+.status_ing{
+	border: 1px solid #00CE67;
+	background-color: none;
+	color: #00CE67;
+}
+/*作废*/
+.status_no{
+	border: 1px solid #ccc;
+	background-color: #ccc;
+	color: #fff;
+}
+/*待跟进*/
+.status_waning{
+	border: 1px solid #F9D10B;
+	background-color: none;
+	color: #F9D10B;
+}
+/*已转换*/
+.status_tanseformed{
+	border: 1px solid #0080FF;
+	background-color: #0080FF;
+	color: #fff;
+}
+</style>
+<div class="wrapper wrapper-content">
+<include file="Public:alert" />
+	<div class="row" id="table_container">
+		<div class="col-md-12">
+			<div class="ibox float-e-margins">
+				<div class="title-bar" style="position: relative;z-index: 99;">
+					<div class="row  clearfix" id="title-hide" style="display:none;">
+						<ul class="breadcrum pull-left">
+							<li>已选中&nbsp;<span id="icheck_num"></span>&nbsp;项</li>
+							<if condition="$by neq 'public' and $by neq 'deleted' and $by neq 'transformed'">
+								<li class="single_btn"><a href="javascript:void(0)" id="log_leads"><i class="fa fa-file-text"></i>&nbsp;添加沟通日志</a></li>
+								<li class="single_btn"><a href="javascript:void(0)" id="remind"><i class="fa fa-bell-o"></i>&nbsp;提醒</a></li>
+								<li class="single_btn"><a id="change_lead" href="javascript:void(0)"><i class="icon-repeat i_icon"></i>&nbsp;转化为客户</a></li>
+							</if>
+							<if condition="$by eq 'public'">
+								<li><a id="batch_receive" href="javascript:void(0)">{:L('BATCH_RECEIVE')}</a></li>
+								<li><a id="batch_assign" href="javascript:void(0)">{:L('BATCH_ASSIGN')}</a></li>
+							<elseif condition="$by neq 'deleted' and $by neq 'transformed'" />
+								<li><a id="remove" href="javascript:void(0)"><i class="fa fa-users"></i>&nbsp;{:L('BATCH_LEADS_INTO_THE_POOL')}</a></li>
+							</if>
+							<if condition="$by neq 'public' and $by neq 'deleted' and $by neq 'transformed'">
+								<li class="single_btn"><a href="javascript:void(0)" id="edit_leads"><i class="fa fa-pencil"></i>&nbsp;编辑</a></li>
+							</if>
+							<li><a href="javascript:void(0);" class="link excelExport"><i class="fa fa-download"></i>&nbsp;导出</a></li>
+							<if condition = "($_GET['by'] neq 'public' && checkPerByAction('leads','delete')) || ($_GET['by'] eq 'public' && checkPerByAction('leads','del_public')) || session('?admin')">
+								<li><a id="delete" href="javascript:void(0)"><i class="fa fa-times"></i>&nbsp;删除</a></li>
+							</if>
+							<template v-if="by != 'transformed' && by != 'public'">
+								<li><a id="batch_transfer" href="javascript:void(0)">更换负责人</a></li>
+							</template>
+							<li class="last_li"><big><a class="fa fa-times pull-right" id="back-show"></a></big></li>
+						</ul>
+					</div>
+					
+					<div id="title-show" class="clearfix">
+							<ul class="searchpart">
+								<if condition="$by neq 'public'">
+									<a href="{:U('leads/add')}" class="btn btn-primary btn-sm pull-left" style="margin:2px 0 0 0; width: 100px;">
+										<i class="fa fa-plus-circle"></i>&nbsp; 新建线索
+									</a>
+								</if>
+								<template v-if="by != 'public'">
+									<li class="li_item">
+										<span>校区：</span>
+										<select class="form-control" @change="changeBlockCate()" id="blockCate">
+											<option v-if="isadmin == 'boss'" value="">所有校区</option>
+											<option v-if="isadmin == 'boss' || isadmin == 1" value="1">上海校</option>
+											<option v-if="isadmin == 'boss' || isadmin == 2" value="2">东京校</option>
+											<option v-if="isadmin == 'boss' || isadmin == 3" value="3">成都校</option>
+											<option v-if="isadmin == 'boss' || isadmin == 4" value="4">苏州校</option>
+										</select>
+									</li>
+									<li class="li_item">
+										<span>分类：</span>
+										<select class="form-control" @change="changecluecate()" id="cluecate">
+											<option value="">所有分类</option>
+											<option :value="n.id" v-for="n in catelist">{{n.name}}</option>
+										</select>
+									</li>
+									<li class="li_item">
+										<select class="form-control" @change="changeby()" id="by">
+											<option value="all">全部线索</option>
+											<option value="me">我的线索</option>
+											<option value="sub">下属线索</option>
+											<option value="transformed">已转换线索</option>
+										</select>
+									</li>
+								</template>
+								<!-- 角色筛选 -->
+								<template v-if="(by == 'all' || by == 'sub')">
+									<li class="li_item">
+										<select class="form-control" @change="changesub()" id="sub">
+											<option value="">全部下属</option>
+											<option :value="sub.role_id" v-for="sub in subLists">{{ sub.full_name }}</option>
+										</select>
+									</li>
+								</template>
+								<li class="li_item bt">
+									<input type="text" placeholder="名称/电话/QQ/微信/城市" class="form-control input-sm" name="search" id="searchInput" @keyup.enter="clearRequest('search')" /><i class="fa fa-search" @click="clearRequest('search')"></i>
+								</li>
+
+								<li class="breadcrum pull-right" style="margin-left: 20px; padding:0; float: right;">
+									<div class="btn-group ">
+		                                <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" aria-expanded="false">操作 <span class="caret"></span>
+		                                </button>
+		                                <ul class="dropdown-menu">
+		                                     <if condition = "checkPerByAction('customer','excelimport')">
+												<li><a id="import_excel" class="link" href="javascript:void(0);"><i class="fa fa-upload"></i>&nbsp;导入</a></li>
+											</if>
+											 <if condition = "checkPerByAction('customer','excelexport')">
+												<li><a href="javascript:void(0);" class="link excelExport"><i class="fa fa-download"></i>&nbsp;导出</a></li>
+											</if>
+		                                </ul>
+		                            </div>
+								</li>
+							</ul>
+					</div>
+				</div>
+				<div class="ibox-content clearfix" style="z-index: 1;">
+					<form id="form1" action="" method="post" style="position:relative;">
+						<input type="hidden" name="owner_id" id="hidden_owner_id" value="0"/>
+						<input type="hidden" name="message" id="hidden_message" value="0"/>
+						<input type="hidden" name="sms" id="hidden_sms" value="0"/>
+						<input type="hidden" name="email" id="hidden_email" value="0"/>
+						 <!-- class="nicescroll" -->
+						<div id="table_div" style="overflow-x: scroll;">
+							<table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
+								<tr id="childNodes_num" class="tabTh">
+									<td style="width:30px;padding-left: 20px">
+										<div class="checkbox checkbox-primary">
+											<input type="checkbox" class="check_all"/>
+											<label for=""></label>
+										</div>
+									</td>
+									<template v-for="n in field">
+										<td v-if="n.field == 'crm_level'" class="orderByField" :data-field="n.field" data-order="desc" >
+											<a href="javascript:void(0)" title="点击按时间正序排列">
+												{{n.name}}&nbsp;<span class="fa fa-caret-down"></span>
+											</a>
+										</td>
+										<td v-else :data-field="n.field" data-order="desc" >{{n.name}}</td>
+									</template>
+
+									<template v-if="by != 'public'">
+										<td>负责人</td>
+									</template>
+									<td>创建人</td>
+									<td style="width:130px" class="orderByField" data-action="desc" data-field="create_time">
+										<a href="javascript:void(0)" title="点击按时间正序排列">
+											创建时间&nbsp;<span class="fa fa-caret-down"></span>
+										</a>
+									</td>
+									<template v-if="by != 'public'">
+										<td style="width:130px" class="orderByField" data-action="desc" data-field="have_time">
+											<a href="javascript:void(0)" title="点击按时间正序排列">
+												距到期天数&nbsp;<span class="fa fa-caret-down"></span>
+											</a>
+										</td>
+									</template>
+								</tr>
+								<!-- 我的线索 -->
+								<tr class="controls_tr" v-for="(item,index) in tabledata" :data-id="item.leads_id">
+									<td style="width: 30px;padding-left: 20px" nowrap="nowrap">
+										<div class="checkbox checkbox-primary">
+											<input name="leads_id[]" class="check_list" type="checkbox" :value="item.leads_id">
+											<label for=""></label>
+										</div>
+									</td>
+									<!-- 自定义字段 -->
+									<td v-for="f in field" nowrap="nowrap">
+										<!-- 线索名称 客户姓名 -->
+										<span v-if="f.field == 'contacts_name' ||f.field == 'name' ">
+											<a href="javascript:void(0)" class="showCustomer" :data-customerid="item.leads_id">{{item[f.field]}}</a>
+										</span>
+										<!-- 客户等级 -->
+										<span v-else-if="f.field == 'crm_level'">
+											<a style="color:red;">{{item[f.field]}}</a>
+										</span>
+										<!-- 手机号 -->
+										<span v-else-if="f.field == 'mobile'">
+											<a :href="'tel:'+item[f.field]" style="color:#FFB173;">{{item[f.field]}}</a>
+										</span>
+										<!-- 线索状态 -->
+										<span v-else-if="f.field == 'crm_status'" class="crm_status" :class="item.crm_status.class">{{item.crm_status.name}}</span>
+										<!-- 其他 -->
+										<template v-else>
+											<span v-if="item[f.field] && item[f.field] != ''">{{item[f.field]}}</span>
+											<span v-else>暂无数据</span>
+										</template>
+									</td>
+									<!-- 非公共线索池 -->
+									<template v-if="by != 'public'">
+										<!-- 负责人 -->
+										<td nowrap="nowrap">
+											<a v-if="item.owner" class="role_info" :rel="item.owner.role_id" href="javascript:void(0)">
+												{{item.owner.full_name}}
+											</a>
+										</td>
+										<!-- 创建者 -->
+										<td nowrap="nowrap">
+											<a v-if="item.creator" class="role_info" :rel="item.creator.role_id" href="javascript:void(0)">{{item.creator.user_name}}</a>
+										</td>
+										<!-- 创建时间 -->
+										<td>
+											<font>{{item.create_time}}</font>
+										</td>
+
+										<!-- 剩余时间 -->
+										<td>
+											<font v-if="item.days > 7" color="#08c">{{item.days}}{:L('DAYS')}</font>
+											<font v-else-if="item.days <= 7" color="red">{{item.days}}{:L('DAYS')}</font>
+											<font v-else color="#ccc;">--{:L('DAYS')}</font>
+										</td>
+									</template>
+									<!-- 公共线索池 -->
+									<template v-else="by == 'public'">
+										<!-- 创建者 -->
+										<td nowrap="nowrap">
+											<a v-if="item.creator" class="role_info" :rel="item.creator.role_id" href="javascript:void(0)">{{item.creator.user_name}}</a>
+										</td>
+										<!-- 创建时间 -->
+										<td>
+											<font>{{item.create_time}}</font>
+										</td>
+									</template>
+								</tr>
+							</table>
+							<div v-if="nodata" style="text-align:center;color:#E4E4E4;font-size:16px;font-weight:700;padding-top:15px;">
+								<img src="/Public/img/exclamation_mark.png" style="margin-top:-3px;width:25px;">&nbsp;&nbsp;暂无更多数据
+							</div>
+						</div>
+						<div id="tfoot_div" class="clearfix">
+							<div class="clearfix" id="tfoot_page">
+								<span class="pull-left" style="margin-left:25px;margin-top:10px;">
+									本次搜索结果
+									<span style="color:#F8AC59">{{tabledata.length}}/{{count}}</span>条数据
+									<a @click="clearRequest('all')" href="javascript:void(0)" class="btn" style="background:#fff;border:1px solid #ccc;margin-left:10px;color:#999;" id="clearnumber">清除搜索条件</a>
+								</span>
+							</div>
+						</div>
+						<div class="cover"></div>
+						<div class="loader" id="loader">
+					        <div class="loader-inner pacman">
+					          <div></div>
+					          <div></div>
+					          <div></div>
+					          <div></div>
+					          <div></div>
+					        </div>
+				      	</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+    //下拉刷新
+    var table_container = new Vue({
+        el: "#table_container",
+        data: {
+        	ordertemp:{
+        		create_time:"desc",
+				have_time:"desc",
+				crm_level:"desc"
+        	},
+        	//线索分类
+        	catelist:[],
+			// 下级列表
+			subLists:[],
+            request:{
+                block:"",
+                cluecate:"",
+                page:1,
+                by:"all",
+                search:"",
+                order:"",
+				sub:""
+            },
+            isadmin:false,
+            nodata:false,
+            count:0,
+            scrolllock:true,
+            tabledata:[],
+            field:[],
+			by:''
+        },
+        methods:{
+        	/*** 线索分类 ***/
+        	getCateList: function (block){
+        	    // console.log(block);
+		        if( !block )	return ;
+		        var _this		=	this;
+	            $.ajax({
+	                url: "{:U('clueblock/search_cate')}",
+	                data: {block:block},
+	                dataType: 'JSON',
+	                type: 'GET',
+	                success: function(res) {
+	                    if (res.status == true) {
+	                        _this.catelist      =   res.data;
+	                    }
+	                }
+	            });
+			},
+			changeBlockCate:function(){
+				$("#cluecate").val("");
+				this.getCateList($("#blockCate").val());
+				this.request.cluecate = "";
+
+				if ($("#blockCate").val() == "") {
+					this.clearRequest('block');
+				}
+				this.request.block = $("#blockCate").val();
+				this.clearRequest('block');
+			},
+			changecluecate:function(){
+				this.request.cluecate = $("#cluecate").val();
+				this.clearRequest('cluecate');
+			},
+			changeby:function(){
+				this.request.by = $("#by").val();
+				this.clearRequest('by');
+			},
+			changesub:function(){
+				this.request.sub =	$("#sub").val();
+                this.clearRequest('sub');
+			},
+			setFixedTd:function(){
+        		//表格固定顶部
+        		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()).css({'zIndex':9});
+        		//表格固定左侧
+        		$("#oDivL_tab_Test3").height($("#table_div").height()).width($("#oTableLH_tab_Test3").width()).css({'zIndex':9});
+        	},
+        	//点击按字段排序
+        	orderByField:function(el){
+        		var _event = $(el);
+        		var _current = $(_event).attr("data-action");
+        		// console.log("_current",_current);
+        		var _field = $(_event).data("field");
+        		if (_current == "desc") {
+        			_current = "asc";
+        			$("[data-field='"+_field+"']").attr("data-action","asc");
+        			$("[data-field='"+_field+"']").find("a").attr("title","点击按时间正序排列");
+        			$("[data-field='"+_field+"']").find(".fa").removeClass("fa-caret-down fa-caret-up").addClass("fa-caret-up");
+        		}else{
+        			_current = "desc";
+        			$("[data-field='"+_field+"']").attr("data-action","desc");
+        			$("[data-field='"+_field+"']").find("a").attr("title","点击按时间倒序排列");
+        			$("[data-field='"+_field+"']").find(".fa").removeClass("fa-caret-down fa-caret-up").addClass("fa-caret-down");
+        		}
+    			_current = _field+"-"+_current;
+    			this.request.order = _current;
+				this.clearRequest('order');
+        	},
+            //读取数据
+            getData:function(){
+            	if (this.scrolllock) {
+	            	this.scrolllock = false;
+	            	$("#loader").show();
+	                var _this = this;
+	                $.ajax({
+	                    type:'get',
+	                    url:"{:U('newleads/search')}",
+	                    async:false,
+	                    dataType:'json',
+	                    data:_this.request,
+	                    success:function(data){
+	                    	var _fieldArr = [];
+	                        //添加线索状态
+	                        if (_this.request.by != 'public') {
+		                        for(var o = 0; o < data.fields.length; o++){
+		                        	if (o == 5) {
+		                        		var _json = {
+		                        			"field":"crm_status",
+		                        			"name":"状态"
+		                        		};
+		                        		_fieldArr.push(_json);
+		                        	}else{
+		                        		_fieldArr.push(data.fields[o]);
+		                        	}
+		                        }
+	                        }else{
+	                        	_fieldArr = data.fields;
+	                        }
+                            if(data._isadmin){
+                                _this.isadmin = "boss";
+                            }
+                            else if (data.block) {
+                                _this.isadmin = data.block;
+                                _this.getCateList(data.block);
+                                $("#blockCate").attr("disabled","disabled");
+                            }
+
+	                    	if (data.lists && data.lists.length > 0) {
+	                    		if (_this.request.order) {
+	                    			var _c = _this.request.order.split('-');
+	                    			_this.ordertemp[_c[0]] =_c[1];
+	                    			// console.log("ordertemp",_c[1]);
+	                    		}
+		                        $("#oDivH_tab_Test3,#oDivL_tab_Test3,#oTableLH_tab_Test3").remove();
+
+	                        	_this.nodata = false;
+		                        for(var i = 0; i < data.lists.length; i++){
+		                        	if (data.lists[i].create_time && data.lists[i].create_time > 0) {
+		                        		data.lists[i].create_time = data.lists[i].create_time+"";
+			                        	if (data.lists[i].create_time.indexOf("-")>0 || data.lists[i].create_time.indexOf("/")>0) {
+			                        		data.lists[i].create_time = data.lists[i].create_time ;
+			                        	}else{
+		                        			data.lists[i].create_time = timestampToFormat(data.lists[i].create_time, 'yyyy-MM-dd hh:mm');
+			                        	}
+		                        	}
+		                        	else{
+		                        		data.lists[i].create_time = "1970-01-01 00:00";
+		                        	}
+
+
+		                        	var _status = data.lists[i].crm_status;
+		                        	var _json ={name:"",class:""};
+		                        	if (_status) {
+		                        		if (_status == -1) {
+		                        			_json.class = "status_waning";
+		                        			_json.name = "待跟进";
+		                        		}else if (_status == -7) {
+		                        			_json.class = "status_no";
+		                        			_json.name = "已作废";
+		                        			
+		                        		}else if (_status == 9) {
+		       	                 			_json.class = "status_tanseformed";
+		                        			_json.name = "已转换";
+		                        			
+		                        		}else if (_status == 6) {
+		                        			_json.class = "status_ing";
+		                        			_json.name = "跟进中";		                        			
+		                        		}else{
+		                        			json.name = "状态";
+		                        		}
+		                        	}
+		                        	data.lists[i].crm_status = _json;
+
+
+		                        	_this.tabledata.push(data.lists[i]);
+		                        }
+
+
+		                        _this.field = _fieldArr;
+		                        _this.request.page = _this.request.page + 1;
+		                        _this.count = data.count;
+		                        _this.by  = data.params.by;
+		                        _this.subLists = data.subLists;
+		                        console.log( data );
+		                        
+
+	                        	_this.$nextTick(function(){
+	                        		_this.scrolllock = true;
+		        					window.setTimeout(function(){
+		        						$("#loader").fadeOut();
+	                        			_this.scrolllock = true;
+										// $("#tab_Test3").FrozenTable(1,0,3);
+	                        			_this.setFixedTd();
+		        					},900)
+		        					$("#tab_Test3").css("opacity","1");
+
+		        					// $(".nicescroll").getNiceScroll().resize();
+	                        	});
+	                        }else if(_this.request.page > 2 && !data.lists){
+        						$("#loader").fadeOut();
+	                        	// alert_crm("加载完全部数据");
+	                        }
+	                        else{
+		                        $("#oDivH_tab_Test3,#oDivL_tab_Test3,#oTableLH_tab_Test3").remove();
+	                        	// _this.nodata = true;
+        						$("#loader").fadeOut();
+	                        }
+	                    }
+	                });
+                }
+            },
+            clearRequest:function(field){
+        		this.scrolllock = true;
+            	$("#table_div").animate({
+	                scrollTop: 0,
+	                scrollLeft: 0,
+	            }, 0)
+                this.count = 0;
+            	this.tabledata = [];
+
+            	if (field == "search") {
+            		var _val = $("#searchInput").val();
+					this.request.search = _val;
+            	}
+            	var _json = {};
+            	if (field) {
+	            	var _val = this.request[field];
+	            	_json[field] = _val;
+            	}
+            	_json.page = 1;
+
+
+            	if (field == "all") {
+            		$("#blockCate").val("");
+            		$("#cluecate").val("");
+            		$("#searchInput").val("");
+            		_json = {
+            			"block":"",
+		                "cluecate":"",
+		                "page":1,
+		                "search":"",
+		                "order":""
+            		}
+            	}
+
+            	this.request = Object.assign(this.request, _json);
+
+            	// console.log("xxx",_json);
+
+            	this.getData();
+            }
+        },
+        mounted:function(){
+            var _this = this;
+            this.request.by = getQueryString("by");
+            this.getData();
+            $("#table_div").scroll(function() {
+                var scrollTop = $(this).scrollTop();
+                //排除水平滚动
+                if (scrollTop > 0) {
+	                var windowHeight = $(this).height();
+	                var scrollHeight = $("#tab_Test3").height();
+	                var _s = 90;
+	                // console.log("xxx",scrollTop + windowHeight,"xxx",scrollHeight-_s,_this.scrolllock);
+	                if (scrollTop > 0 && scrollTop + windowHeight >= scrollHeight-_s &&  _this.scrolllock) {
+	                    if( _this.scrolllock){
+	                    	_this.getData();
+	                    }
+	                    //推荐获取数据
+	                    $(".finish").text("加载中...");
+	                }
+                }
+            });
+
+            var scroll_width = 10;
+            // var oTableLH_tab_Test3 = 38;
+            $("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+            $(window).resize(function(){
+				$("#oDivH_tab_Test3,#oDivL_tab_Test3,#oTableLH_tab_Test3").remove();
+                $("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+                window.setTimeout(function(){
+	               // $("#tab_Test3").FrozenTable(1,0,3);
+	               _this.setFixedTd();
+               },600)
+
+            })
+            // $(".nicescroll").niceScroll({
+            //     cursorcolor: "#999",//#CC0071 光标颜色
+            //     cursoropacitymax: 0.4, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0
+            //     touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备
+            //     // emulatetouch:true,
+            //     // cursordragontouch:true,
+            //     cursorwidth: scroll_width+"px", //像素光标的宽度
+            //     cursorborder: "0", //     游标边框css定义
+            //     cursorborderradius: "3px",//以像素为光标边界半径
+            //     autohidemode: false, //是否隐藏滚动条
+            //     zindex:100,
+            //     background:"#F3F3F5",//滚动条背景色
+            // });
+
+            $(document).on('click', '.orderByField', function() {
+            	_this.orderByField($(this));
+            });
+        }
+    });
+
+
+</script>
+
+<div style="display:none;" id="dialog-import" title="{:L('IMPORT_DATA')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-role-info" title="{:L('USER_INFO')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-fenpei" title="{:L('LEADS_ASSIGN')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-assign" title="{:L('LEADS_ASSIGN')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<!-- 转换线索 -->
+<div style="display:none;" id="dialog-assign-tansformed" title="线索转移">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-log" title="添加沟通日志">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-remind" title="提醒">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-remind_view" title="提醒内容">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<if condition = "$_GET['by'] neq 'public'">
+	<div id="dialog-role-list2" style="display:none" title="选择客户负责人">
+		<div class="spiner-example">
+			<div class="sk-spinner sk-spinner-three-bounce">
+				<div class="sk-bounce1"></div>
+				<div class="sk-bounce2"></div>
+				<div class="sk-bounce3"></div>
+			</div>
+		</div>
+	</div>
+</if>
+
+<div style="display:none" id="dialog-field-search" title="高级搜索">
+	<form class="form-inline" id="searchForm" action="" method="get">
+		<div id="search_add" style="width:650px;float:left;">
+			<if condition = "$_GET['field'] eq ''">
+				<input type="hidden" name="this_page" value="{$this_page}" />
+				<input type="hidden" name="m" value="leads"/>
+				<input type="hidden" name="act" id="act" value="index"/>
+				<input type="hidden" name="daochu" id="daochu"/>
+				<input type="hidden" name="current_page" id="current_page" value=""/>
+				<input type="hidden" name="export_limit" id="export_limit" value=""/>
+				<if condition="$by neq null">
+					<input type="hidden" name="by" value="{$by}"/>
+				</if>
+			</if>
+			<empty name="fields_search">
+				<div id="con_search_1" style="float:left;width:650px;margin:0 10px 0 10px;">
+					<ul class="nav pull-left" style="margin:0px 0 0 23px;width:650px;">
+						<li class="pull-left">
+							<select id="field_1" style="width:auto" class="form-control input-sm field_name new-select" onchange="changeCondition(1)" >
+								<option class="" value="name">--{:L('PLEASE_SELECT_A_FILTER_CONDITION')}--</option>
+								<volist name="field_list" id="v">
+									<option class="{$v['form_type']}" value="{$v[field]}" rel="leads" <if condition = "$_GET['field'] eq '' && $v['field'] eq 'name'">selected="selected"</if>>{$v[name]}</option>
+								</volist>
+								<if condition="$by neq 'public'">
+									<option class="role" value="owner_role_id">{:L('PRINCIPAL')}</option>
+								</if>
+								<option class="date" value="create_time">{:L('CREATION_TIME')}</option>
+								<option class="date" value="update_time">{:L('MODIFICATION_TIME')}</option>
+							</select>&nbsp;&nbsp;
+						</li>
+						<li class="pull-left" id="conditionContent_1">
+							<select id="condition_1" style="width:auto" class="form-control input-sm new-select" onchange="changeSearch()" name="name[condition]">
+								<option value="contains">{:L('INCLUDE')}</option>
+								<option value="not_contain">{:L('EXCLUSIVE')}</option>
+								<option value="is">{:L('YES')}</option>
+								<option value="isnot">{:L('ISNOT')}</option>						
+								<option value="start_with">{:L('BEGINNING_CHARACTER')}</option>
+								<option value="end_with">{:L('TERMINATION_CHARACTER')}</option>
+								<option value="is_empty">{:L('Mandatory')}</option>
+								<option value="is_not_empty">{:L('ISNOTEMPTY')}</option>
+							</select>&nbsp;&nbsp;
+						</li>
+						<li class="pull-left" id="searchContent_1">
+							<input id="search_1" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name="name[value]"/>&nbsp;&nbsp;
+						</li>
+					</ul>
+				</div>
+				<?php $max_key = 1;?>
+			<else />
+			<volist name="fields_search" key="key1" id="vo">
+				<div id="con_search_{$key1}" style="float:left;width:650px;margin:10px 10px 0 10px;">
+					<div  id="rem_{$key1}" class="pull-left" style="line-height:30px;"><a href="javascript:void(0);" class="rem_search" rel="{$key1}" title="移除"><span class="fa fa-times-circle"></span></a></div>&nbsp;
+					<ul class="nav pull-left" style="margin:0px 0 0 5px;width:620px;">
+						<li class="pull-left">
+							<select id="field_{$key1}" style="width:auto" class="form-control input-sm field_name" onchange="changeCondition({$key1})" >
+								<option class="" value="name">--{:L('PLEASE_SELECT_A_FILTER_CONDITION')}--</option>
+								<volist name="field_list" id="v">
+									<option class="{$v['form_type']}" value="{$v['field']}" rel="leads" <if condition = "$vo['field'] eq $v['field']">selected="selected"</if>>{$v[name]}
+									</option>
+								</volist>
+								<if condition="$by neq 'public'">
+									<option class="role" value="owner_role_id" <if condition = "$vo['field'] eq 'owner_role_id'">selected="selected"</if>>{:L('PRINCIPAL')}</option>
+								</if>
+								<option class="date" value="create_time" <if condition = "$vo['field'] eq 'create_time'">selected="selected"</if>>{:L('CREATION_TIME')}</option>
+								<option class="date" value="update_time" <if condition = "$vo['field'] eq 'update_time'">selected="selected"</if>>{:L('MODIFICATION_TIME')}</option>
+							</select>&nbsp;&nbsp;
+						</li>
+						<li class="pull-left" id="conditionContent_{$key1}">
+							<if condition="$vo.form_type eq 'number'">
+								<select id="condition" style="width:100px;" class="form-control input-sm" name="{$vo['field']}[condition]">
+									<option value="gt" <if condition="$_GET[$vo['field']][condition] eq 'gt'">selected="selected"</if>>{:L('GT')}</option>
+									<option value="lt" <if condition="$_GET[$vo['field']][condition] eq 'lt'">selected="selected"</if>>{:L('LT')}</option>
+									<option value="eq" <if condition="$_GET[$vo['field']][condition] eq 'eq'">selected="selected"</if>>{:L('EQ')}</option>
+									<option value="neq" <if condition="$_GET[$vo['field']][condition] eq 'neq'">selected="selected"</if>>{:L('NEQ')}</option>
+								</select>
+							<elseif condition="$vo.field eq 'owner_role_id' || $vo.form_type eq 'datetime'"/>
+							<elseif condition="$vo.form_type eq 'box'" />
+								<span id="{$vo['field']}"></span>
+								<script type="text/javascript">
+									var b = '{$vo[field]}';
+									var c = 'leads';
+									$.ajax({
+										type:'get',
+										url:'index.php?m=setting&a=boxfield&model='+c+'&field='+b,
+										async:false,
+										success:function(data){
+											options = '';
+											$.each(data.data, function(k, v){
+												if('{$vo.value}' == v){
+													select = 'selected';
+												}else{
+													select = '';
+												}
+												options += "<option value='"+v+"' "+select+">"+v+"</option>";
+											});
+											$("#{$vo['field']}").html('<select class="{$vo["field"]} form-control input-sm" style="width:auto" name="{$vo["field"]}[value]" ><option value="">--请选择--</option>' + options + '</select>&nbsp;&nbsp;');
+										},
+										dataType:'json'
+									});
+									<if condition="!empty($_GET[$vo['field']])">
+										$(".{$vo['field']} option[value='{$_GET[$vo['field']]}']").attr('selected','selected');
+									</if>
+								</script>
+							<elseif condition="$vo.form_type eq 'address'" />
+								<select style="width:auto;margin-top: 13px;" class="form-control input-sm" name="{$vo['field']}[condition]">
+									<option value="contains" <if condition="$_GET[$vo['field']][condition] eq 'contains'">selected="selected"</if>>{:L('IN')}</option>
+									<option value="not_contain" <if condition="$_GET[$vo['field']][condition] eq 'not_contains'">selected="selected"</if>>{:L('NOTIN')}</option>
+								</select>
+								<select name="{$vo['field']}[state]" class="form-control input-sm" id="state" style="width:135px;margin-top: 13px;"></select>
+								<select name="{$vo['field']}[city]" class="form-control input-sm" id="city" style="width:110px;margin-top: 13px;"></select>
+								<select name="{$vo['field']}[area]" class="form-control input-sm" id="area" style="width:110px;margin-top: 13px;"></select>
+								<input type="text" id="search" name="{$vo['field']}[search]" value="{$_GET[$vo['field']][search]}" class="form-control input-sm" style="margin-top: 13px;" placeholder="{:L('THE_STREET_INFORMATION')}" class="input-large">
+								<script type="text/javascript">
+									 new PCAS("{$vo['field']}[state]","{$vo['field']}[city]","{$vo['field']}[area]","<php>echo $_GET[$vo['field']]['state'];</php>","<php>echo $_GET[$vo['field']]['city'];</php>","<php>echo $_GET[$vo['field']]['area'];</php>");
+								</script>
+							<else />
+								<select id="condition" style="width:auto" class="form-control input-sm" name="{$vo['field']}[condition]">
+									<option value="contains" <if condition="$_GET[$vo['field']][condition] eq 'contains'">selected="selected"</if>>{:L('INCLUDE')}</option>
+									<option value="not_contain" <if condition="$_GET[$vo['field']][condition] eq 'not_contain'">selected="selected"</if>>{:L('EXCLUSIVE')}</option>
+									<option value="is" <if condition="$_GET[$vo['field']][condition] eq 'is'">selected="selected"</if>>{:L('YES')}</option>
+									<option value="isnot" <if condition="$_GET[$vo['field']][condition] eq 'isnot'">selected="selected"</if>>{:L('NO')}</option>
+									<option value="start_with" <if condition="$_GET[$vo['field']][condition] eq 'start_with'">selected="selected"</if>>{:L('BEGINNING_CHARACTER')}</option>
+									<option value="end_with" <if condition="$_GET[$vo['field']][condition] eq 'end_with'">selected="selected"</if>>{:L('TERMINATION_CHARACTER')}</option>
+									<option value="is_empty" <if condition="$_GET[$vo['field']][condition] eq 'is_empty'">selected="selected"</if>>{:L('MANDATORY')}</option>
+									<option value="is_not_empty" <if condition="$_GET[$vo['field']][condition] eq 'is_not_empty'">selected="selected"</if>>{:L('ISNOTEMPTY')}</option>
+								</select>
+							</if>
+						</li>
+						<li class="pull-left" id="searchContent_{$key1}" style="margin-left:5px;">
+							<if condition="$vo.form_type neq 'box' && $vo.form_type neq 'address'">
+								<if condition="$vo.form_type eq 'datetime'">
+									<input id="start_{$vo['field']}" type="text" class="form-control input-sm search-query" name="{$vo['field']}[start]" onclick="WdatePicker()" value="{$fields_search[$vo['field']][start]}" rel="leads"/> 至 <input id="end_{$vo['field']}" type="text" class="form-control input-sm search-query" name="{$vo['field']}[end]" onclick="WdatePicker()" value="{$fields_search[$vo['field']][end]}" rel="leads"/>
+								<elseif condition="$vo['field'] eq 'owner_role_id'"/>
+									<span id="owner_role_search" rel="{$key1}" rel1="{$vo['field']}[value]" rel2="{$_GET[$vo['field']][value]}"/>
+									<script type="text/javascript">
+										var key_id = $('#owner_role_search').attr('rel');
+										var search_owner_role_id = $('#owner_role_search').attr('rel1');
+										var owner_roleid = $('#owner_role_search').attr('rel2');
+										$.ajax({
+											type:'get',
+											url:'index.php?m=user&a=getrolelist&module=leads&action=index',
+											async:false,
+											success:function(data){
+												options = '';
+												$.each(data.data, function(k, v){
+													options += '<option value="'+v.role_id+'" checkedit>'+v.user_name+' ['+v.department_name+'-'+v.role_name+'] </option>';
+												});
+												$("#searchContent_"+key_id+"").html('<select class="selectpicker show-tick form-control input-sm" data-live-search="true" id="search_'+key_id+'" name="'+search_owner_role_id+'" style="width:auto">' + options + '</select>');
+												/*$('#search_'+key_id).selectpicker('val',owner_roleid);
+												$('#search_'+key_id).selectpicker('refresh');*/
+												var owner_roleid = "{$_GET[$vo['field']][value]}";
+												$('#search_'+key_id+' option[value='+owner_roleid +']').prop('selected',true);
+
+											},
+											dataType:'json'
+										});
+									</script>
+								<else/>
+									<input name="{$vo['field']}[value]" type="text" class="form-control input-sm search-query" class="{$vo['form_type']}" value="{$_GET[$vo['field']][value]}" rel="leads">
+								</if>
+							</if>
+						</li>
+					</ul>
+				</div>
+				<?php $max_key = $key1;?>
+			</volist>
+			</empty>
+		</div>
+		<div class="clearfix"></div>
+		<div style="margin-left: 35px;margin-top:10px;"><a href="javascript:void(0);" style="display: -moz-stack;margin: 30px 0px 0px; font-size: 12px; color: rgb(62, 133, 233);" id="add_btn">+添加筛选条件</a>
+		</div>
+	</form>
+</div>
+<script type="text/javascript">
+
+
+function jumpWithCate(that){
+    var cateid		=	$(that).val(),
+		url			=	location.href,
+		name		=	'cluecate',
+		reg 		= 	new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"),
+		catestr		=	url.substr(1).match(reg),
+		repstr		=	catestr ? catestr[0] : '',
+		newUrl		=	url.replace( catestr, '&cluecate='+cateid );
+
+    location.href	=	newUrl;
+}
+
+/*让复选框默认取消选择*/
+$(':checkbox').prop('checked', false);
+$('[data-toggle="tooltip"]').tooltip({html:true});
+
+$(".controls_tr").mouseenter(function(){
+	$(this).find(".controls").show();
+}).mouseleave(function(){
+	$(this).find(".controls").hide();
+});
+
+/*添加筛选条件*/
+var m = {$max_key};
+$('#add_btn').click(function(){
+	m += 1;
+	$('#search_add').append('<div id="con_search_'+m+'" style="float:left;width:500px;padding-top:10px;margin:0px 10px 0 10px;"><div  id="rem_'+m+'" class="pull-left" style="line-height:30px;"><a href="javascript:void(0);" class="rem_search" rel="'+m+'" title="移除"><span class="fa fa-times-circle"></span></a></div>&nbsp;<ul class="nav pull-left" style="margin:0px 0 0 5px;width:470px"><li class="pull-left"><select id="field_'+m+'"  style="width:auto" class="form-control input-sm field_name new-select" onchange="changeCondition('+m+')" name=""><option class="" value="name">--{:L('PLEASE_SELECT_A_FILTER_CONDITION')}--</option><volist name="field_list" id="v"><option class="{$v['form_type']}" value="{$v[field]}" rel="leads">{$v[name]}</option></volist><if condition="$by neq 'public'"><option class="role" value="owner_role_id">{:L('PRINCIPAL')}</option></if><option class="date" value="create_time">{:L('CREATION_TIME')}</option><option class="date" value="update_time">{:L('MODIFICATION_TIME')}</option></select>&nbsp;&nbsp;</li><li class="pull-left" id="conditionContent_'+m+'"><select id="condition_'+m+'" style="width:99px" class="form-control input-sm new-select" name="condition" onchange="changeSearch()"><option value="contains">{:L('INCLUDE')}</option><option value="not_contain">{:L('EXCLUSIVE')}</option><option value="is">{:L('YES')}</option><option value="isnot">{:L('ISNOT')}</option><option value="start_with">{:L('BEGINNING_CHARACTER')}</option><option value="end_with">{:L('TERMINATION_CHARACTER')}</option><option value="is_empty">{:L('Mandatory')}</option><option value="is_not_empty">{:L('ISNOTEMPTY')}</option></select>&nbsp;&nbsp;</li><li class="pull-left" id="searchContent_'+m+'"><input id="search_'+m+'" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name="search"/>&nbsp;&nbsp;</li></ul></div>');  
+});
+$(document).on('click','.rem_search',function(){
+	var num = $(this).attr('rel');
+	$('#con_search_'+num).remove();
+});
+
+// 筛选重复判断
+var dosearch = 1;
+function doh(){
+	var ary = new Array();
+	var field_name = '';
+	var is_submit = 1;
+	$('.field_name').each(function(k, v){
+		field_name = $(this).find("option:selected").val();
+		if(jQuery.inArray(field_name,ary) >= 0){
+			is_submit = 0;
+			swal({
+				title: "筛选条件中有重复项！",
+				text: "",
+				type: "error"
+			});
+			dosearch = 0;
+			return false;
+		}
+		ary[k] = field_name;
+	})
+	if(is_submit == 1){
+		$("#searchForm").submit();
+	}
+}
+
+var url = "{:U('leads/getcurrentstatus')}";
+var limit_size = 1000;
+var count = {$count|default=0};
+var ii = 1;
+function remainTime(){
+	var id_array = new Array();
+	// 判断是普通查询还是高级搜索
+	var field = "{$_GET['field']}";
+	$("input[class='check_list']:checked").each(function() {   
+		id_array.push($(this).val());
+	});
+	$.get(url,function(data){
+		if(data.data == 0){
+			if (id_array != '') {
+				count = id_array.length;
+			}
+			if((ii-1)*limit_size < count){
+				$("#act").val('excel');	
+				$("#daochu").val(id_array);
+				$("#current_page").val(ii);
+				$("#export_limit").val(limit_size);
+				if (field) {
+					$("#leads_search").submit();
+				} else {
+					$("#searchForm").submit();
+				}	
+				setTimeout("remainTime()",1000); 
+				ii++; 
+			}else{
+				$("#act").val('');	
+				ii = 1;
+				swal("数据导出成功！","","success");
+			}
+		}else{
+			setTimeout("remainTime()",1000); 
+		}
+	}, 'json');
+}
+
+if ("{:C('isMobile')}" == "1") {
+	width = $('.container').width() * 0.9;
+} else {
+	width = 800;
+}
+
+$("#log_leads").click(function(){
+	$('#dialog-log').dialog('open');
+	$('#dialog-log').load('{:U("log/add","r=RLeadsLog&module=leads&id=")}'+$(this).attr('rel'));
+});
+
+$("#dialog-log").dialog({
+    autoOpen: false,
+    modal: true,
+	width: width,
+	maxHeight: 400,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+			// $('#dialog_form1').submit();
+			// $(this).dialog("close");
+
+			var log_content = $('#log_content').val();
+			var nextstep_time = $('#nextstep_time').val();
+			if(log_content == ""){
+				alert_crm("请填写内容！");
+				$("#log_content").focus();
+				return false;
+			}
+        	$.ajax({
+	            type:'post',
+	            url: "{:U('Log/add')}",
+	            data:$('#dialog_form1').serialize(),
+	            async: false,
+	            success: function (data) {
+					if (data.status == 1) {
+						swal("操作成功！", "沟通日志添加成功！", "success");
+						$("#dialog-log").dialog("close");
+						$('#nextstep_time_'+dialog_module_value).html(nextstep_time);
+						$('#nextstep_'+dialog_module_value).html(log_content);
+						// location.reload();
+					} else {
+						swal({
+							title: "操作失败！",
+							text:data.info,
+							type: "error"
+						})
+						return false;
+					}
+	            },
+	            dataType: 'json'
+	        });
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+
+$("#remind").click(function(){
+	var leads_id = $(this).attr('rel');
+	$('#dialog-remind').dialog('open');
+	$('#dialog-remind').load("{:U('remind/add','module=leads&module_id=')}"+leads_id);
+});
+
+$(document).on('click','.remind_view',function(){
+	var leads_id = $(this).attr('rel');
+	$('#dialog-remind_view').dialog('open');
+	$('#dialog-remind_view').load("{:U('remind/view','module=leads&module_id=')}"+leads_id);
+});
+
+$("#dialog-remind").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+			if($('#dialog_content').val() == ''){
+				alert_crm("请填写提醒内容！")
+				$("#dialog_content").focus(); 
+			}else{
+				$('#remind_form').submit();
+				$(this).dialog("close");
+			}
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$("#dialog-remind_view").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	position: ["center",100],
+	buttons: {
+		"删除": function () {
+			swal({
+				title: "您确认删除吗？" ,
+				type: "warning",   
+				showCancelButton: true,   
+				confirmButtonColor: "#DD6B55",   
+				confirmButtonText: "确定",   
+				closeOnConfirm: false 
+			}, 
+			function(){
+				$("#dialog_remind").submit();
+				$(this).dialog("close");
+			});
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+
+$("#edit_leads").click(function(){
+	window.location.href="{:U('leads/edit', '&p='.$this_page.'&id=')}"+$(this).attr('rel');
+})
+var by = "{$_GET['public']}";
+if(by != 'public'){
+	$('#change_lead').click(
+		function(){
+			var leads_id = $(this).attr('rel');
+			$('#dialog-role-list2').dialog('open');
+			$('#dialog-role-list2').load("{:U('user/listDialog','by=all&leads=leads&id=')}"+leads_id);
+		}
+	);
+	$("#dialog-role-list2").dialog({
+		autoOpen: false,
+		modal: true,
+		width: width,
+		maxHeight: 400,
+		buttons: { 
+			"确定": function () {
+				var item = $('input:radio[name="owner"]:checked').val();
+				var name = $('input:radio[name="owner"]:checked').parent().next().html();
+				var leads_id = $("#leads_id").val();
+				$.ajax({
+					type:'get',
+					url:'index.php?m=leads&a=change_customer&id='+leads_id+'&role_id='+item,
+					async:false,
+					success:function(data){
+						if(data.status == 1){
+							swal("转换成功！", "您已经成功将该线索转换为客户！", "success");
+							history.go(0);
+						}else{
+							alert_crm('转换失败，请重试！');
+							history.go(0);
+						}
+					},
+					dataType:'json'
+				});
+				$(this).dialog("close"); 
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		},
+		position: ["center", 100]
+	});
+}
+
+$("#search_type").click(function(){
+	$("#dialog-field-search").dialog('open');
+});
+
+$("#dialog-field-search").dialog({
+	autoOpen: false,
+	modal: true,
+	minWidth: 750,
+	height: 500,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+			doh();
+			if(dosearch == 1){
+				$(this).dialog("close");
+			}
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+
+$("#dialog-import").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 680,
+	maxHeight: 400,
+	position: ["center",100]
+});
+$("#dialog-role-info").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	minHeight: 400,
+	position: ["center",100]
+});
+$("#dialog-fenpei").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+			$('#fenpei_form').submit();	
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$("#dialog-assign").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+			var owner_role_id = $('input[name="owner_role_id"]').val();
+			var message_alert = $('input:checkbox[name="message_alert"]:checked').val();
+			var sms_alert = $('input:checkbox[name="sms_alert"]:checked').val();
+			var email_alert = $('input:checkbox[name="email_alert"]:checked').val();
+
+			$("#hidden_owner_id").val(owner_role_id);
+			$("#hidden_message").val(message_alert);
+			$("#hidden_sms").val(sms_alert);
+			$("#hidden_email").val(email_alert);
+
+			$("#form1").attr('action', '{:U("leads/batchassign")}');
+			$("#form1").submit();
+			
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$("#dialog-assign-tansformed").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+			//转移浮层
+			var id_array = new Array();
+			$("input.check_list:checked").each(function(){  
+				id_array.push($(this).val());
+			});
+
+			var ownerId = $("[name='owner']:checked").val();
+
+			var _json = {
+				id_array:id_array,
+				ownerId:ownerId
+			}
+
+			$.ajax({
+	            type:'post',
+	            url: "{:U('leads/lead_move')}",
+	            data: _json,
+	            async: false,
+	            success: function (data) {
+	            	console.log("xxx",data);
+					if (data.status) {
+						swal("转移成功！", "您已经成功转移了所选数据！", "success");
+						table_container.clearRequest("all");
+						// history.go(0);
+					} else {
+						swal({
+							title: "操作失败！",
+							text:"请联系管理员",
+							type: "error"
+						})
+						return false;
+					}
+	            },
+	            dataType: 'json'
+	        });
+
+			console.log("_json",_json);
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$(function(){
+	$(".excelExport").click(function(){
+		if(count > limit_size){
+			swal({   
+				title: "当前导出量过大，将分几次导出，可能需要您等待一段时间，是否继续?",
+				type: "warning",   
+				showCancelButton: true,   
+				confirmButtonColor: "#DD6B55",   
+				confirmButtonText: "确定",   
+				closeOnConfirm: false, 
+				animation: "slide-from-top", 
+				showLoaderOnConfirm: true
+			}, 
+			function(){
+				remainTime();
+			});
+		}else{
+			var id_array = new Array(); 
+			$("input[class='check_list']:checked").each(function() {   
+				id_array.push($(this).val());
+			});
+			if(id_array !=''){
+				swal({   
+					title: "{:L('CONFIRM_EXPORT_LEADS')}",
+					type: "warning",
+					showCancelButton: true,   
+					confirmButtonText: "确定", 
+					closeOnConfirm: false,
+					animation: "slide-from-top",
+					showLoaderOnConfirm: true
+				}, 
+				function(){
+					remainTime();
+				});
+			}else{
+				swal({
+					title: "",
+					text: "确定要导出数据吗？",
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonText: "确定",   
+					closeOnConfirm: false, 
+					animation: "slide-from-top", 
+					showLoaderOnConfirm: true
+				},
+				function(){
+					remainTime();
+				});
+			}
+		}
+	});
+
+	$('#delete').click(function(){
+		var id_array = new Array();
+		$("input.check_list:checked").each(function(){  
+			id_array.push($(this).val());
+		});
+		if(id_array.length == 0){
+			alert_crm('{:L('PLEASE_CHOOSE_THE_LEADS')}');
+			return false;
+		}
+		swal({
+			title: "您确定要删除线索信息吗？",
+			text: "删除后将无法恢复，请谨慎操作！",
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "是的，我要删除！",
+	        cancelButtonText:'让我再考虑一下…',
+	        closeOnConfirm:false,
+	        closeOnCancel:false
+		},
+		function(isConfirm){
+	        if (isConfirm) {
+	        	$.ajax({
+		            type:'post',
+		            url: "{:U('leads/delete')}",
+		            data: {leads_id: id_array},
+		            async: false,
+		            success: function (data) {
+						if (data.status == 1) {
+							swal("删除成功！", "您已经永久删除了信息！", "success");
+							history.go(0);
+						} else {
+							swal({
+								title: "操作失败！",
+								text:data.info,
+								type: "error"
+							})
+							return false;
+						}
+		            },
+		            dataType: 'json'
+		        });
+	        } else {
+	            swal("已取消","您取消了删除操作！","error");
+	        }
+	    });
+	});
+
+	//放入线索池
+	$('#remove').click(function(){
+		swal({   
+			title: "{:L('CONFIRM_PUT_LEADS_INTO_THE_POOL')}",
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "确定",   
+			closeOnConfirm: false 
+		}, 
+		function(){  
+			$("#form1").attr('action', '{:U("leads/remove")}');
+			$("#form1").submit(); 
+		});
+	});
+
+	//批量领取
+	$('#batch_receive').click(function(){
+		swal({   
+			title: "{:L('CONFIRM_BATCH_RECEIVE_LEADS')}",
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "确定",   
+			closeOnConfirm: false 
+		}, 
+		function(){  
+			$("#form1").attr('action', '{:U("leads/batchReceive")}');
+			$("#form1").submit(); 
+		});
+	});
+
+	$('#batch_assign').click(function(){
+		$("#dialog-assign").dialog("option","title", "线索分配" )
+		$('#dialog-assign').dialog('open');
+		$('#dialog-assign').load('{:U("leads/assigndialog")}');
+	});
+
+	/*转移*/
+	$('#batch_transfer').click(function(){
+		$("#dialog-assign-tansformed").dialog("option","title", "线索转移" );
+		$('#dialog-assign-tansformed').dialog('open');
+		$('#dialog-assign-tansformed').load('{:U("leads/transformeddialog")}');
+	});
+
+
+	//线索转换
+	$('#transform').click(function(){
+		$("#form1").attr('action', '{:U("leads/transform")}');
+		$("#form1").submit();
+	});	
+	$("#import_excel").click(function(){
+		$('#dialog-import').dialog('open');
+		$('#dialog-import').load('{:U("leads/excelimport")}');
+	});
+	$(".role_info").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+	$(".fenpei").click(function(){
+		$id = $(this).attr('rel');
+		$('#dialog-fenpei').dialog('open');
+		$('#dialog-fenpei').load('{:U("leads/fenpei","id=")}'+$id);
+	});
+	$("#check_send").click(function(){
+		var id_array = new Array();
+		$("input[class='check_list']:checked").each(function(){  
+			id_array.push($(this).val());
+		});
+		if(id_array.length == 0){
+			alert("{:L('PLEASE_CHOOSE_THE_LEADS')}");
+		}else{
+			var leads_ids = id_array.join(",");
+			window.open("{:U('setting/sendSms', 'model=leads&leads_ids=')}"+leads_ids);
+		}
+	});
+	$("#check_send_email").click(function(){
+		var id_array = new Array();
+		$("input[class='check_list']:checked").each(function(){  
+			id_array.push($(this).val());
+		});
+		if(id_array.length == 0){
+			alert("{:L('PLEASE_CHOOSE_THE_LEADS')}");
+		}else{
+			var leads_ids = id_array.join(",");
+			window.open("{:U('setting/sendemail', 'model=leads&leads_ids=')}"+leads_ids);
+		}
+	});
+
+	$("#page_send").click(function(){
+		var id_array = new Array();
+		$("input[class='check_list']").each(function(){
+			id_array.push($(this).val());
+		});
+		if(id_array.length == 0){
+			alert("{:L('PLEASE_CHOOSE_THE_LEADS')}");
+		}else{
+			var leads_ids = id_array.join(",");
+			window.open("{:U('setting/sendSms', 'model=leads&leads_ids=')}"+leads_ids);
+		}
+	});
+	$("#page_send_email").click(function(){
+		var id_array = new Array();
+		$("input[class='check_list']").each(function(){
+			id_array.push($(this).val());
+		});
+		if(id_array.length == 0){
+			alert("{:L('PLEASE_CHOOSE_THE_LEADS')}");
+		}else{
+			var leads_ids = id_array.join(",");
+			window.open("{:U('setting/sendemail', 'model=leads&leads_ids=')}"+leads_ids);
+		}
+	});
+
+	$("#all_send").click(function(){
+		$("#act").val('sms');
+		$("#searchForm").submit();
+	});
+	$("#all_send_email").click(function(){
+		window.open("{:U('setting/sendemail', 'model=leads&leads_ids=all')}");
+	});
+
+	$("#dosearch").click(function(){
+		result = checkSearchForm();
+		if(result) $("#act").val('search');$("#searchForm").submit();
+	});
+
+});
+</script>
+
+<!-- loading加载 -->
+<style type="text/css">
+	#box{
+		position:absolute;
+		top:0;
+		bottom:0;
+		left:0;
+		right:0;
+		background:#000;
+		opacity:0.7;
+		
+		padding-top: 200px;
+		padding-left: 45%;
+	}
+</style>
+
+<!-- 客户详细 -->
+<include file="Leads:detail" />
+<script type="text/javascript">
+
+    //点击客户姓名展示详细
+    $(document).on('click', '.showCustomer', function() {
+    	var _id = $(this).attr("data-customerid");
+        $(".customerModal").modal('show',_id);
+    });
+</script>
+
+<include file="Public:footer" />

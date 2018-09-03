@@ -1,0 +1,73 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<!-- <div class="affix">
+	<div class="span12 secound_menu">
+		<div class="span12 lanrenzhijia ">
+			<li><a href="{:U('setting/defaultInfo')}">{:L('BASIC_SYSTEM_SETTING')}</a></li>
+			<li><a class="active" href="{:U('setting/appSetting')}">手机客户端设置</a></li>
+			<li><a href="{:U('setting/smtp')}">{:L('SMTP_SETTING')}</a></li>
+			<li><a href="{:U('setting/sms')}">{:L('SMS_SETTING')}</a></li>		
+			<li><a href="{:U('setting/fields')}">{:L('CUSTOMIZING_FIELDS_SETTING')}</a></li>
+			<li><a href="{:U('setting/carousel')}">轮播图片</a></li>
+		</div>
+	</div>
+</div> -->
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>App设置</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="{:U('Dynamic/index')}">首页</a>
+            </li>
+            <li>
+                <a href="{:U('leads/index')}">系统设置</a>
+            </li>
+            <li class="active">
+                <strong>App设置</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+<div class="wrapper wrapper-content " style="padding-top:12px">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-lg-12">
+			<div class="ibox-content clearfix" style="padding-top:0px">
+				<form class="form-horizontal" enctype="multipart/form-data" action="{:U('setting/appsetting')}" method="post">
+					<table class="table" style="">
+						<thead>
+							<tr>
+								<th colspan="2">{:L('THE_DEFAULT_INFORMATION')}</th>
+							</tr>
+						</thead>
+						<tbody class="form-inline">
+							<tr>
+								<td width="300px;" class="tdleft">推送系统消息到APP</td>
+								<td>
+									<label style="display:inline;">
+										<input class="input-small" type="radio" name="push_message" <if condition="$app_config['value'] eq 1">checked="checked"</if> value="1"/>是
+									</label>&nbsp;
+									<label style="display:inline;">
+										<input class="input-small" type="radio" name="push_message" <if condition="$app_config['value'] eq 2">checked="checked"</if> value="2"/>否
+									</label>
+								</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>  
+								<td>
+									<input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<include file="Public:footer" />	

@@ -1,0 +1,119 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/js/jscolor/jscolor.js"></script>
+<script type="text/javascript">
+    //实例化编辑器
+	window.UEDITOR_UPLOAD_URL = "{:U('file/editor')}";
+</script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/ueditor.all.js"> </script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/lang/zh-cn/zh-cn.js"></script>
+<style type="text/css">
+.add_body >div >.nicescroll{
+	border-right:1px dotted #ccc
+}
+.add_body_title{
+	margin:15px auto 30px auto;
+	padding-left: 14px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.form-control{
+	float:left;
+}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-8">
+		<form class="form-horizontal" id="form" role="form" action="{:U('knowledge/edit')}" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="knowledge_id" value="{$knowledge.knowledge_id}"/>
+			<input type="hidden" name="jump_url" value="{$jump_url}"/>
+			<div class="ibox-content " id="add_body" >
+				<div class="row">
+					<div class="col-md-12 add_body">
+						<div class="full-height-scroll">
+							<div class="row" >
+								<div class="col-md-12 add_body_title" style="margin:20px 0 0 0px;">
+									<div class="all-inline">
+										<span class="sq-tag"></span>
+										<div class="text-tag">
+											<span>编辑知识</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-12 add_body_form" style="margin:20px 0 0 0px;">
+									<div class="form-group">
+										<label class="col-md-2 control-label">{:L('TITLE')}：</label>
+										<div class="col-md-6">
+											<input class="form-control required" aria-required="true" type="text" name="title" value="{$knowledge.title}" id="title" placeholder="{:L('ENTER_TITLE')}">
+										</div>
+										<div class="col-md-2"></div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-2 control-label">{:L('CATEGORY')}：</label>
+										<div class="col-md-6">
+											<select class="form-control" name="category_id" id="categoryList">
+												<option value="">--请选择--</option>
+												<volist  name="category_list" id="vo">
+												<option value="{$vo.category_id}" <if condition="($knowledge.category_id eq $vo['category_id'])">selected="selected"</if>>{$vo.name}</option>
+												</volist>
+											</select>
+										</div>
+										<div class="col-md-2"></div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-2 control-label">{:L('CONTENT')}：</label>
+										<div class="col-md-10">
+											<script id="editor" name="content" type="text/plain" style="width:90%;height:359px;">{$knowledge.content}</script>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-2 pull-right">
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="tfoot_div" class="clearfix">
+				<div class="clearfix" id="tfoot_page">
+					<div class="ibox-content" style="border-top: none;">
+						<div class="col-sm-offset-2" style="text-align:center;margin-left:0px;">
+							<input class="btn btn-primary" name="submit" type="submit" value="{:L('SAVE')}"/> &nbsp; 
+							<input class="btn  btn-primary" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<div style="display:none;" id="dialog-message3" title="{:L('SELECT THE LEADER')}">loading...</div>
+<script type="text/javascript">
+	var pm_heigth = window.screen.height * 0.5;
+	var innerHeight = window.innerHeight;
+	if(innerHeight < 730){
+		pm_heigth = 250;
+	}
+	$('#editor').css('height',pm_heigth+'px');
+	$("input[name='submit']").click(function(){			
+		if($("#title").val() == null || $("#title").val() == ""){
+			alert_crm('{:L('TITLE_CAN_NOT_EMPTY')}');
+			$("#title").focus(); 
+			return false;
+		}
+	})
+</script>
+<script type="text/javascript">
+    var ue = UE.getEditor('editor');
+</script>
+<include file="Public:footer" />	

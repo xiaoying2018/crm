@@ -1,0 +1,548 @@
+
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<style type="text/css">
+    .add_title{
+        padding-bottom:10px;
+        height: 60px;
+        margin-bottom:15px;
+    }
+    .thumb80{
+        height: 100px;
+    } 
+    .add_title>span{
+        border-bottom: 2px solid #1ab394;
+        font-size: 24px;
+    }
+    .add_body >div >.full-height-scroll{
+        border-right:1px dotted #ccc
+    }
+    .add_body_title{
+        margin:20px auto 20px auto;
+        padding-left: 25px;
+    }
+    .add_body_form{
+        padding-left: 38px;
+    }
+    .add_body_form>form>.form-group{
+        margin-bottom: 25px;
+    }
+    body{overflow-y:hidden;}
+    .form-control{
+        float:left;
+    }
+    .checkbox{float:left;}
+</style>
+<script>
+    $(function () {
+        $(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+        $(window).resize(function () {
+            $(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+        })
+    })
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+    <include file="Public:alert" />
+    <form class="form-horizontal" id="form" role="form" action="{:U('case/editdata')}" method="post">
+        <input type="hidden" name="cid" value="{$cid}">
+        <div class="ibox-content add_body" id="add_body" style="">
+            <div class="row">
+                <div class="col-md-12 add_body" style="padding-right: 0px;">
+                    <div class="full-height-scroll">
+                        <div class="row" >
+                            <div class="col-md-12 add_body_title">
+                                <div class="all-inline">
+                                    <span class="sq-tag"></span>
+                                    <div class="text-tag">
+                                        <span>案例基础信息</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-11 add_body_form">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">姓名：</label>
+                                    <div class="col-md-6">
+                                        <!--<div class="form-control"  value="{$casedata.names}" aria-required="true" aria-invalid="true">-->    
+                                        <div>{$details.names}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">项目分类：</label>
+                                    <div class="col-md-6">
+                                        <!--<input class="form-control error" type="text" id="character" name="character" value="{$casedata.character}" aria-required="true" aria-invalid="true">-->     
+                                        <div>{$details.character}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">专业分类：</label>
+                                    <div class="col-md-6">
+                                        <!--<input class="form-control error" type="text" id="character" name="character" value="{$casedata.character}" aria-required="true" aria-invalid="true">-->     
+                                        <div>{$details.programcate}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">案例特點：</label>
+                                    <div class="col-md-6">
+                                        <!--<input class="form-control error" type="text" id="character" name="character" value="{$casedata.character}" aria-required="true" aria-invalid="true">-->     
+                                        <div>{$details.majorcate}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">录入大学：</label>
+                                    <div class="col-md-6">
+                                        <!--<input class="form-control required error" type="text" id="receive_college" name="receive_college" value="{$casedata.receive_college}" aria-required="true" aria-invalid="true">-->     
+                                        <div>{$details.receive_college}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">录取专业：</label>
+                                    <div class="col-md-6">
+                                        <!--<input class="form-control required error" type="text" id="receive_major" name="receive_major" value="{$casedata.receive_major}" aria-required="true" aria-invalid="true">-->     
+                                        <div>{$details.receive_major}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">本科大学：</label>
+                                    <div class="col-md-6">
+                                        <div>{$details.undergraduate_college}</div>
+                                        <!--<input class="form-control required error" type="text" id="Undergraduate_college" name="undergraduate_college" value="{$casedata.undergraduate_college}" aria-required="true" aria-invalid="true">-->     
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">本科专业：</label>
+                                    <div class="col-md-6">
+                                        <div>{$details.undergraduate_major}</div>
+                                        <!--<input class="form-control required error" type="text" id="Undergraduate_major" name="undergraduate_major" value="{$casedata.undergraduate_major}" aria-required="true" aria-invalid="true">-->     
+                                    </div>
+                                </div>
+                                <div class="form-group cluecateBox">
+                                    <label class="col-md-4 control-label">学校级别：</label>
+                                    <div class="col-md-6">
+                                        <div>{$details.college_lev}</div>
+                                        <!--                                        <select class="form-control" required id="college_lev" name="college_lev" value="">
+                                                                                    <option value=''>--请选择--</option>
+                                                                                    <option value="S" <?php if($casedata['college_lev']=='S')echo "selected"; ?> >S</option>
+                                                                                    <option value="A" <?php if($casedata['college_lev']=='A')echo "selected"; ?> >A</option>
+                                                                                    <option value="B" <?php if($casedata['college_lev']=='B')echo "selected"; ?> >B</option>
+                                                                                    <option value="C" <?php if($casedata['college_lev']=='C')echo "selected"; ?> >C</option>
+                                                                                    <option value="Z" <?php if($casedata['college_lev']=='Z')echo "selected"; ?> >Z</option>
+                                                                                </select>-->
+                                    </div>
+                                </div>
+                                <div class="form-group cluecateBox">
+                                    <label class="col-md-4 control-label">日语等級：</label>
+                                    <div class="col-md-6">
+                                        <div>{$details.japan_language}</div>
+                                        <!--                                        <select class="form-control" required id="japan_language" name="japan_language" value="">
+                                                                                    <option value=''>--请选择--</option>
+                                                                                    <option value="N1" <?php if($casedata['japan_language']=='N1')echo "selected"; ?> >N1</option>
+                                                                                    <option value="N2" <?php if($casedata['japan_language']=='N2')echo "selected"; ?> >N2</option>
+                                                                                    <option value="N3" <?php if($casedata['japan_language']=='N3')echo "selected"; ?> >N3</option>
+                                                                                    <option value="N4" <?php if($casedata['japan_language']=='N4')echo "selected"; ?> >N4</option>
+                                                                                    <option value="N5" <?php if($casedata['japan_language']=='N5')echo "selected"; ?> >N5及以下</option>
+                                                                                </select>-->
+                                    </div>
+                                </div>
+                                <div class="form-group cluecateBox">
+                                    <label class="col-md-4 control-label">英語等級：</label>
+                                    <div class="col-md-6">
+                                        <div>{$details.eng_language}</div>
+                                        <!--                                        <select class="form-control" required id="eng_language" name="eng_language" value="">
+                                                                                    <option value=''>--请选择--</option>
+                                                                                    <option value="100分以上" <?php if($casedata['eng_language']=='100分以上')echo "selected"; ?> >100分以上</option>
+                                                                                    <option value="80-90" <?php if($casedata['eng_language']=='80-90')echo "selected"; ?> >80-90</option>
+                                                                                    <option value="70-80" <?php if($casedata['eng_language']=='70-80')echo "selected"; ?> >70-80</option>
+                                                                                    <option value="70分以下" <?php if($casedata['eng_language']=='70分以下')echo "selected"; ?> >70分以下</option>
+                                                                                </select>-->
+                                    </div>
+                                </div>
+                                <!-- 分类选择 -->
+                                <div class="form-group cluecateBox">
+                                    <label class="col-md-4 control-label">录入年份：</label>
+                                    <div class="col-md-6">
+                                        <div>{$details.receive_year}</div>
+                                        <!--                                        <select class="form-control" required id="receive_year" name="receive_year" value="">
+                                                                                    <option value=''>--请选择--</option>
+                                                                                    <for start="1980" end="2100">
+                                                                                    <option value="{$i}"  <?php if($casedata['receive_year']==$i)echo "selected"; ?> >
+                                                                                        {$i}
+                                                                                    </option>
+                                                                                    </for>
+                                                                                </select>-->
+                                    </div>
+                                </div>
+                                <div class="form-group cluecateBox">
+                                    <label class="col-md-4 control-label">备注：</label>
+                                    <div class="col-md-6">
+                                        <div>{$details.remark}</div>
+                                        <!--                                        <select class="form-control" required id="receive_year" name="receive_year" value="">
+                                                                                    <option value=''>--请选择--</option>
+                                                                                    <for start="1980" end="2100">
+                                                                                    <option value="{$i}"  <?php if($casedata['receive_year']==$i)echo "selected"; ?> >
+                                                                                        {$i}
+                                                                                    </option>
+                                                                                    </for>
+                                                                                </select>-->
+                                    </div>
+                                </div>
+                                
+                                <!--联系人-->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">签约产品：</label>
+                                    <div class="col-md-6">
+                                        <div>{$details.contract_product}</div>
+                                        <!--                                       <select class="form-control" required id="contract_product" name="contract_product" value="">
+                                                                                    <option value=''>--请选择--</option>
+                                                                                    <volist name="productdata" id="vo" key="key">
+                                                                                        <option value="{$vo['product_id']}"  <?php if($casedata['contract_product']==$vo['product_id']){echo 'selected';} ?>  >
+                                                                                            {$vo['name']}
+                                                                                        </option>
+                                                                                    </volist>
+                                                                                </select>   -->
+                                    </div>
+                                </div>
+                                <div class="form-group cluecateBox">
+                                    <label class="col-md-4 control-label">研究计划书：</label>
+                                    <div class="col-md-6">
+                                        <volist name="newf[1]" id="vo">
+                                            <a href="{$vo.file_path}" class="litebox_file">{$vo.name}</a><br>
+                                        </volist>
+                                        <!--<div>{$details.receive_year}</div>-->
+                                        <!--                                        <select class="form-control" required id="receive_year" name="receive_year" value="">
+                                                                                    <option value=''>--请选择--</option>
+                                                                                    <for start="1980" end="2100">
+                                                                                    <option value="{$i}"  <?php if($casedata['receive_year']==$i)echo "selected"; ?> >
+                                                                                        {$i}
+                                                                                    </option>
+                                                                                    </for>
+                                                                                </select>-->
+                                    </div>
+                                </div>
+                                <div class="form-group cluecateBox">
+                                    <label class="col-md-4 control-label">offer：</label>
+                                    <div class="col-md-6">
+                                        <volist name="newf[2]" id="vo">
+                                            <a href="{$vo.file_path}" class="litebox_file">{$vo.name}</a><br>
+                                        </volist>
+                                        <!--<div>{$details.receive_year}</div>-->
+                                        <!--                                        <select class="form-control" required id="receive_year" name="receive_year" value="">
+                                                                                    <option value=''>--请选择--</option>
+                                                                                    <for start="1980" end="2100">
+                                                                                    <option value="{$i}"  <?php if($casedata['receive_year']==$i)echo "selected"; ?> >
+                                                                                        {$i}
+                                                                                    </option>
+                                                                                    </for>
+                                                                                </select>-->
+                                    </div>
+                                </div>
+                                <div class="form-group cluecateBox">
+                                    <label class="col-md-4 control-label">照片：</label>
+                                    <div class="col-md-6">
+                                        <volist name="newf[3]" id="vo">
+                                            <a href="{$vo.file_path}" class="litebox_file">{$vo.name}</a><br>
+                                        </volist>
+                                        <!--<div>{$details.receive_year}</div>-->
+                                        <!--                                        <select class="form-control" required id="receive_year" name="receive_year" value="">
+                                                                                    <option value=''>--请选择--</option>
+                                                                                    <for start="1980" end="2100">
+                                                                                    <option value="{$i}"  <?php if($casedata['receive_year']==$i)echo "selected"; ?> >
+                                                                                        {$i}
+                                                                                    </option>
+                                                                                    </for>
+                                                                                </select>-->
+                                    </div>
+                                </div>
+                                <div class="form-group cluecateBox">
+                                    <label class="col-md-4 control-label">其他附件：</label>
+                                    <div class="col-md-6">
+                                        <volist name="newf[4]" id="vo">
+                                            <a href="{$vo.file_path}" class="litebox_file">{$vo.name}</a><br>
+                                        </volist>
+                                        <!--<div>{$details.receive_year}</div>-->
+                                        <!--                                        <select class="form-control" required id="receive_year" name="receive_year" value="">
+                                                                                    <option value=''>--请选择--</option>
+                                                                                    <for start="1980" end="2100">
+                                                                                    <option value="{$i}"  <?php if($casedata['receive_year']==$i)echo "selected"; ?> >
+                                                                                        {$i}
+                                                                                    </option>
+                                                                                    </for>
+                                                                                </select>-->
+                                    </div>
+                                </div>
+                                <!--                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label">附件offer：</label>
+                                                                    <input type="file" name="main_pic[]" id="main_pic"/>
+                                                                </div>-->
+                                <!--<span>附件下载</span>-->
+
+<!--                                <if condition="$wordext=='jpg' || $wordext=='jpeg' || $wordext=='png' || $wordext=='gif' ">
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label">照片：</label>
+                                        <div class="col-md-4">
+                                            <img id="main_pic_prev" class="thumb80" src="{$details.pic}" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="btn btn-success fileinput-button">
+                                                <span>选择图片</span>
+                                                <input type="file" name="main_word" id="main_word"/>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                    <else />
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label">offer：</label>
+                                        <button>
+                                        <a href = "{$details.words}">
+                                            下载offer附件
+                                        </a>
+                                    </button>
+                                    </div>
+                                </if>-->
+
+<!--                                <div class="form-group">
+                                    <label class="col-md-4 control-label">附件offer：</label>
+                                    <button>
+                                        <a href = "{$details.words}">
+                                            下载offer附件
+                                        </a>
+                                    </button>
+                                </div>-->
+                                <!--数据录入人-->
+                                <!--                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label">数据录入人：</label>
+                                                                    <div class="col-md-6">
+                                                                        <input class="form-control required error" type="text" id="contacts_name" name="coop_addr" value="" aria-required="true" aria-invalid="true">     
+                                                                    </div>
+                                                                </div>-->
+
+
+                                <script>
+                                    var CC = new Vue({
+                                        el: '.cluecateBox',
+                                        data: {
+                                            lists: {}
+                                        },
+                                        methods: {
+                                            refreshCluecate: function () {
+                                                var id = $('#block').val(),
+                                                        that = this;
+                                                $.ajax({
+                                                    url: "{:U('clueblock/search_cate')}",
+                                                    data: {block: id},
+                                                    dataType: 'JSON',
+                                                    type: 'GET',
+                                                    success: function (res) {
+                                                        that.lists = res.data;
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                    function refreshCluecate() {
+                                        CC.refreshCluecate();
+                                    }
+
+                                    refreshCluecate();
+                                </script>
+
+                                <volist name="field_list['main']" id="vo" key="key">
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label">{$vo.name}：</label>
+                                        <if condition="$vo['form_type'] == 'textarea'">
+                                            <if condition = "$vo['tip_start'] eq 1">
+                                                <div class="col-md-6">
+                                                    <textarea class="form-control" rows="5" name="{$vo.field}"></textarea>
+                                                </div>
+                                                <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                <else/>
+                                                <div class="col-md-8">
+                                                    <textarea class="form-control" rows="5" name="{$vo.field}"></textarea>
+                                                </div>
+                                            </if>
+                                            <elseif condition="$vo['form_type'] == 'address'"/>
+                                            <if condition = "$vo['tip_start'] eq 1">
+                                                <div class="col-md-7">
+                                                    {$vo.html}
+                                                </div>
+                                                <div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                <else/>
+                                                <div class="col-md-8">
+                                                    {$vo.html}
+                                                </div>
+                                            </if>
+                                            <elseif condition="$vo['form_type'] == 'box'"/>
+                                            <div class="col-md-6">
+                                                {$vo.html}
+                                            </div>
+                                            <if condition = "$vo['tip_start'] eq 1">
+                                                <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                <else/>
+                                                <div class="col-md-2"></div>
+                                            </if>
+                                            <elseif condition="$vo['field'] == 'name'"/>
+                                            <div class="col-md-6">
+                                                <input class="form-control required" id="name" name="name" onkeyup="checkinfo(name)" placeholder="" type="text" />
+                                            </div>
+                                            <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                            <else/>
+                                            <div class="col-md-6">
+                                                {$vo.html}
+                                            </div>
+                                            <if condition = "$vo['tip_start'] eq 1">
+                                                <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                <else/>
+                                                <div class="col-md-2"></div>
+                                            </if>
+                                        </if>
+                                    </div>
+                                </volist>
+                            </div>
+                            <!--						<div class="col-md-12 add_body_title">
+                                                                                    <div class="all-inline">
+                                                                                            <span class="sq-tag"></span>
+                                                                                            <div class="text-tag">
+                                                                                                    <span>附加信息</span>
+                                                                                            </div>
+                                                                                    </div>
+                                                                            </div>
+                                                                            <div class="col-md-11 add_body_form">
+                                                                                    <volist name="field_list['data']" id="vo" key="key">
+                                                                                            <div class="form-group">
+                                                                                                    <label class="col-md-4 control-label">{$vo.name}：</label>
+                                                                                                    <if condition="$vo['form_type'] == 'address' || $vo['form_type'] == 'box' || $vo['form_type'] == 'textarea'">
+                                                                                                            <div class="col-md-7">
+                                                                                                                    {$vo.html}
+                                                                                                            </div>
+                                                                                                            <if condition = "$vo['tip_start'] eq 1">
+                                                                                                                    <div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                                                                            <else/>
+                                                                                                                    <div class="col-md-1"></div>
+                                                                                                            </if>
+                                                                                                    <else/>
+                                                                                                            <div class="col-md-6">
+                                                                                                                    {$vo.html}
+                                                                                                            </div>
+                                                                                                            <if condition = "$vo['tip_start'] eq 1">
+                                                                                                                    <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                                                                            <else/>
+                                                                                                                    <div class="col-md-2"></div>
+                                                                                                            </if>
+                                                                                                    </if>
+                                                                                            </div>
+                                                                                    </volist>
+                                                                            </div>-->
+                            <div class="col-md-1 pull-right">
+                                <!-- <div style="height: 100%; border-right: 1px dashed gray;">&nbsp;sadf</div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tfoot_div" class="clearfix">
+            <div class="clearfix" id="tfoot_page">
+                <div class="ibox-content" style="border-top: none;">
+                    <!--<div class="col-sm-offset-2"><button type="submit" id="save_submit" class="btn btn-primary">创建案例</button></div>-->
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="" style="display:none;" id="dialog-validate" title="{:L('VALIDATE_COMPANY_RESULT')}">
+    <div id="search_leads_content"></div>
+    <div id="search_customer_content"></div>
+</div>
+<script type="text/javascript">
+    function checkinfo(param) {
+        var field_value = $('#' + param).val();
+        if (field_value) {
+            $.post('{:U("leads/checkinfo")}',
+                    {
+                        field_value: field_value,
+                        field_name: param,
+                    },
+                    function (data) {
+                        if (data.status == 1) {
+                            $('#' + param + '-error').remove('');
+                            $('#' + param).after('<label id="' + param + '-error" class="error" for="source"><i class="fa fa-times-circle"></i></label>');
+                            $('#' + param + '-error').html('<i class="fa fa-times-circle"></i>' + data.data);
+                        } else {
+                            $('#' + param + '-error').remove('');
+                        }
+                    },
+                    'json');
+        }
+    }
+    $(document).ready(function () {
+        $('#save_submit').prop('disabled', false);
+        /*form表单验证*/
+        $("#form").validate({
+            submitHandler: function (form) {
+                $('#save_submit').click(function () {
+                    $('#save_submit').prop('disabled', true);
+                });
+                form.submit();
+            }
+        });
+    });
+    $("[data-type='nummber']").keyup(function () {
+        if (isNaN($(this).val())) {
+            $(this).val($(this).val().replace(/\D/g, ''))
+        }
+    });
+//    $("#dialog-validate").dialog({
+//        autoOpen: false,
+//        modal: true,
+//        width: 400,
+//        maxHeight: 400,
+//        buttons: {
+//            "确定": function () {
+//                $(this).dialog("close");
+//            }
+//        },
+//        position: ["center", 100]
+//    });
+//    $(function () {
+//        $('#owner_name').click(
+//                function () {
+//                    $('#dialog-role-list').dialog('open');
+//                    $('#dialog-role-list').load("{:U('user/listDialog')}");
+//                }
+//        );
+//        $('#name').blur(
+//                function () {
+//                    name = $('#name').val();
+//                    if (name != '') {
+//                        $.post('{:U("leads/check")}',
+//                                {
+//                                    name: name
+//                                },
+//                                function (data) {
+//                                    if (data.data != 0) {
+//                                        var leads_result = '';
+//                                        var customer_result = '';
+//                                        if (data.data['leads'].length > 0) {
+//                                            $.each(data.data['leads'], function (k, v) {
+//                                                leads_result += (k + 1) + '、' + v + '</br>';
+//                                            });
+//                                            $("#search_leads_content").html("<h5>{:L('SAME_LEADS_COMPANY')}</h5>" + leads_result);
+//                                        }
+//                                        if (data.data['customer'].length > 0) {
+//                                            $.each(data.data['customer'], function (k, v) {
+//                                                customer_result += (k + 1) + '、' + v + '</br>';
+//                                            });
+//                                            $("#search_customer_content").html("<h5>{:L('SAME_CUSTOMER_COMPANY')}</h5>" + customer_result);
+//                                        }
+//                                        if (data.data['customer'].length > 0 || data.data['leads'].length > 0)
+//                                            $('#dialog-validate').dialog('open');
+//
+//
+//                                    }
+//                                },
+//                                'json');
+//                    }
+//                }
+//        );
+//    });
+</script>
+<include file="Public:footer" />

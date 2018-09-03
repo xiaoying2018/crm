@@ -1,0 +1,118 @@
+<style>
+	.error_message{color: #666;text-align: left;}
+	.select2{width: 170px;}
+</style>
+<form class="form-horizontal" id="activity_form" method="post">
+	<table class="table" style="border:none;">
+		<tr>
+			<td style="border:none;text-align:right;width: 100px;">活动编号：</td>
+			<td style="border:none;">
+				<input type="text" name="code" id="code" class="form-control" value="{$code}"/>
+			</td>
+			<td style="border:none;min-width: 150px;"><div class="error_message" id="error_code"></div></td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">活动名称：</td>
+			<td style="border:none;">
+				<input type="text" name="name" id="activity_name" class="form-control"/>
+			</td>
+			<td style="border:none;"><div class="error_message" id="error_name"></div></td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">类别：</td>
+			<td style="border:none;">
+				<select class="form-control select2" name="type">
+					<option value="1">收入</option>
+					<option value="2">支出</option>
+					<option value="3">其他</option>
+				</select>
+			</td>
+			<td style="border:none;"><div class="error_message" id="error_name"></div></td>
+		</tr>
+	</table>
+	<table class="table" style="border:none;">
+		<tbody id="table_activity">
+			<tr id="account_1" style="height: 38px;">
+				<td style="border:none;text-align:right;width: 100px;">相关科目：</td>
+				<td style="border:none;">
+					<div style="float:left;width:70%;">
+						<select class="form-control select2 account_id" name="account_id[]">
+							<volist name="account_list" id="vo">
+								<option value="{$vo['id']}" rel="{$vo['status_name']}">{$vo['code']}&nbsp;&nbsp;{$vo['name']}</option>
+							</volist>
+						</select>
+					</div>
+				</td>
+				<td style="border:none;min-width: 150px;"></td>
+			</tr>
+		</tbody>
+	</table>
+	<table class="table" style="border:none;">
+		<tr style="height: 38px;">
+			<td style="border:none;text-align:right;width: 100px;"></td>
+			<td style="border:none;">
+				<a href="javascript:void(0);" style="display: -moz-stack;margin: 30px 0px 0px; font-size: 12px; color: rgb(62, 133, 233);" id="add_btn">+新增科目</a>
+			</td>
+			<td style="border:none;"></td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">备注：</td>
+			<td style="border:none;">
+				<textarea class="form-control" rows="4" name="remark"></textarea>
+			</td>
+			<td style="border:none;min-width: 150px;"></td>
+		</tr>
+	</table>
+</form>
+<script>
+$(document).ready(function(){
+	$(".select2").select2();
+
+	$("#code").blur(function(){
+		$('#error_code').removeClass('onFocus');
+		$('#error_code').html('');
+		var code = $("#code").val();
+
+		if(code == ''){
+			$('#error_code').addClass('onFocus');
+			$('#error_code').html('活动编号不能为空！');
+		}
+	});
+	$("#activity_name").blur(function(){
+		var name = $('#account_name').val();
+		$('#error_name').removeClass('onFocus');
+		$('#error_name').html('');
+		if(name == ''){
+			$('#error_name').addClass('onFocus');
+			$('#error_name').html('活动名称不能为空！');
+		}
+	});
+
+	var m = 1;
+	$('#add_btn').click(function(){
+		m += 1;
+		$('#table_activity').append('\
+			<tr id="account_'+m+'" style="height: 38px;">\
+				<td style="border:none;text-align:right"><a href="javascript:void(0);" class="rem_search" rel="'+m+'" title="移除" style="margin-right: 10px;;"><span class="fa fa-times-circle"></span></a></td>\
+				<td style="border:none;">\
+					<div style="float:left;width:70%;">\
+					<select class="form-control select2 account_id" name="account_id[]">\
+						<volist name="account_list" id="vo">\
+							<option value="{$vo['id']}" rel="{$vo['status_name']}">{$vo['code']}&nbsp;&nbsp;{$vo['name']}</option>\
+						</volist>\
+					</select>\
+					</div>\
+				</td>\
+				<td style="border:none;min-width: 150px;"></td>\
+			</tr>\
+		');
+		$(".select2").select2(); 
+	});
+
+	//移除
+	$(document).on('click','.rem_search',function(){
+		var num = $(this).attr('rel');
+		$('#account_'+num).remove();
+	});
+});
+</script>

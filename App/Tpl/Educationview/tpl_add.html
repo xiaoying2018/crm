@@ -1,0 +1,230 @@
+<include file="Public:header" />
+<script src="/Public/js/WdatePicker.js" type="text/javascript"></script>
+<link href="/Public/js/skin/WdatePicker.css" rel="stylesheet" type="text/css">
+<link href="/Public/style/css/plugins/select2/select2.min.css" rel="stylesheet" />
+<script src="/Public/style/js/plugins/select2/select2.min.js"></script>
+<style type="text/css">
+.templete_Add .form-group {
+    margin: 10px 0;
+}
+.radio-info{
+    margin: 0 20px;
+}
+.textarea textarea{
+    width: 100%;
+}
+.select2-selection{
+    background-color: #FFFFFF !important;
+    background-image: none !important;
+    border: 1px solid #d8e3ef !important;
+    border-radius: 1px !important;
+    height: 32px;
+    line-height: 32px;
+}
+.select2-selection__rendered{
+    padding-left: 17px !important;
+}
+</style>
+<div class="templete_Add">
+    <div class="wrapper wrapper-content animated fadeIn col-md-6" v-for="n in 2">
+        <div class="ibox-content">
+            <div class="row add_row">
+                <div class="col-md-12 add_body">
+                    <div class="full-height-scroll form-horizontal">
+                        <div class="row">
+                            <div class="col-md-12 add_body_title" style="margin:20px 0 0 0px;">
+                                <div class="all-inline">
+                                    <span class="sq-tag"></span>
+                                    <div class="text-tag">
+                                        <span>基础信息</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+                                <!-- 文本 -->
+                                <div class="form-group clearfix" v-for="n in 2">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>字段名称</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" type="text" name="name" id="name" aria-required="true" value="" placeholder="请输入字段名称,如:字段名称" />
+                                    </div>
+                                </div>
+                                <!-- 下拉 -->
+                                <div class="form-group clearfix" v-for="n in 2">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>字段名称</label>
+                                    <div class="col-md-8">
+                                        <select name="" id="" class="form-control">
+                                            <option value="">下拉1</option>
+                                            <option value="">下拉2</option>
+                                            <option value="">下拉3</option>
+                                            <option value="">下拉4</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- 下拉2 -->
+                                <div class="form-group clearfix">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>请选择老师</label>
+                                    <div class="col-md-8">
+                                        <select name="" id="" class="select_teacher form-control"></select>
+                                    </div>
+                                </div>
+                                <!-- 时间选择 -->
+                                <div class="form-group clearfix" v-for="n in 2">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>字段名称</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control required Wdate" aria-required="true" type="text" id="start_date" name="start_date" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="2018-06-05" />
+                                    </div>
+                                </div>
+                                <!-- 多选 -->
+                                <div class="form-group clearfix" v-for="n in 1">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>字段名称</label>
+                                    <div class="col-md-8">
+                                        &nbsp;
+                                        <div class="checkbox checkbox-info" style="float:left;">
+                                            <input type="checkbox" name="expect_major[]" id="expect_major" value="经管">&nbsp;
+                                            <label for="expect_major">经管</label>
+                                        </div> &nbsp;
+                                        <div class="checkbox checkbox-info" style="float:left;">
+                                            <input type="checkbox" name="expect_major[]" id="expect_major1" value="法政国际关系">&nbsp;
+                                            <label for="expect_major1">法政国际关系</label>
+                                        </div> &nbsp;
+                                        <div class="checkbox checkbox-info" style="float:left;" v-for="(n,index) in 10">
+                                            <input type="checkbox" name="expect_major[]" :id="'expect_major'+index" value="其他">&nbsp;
+                                            <label :for="'expect_major'+index">其他</label>
+                                        </div>
+                                        <span id="expect_majorTip" style="float: left;line-height: 32px;margin-left: 5%;color:red;"></span>&nbsp; 
+                                    </div>
+                                </div>
+                                <!-- 单选 -->
+                                <div class="form-group clearfix">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>字段名称</label>
+                                    <div class="col-md-8">
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" name="con_contacts[sex]" id="con_contacts[nan]" value="先生">
+                                            <label for="con_contacts[nan]">先生</label>
+                                        </div>
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" name="con_contacts[sex]" id="con_contacts[nv]" value="女士">
+                                            <label for="con_contacts[nv]">女士</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 上传 -->
+                                <div class="form-group clearfix" v-for="n in 1">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>字段名称</label>
+                                    <div class="col-md-8">
+                                        <button class="btn btn-info btn-sm addfile">请选择上传附件</button>
+                                    </div>
+                                </div>
+                                <!-- 文本域 -->
+                                <div class="form-group clearfix" v-for="n in 1">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>字段名称</label>
+                                    <div class="col-md-8">
+                                        <div class="textarea">
+                                            <textarea name="" id="" cols="30" rows="10"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tfoot_div clearfix">
+            <div class="clearfix" id="tfoot_page">
+                <div class="ibox-content" style="border-top: none;">
+                    <div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><a href="javascript:void(0)" id="submit" class="btn btn-primary">确认添加</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" id="dialog-file" title="添加文件">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<include file="Public:footer" />
+<script>
+$(function() {
+    var templete_Add = new Vue({
+        el: '.templete_Add',
+        data: {},
+        mounted: function() {
+            $(".add_body").height(window.innerHeight - $(".add_row").offset().top - $(".tfoot_div").height() - 50);
+            $(window).resize(function() {
+                $(".add_body").height(window.innerHeight - $(".add_row").offset().top - $(".tfoot_div").height() - 50);
+            });
+            $(".full-height-scroll").niceScroll({
+                cursorcolor: "#ccc",//#CC0071 光标颜色 
+                cursoropacitymax: 0.5, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0 
+                touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备 
+                cursorwidth: "5px", //像素光标的宽度 
+                cursorborder: "0", //     游标边框css定义 
+                cursorborderradius: "5px",//以像素为光标边界半径 
+                autohidemode: false, //是否隐藏滚动条 
+                zindex:100,
+                background:"#F3F3F5",//滚动条背景色,
+                horizrailenabled:false
+            }); 
+
+            $(".addfile").click(function(){
+                $('#dialog-file').dialog('open');
+                $('#dialog-file').load('{:U("file/addlogfile")}');
+            });
+
+
+            $(".select_teacher").select2({
+                data: [{id: 0, text: '周老师'},{id: 1, text: '李老师'},{id: 2, text: '肖老师'},{id: 3, text: '贾老师'},{id: 4, text: '龙老师'}]
+            });
+        }
+    });
+})
+
+
+
+$("#dialog-file").dialog({
+    autoOpen: false,
+    modal: true,
+    width: 800,
+    maxHeight: 400,
+    position: ["center",100],
+    buttons: {
+        "确定": function () {
+           $.ajax({
+                cache: true,
+                type: "POST",
+                url:'{:U("file/getfiles")}',
+                data:$('#uploadForm').serialize(),
+                async: false,
+                success: function(data) {
+                   var result = data.data.file_list;
+                   $('#filecontent').removeAttr('class');
+                   var temp = '';
+                   if(result){
+                     $.each(result,function(k,v){
+                        temp += '<div class="showfile" id="del_'+v.file_id+'"><input type="hidden" name="file[]" value="'+v.file_id+'"/><img src="__PUBLIC__/productImg/'+v.pic+'">&nbsp;<span style="color:#646464;">'+v.name+'&nbsp;(&nbsp;'+v.size+'KB&nbsp;)</span>&nbsp;&nbsp;<a href="javascript:;" rel="'+v.file_id+'" onclick="del_file(this);"><img src="__PUBLIC__/img/delfile.png"/></a></div>';
+                     });
+                     $('#addfilediv').before(temp);
+                     var old_file_num = Number($('#file_num').html());
+                     var old_file_size = Number($('#file_size').html());
+                     var new_file_num = old_file_num+data.data.file_num;
+                     var new_file_size = old_file_size+data.data.file_size;
+                     $('#file_num').html(new_file_num);
+                     $('#file_size').html(new_file_size);
+                   }
+                  
+                }
+            });
+           $(this).dialog("close");
+        },
+        "取消": function () {
+             $(this).dialog("close");
+        }
+    }
+});
+</script>

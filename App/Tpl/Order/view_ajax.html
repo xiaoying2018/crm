@@ -1,0 +1,445 @@
+<!-- <link href="__PUBLIC__/style/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+<script src="__PUBLIC__/style/js/plugins/staps/jquery.steps.min.js"></script> -->
+<link href="__PUBLIC__/css/step.css" rel="stylesheet">
+<style>
+	.body_border tr td{border:1px solid #e7eaec}
+	thead tr td{background:#F9FaFC}
+    /*step*/
+    .nav > li.active {background: none;}
+</style>
+<ul class="nav nav-tabs" id="left_list">
+    <li class="active">
+        <a href="#tab1" data-toggle="tab" type="tab1">进度日志</a>
+    </li>
+    <li class="">
+        <a href="#tab2" data-toggle="tab" type="tab2">订单详情</a>
+    </li>
+    <li class="">
+        <a href="#tab4" data-toggle="tab" type="tab4">附件</a>
+    </li>
+    <div class="nav pull-right">
+        <if condition = "$is_business_code eq 1">
+            <span style="line-height: 30px;">（ 订单编号：{$order_info['code']} ）</span>
+        </if>
+    </div>
+</ul>
+<div class="tab-content">
+    <div id="tab1" class="tab-pane fade in active">
+        <div class="panel-body">
+            <div id="form-div">
+                <form id="add-form" action="{:U('Log/add')}" method="post">
+					<input type='hidden' name="r" value="rOrderLog"/>
+					<input type='hidden' name="module" value="order"/> 
+					<input type='hidden' id="order_id" name="id" value="{$order_id}"/> 
+					<input type='hidden' name="role_id" value="{$Think.session.role_id}"/>
+					<textarea name="content" placeholder="添加跟进记录" id="log-text" style="resize:none;" class="form-control" cols="30" rows="1"></textarea>
+					<div>
+						<div class="text-left" id="product-radio" style="padding-top:8px;display:none;">
+							<?php if (!empty($is_member)): ?>
+							关联订单 : &nbsp;&nbsp;&nbsp;
+							<volist name="order_list" key="key" id="vo">
+								<div class="radio radio-info radio-inline" style="margin-left: 10px;">
+									<input type="radio" name="id" class="business_code" id="status_{$key}" code="{$vo['order_info']['code']}" value="{$vo.order_id}">
+                                    <label for="status_{$key}">&nbsp;{$vo['order_info']['code']}&nbsp;&nbsp;&nbsp;</label>&nbsp;&nbsp;
+								</div>
+							</volist>
+							<?php endif; ?>
+						</div>
+						<div class="text-right" id="log-btn" style="padding-top:8px;display:none;"><button class="btn btn-primary" id="add_log" type="button">添加</button>&nbsp;</div><br>
+					</div>
+                </form>
+            </div>
+            <div id="log-list">
+                <volist name="log_list" id="vo">
+                    <div class="ibox-content gray-log" log-rel="{$vo['log_id']}" >
+                        <div class="social-feed-separated clearfix">
+                            <div class="social-feed-box">
+                                <div class="pull-right social-action dropdown">
+                                    <span data-toggle="dropdown" class="dropdown-toggle">
+                                        <i style="font-size:20px;cursor:pointer" class="fa fa-angle-down"></i>
+                                    </span>
+                                    <ul class="dropdown-menu m-t-xs" >
+                                        <li><a rel="{$vo['log_id']}" href="javascript:void(0);" type="{$vo['log_type']}" class="del_confirm" onclick="del_confirm(this);">{:L('DELETE')}</a></li>
+                                    </ul>
+                                </div>
+                                <div class="social-avatar">
+                                    <notempty name="vo.owner.user_name">
+                                    <img alt="image" style="width:35px;height:35px;" class="img-circle" src="{$vo['owner']['img']}">
+                                    <a class="role_info name-colors"  rel="{$vo.owner.role_id}" href="javascript:void(0);">{$vo['owner']['user_name']}</a>&nbsp;&nbsp;
+                                    <span class="text-muted">发布了一条快速记录</span>&nbsp;&nbsp;&nbsp;
+                                    <span class="text-muted" >{$vo.create_date|date="Y-m-d  H:i",###}</span>
+                                    </notempty>
+                                </div>
+                                <div class="social-body">
+                                    <span style="word-wrap:break-word;line-height: 21px;color: #000;">{$vo['content']}</span>
+                                    <if condition = "$vo['code']">
+                                        <div class="log-relation"><i class="fa fa-bookmark"></i>&nbsp;<span>相关商机 : {$vo['code']}</span></div>
+                                    </if>
+                                </div>
+                                <!-- <div class="pull-right color-a">
+                                    <a class="span-button" href="javascript:void(0);"><i class="fa fa-comment"></i></a>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </volist>
+            </div>
+        </div>
+    </div>
+    <div id="tab2" class="tab-pane fade in">
+        <div class="panel-body">
+            <div class="ibox">
+                <div class="row" style="height: 50px;margin-top: 10px;">
+                    <!-- <form id="form" action="form_wizard.html#" class="wizard-big wizard clearfix" role="application" novalidate="novalidate">
+                        <div class="steps clearfix"><ul role="tablist"><li role="tab" class="first current" aria-disabled="false" aria-selected="true"><a id="form-t-0" href="#form-h-0" aria-controls="form-p-0"><span class="current-info audible">当前步骤： </span><span class="number">1.</span> 待确认</a></li><li role="tab" class="disabled" aria-disabled="true"><a id="form-t-1" href="#form-h-1" aria-controls="form-p-1"><span class="number">2.</span> 生产中</a></li><li role="tab" class="disabled" aria-disabled="true"><a id="form-t-2" href="#form-h-2" aria-controls="form-p-2"><span class="number">3.</span> 配送中</a></li><li role="tab" class="disabled last" aria-disabled="true"><a id="form-t-3" href="#form-h-3" aria-controls="form-p-3"><span class="number">4.</span> 已完成</a></li></ul></div>
+                    </form> -->
+                    <!-- <div class="ibox-content" style="padding-top:9px;padding-bottom:4px;"> -->
+                        <ul class="nav nav-pills nav-justified step step-arrow">
+                            <li <if condition = "$vo['order_id'] elt $order_info['status_order_id']">class="active"</if>>
+                                <a>待确认</a>
+                            </li>
+                            <li <if condition = "$vo['order_id'] elt $order_info['status_order_id']">class="active"</if>>
+                                <a>生产中</a>
+                            </li>
+                            <li <if condition = "$vo['order_id'] elt $order_info['status_order_id']">class="active"</if>>
+                                <a>配送中</a>
+                            </li>
+                            <li <if condition = "$vo['order_id'] elt $order_info['status_order_id']">class="active"</if>>
+                                <a>已完成</a>
+                            </li>
+                        </ul>
+                    <!-- </div> -->
+                </div>
+                <empty name="order_list" >
+                    <include file="Public:nodata" />
+                <else/>
+                    <volist name="order_list" id="vo">
+                        <div class="pull-right" style="padding-bottom: 15px;clear: both;"> 
+                            <if condition="$order_id">
+                                <button style="margin-top:10px;" class="btn btn-primary btn-sm editproduct_view" rel={$vo['order_info']['order_id']}>编辑产品</button>
+                            </if>
+                        </div>
+                        <div class="row">
+                            <table class="table select-table">
+                                <thead>
+                                    <tr style="background-color:#f9fafc;text-align:center;">
+                                        <td style="background-color:#f9fafc;padding:14px;color:#999">产品名称</td>
+                                        <td style="background-color:#f9fafc;padding:14px;color:#999">价格(元)</td>
+                                        <td style="background-color:#f9fafc;padding:14px;color:#999">数量</td>
+                                        <td style="background-color:#f9fafc;padding:14px;color:#999">单位</td>
+                                        <td style="background-color:#f9fafc;padding:14px;color:#999">小计</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <volist name="vo['product_list']" id="v">
+                                        <tr>
+                                            <td style="text-align:center;padding:14px;color:#666;border-right: 1px solid #e7eaec;">{$v['product_info']['name']}</td>
+                                            <td style="text-align:center;padding:14px;color:#666;border-right: 1px solid #e7eaec;">{$v['unit_price']}</td>
+                                            <td style="text-align:center;padding:14px;color:#666;border-right: 1px solid #e7eaec;">{$v['amount']}</td>
+                                            <td style="text-align:center;padding:14px;color:#666;border-right: 1px solid #e7eaec;">{$v['unit']}</td>
+                                            <td style="text-align:center;padding:14px;color:#666">{$v['subtotal']}</td>
+                                        </tr>
+                                    </volist>
+                                    <tr>
+                                        <td colspan="5">
+                                            <span style="color:#000;line-height: 25px;">注：{$vo['order_info']['remark']}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5">
+                                            <span style="color:#000;line-height: 25px;">收货地址：{$vo['order_info']['address']}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div style="text-align:center;margin-top:15px;float:right;margin-bottom:15px;clear: both;">
+                                <div class="pull-right">销售订单金额(元):<span style="color:#ffd290;">&nbsp;{$vo['order_info']['price']}&nbsp;</span></div>&nbsp;&nbsp;
+                                <div class="pull-right">订单状态:<span style="color:#999;">&nbsp;{$vo['order_info']['status_name']}&nbsp;</span></div>&nbsp;&nbsp;
+                                <div class="pull-right"><i class="fa fa-bookmark" style="color: #19aa8d;"></i>&nbsp;相关订单:<span style="color:#999;">&nbsp;{$vo['order_info']['code']}&nbsp;</span></div>&nbsp;&nbsp;
+                            </div>
+                        </div>
+                        <div class="row" style="height: 10px;border-top: 1px dashed #d3d3d6;margin-top: 10px;"></div>
+                    </volist>
+                </empty>
+            </div> 
+        </div>
+    </div>
+	<div class="tab-pane fade in" id="tab4">
+	    <div class="panel-body">
+			<div class="pull-right">
+				<a href="javascript:void(0);" type="button" class="add_file btn btn-primary">上传</a>
+			</div>
+			<div style="clear:both;"></div>
+		</div>
+		<if condition="$file_info eq null">
+			<include file="Public:nodata" />
+		<else />
+			<table class="table product-table">
+				<tr>
+					<td>附件名称</td>
+					<td>{:L('SIZE')}</td>
+					<td>上传人</td>
+					<td>上传时间</td>
+					<td>操作</td>
+				</tr>
+				<volist name="file_info" id="vo">
+					<tr>
+						<td>
+							<img src="__PUBLIC__/productImg/{$vo['pic']}" alt="">&nbsp;&nbsp;&nbsp;
+							<a <if condition="in_array(getExtension($vo['name']),imgFormat())">class="litebox_file" href="{$vo['file_path']}" title="点击查看大图" data-litebox-group="group-1"<else/>href="javascript:;" file="{$vo.file_path}" filename="{$vo.name}" onclick="filedown(this);"</if>>{$vo.name}</a>
+						</td>
+						<td>
+							{$vo.size}KB
+						</td>
+						<td>
+							<notempty name="vo.owner.user_name"><a class="role_info" rel="{$vo['owner']['role_id']}" href="javascript:void(0)">{$vo.owner.user_name}</a></notempty>
+						</td>
+						<td>
+							<notempty name="vo.create_date">{$vo.create_date|date="Y-m-d H:i",###}</notempty>
+						</td>
+						<td class="tdleft">
+							<a href="javascript:void(0);" class="file_delete" rel="{$vo['file_id']}">{:L('DELETE')}</a>
+							<a href="javascript:void(0);" file="{$vo.file_path}" filename="{$vo.name}" onclick="filedown(this);">下载</a>
+						</td>
+					</tr>
+				</volist>
+			</table>
+		</if>
+	</div>
+</div>
+<div style="display:none;" id="dialog-file" title="添加附件">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+<script>
+    /**
+    * 页面加载时执行Tab start
+     */
+    $(function(){
+        var thisId = window.location.hash;
+        var atype = thisId.substr(1);
+        // $('#left_list a[type="'+atype+'"]').trigger('click');
+        $('#left_list a[type="'+atype+'"]').tab('show');
+     });
+    /**
+    * 页面加载时执行Tab end
+     */
+    $('#left_list a').click(function (e) {
+        // $(this).tab('show');
+        var maodian = '#'+$(this).attr('type');
+        url_jump(maodian);
+		var oid = $('#oid').val();
+		if(oid == ''){
+			$('#member-relation').removeClass('all_business');
+			$('#member-relation').addClass('all_business_a');
+		}
+    });
+
+    function url_jump(maodian){
+        $('#maodian').val(maodian);
+        var member_id = "{$member_id}";
+        var oid = $('#oid').val();
+        if(oid > 0){
+            var url = "{:U('member/view','id=')}"+member_id+'&oid='+oid+maodian;
+        }else{
+            var url = "{:U('member/view','id=')}"+member_id+maodian;
+        }
+        // $("body").scrollTop(0);
+        // window.location.href = 'http://'+window.location.host+url;
+        window.history.replaceState({},0,'http://'+window.location.host+url);
+    }
+
+    /**
+     * 附件 如果是图片时 双击可查看大图
+     */
+    $('.litebox_file').liteBox({
+      revealSpeed: 400,
+      background: 'rgba(0,0,0,.8)',
+      overlayClose: true,
+      escKey: true,
+      navKey: true,
+      errorMessage: '图片加载失败.'
+    });
+	$("#dialog-file").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 800,
+		maxHeight: 400,
+		position: ["center",100],
+		buttons: {
+			"确定": function () {
+				location.reload();
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+	$(".add_file").click(function(){
+		$('#dialog-file').dialog('open');
+		$('#dialog-file').load('{:U("file/add","r=RMemberFile&module=member&id=".$member_id)}');
+	});
+
+	$('.business_code').on('click',function(){
+		var is_checked = $(this).attr('rel');
+		if(is_checked == 1){
+			$(this).attr('rel','');
+			$(this).prop('checked', false);
+		}else{
+			$('.business_code').attr('rel','');
+			$(this).attr('rel',1);
+		}
+	});
+    /*跟进记录*/
+    function btnHide(){
+        $('#log-text').attr('rows',1);
+        $('#log-btn').hide();
+        $('#product-radio').hide();
+        $('#log-text').val('');
+    }
+    $('#log-text').focus(function(){
+        $(this).attr('rows',4);
+        $('#log-btn').show();
+        $('#product-radio').show();
+        $('#add_log').prop('disabled',false);
+    });
+    $('#log-text').focusout(function(){
+        var code_id = $("input[name='id']:checked").val();
+        if($(this).val() == '' && code_id == ''){
+            btnHide();
+        }
+    });
+    $('#quxiao').click(function(){
+        btnHide();
+        return false;
+    });
+    /*ajax 提交记录*/
+    var order_id = "{$order_id}";
+    $('#add_log').click(function(){
+        var radio_id = $('#product-radio input:radio:checked').val();//
+        var code = $('#product-radio input:radio:checked').attr('code');
+        var html_code = "<div class='log-relation'><i class='fa fa-bookmark'></i>&nbsp;<span>相关订单:"+code+"</span></div>";
+        //console.log(radio_id);
+        var log_type = 'rBusinessLog';
+        
+        if(radio_id == null || radio_id == 0){
+            var html_code = '';
+            $("#order_id").val(order_id);
+
+            if(order_id == null || order_id == 0){
+                $("[name='r']").val('RMemberLog');
+                $("[name='module']").val('member');
+                $("#order_id").val("{$member_id}");
+                log_type = 'rMemberLog';
+            }
+        }
+        $(this).prop('disabled',true);
+        $.post("{:U('Log/add')}", $("#add-form").serialize(), function(data){
+            if(data != 0){
+                var content = $('#log-text').val().replace('&nbsp','&NBSP');
+                var log_html = "<div class='ibox-content gray-bg' log-rel='"+data.log_id+"' style='margin-bottom: 18px'><div class='social-feed-separated clearfix'><div class='social-feed-box'><div class='pull-right social-action dropdown'><span data-toggle='dropdown' class='dropdown-toggle'><i style='font-size:20px;cursor:pointer' class='fa fa-angle-down'></i></span><ul class='dropdown-menu m-t-xs' ><li><a  rel='"+data.log_id+"' href='javascript:void(0);' type='"+log_type+"' class='del_confirm' onclick='del_confirm(this);'>{:L('DELETE')}</a></li></ul></div><div class='social-avatar'><img alt='image' style='width:35px;height:35px;' class='img-circle' src='"+data.owner.img+"'><a class='role_info name-colors'  rel='"+data.owner.role_id+"' href='javascript:void(0)'>"+data.owner.user_name+"</a>&nbsp;&nbsp;<span class='text-muted'>添加了一条快快速记录</span>&nbsp;&nbsp;<span class='text-muted' >"+data.date+"</span></div><div class='social-body'><span style='word-wrap:break-word;line-height: 21px;color: #000;'>"+content+"</span>"+html_code+"</div></div></div></div>";
+                $('#log-list').prepend(log_html);
+                btnHide();
+            }else{
+                alert_crm('添加失败, 请重试');
+                $('#add_log').prop('disabled',false);
+            }
+            $("[name='r']").val('rBusinessLog');
+            $("[name='module']").val('business');
+            $("#order_id").val(order_id);
+        });
+    });
+    /*删除日志*/
+    function del_confirm(e){
+        swal({
+            title: "确定要删除沟通日志吗？",
+            text: "删除后将无法恢复，请谨慎操作！",
+            type: "warning",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "是的，我要删除！",
+            cancelButtonText:'让我再考虑一下…',
+            closeOnConfirm:false,
+            closeOnCancel:false
+        },
+        function(isConfirm){
+            if (isConfirm) {
+                var log_id = $(e).attr('rel');
+                var type = $(e).attr('type');
+                $.get("{:U('log/delete')}", {r:type, id:log_id}, function(data){
+                    if(data != 0){
+                        swal({
+                            title: "删除成功！",
+                            text: "",
+                            type: "success"
+                        });
+                        $("[log-rel='"+log_id+"']").remove();
+                    }else{
+                        swal({
+                            title: "操作失败！",
+                            text:data.info,
+                            type: "error"
+                        })
+                        return false;
+                    }
+                });
+            } else {
+                swal("已取消","您取消了删除操作！","error");
+            }
+        });
+    };
+    //删除附件
+    $('.file_delete').click(function(){
+        var file_id = $(this).attr('rel');
+        swal({
+            title: "您确定要删除附件信息吗？",
+            text: "删除后将无法恢复，请谨慎操作！",
+            type: "warning",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "是的，我要删除！",
+            cancelButtonText:'让我再考虑一下…',
+            closeOnConfirm:false,
+            closeOnCancel:false
+        },
+        function(isConfirm){
+            if (isConfirm) {
+                $.ajax({
+                    type:'get',
+                    url: "{:U('file/delete','r=RMemberFile&id=')}"+file_id,
+                    async: false,
+                    success: function (data) {
+                        if (data.status == 1) {
+                            swal("删除成功！", "您已经永久删除了信息！", "success");
+                            location.reload();
+                        }else{
+                            swal({
+                                title: "操作失败！",
+                                text:data.info,
+                                type: "error"
+                            })
+                            return false;
+                        }
+                    },
+                    dataType: 'json'
+                });
+            } else {
+                swal("已取消","您取消了删除操作！","error");
+            }
+        });
+    });
+
+    $(".editproduct_view").click(function(){
+    	var order_id = $(this).attr('rel');
+    	$('#dialog-editproduct').dialog('open');
+    	$('#dialog-editproduct').load('{:U("product/mutildialog_product","order_id=")}'+order_id);
+    });
+</script>

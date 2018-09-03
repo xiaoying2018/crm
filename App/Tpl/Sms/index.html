@@ -1,0 +1,101 @@
+<include file="Public:header" />
+<style>
+table tbody tr{cursor:move;}
+</style>
+<div class="wrapper wrapper-content " >
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+            	<div class="ibox-content">
+				<div class="title-bar" style="margin-bottom:10px;border-bottom:1px solid #e3e3e3;padding-top:0px;padding-left:0px;">
+					<div class="row  clearfix" id="title-hide">
+						<ul class="breadcrum pull-left" style="font-size:14px;font-weight:700">
+							{:L('SMS_TPL_SETTING')}
+						</ul>
+						<div class="pull-right">
+							<a href="javascript:void(0);" id="add" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> {:L('ADD_SMS_TPL')}</a>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<form action="{:U('sms/delete')}" id="form1" method="post">
+						<div class="col-sm-12">
+							<table class="table table-hover" width="95%" border="0" cellspacing="1" cellpadding="0">
+								<notempty name="templateList">
+									<thead>
+										<tr>
+											<th width="20%">&nbsp;{:L('TPL_SUBJECT')}</th>
+											<th width="60%">{:L('CONTENT')}</th>
+											<th width="20%">&nbsp;&nbsp;&nbsp;{:L('OPERATING')}</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<td colspan="3">
+												<!-- <div class="span8"><span style="color: rgb(243, 40, 12);">{:L('SAVE_ORDER_TIPS')}</span></div> -->
+											</td>
+										</tr>
+									</tfoot>
+									<tbody>
+										<volist name="templateList" id="vo">
+											<tr>
+												<td>{$vo.subject}</td>
+												<td>{$vo.content}</td>
+												<td>
+													&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" rel="{$vo['template_id']}" class="edit">{:L('EDITOR')}</a>&nbsp;&nbsp;
+													<a href="{:U('sms/delete','id='.$vo['template_id'])}" >删除</a>
+												</td>
+											</tr>
+										</volist>
+									</tbody>
+								<else />
+									<tr>
+										<td>{:L('EMPTY_TPL_DATA')}</td>
+									</tr>
+								</notempty>
+							</table>
+						</div> 
+					</form>
+				</div>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" id="dialog-add" title="{:L('ADD_STATUS')}">loading...</div>
+<div style="display:none;" id="dialog-edit" title="{:L('EDIT_STATUS')}">loading...</div>
+<script type="text/javascript">	
+$("#dialog-add").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 400,
+	position: ["center",100]
+});
+$("#dialog-edit").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 400,
+	position: ["center",100]
+});
+
+$("table tbody").sortable({connectWith: "table tbody"});
+
+$(function(){
+	$("#check_all").click(function(){
+		$("input[class='list']").prop('checked', $(this).prop("checked"));
+	});
+	$("#add").click(function(){
+		$('#dialog-add').dialog('open');
+		$('#dialog-add').load('{:U("sms/add")}');
+	});
+	$(".edit").click(function(){
+		var id = $(this).attr('rel');
+		$('#dialog-edit').dialog('open');
+		$('#dialog-edit').load('{:U("sms/edit","id")}'+id);
+	});
+})
+</script>
+<include file="Public:footer" />

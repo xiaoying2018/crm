@@ -1,0 +1,390 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/css/validator.css"/>
+<style>
+	table tbody tr{cursor:move;padding:0px;}
+	.table thead>tr>th{padding:3px;}
+	.table tbody>tr>td{padding:3px;}
+
+	.menu{
+		line-height: 30px;
+	}
+	.menu ul li{
+		list-style-type:none;
+		float:left;
+		font-size:14px;
+		padding:1px 15px;
+		cursor: pointer;
+		border:1px solid #ccc;
+	}
+	.con_active{background-color: #1ab394;color: #fff;}
+</style>
+<script>
+$(function(){
+	var scroll_width = 5;
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-10);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-10);
+		$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+	})
+	$("#tab_Test3").FrozenTable(1,0,0);
+	$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width).width($("#oTableLH_tab_Test3").width());
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+})
+</script>
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<include file="Public:alert" />
+		<div class="col-md-12">
+			<include file="Setting:setting_left" />
+			<div class="col-lg-10 ">
+				<div class="table-content" style="padding-bottom:10px">
+					<div class="ibox-content" style="border-bottom:none;">
+						<div class="row">
+							<div class="col-lg-3">
+								<div class="pull-left" >
+									<button onclick="del_status(this)" style="background:#fff;border:1px solid #e3e3e3;color:#000;" type="button" class="btn btn-primary" >&nbsp;{:L('DELETE')}</button>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="menu" style="margin-bottom: 0 auto;">
+									<ul style="float:left;">
+										<li class="con" id="con_1" rel="1">资产</li>
+										<li class="con" id="con_2" rel="2" style="border-left: none;">负债</li>
+										<li class="con" id="con_3" rel="3" style="border-left: none;">权益</li>
+										<li class="con" id="con_4" rel="4" style="border-left: none;">成本</li>
+										<li class="con" id="con_5" rel="5" style="border-left: none;">损益</li>
+									</ul>
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="pull-right">
+								<a class="btn btn-primary" id="add"><i class="fa fa-plus-circle"></i> &nbsp;添加科目</a>
+							</div>
+							</div>
+						</div>
+					</div>
+					<form action="" id="form1" method="post">
+						<div class="col-sm-12 ibox-content" style="margin-top:0px;padding:0px;">
+							<div class="full-height-scroll" id="table_div" style="left:0px;top:0px;">
+								<table class="table table-hover table-striped table_thead_fixed" id="tab_Test3" >
+									<notempty name="account_list">
+									<thead>
+										<tr class="tabTh">
+											<td style="width:50px;text-align:center;">
+												<div class="checkbox checkbox-primary">
+													<input type="checkbox" class="check_all"/>
+													<label for=""></label>
+												</div>
+											</td>
+											<td>操作</td>
+											<td>编码</td>
+											<td>名称</td>
+											<td>类别</td>
+											<td>余额方向</td>
+											<td>状态</td>
+										</tr>
+									</thead>
+									<tbody>
+										<volist name="account_list" id="vo">
+											<tr>
+												<td style="text-align:center;">
+													<div class="checkbox checkbox-primary">
+														<input name="account_id[]" class="check_list" type="checkbox" value="{$vo.id}"/>
+														<label for=""></label>
+													</div>
+												</td>
+												<td>
+													<a class="add" href="javascript:void(0)" rel="{$vo['id']}" title="添加子类">
+														<i class="fa fa-plus"></i>
+													</a>&nbsp;&nbsp;
+													<a class="edit" href="javascript:void(0)" rel="{$vo['id']}" title="编辑">
+														<i class="fa fa-pencil"></i>
+													</a>
+												</td>
+												<td>{$vo.code}</td>
+												<td>{$vo.name}</td>
+												<td>
+													<switch name="vo.category" >
+														<case value="10">流动资产</case>
+														<case value="11">非流动资产</case>
+														<case value="20">流动负债</case>
+														<case value="21">非流动负债</case>
+														<case value="30">所有者权益</case>
+														<case value="40">成本</case>
+														<case value="50">营业收入</case>
+														<case value="51">其他收益</case>
+														<case value="52">期间费用</case>
+														<case value="53">其他损失</case>
+														<case value="54">营业成本及税金</case>
+														<case value="55">以前年度损益调整</case>
+														<case value="56">所得税</case>
+														<case value="57">表外科目</case>
+														<default />
+													</switch>
+												</td>
+												<td><if condition = "$vo['type'] eq 1">借<else />贷</if></td>
+												<td>
+													<a class="pause" href="javascript:void(0)" rel="{$vo.id}">
+														<div class="pause_{$vo['id']}">
+															<if condition = "$vo['is_pause'] eq 1">
+																<span style="background-color:#78cd51;color:#fff;padding: 4px;border-radius:1px;" title="点击禁用">已启用</span>
+															<else />
+																<span style="background-color:#999;color:#fff;padding: 4px;border-radius:1px;" title="点击启用">已禁用</span>
+															</if>
+														</div>
+													</a>
+												</td>
+											</tr> 
+										</volist>
+									</tbody>
+									<else />
+										<tr>
+											<td><include file="Public:nodata" /></td>
+										</tr>
+									</notempty>
+								</table>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="" style="display:none;" id="dialog-add" title="添加科目">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div class="" style="display:none;" id="dialog-edit" title="编辑科目">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+</div>
+<script type="text/javascript">
+$("#dialog-add").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 450,
+	position: ["center",100],
+	close:function(){
+		$(this).html("");
+	},
+	buttons: {
+		"确定": function () {
+			var max_num = $('#max_num').val();
+			var prefixion = $('#prefixion').val();
+			if(prefixion){
+				var code = prefixion+max_num;
+			}else{
+				var code = $('#code').val();
+			}
+			var name = $('#account_name').val();
+			if(code == '' || name == ''){
+				if(code == ''){
+					$('#error_code').addClass('onFocus');
+					$('#error_code').html('科目编码不能为空！');
+					if(prefixion){
+						$("#max_num").focus();
+					}else{
+						$("#code").focus();
+					}
+				}
+				if(name == ''){
+					$('#error_name').addClass('onFocus');
+					$('#error_name').html('科目名称不能为空！');
+					if(code == ''){
+						if(prefixion){
+							$("#max_num").focus();
+						}else{
+							$("#code").focus();
+						}
+					}else{
+						$("#account_name").focus();
+					}
+					
+				}
+				return false;
+			}
+			$('#account_form').submit();
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$("#dialog-edit").dialog({
+	autoOpen: false,
+	// modal: true,
+	width: 600,
+	maxHeight: 450,
+	position: ["center",100],
+	close:function(){
+		$(this).html("");
+	},
+	buttons: {
+		"确定": function () {
+			var parent_id = $('#parent_id option:selected').val();
+			var max_num = $('#max_num').val();
+			var prefixion = $('#prefixion').val();
+			if(parent_id != '' && max_num == ''){
+				$('#error_code').addClass('onFocus');
+				$('#error_code').html('科目编码不能为空！');
+				return false;
+			}
+			var code = prefixion+max_num;
+			var name = $('#account_name').val();
+			if(code == '' || name == ''){
+				if(code == ''){
+					$('#error_code').addClass('onFocus');
+					$('#error_code').html('科目编码不能为空！');
+					$("#max_num").focus();
+				}
+				if(name == ''){
+					$('#error_name').addClass('onFocus');
+					$('#error_name').html('科目名称不能为空！');
+					if(code == ''){
+						$("#max_num").focus();
+					}else{
+						$("#account_name").focus();
+					}
+				}
+				return false;
+			}
+			$('#account_form').submit();
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+
+$(function(){
+	var by = {$Think.get.by|default=1};
+	$(".con").each(function(){
+    	var rel = $(this).attr('rel');
+    	if(rel == by){
+    		$('#con_'+by).addClass('con_active');
+    	}else{
+    		$('#con_'+rel).removeClass('con_active');
+    	}
+    });
+
+	$('.con').click(function(){
+		var con_rel = $(this).attr('rel');
+		window.location.href = "{:U('setting/account','by=')}"+con_rel;
+	})
+
+	$("#check_all").click(function(){
+		$("input[class='list']").prop('checked', $(this).prop("checked"));
+	});
+	$("#add").click(function(){
+		var by = {$Think.get.by|default=1};
+		$('#dialog-add').dialog('open');
+		$('#dialog-add').load('{:U("setting/accountadd","by=")}'+by);
+	});
+	$(".add").click(function(){
+		var parent_id = $(this).attr('rel');
+		var by = {$Think.get.by|default=1};
+		$('#dialog-add').dialog('open');
+		$('#dialog-add').load('{:U("setting/accountadd","parent_id=")}'+parent_id+'by='+by);
+	});
+	$(".edit").click(function(){
+		var id = $(this).attr('rel');
+		$('#dialog-edit').dialog('open');
+		$('#dialog-edit').load('{:U("setting/accountedit","id=")}'+id);
+	});
+})
+
+function del_status(obj){
+	var id_array = new Array();
+	$("input.check_list:checked").each(function(){  
+		id_array.push($(this).val());
+	});
+	if(id_array.length == 0){
+		swal({
+			title: "温馨提示",
+			text: "请先选择要删除的科目!",
+			type: "warning"
+		})
+		return false;
+	}else{
+		swal({
+			title: "您确定要删除该科目吗？",
+   			text: "删除后将无法恢复，请谨慎操作！",
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "是的，我要删除！",
+	        cancelButtonText:'让我再考虑一下…',
+	        closeOnConfirm:false,
+	        closeOnCancel:false
+		},
+		function(isConfirm){
+	        if (isConfirm) {
+				$.ajax({
+					type: "POST",
+					url: "{:U('setting/accountdel')}",
+					data: $("#form1").serialize(),
+					async: true,
+					success: function(data) {
+						if(data.status == 1){
+							swal({
+								title: "删除成功！",
+								text: "即将刷新页面!",
+								type: "success"
+							});
+							window.location.href="{:U('setting/account')}";
+						}else{
+							 swal({
+								title: "操作失败!",
+								text: data.info,
+								type: "error"
+							});
+						}
+					}
+				});
+			} else {
+	            swal("已取消","您取消了删除操作！","error");
+	        }
+	    });
+	}
+}
+//开启
+$('.pause').click(function(){
+	var account_id = $(this).attr('rel');
+	if(account_id){
+		$.ajax({
+		type:'get',
+		url:"{:U('setting/accountPause','id=')}"+account_id,
+		async:true,
+		success:function(data){
+			var options = '';
+			if(data.data == 1 && data.status == 1){
+				options = '<span style="background-color:#999;color:#fff;padding: 4px;border-radius:1px;" title="点击启用">已禁用</span>';
+			}else if(data.data == 2 && data.status == 1){
+				options = '<span style="background-color:#78cd51;color:#fff;padding: 4px;border-radius:1px;" title="点击禁用">已启用</span>';
+			}else{
+				alert_crm('状态修改失败，请重试！');
+			}
+			$('.pause_'+account_id).html(options);
+		},
+		dataType:'json'});
+	}
+});
+</script>
+<include file="Public:footer" />

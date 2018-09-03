@@ -1,0 +1,118 @@
+<style>
+	#datas tr{cursor : pointer;}
+</style>
+<if condition = "$_GET['customer_id'] eq ''">
+<div class="clearfix form-inline">
+	<ul class="nav pull-left form-inline">
+		<li class="pull-left m-t-xs">{:L('TO_FIND_THE_CONDITIONS')}</li>
+		<li class="pull-left" >
+			<select class="form-control" style="width:auto" id="field" onchange="changeCondition()" name="field">
+				<option class="word" value="customer_name" <if condition = "$search_field['field'] eq 'customer_name'">selected</if>>客户名称</option>
+				<option class="word" value="code" <if condition = "$search_field['field'] eq 'code'">selected</if>>相关商机</option>
+				<option class="business_status" value="status_id" <if condition = "$search_field['field'] eq 'status_id'">selected</if>>推进阶段</option>
+			</select>&nbsp;&nbsp;
+		</li>
+		<li id="conditionContent" class="pull-left">
+			<select class="form-control" id="condition" style="width:auto" name="condition" onchange="changeSearch()">
+				<option value="contains" <if condition = "$search_field['condition'] eq 'contains'">selected</if>>{:L('CONTAINS')}</option>
+				<option value="not_contain" <if condition = "$search_field['condition'] eq 'not_contain'">selected</if>>{:L('NOT_CONTAIN')}</option>
+				<option value="is" <if condition = "$search_field['condition'] eq 'is'">selected</if>>{:L('IS')}</option>
+				<option value="isnot" <if condition = "$search_field['condition'] eq 'isnot'">selected</if>>{:L('ISNOT')}</option>						
+				<option value="start_with" <if condition = "$search_field['condition'] eq 'start_with'">selected</if>>{:L('START_WITH')}</option>
+				<option value="end_with" <if condition = "$search_field['condition'] eq 'end_with'">selected</if>>{:L('END_WITH')}</option>
+				<option value="is_empty" <if condition = "$search_field['condition'] eq 'is_empty'">selected</if>>{:L('IS_EMPTY')}</option>
+				<option value="is_not_empty" <if condition = "$search_field['condition'] eq 'is_not_empty'">selected</if>>{:L('IS_NOT_EMPTY')}</option>
+			</select>&nbsp;&nbsp;
+		</li>
+		<li id="searchContent" class="pull-left">
+			<input id="search" type="text" class="input-medium form-control search-query" name="search" value="{$search_field['search']}" onkeydown="if(event.keyCode==13)changeCondition1(0)"/>&nbsp;&nbsp;
+		</li>
+		<li class="pull-left">
+			<button type="button" class="btn btn-primary" onclick="changeCondition1()">{:L('SEARCH')}</button>
+		</li>
+	</ul>
+</div>
+</if>
+<if condition="$business_list">
+	<table class="table table-hover">
+		<thead>
+			<tr style="background-color:#F5F5F6;">
+				<th>&nbsp;</th>
+				<th>客户名称</th>
+				<th>相关商机</th>
+				<th>相关产品</th>
+				<th>产品总额</th>
+				<th>推进阶段</th>
+			</tr>
+		</thead>
+		<tfoot id="footers">
+			<tr>
+				<td colspan="6">
+					{$page}
+				</td>
+			</tr>
+		</tfoot>
+		<tbody id="datas">
+			<volist name="business_list" id="vo">
+				<tr style="cursor:pointer;">
+					<td>
+						<div class="radio radio-info radio-inline" style="margin-left:15px;">
+							<input type="radio" class="customer_id" name="customer" value="{$vo.customer_id}" rel="{$vo.contacts_id}" /><label for=""></label>
+						</div>
+						<input type="hidden" name="business_id" value="{$vo.business_id}" />
+						<input type="hidden" value="{$vo.telephone}">
+						<!-- 整单折扣 -->
+						<input type="hidden" value="{$vo['final_discount_rate']}" />
+						<input type="hidden" name="business_name" value="{$vo['code']}" />
+						<!-- 相关产品信息 -->
+						<volist name="vo.business_product_list" id="vo1">
+							<div class="se_product_{$vo['business_id']}" style="margin:0px;padding:0px;" rel="{$vo1['product_id']}">
+								<input name="product_name" value="{$vo1['product_name']}" type="hidden">
+								<input name="ori_price" value="{$vo1['ori_price']}" type="hidden">
+								<input name="discount_rate" value="{$vo1['discount_rate']}" type="hidden">
+								<input name="unit_price" value="{$vo1['unit_price']}" type="hidden">
+								<input name="amount" value="{$vo1['amount']}" type="hidden">
+								<input name="unit" value="{$vo1['unit']}" type="hidden">
+								<input name="category_name" value="" type="hidden">
+							</div>
+						</volist>
+					</td>
+					<td>{$vo['customer_name']}</td>
+					<td>{$vo['code']}</td>
+					<td>{$vo['product_info']['name']}...({$vo['product_counts']})</td>
+					<td>{$vo['final_price']}</td>
+					<td>{$vo['status_name']}</td>
+				</tr>
+			</volist> 
+		</tbody>
+	</table>
+<else/>
+	<div style="clear:both">
+		<include file="Public:nodata" />
+	</div>
+</if>
+<script type="text/javascript">
+	$('#go_page').change(function(){
+		var sel = $(this).val();
+		$('#dialog-customer').load(sel);
+		return false;
+	});
+	$("#datas tr").click(function(){
+		// $(this).find('td:first-child .customer_id').prop('checked', !$(this).find('td:first-child .customer_id').prop('checked'));
+		$(this).find('td:first-child .customer_id').prop('checked', true);
+	});
+	$(function(){
+		$('#footers a').click(function(){ 
+			var rel = $(this).attr('href'); 
+			$('#dialog-customer').load(rel);   
+			return false;
+		});
+	}); 
+	function changeCondition1(){
+		var field = $('#field option:selected').val();
+		var condition = $('#condition option:selected').val();
+		var search = $('#search').val();
+		var url = "{:U('customer/clistdialog','field=')}"+field+'&condition='+condition+'&search='+search;
+		$('#dialog-customer').load(url);
+	}
+</script>

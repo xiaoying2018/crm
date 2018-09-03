@@ -1,0 +1,124 @@
+<style>
+	.form-horizontal .form-group{margin-left:0px;margin-right:0px;}
+	.control-label{color:#999;font-weight:normal;}
+	input[placeholder]{color:#d8d8d8;}
+	.clickcolor{background:#309dfc;color:#fff!important;}
+	.notcolor{background:#ddd;color:#fff!important;}
+</style>
+<form id="remind_form" class="form-horizontal" action="" method="get">
+	<input type="hidden" name="type_id" id="types_id" value="{$type_id}"/>
+	<input type="hidden" name="content_id" id="contents_id" value="{$content_id}"/>
+	<input type="hidden" name="m" value="business"/>
+	<input type="hidden" name="a" value="analytics"/>
+	<div id="duibi_role">
+	<empty name="dbname">
+		<div class="form-group">
+			<label class="col-md-2 control-label">对比人员：</label>
+			<div class="col-md-8" >
+				<select name="dbname[]" onchange="panduan();" class="form-control duibi_role_id" id="dbname_1" style="width:270px;">
+					<option value="">--请选择--</option>
+					<volist name="dbroleList" id="vo">
+						<option value="{$vo.role_id}">{$vo.role_name}-{$vo.user_name}</option>
+					</volist>
+				</select>
+			</div>
+			<div class="col-md-2"></div>
+		</div>
+	<else />
+		<volist name="dbname" key="k" id="vo">
+			<div class="form-group" id="con_search_{$k+1}">
+				<label class="col-md-2 control-label"><if condition = "$k eq 1">对比人员：</if></label>
+				<div class="col-md-8" >
+					<select name="dbname[]" onchange="panduan();" class="form-control pull-left duibi_role_id" id="dbname_{$k+1}" style="width:270px;">
+						<option value="">--请选择--</option>
+						<volist name="dbroleList" key="key" id="vo1">
+							<option value="{$vo1.role_id}" <if condition = "$vo eq $vo1['role_id']">selected</if>>{$vo1.role_name}-{$vo1.user_name}</option>
+						</volist>
+					</select>
+					<if condition = "$k gt 1">
+						<a href="javascript:void(0);" style="margin-left:10px;" class="rem_search pull-left" rel="{$k+1}" title="移除"><span class="fa fa-times-circle"></span></a>
+					</if>
+				</div>
+				<div class="col-md-2"></div>
+			</div>
+		</volist>	
+	</empty>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label"></label>
+		<div class="col-md-8">
+			<a href="javascript:void(0);" id="add_role_id">+添加对比人员</a>
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label">对比时间：</label>
+		<div class="col-md-8">
+			<a href="javascript:void(0);" class="btn select_time" rel="1" style="border:1px solid #DEE5ED;float:left;margin-right:15px;width:80px">本月度</a>
+			<a href="javascript:void(0);" class="btn select_time" rel="2" style="border:1px solid #DEE5ED;float:left;margin-right:15px;width:80px">本季度</a>
+			<a href="javascript:void(0);" class="btn select_time" rel="3" style="border:1px solid #DEE5ED;float:left;width:80px">本年度</a>
+			<a href="javascript:void(0);" style="font-size:12px;float:left;line-height:34px;margin-left:10px;" class="geng-d" >高级选项</a>
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+	<div class="form-group" id="advance_time" style="display:none;">
+		<label class="col-md-2 control-label"></label>
+		<div class="col-md-8">
+			<input type="text" id="start_date" name="start_date" style="width:130px;float:left;" placeholder="开始时间"  onFocus="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:&quot;#F{$dp.$D('end_date')||'2098-01-01'}&quot;})" class="form-control"/>
+			<input type="text" id="end_date" style="width:130px;float:left;margin-left:10px;"  placeholder="结束时间" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd', minDate:&quot;#F{$dp.$D(\'start_date\')}&quot;,maxDate:'2098-01-01'})" name="end_date" class="form-control"/>
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+	<input type="hidden" name="select_type" id="select_type" >
+</form>
+<script type="text/javascript">
+	var m = {$dbname_count} ? {$dbname_count} : 1;
+	$('#add_role_id').click(function(){
+		m += 1;
+		$('#duibi_role').append('<div class="form-group" id="con_search_'+m+'"><label class="col-md-2 control-label"></label><div class="col-md-8" ><select name="dbname[]" onchange="panduan();" id="dbname_'+m+'" class="form-control pull-left duibi_role_id" style="width:270px;"><option value="">--请选择--</option><volist name="dbroleList" id="vo"><option value="{$vo.role_id}">{$vo.role_name}-{$vo.user_name}</option></volist></select><a href="javascript:void(0);" style="margin-left:10px;" class="rem_search pull-left" rel="'+m+'" title="移除"><span class="fa fa-times-circle"></span></a></div></div>');
+	});
+	function panduan(){
+		var ary = new Array();
+		$('.duibi_role_id').each(function(k, v){
+			duibi_id = $(this).find("option:selected").val();
+			if(jQuery.inArray(duibi_id,ary) >= 0){
+				swal({
+					title: "对比员工不能重复！",
+					type: "error"
+				});
+				return false;
+			}
+			ary[k] = duibi_id;
+		})
+	}
+	
+	$(document).on('click','.rem_search',function(){
+		var num = $(this).attr('rel');
+		$('#con_search_'+num).remove();
+	});
+	
+	$('.select_time').click(function(){
+		$(this).addClass('clickcolor').siblings().removeClass('clickcolor');
+		var key_id = $(this).attr('rel');
+		$('#select_type').val(key_id);
+	});
+	$('.geng-d').click(function(){
+		var select_type = $('#select_type').val();
+		if(select_type == 4){
+			$('#select_type').val('');
+			$('.select_time').removeClass('notcolor');
+			$(this).html('高级选项');
+		}else{
+			$('.select_time').removeClass('clickcolor').addClass('notcolor');
+			$('#select_type').val(4);
+			$(this).html('默认选项');
+		}
+		if($('#advance_time').css('display') == 'none'){
+			$('#advance_time').show('1500');
+			$('#remind_type').attr('disabled','true');
+		}else{
+			$('#advance_time').hide('1500');
+			$('#remind_type').removeAttr('disabled');
+		}
+	});
+</script>

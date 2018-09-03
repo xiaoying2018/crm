@@ -1,0 +1,183 @@
+<script src="/Public/style/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/Public/js/uploadPreview.js"></script>
+<link rel="stylesheet" href="/Public/css/jquery.fileupload.css">
+<style type="text/css">
+    .templete_Add .form-group {
+        margin: 10px 0;
+    }
+    .radio-info{
+        margin: 0 20px;
+    }
+    .textarea textarea{
+        width: 100%;
+    }
+    .select2-selection{
+        background-color: #FFFFFF !important;
+        background-image: none !important;
+        border: 1px solid #d8e3ef !important;
+        border-radius: 1px !important;
+        height: 32px;
+        line-height: 32px;
+    }
+    .select2-selection__rendered{
+        padding-left: 17px !important;
+    }
+    .thumb80{width: 120px;height: 120px;border: 1px dashed #d3d3d6;}
+    .add_body_title{
+        margin:15px auto 30px auto;
+    }
+</style>
+
+
+
+<form action="" id="teacher_item_livepic" enctype="multipart/form-data">
+    <div class="col-md-12 add_body_form" style="margin:20px 0 0 21px;">
+        <!-- 文本 -->
+        <div class="form-group clearfix">
+            <label class="col-md-2 control-label"><span style="color:#FF0011;">*</span>教师名称</label>
+            <div class="col-md-6">
+                <input class="form-control" autocomplete="off" required type="text" name="name" aria-required="true" :value="info.full_name"
+                       readonly="readonly"/>
+                <input type="hidden" name="user_id" value="{$id}">
+            </div>
+        </div>
+
+        <div class="form-group clearfix">
+            <label class="col-md-2 control-label">产品图片：</label>
+
+            <div class="col-md-3">
+                <div class="col-md-8">
+                    <img id="new_pic_prev" class="thumb80" />
+                </div>
+                <div class="col-md-4 btn btn-success fileinput-button">
+                    <span>选择图片</span>
+                    <input type="file" name="newpic" id="new_pic"/>
+                </div>
+
+            </div>
+            <div class="col-md-2">
+                <input class="form-control" autocomplete="off" required type="text" name="pic_name" aria-required="true" value=""
+                       placeholder="照片名称"/>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-info" onclick="uploadPic()">上传</button>
+            </div>
+        </div>
+
+        <div class="form-group clearfix">
+            <label class="col-md-2 control-label">所有图片：</label>
+            <div class="col-md-2" v-for="p in lists" :mate-id="p.mate_id">
+                <div class="col-md-12" >
+                    <img class="thumb80" :src="p.path" :title="p.name+':'+p.create_at" />
+                    <span class="btn btn-danger" onclick="delPic(this)">删除</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<script>
+    //初始化上传图片
+    $("body").on('click','input[type="file"]', function(){
+        var selector = $(this).attr('id');
+        $("#"+selector).uploadPreview({ Img: selector+"_prev", Width: 120, Height: 120 });
+    });
+
+    var livepic_container = new Vue({
+        el: "#teacher_item_livepic",
+        data: {
+            lists:{},
+            info:{},
+        },
+        methods:{
+            getLists: function (data) {
+                var _this		=	this;
+                if( !data ){
+                    layer.msg( 'ERROR 参数缺失' );return ;
+                }
+                $.ajax({
+                    url:"{:U('education/teacher_livepics')}",
+                    data:data,
+                    dataType:"JSON",
+                    type:"POST",
+                    success:function(res){
+                        if( res.result == true ){
+                            _this.lists     =   res.pics;
+                            _this.info      =   res.info;
+                        }else{
+                            layer.msg('ERROR '+res.error);
+                        }
+                    }
+                });
+            },
+        },
+    });
+
+    var user_id         =   $('input[name="user_id"]').val();
+    livepic_container.getLists({user_id:user_id});
+
+    function uploadPic(){
+        var data        =   new FormData(),
+            pic         =   document.getElementById('new_pic').files[0],
+            pic_name    =   $('input[name="pic_name"]').val();
+        data.append( 'user_id',user_id );
+        data.append( 'name',pic_name );
+        data.append( 'pic', pic );
+
+        if( !user_id || !pic ){
+            layer.msg('ERROR 请完善数据');return ;
+        }
+
+        $.ajax({
+            url:"{:U('education/teacher_addpic')}",
+            data:data,
+            dataType:"JSON",
+            type:"POST",
+            processData:false,
+            contentType:false,
+            async:false,
+            success:function (res) {
+                if( res.result ){
+                    // 刷新主页数据
+                    livepic_container.getLists({user_id:user_id});
+                    //
+                    layer.msg( '上传成功！' );
+
+                }else{
+                    layer.msg('ERROR '+res.error);
+                }
+            }
+        });
+
+    }
+
+    function delPic(btn){
+        var mate_id         =   $(btn).parent().parent().attr('mate-id'),
+            data            =   {id:mate_id};
+        if( !mate_id ){
+            layer.msg('ERROR 参数缺失');return ;
+        }
+        layer.confirm('删除图片?', {icon: 3, title:'提示'}, function(index){
+            $.ajax({
+                url:"{:U('education/teacher_delpic')}",
+                data:data,
+                dataType:"JSON",
+                type:"POST",
+                success:function(res){
+                    if( res.result ){
+                        // 刷新主页数据
+                        livepic_container.getLists({user_id:user_id});
+                        //
+                        layer.msg( '删除成功！' );
+
+                    }else{
+                        layer.msg('ERROR '+res.error);
+                    }
+                }
+            });
+        });
+    }
+</script>
+
+

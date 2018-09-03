@@ -1,0 +1,133 @@
+<form action="{:U('finance/add','t=receivablesplan')}" method="post">
+	<input type="hidden" name="receivables_id" value="{$data['receivables_id']}">
+	<input type="hidden" name="price" id="price" value="{$data['price']}">
+	<table class="table table-bordered" id="no-input-border" width="95%" border="0" cellspacing="1" cellpadding="0">
+		<thead>
+			<tr style="background-color:#E0E8FF;text-align:center;">
+				<td class="span1" style="text-align:center;"><a href="javascript:void(0);" id="addone"><i class="icon-plus"></i></a></td>
+				<td class="span2">回款时间</td>
+				<td class="span2">回款金额</td>
+				<td class="span2">收款人</td>
+				<td class="span3">{:L('DESCRIPTION')}</td>
+			</tr>
+		</thead>
+		<tbody id="view_row">
+			<?php
+				for($n=1;$n<=5;$n++){
+			?>
+			<tr id="row_{$n}">
+				<td style="text-align:center;">
+					<a href="javascript:void(0);" class="reduce_one"><i class="icon-minus"></i></a>
+				</td>
+				<td>
+					<input type="text" class="Wdate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" name="receivable[{$n}][pay_time]" id="pay_time_{$n}" />
+				</td>
+				<td><input type="text" name="receivable[{$n}][price]" rel="{$n}" onkeyup="calculate({$n})" class="receivable_price" id="price_{$n}" /></td>
+				<td><input name="receivable[{$n}][owner_role_id]" id="owner_role_id_{$n}" type="hidden" value="{$Think.session.role_id}"/><input name="receivable[{$n}][owner_name]" rel="{$n}" class="owner_name" id="owner_name_{$n}"  type="text" value="{$Think.session.name}"/></td>
+				<td><input type="text" name="receivable[{$n}][description]"/></td>
+			</tr>
+			<?php }?>
+		</tbody>
+		<tbody class="add-content">
+		</tbody>
+		<tfoot>
+			<tr>
+				<td style="text-align:center;" colspan="5">
+					<input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/>&nbsp; 
+					<input class="btn" type="button" onclick="javascript:$('#dialog-receivables_plan').dialog('close');" value="{:L('RETURN')}"/>&nbsp;
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</form>
+<div id="dialog-message3" title="{:L('SELECT THE LEADER')}">loading...</div>
+<script type="text/javascript">
+var now_rows = 5;
+//增加一行
+	$(document).ready(function(){
+	  $("#addone").click(function(){
+	  now_rows += 1;
+		$('.add-content').append('<tr id="row_'+now_rows+'"><td style="text-align:center;"><a href="javascript:void(0);" class="reduce_one"><i class="icon-minus"></i></a></td><td><input type="text" onclick="WdatePicker()" name="receivable['+now_rows+'][pay_time]" id="pay_time_'+now_rows+'" /></td><td><input type="text" onkeyup="calculate('+now_rows+')" name="receivable['+now_rows+'][price]"  class="receivable_price" rel="'+now_rows+'" id="price_'+now_rows+'" /></td><td><input name="receivable['+now_rows+'][owner_role_id]" id="owner_role_id_'+now_rows+'" type="hidden" value="{$Think.session.role_id}"/><input name="receivable['+now_rows+'][owner_name]" id="owner_name_'+now_rows+'" class="ower_name" rel="'+now_rows+'" type="text" value="{$Think.session.name}"/></td><td><input type="text" name="sales[product]['+now_rows+'][description]"/></td></tr>');
+	  });
+	});
+//减少一行
+	$(document).on('click','.reduce_one',function(){
+		var row_id = $(this).parent().parent().attr('id');
+		//如果行内存在商品，弹出操作提示
+		row_val = row_id.substr(4);
+		if($('#product_id_'+row_val).val() == ''){
+			$('#'+row_id).remove();
+			calculate(now_rows);
+		}else{
+			if(confirm('确定要删除该行内容吗？')){
+				$('#'+row_id).remove();
+				calculate(now_rows);
+			}else{
+				return false;
+			}
+		}
+		now_rows --;
+	});
+	function calculate(param){
+		var total_price = 0.00;
+		$('.receivable_price').each(function(k, v){
+			//合计折扣额
+			if($(v).val() != '' ||  $(v).val() != '0' || $(v).val() != '0.00'){
+				total_price += new Number($(v).val());
+			}
+		});
+		var price = $("#price").val();
+		if(total_price > price){
+			alert('回款计划金额不能大于应收款金额！');
+		}
+	}
+	$("input[name='submit']").click(function(){	
+		var total_price = 0.00;
+		$('.receivable_price').each(function(k, v){
+			//合计折扣额
+			if($(v).val() != '' &&  $(v).val() != '0' && $(v).val() != '0.00'){
+				var rel_num = $(v).attr('rel');
+				var this_time = $("#pay_time_"+rel_num).val();
+				total_price += new Number($(v).val());
+				if(this_time == ''){
+					alert('请填写有回款金额的回款时间');
+					return false;
+				}
+			}
+		});
+		var price = $("#price").val();
+		if(total_price != price){
+			alert('回款计划总金额必须等于应收款金额！');
+			return false;
+		}
+	});
+<if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else/>width=800;</if>
+var now_owner = 0;
+$("#dialog-message3").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	buttons: {
+		"确定": function () {
+			var item = $('input:radio[name="owner"]:checked').val();
+			var name = $('input:radio[name="owner"]:checked').attr('rel');
+			if(item){
+				$('#owner_name_'+now_owner).val(name);
+				$('#owner_role_id_'+now_owner).val(item);
+			}
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+$(".owner_name").click(function(){
+	now_owner = $(this).attr('rel');
+	$('#dialog-message3').dialog('open');
+	$('#dialog-message3').load('{:U("user/listDialog","by=all")}');
+});
+</script>
+<include file="Public:footer" />

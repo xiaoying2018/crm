@@ -1,0 +1,218 @@
+<style>
+    .professorModal .cm_modal {
+        border-radius: 5px;
+        background-color: #fff;
+    }
+
+    .professorModal .title-bar {
+        border: none;
+        font-size: 16px;
+        padding-bottom: 0;
+        margin-top: 5px;
+    }
+
+    .professorModal .text-tag{
+        display: inline-block;
+    }
+    .professorModal .text-tag {
+        font-size: 16px;
+        padding-left: 4px;
+        border-left: 4px solid #18a689;
+        line-height: 16px;
+        margin-top: 10px;
+    }
+
+    .professorModal .table {
+        font-size: 14px;
+        width: 90%;
+        margin: 0 auto;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .professorModal .table td{
+        border-color:#f2f2f2;
+    }
+    .td_title{
+        color: #8d8d8d !important;
+        width: 20%;
+    }
+    textarea{
+        outline: none;
+        border: 1px solid #e7eaec;
+        height: 100px;
+        padding: 10px;
+        overflow-y: scroll;
+        background: #fff !important;
+        width: 100%;
+    }
+    .nodata{
+        color: #ccc;
+    }
+</style>
+<link href="/Public/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="/Public/js/images-loaded.min.js" type="text/javascript"></script>
+<script src="/Public/js/litebox.min.js" type="text/javascript"></script>
+<!-- 客户详细 -->
+<div class="modal fade bs-example-modal-lg professorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="width: 60%;max-width: 800px;">
+        <div class="row cm_modal">
+            <div class="col-lg-12">
+                <div class="title-bar">
+                    <div class="row " id="title-show">
+                        <div class="all-inline clearfix">
+                            <div style="float: left;">
+                                <span class="text-tag">公开课详情</span>
+                            </div>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="float: right;">
+                                关闭
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ">
+                    <table class="table">
+                        <tr>
+                            <td class="td_title">直播类型：</td>
+                            <td v-html="data.livecate"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">直播内容：</td>
+                            <td v-html="data.livecontent"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">课程名称：</td>
+                            <td v-html="data.names"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">开课时间：</td>
+                            <td v-html="data.start_time"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">讲师：</td>
+                            <td v-html="data.teacher"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">报名地址：</td>
+                            <td v-html="data.sign_addr"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">回放地址：</td>
+                            <td v-html="data.playback_addr"></td>
+                           <!--<td> <a :href="data.playback_addr">1</a></td>-->
+                        </tr>
+                        <tr>
+                            <td class="td_title">时长：</td>
+                            <td v-html="data.timelength"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">学习人数：</td>
+                            <td v-html="data.studynum"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">创建时间：</td>
+                            <td v-html="data.add_ts"></td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">备注：</td>
+                            <td>
+                                <textarea name="" id="" cols="30" rows="10" readonly="readonly" class="">{{data.remark}}</textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="td_title">照片：</td>
+                            <td>
+                                <a :href="data.t_img_url" class="litebox_file" v-if='data.t_img_url'>{{data.img_url}}</a>
+                                <a :file="data.t_img_url" class="oDownLoad"  v-if='data.t_img_url' >下载</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+$(function () {
+
+
+    var professorModal = new Vue({
+        el: '.professorModal',
+        data: {
+            data: {}
+        },
+        methods: {
+            getDetail: function (id) {
+                if (!id)
+                    return;
+                var _this = this;
+                $.ajax({
+                    url: "/publicclass/detail?id=" + id,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    success: function (res) {
+                        if (res) {
+                            console.log(res)
+//                            var _res = res.detaildata;
+//                            for (var key in _res) {
+//                                if (key == 'update_time') {
+//                                    _res["update_time"] = timestampToFormat(_res["update_time"], 'yyyy-MM-dd hh:mm:ss');
+//                                }
+//                                if (key == 'cooperation_cate_id') {
+//                                    for (var i = 0; i < res.catedata.length; i++) {
+//                                        if (res.catedata[i]["cooperation_cate_id"] == _res[key]) {
+//                                            _res["cooperation_cate_name"] = res.catedata[i].cooperation_cate_name;
+//                                        }
+//                                    }
+//                                }
+//                                if (_res[key].length == 0) {
+//                                    _res[key] = "<span class='nodata'>暂无数据</span>"
+//                                }
+//                            }
+                            _this.data = res.data;
+                            _this.$nextTick(function() {
+									$('.litebox_file').liteBox({
+										revealSpeed:  400,
+										background:   'rgba(0,0,0,.8)',
+										overlayClose:  true,
+										escKey:  true,
+										navKey:  true,
+										errorMessage:   '图片加载失败.'
+									});
+
+									$(".oDownLoad").click(function() {
+										var src = $(this).attr("file")
+										var $a = document.createElement('a');
+										$a.setAttribute("href", src);
+										$a.setAttribute("download", "");
+
+										var evObj = document.createEvent('MouseEvents');
+										evObj.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, true, false, 0, null);
+										$a.dispatchEvent(evObj);
+									})
+								});
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e);
+                        alert('网络异常！');
+                    }
+                });
+            }
+        },
+        mounted: function () {
+            var _this = this;
+            //关闭浮层
+            $(".professorModal-close").click(function () {
+                $(".professorModal").modal('hide');
+            })
+        }
+    })
+    $('.professorModal').on('show.bs.modal', function (ele) {
+        professorModal.data = {};
+        professorModal.getDetail(ele.relatedTarget);
+    })
+});
+</script>

@@ -1,0 +1,613 @@
+<include file="Public:header" />
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/mxcrm_more.js" type="text/javascript"></script>
+<style>
+body{
+	overflow-y: hidden;
+}
+.option{padding-left:-30px;}
+</style>
+<script>
+$(function(){
+	var scroll_width = 5;
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+		$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+	})
+	if ("{$Think.get.by}") {
+		$("#filter_ul").prev().html($("#filter_ul>li>a.active").text()+'<span class="fa fa-angle-down small_fa"></span>');
+	}
+	$("#tab_Test3").FrozenTable(1,0,3);
+	$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width).width($("#oTableLH_tab_Test3").width()).css({'zIndex':9});
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width).css({'zIndex':9});
+	//$("#oDivH_tab_Test3").css('top','-7px');
+})
+</script>
+<div class="wrapper wrapper-content">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins"> 
+				<div class="title-bar" style="position: relative;z-index: 99;">
+					<div class="row  clearfix" id="title-hide" style="display:none;">
+						<input type="hidden" id="examine_type" value="">
+						<ul class="breadcrum pull-left">
+							<li>已选中&nbsp;<span id="icheck_num"></span>&nbsp;项</li>
+							<li class="single_btn"><a href="javascript:void(0)" id="edit_examine"><i class="fa fa-pencil"></i>&nbsp;编辑</a></li>
+							<li class="single_btn"><a href="javascript:void(0)" id="check_examine"><i class="fa fa-check"></i><span id="to_check"><input type="hidden" id="is_checked" value="1">&nbsp;审核</span></a></li>
+							<!-- <li class="single_btn"><a href="javascript:void(0)" id="return_check"><i class="fa fa-reply"></i>&nbsp;撤销审核</a></li> -->
+							<li><a id="delete" href="javascript:void(0)"><i class="fa fa-times"></i>&nbsp;删除</a></li>
+							<li class="last_li"><big><a class="fa fa-times pull-right" id="back-show"></a></big></li>
+						</ul>
+					</div>
+					<div class="row " id="title-show">
+						<if condition="I('get.type') == 7">
+							<ul class="nav pull-left" style="margin:2px 0 0 15px;">
+								<a href="{:U('examine/add','type=7')}" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 新建审批</a>
+							</ul>
+						<else/>
+							<ul class="nav pull-left" style="margin:2px 0 0 15px;">
+								<a href="javascript:void(0);" id="add_examine" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 新建审批</a>
+							</ul>
+						</if>
+						<form class="form-inline" id="examine_form" action="" method="get">
+							<input type="hidden" name="m" value="examine"/>
+							<input type="hidden" name="a" value="index"/>
+							<a title="高级搜索" href="javascript:void(0)" id="search_type" style="margin-right:20px;" class="btn btn-white btn-bitbucket pull-right"><i class="fa fa-filter" style="color: #D8E3EF;"></i></a>
+							<div class="input-group pull-right" style="margin-right:10px;">
+								<select class="form-control" name="type" id="type">
+									<option value="all">全部</option>
+									<volist name="status_list" id="vo">
+										<option value="{$vo['status']}" <if condition = "$type eq $vo['status']">selected</if>>{$vo['name']}</option>
+									</volist>
+								</select>
+							</div>
+							<div class="input-group pull-right" style="margin-right:10px;">
+								<select class="form-control" name="examine_status" id="examine_status">
+									<option value="">全部</option>
+									<option value="4" <if condition = "$examine_status eq 0">selected</if>>待审批</option>
+									<option value="1" <if condition = "$examine_status eq 1">selected</if>>审批中</option>
+									<option value="2" <if condition = "$examine_status eq 2">selected</if>>已通过</option>
+									<option value="3" <if condition = "$examine_status eq 3">selected</if>>已拒绝</option>
+								</select>
+							</div>
+							
+						</form>
+					</div>
+				</div>
+				<div class="row" style="margin: 0">
+					<div class="ibox-content" style="padding:0px;">
+						<div class="ibox-content clearfix" id="table_container" style="padding:0px;border: none;">
+							<form id="form1" action="" method="Post" style="position:relative;"> 
+								<div id="table_div" class="full-height-scroll" style="left:0px;top:0px;">
+								<if condition="$list eq null">
+									<include file="Public:nodata" />
+								<else/>
+									<table class="table table-hover table-striped table_thead_fixed" id="tab_Test3" style="background:#fff;margin-bottom:0px;">
+									
+										<tr id="childNodes_num" class="tabTh">
+											<td style="max-width: 60px;width:74px;padding:0 10px 0 7px;">
+												<div class="checkbox checkbox-primary">
+													<input type="checkbox" class="check_all"/>
+													<label for=""></label>
+												</div>
+											</td>
+											<td>审批事由</td>
+											<if condition="$_GET['type'] eq '' || $_GET['type']['value'] eq ''"><td>审批类型</td></if>
+											<td>申请时间</td>
+											<td>申请人</td>
+											<td>部门</td>
+											<if condition="$_GET['type'] eq 1 || $_GET['type']['value'] eq 1">
+												
+											<elseif condition="$_GET['type'] eq 2 || $_GET['type']['value'] eq 2"/>
+												<td>请假事项</td>
+												<td>开始时间</td>
+												<td>结束时间</td>
+												<td>请假天数</td>
+											<elseif condition="$_GET['type'] eq 3 || $_GET['type']['value'] eq 3"/>
+												<td>报销总金额</td>
+											<elseif condition="$_GET['type'] eq 4 || $_GET['type']['value'] eq 4"/>
+												<td>报销总金额</td>
+											<elseif condition="$_GET['type'] eq 5 || $_GET['type']['value'] eq 5"/>
+												<td>出发时间</td>
+												<td>返回时间</td>
+												<td>出差城市</td>
+											<elseif condition="$_GET['type'] eq 6 || $_GET['type']['value'] eq 6"/>
+												<td>借款金额</td>
+											</if>
+											<td>审批状态</td>
+										</tr>
+										<volist name="list" id="vo">
+											<tr class="controls_tr">
+												<td>
+													<div class="checkbox checkbox-primary">
+														<input name="ids[]" class="check_list" type="checkbox" rel="{$vo['type']}" value="{$vo.examine_id}"/>
+														<label for=""></label>
+													</div>
+												</td>
+												<td>
+													<a href="{:U('examine/view','id='.$vo['examine_id'].'&type='.$vo['type'])}">
+													<if condition="$_GET['type'] neq 2 || $_GET['type']['value'] neq 2">
+														<if condition = "(strlen($vo['content']) gt 20)">
+															{:msubstr($vo['content'], 0, 20)}
+														<else />
+															{$vo.content}
+														</if>
+													<else/>
+														<if condition = "(strlen($vo['description']) gt 20)">
+															{:msubstr($vo['description'], 0, 20)}
+														<else />
+															{$vo.description}
+														</if>
+													</if>
+													</a>
+												</td>
+												<if condition="$_GET['type'] eq '' || $_GET['type']['value'] eq ''">
+													<td>
+														{$vo['type_name']}
+													</td>
+												</if>
+												<td>{$vo['create_time']|date="Y-m-d H:i",###}</td>
+												<td><a class="role_info" rel="{$vo.owner_role_id}" href="javascript:void(0)">{$vo.owner.user_name}</a></td>
+												<td>{$vo.owner.department_name}</td>
+												<if condition="$_GET['type'] eq 1">
+													
+												<elseif condition="$_GET['type'] eq 2 || $_GET['type']['value'] eq 2"/>
+													<td><a href="{:U('examine/view','id='.$vo['examine_id'].'&type='.$vo['type'])}">{$vo.content}</a></td>
+													<td>{$vo['start_time']|date="Y-m-d",###}</td>
+													<td>{$vo['end_time']|date="Y-m-d",###}</td>
+													<td>{$vo['duration']}</td>
+												<elseif condition="$_GET['type'] eq 3 || $_GET['type']['value'] eq 3"/>
+													<td>{$vo.budget}</td>
+												<elseif condition="$_GET['type'] eq 4 || $_GET['type']['value'] eq 4"/>
+													<td>{$vo.budget}</td>
+												<elseif condition="$_GET['type'] eq 5 || $_GET['type']['value'] eq 5"/>
+													<td>{$vo['start_time']|date="Y-m-d H:i",###}</td>
+													<td>{$vo.end_time|date="Y-m-d H:i",###}</td>
+													<td>
+														<span style="margin-left:0px;">
+														<if condition="$vo['vehicle'] eq '飞机'">
+															<img style="width:18px;height:18px;" src="__PUBLIC__/img/feiji.png">
+														<elseif condition="$vo['vehicle'] eq '汽车'"/>
+															<img style="width:18px;height:18px;" src="__PUBLIC__/img/qiche.png">
+														<elseif condition="$vo['vehicle'] eq '火车'"/>
+															<img style="width:18px;height:18px;" src="__PUBLIC__/img/huoche.png">
+														<elseif condition="$vo['vehicle'] eq '高铁'"/>
+															<img style="width:18px;height:18px;" src="__PUBLIC__/img/gaotie.png">
+														<elseif condition="$vo['vehicle'] eq '轮船'"/>
+															<img style="width:18px;height:18px;" src="__PUBLIC__/img/lunchuan.png">
+														</if>
+														</span>
+														{$vo.start_address} ->
+														{$vo.end_address}
+													</td>
+												<elseif condition="$_GET['type'] eq 6 || $_GET['type']['value'] eq 6"/>
+													<td>{$vo.budget}</td>
+												</if>
+												<td>
+													<if condition="$vo['examine_status'] eq 0">
+														<i style="color:#FACB42" class="fa fa-circle fa-1x"></i>&nbsp;待审批({$vo.examine.full_name})
+													<elseif condition="$vo['examine_status'] eq 1"/>
+														<i style="color:#FF6600" class="fa fa-circle fa-1x"></i>&nbsp;审批中({$vo.examine.full_name})
+													<elseif condition="$vo['examine_status'] eq 2"/>
+														<i style="color:#5ACD61" class="fa fa-circle fa-1x"></i>&nbsp;审批通过
+													<elseif condition="$vo['examine_status'] eq 3"/>
+														<i style="color:#FF0000" class="fa fa-circle fa-1x"></i>&nbsp;审批拒绝
+													</if>
+												</td>
+											</tr> 
+										</volist>
+									</table>
+								</if>
+								</div>
+								<div id="tfoot_div" class="clearfix">
+									<tr>
+										<div class="clearfix" id="tfoot_page">	
+											<if condition="$_GET['type'] eq 2 || $_GET['type']['value'] eq 2">
+												<span class="pull-left" style="margin-left:25px;margin-top:10px;padding-top:8px;">
+												请假天数总计(不含拒绝):&nbsp;<span style="color:green">{$all_days}&nbsp;天</span>
+												</span>
+											<elseif condition="$_GET['type'] eq 3 || $_GET['type'] eq 4 || $_GET['type']['value'] eq 3 || $_GET['type']['value'] eq 4 "/>
+												<span class="pull-left" style="margin-left:25px;margin-top:10px;padding-top:8px;">
+												报销总金额(不含拒绝):&nbsp;<span style="color:green">{$all_money}&nbsp;元</span>
+												</span>
+											<elseif condition="$_GET['type'] eq 6 || $_GET['type']['value'] eq 6"/>
+												<span class="pull-left" style="margin-left:25px;margin-top:10px;padding-top:8px;">
+												借款总金额:&nbsp;<span style="color:green">{$all_money}&nbsp;元</span>
+												</span>
+											</if>
+											<if condition="$fields_search">
+												<span class="pull-left" style="margin-left:10px;margin-top:10px;">本次搜索结果<span style="color:#F8AC59"> {$count} </span>条数据<a href="{:U('examine/index')}" class="btn" style="background:#fff;border:1px solid #ccc;margin-left:10px;color:#999;" id="clearnumber">清除搜索条件</a></span>
+											</if>
+											{$page}<include file="Public:listrows" />
+										</div>
+									</tr>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+    		</div>
+        </div>
+    </div>
+</div>
+<div style="display:none" id="dialog-examine" title="请选择审批类型">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-add-examine" title="添加审批">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-role-info" title="员工信息">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-field-search" title="高级搜索">
+	<form class="form-inline" id="searchForm" action="" method="get">
+		<div id="search_add" style="width:650px;float:left;">
+		<empty name="fields_search">
+			<div id="con_search_1" style="float:left;width:650px;margin:0 10px 0 10px;">
+				<ul class="nav pull-left" style="margin:0px 0 0 23px;width:650px">
+					<li class="pull-left">
+						<select id="field_1" style="width:auto" class="form-control input-sm field_name new-select" onchange="changeCondition(1)" >
+							<option class="" value="name">--请选择条件--</option>
+							<option class="role" value="owner_role_id">申请人</option>
+							<option class="datetime" value="create_time">申请时间</option>
+							<option class="examine_type" value="type">审批类型</option>
+							<option class="is_examine" value="examine_status">审核状态</option>
+						</select>&nbsp;&nbsp;
+					</li>
+					<li class="pull-left" id="conditionContent_1">
+						<select id="condition_1" style="width:auto" class="form-control input-sm new-select" onchange="changeSearch()" name="name[condition]">
+							<option value="contains">{:L('CONTAINS')}</option>
+							<option value="is">{:L('IS')}</option>								
+							<option value="start_with">{:L('START_WITH')}</option>
+							<option value="end_with">{:L('END_WITH')}</option>
+							<option value="is_empty">{:L('IS_EMPTY')}</option>
+						</select>&nbsp;&nbsp;
+					</li>
+					<li class="pull-left" id="searchContent_1">
+						<input id="search_1" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name="name[value]"/>&nbsp;&nbsp;
+					</li>
+				</ul>
+			</div>
+			<?php $max_key = 1;?>
+		<else />
+			<volist name="fields_search" key="key1" id="vo">
+				<div id="con_search_{$key1}" style="float:left;width:650px;margin:0px 10px 0 10px;padding-top:10px;">
+					<div id="rem_{$key1}" class="pull-left" style="line-height:30px;"><a href="javascript:void(0);" class="rem_search" rel="{$key1}" title="移除"><span class="fa fa fa-times-circle"></span></a></div>
+					<ul class="nav pull-left" style="margin:0px 0 0 5px;width:620px;">
+						<li class="pull-left">
+							<select id="field_{$key1}" style="width:auto" class="form-control input-sm field_name new-select" onchange="changeCondition({$key1})" >
+								<option class=""  value="name">--请选择条件--</option>
+								<option class="role" <if condition = "$vo['field'] eq 'owner_role_id'">selected="selected"</if> value="owner_role_id">申请人</option>
+								<option class="datetime" <if condition = "$vo['field'] eq 'create_time'">selected="selected"</if> value="create_time">申请时间</option>
+								<option class="examine_type" <if condition = "$vo['field'] eq 'type'">selected="selected"</if> value="type">审批类型</option>
+								<option class="is_examine" <if condition = "$vo['field'] eq 'examine_status'">selected="selected"</if> value="examine_status">审核状态</option>
+							</select>&nbsp;&nbsp;
+						</li>
+						<li class="pull-left" id="conditionContent_{$key1}">
+						<if condition="$vo.form_type eq 'number'">
+							<select id="condition" style="width:auto" class="form-control input-sm" name="{$vo['field']}[condition]">
+								<option value="gt" <if condition="$_GET[$vo['field']][condition] eq 'gt'">selected="selected"</if>>{:L('GT')}</option>
+								<option value="lt" <if condition="$_GET[$vo['field']][condition] eq 'lt'">selected="selected"</if>>{:L('LT')}</option>
+								<option value="eq" <if condition="$_GET[$vo['field']][condition] eq 'eq'">selected="selected"</if>>{:L('EQ')}</option>
+								<option value="neq" <if condition="$_GET[$vo['field']][condition] eq 'neq'">selected="selected"</if>>{:L('NEQ')}</option>
+							</select>
+						<elseif condition="$vo.field eq 'owner_role_id' || $vo.field eq 'type' || $vo.field eq 'examine_status' || $vo.form_type eq 'datetime'"/>
+						<elseif condition="$vo.form_type eq 'box'" />
+							<span id="{$vo['field']}"></span>							
+							<script type="text/javascript">
+								var b = '{$vo[field]}';
+								var c = 'product';
+								$.ajax({
+									type:'get',
+									url:'index.php?m=setting&a=boxfield&model='+c+'&field='+b,
+									async:false,
+									success:function(data){
+										options = '';
+										$.each(data.data, function(k, v){
+											if('{$vo.value}' == v){
+												select = 'selected';
+											}else{
+												select = '';
+											}
+											options += "<option value='"+v+"' "+select+">"+v+"</option>";
+										});
+										$("#{$vo['field']}").html('<select class="{$vo["field"]} form-control input-sm" style="width:auto" name="{$vo["field"]}[value]" ><option value="">--{:L('PLEASE_CHOOSE')}--</option>' + options + '</select>&nbsp;&nbsp;');	
+									},
+									dataType:'json'
+								});	
+								<if condition="!empty($_GET[$vo['field']])">
+									$(".{$vo['field']} option[value='{$_GET[$vo['field']]}']").attr('selected','selected');
+								</if>
+							</script>	
+						<elseif condition="$vo.form_type eq 'address'" />
+							<select id="condition" style="width:auto" class="form-control input-sm" name="{$vo['field']}[condition]">
+								<option value="contains" <if condition="$_GET[$vo['field']][condition] eq 'contains'">selected="selected"</if>>{:L('IN')}</option>
+								<option value="not_contain" <if condition="$_GET[$vo['field']][condition] eq 'not_contains'">selected="selected"</if>>{:L('NOTIN')}</option>
+							</select>
+							<select name="{$vo['field']}[state]" class="form-control input-sm" id="state" style="width:135px;"></select>
+							<select name="{$vo['field']}[city]" class="form-control input-sm" id="city" style="width:110px;"></select>
+							<select name="{$vo['field']}[area]" class="form-control input-sm" id="area" style="width:110px"></select>
+							<input type="text" id="search" name="{$vo['field']}[search]" value="{$_GET[$vo['field']][search]}" class="form-control input-sm" placeholder="{:L('THE_STREET_INFORMATION')}" class="input-large">
+							<script type="text/javascript">
+								 new PCAS("{$vo['field']}[state]","{$vo['field']}[city]","{$vo['field']}[area]","<php>echo $_GET[$vo['field']]['state'];</php>","<php>echo $_GET[$vo['field']]['city'];</php>","<php>echo $_GET[$vo['field']]['area'];</php>");
+							</script>
+						<else />
+							<select id="condition" style="width:auto" class="form-control input-sm" name="{$vo['field']}[condition]">
+								<option value="contains" <if condition="$_GET[$vo['field']][condition] eq 'contains'">selected="selected"</if>>{:L('INCLUDE')}</option>
+								<option value="not_contain" <if condition="$_GET[$vo['field']][condition] eq 'not_contain'">selected="selected"</if>>{:L('EXCLUSIVE')}</option>
+								<option value="is" <if condition="$_GET[$vo['field']][condition] eq 'is'">selected="selected"</if>>{:L('YES')}</option>
+								<option value="isnot" <if condition="$_GET[$vo['field']][condition] eq 'isnot'">selected="selected"</if>>{:L('NO')}</option>					
+								<option value="start_with" <if condition="$_GET[$vo['field']][condition] eq 'start_with'">selected="selected"</if>>{:L('BEGINNING_CHARACTER')}</option>
+								<option value="end_with" <if condition="$_GET[$vo['field']][condition] eq 'end_with'">selected="selected"</if>>{:L('TERMINATION_CHARACTER')}</option>
+								<option value="is_empty" <if condition="$_GET[$vo['field']][condition] eq 'is_empty'">selected="selected"</if>>{:L('MANDATORY')}</option>
+								<option value="is_not_empty" <if condition="$_GET[$vo['field']][condition] eq 'is_not_empty'">selected="selected"</if>>{:L('ISNOTEMPTY')}</option>
+							</select>
+						</if>
+						</li>
+						<li class="pull-left" id="searchContent_{$key1}" style="margin-left:5px;">
+						<if condition="$vo.form_type neq 'box' && $vo.form_type neq 'address'">
+							<if condition="$vo.form_type eq 'datetime'">
+								<input id="start_{$vo['field']}" type="text" class="form-control input-sm search-query" name="{$vo['field']}[start]" onclick="WdatePicker()" value="{$fields_search[$vo['field']][start]}" rel="examine"/> 至 <input id="end_{$vo['field']}" type="text" class="form-control input-sm search-query" name="{$vo['field']}[end]" onclick="WdatePicker()" value="{$fields_search[$vo['field']][end]}" rel="examine"/>
+							<elseif condition="$vo['field'] eq 'owner_role_id'"/>
+								<span id="owner_role_search" rel="{$key1}" rel1="{$vo['field']}[value]" rel2="{$_GET[$vo['field']][value]}"/>
+								<script type="text/javascript">
+									var key_id = $('#owner_role_search').attr('rel');
+									var search_owner_role_id = $('#owner_role_search').attr('rel1');
+									var owner_roleid = $('#owner_role_search').attr('rel2');
+									$.ajax({
+										type:'get',
+										url:'index.php?m=user&a=getrolelist&module=examine&action=index',
+										async:false,
+										success:function(data){
+											options = '';
+											$.each(data.data, function(k, v){
+												options += '<option value="'+v.role_id+'" checkedit>'+v.user_name+' ['+v.department_name+'-'+v.role_name+'] </option>';
+											});
+											$("#searchContent_"+key_id+"").html('<select class="selectpicker show-tick form-control input-sm" data-live-search="true" id="search_'+key_id+'" name="'+search_owner_role_id+'" style="width:auto">' + options + '</select>');
+											var owner_roleid = "{$_GET[$vo['field']][value]}";
+											$('#search_'+key_id+' option[value='+owner_roleid +']').prop('selected',true);
+										},
+										dataType:'json'
+									});		
+								</script>
+							<elseif condition="$vo['field'] eq 'type'"/>
+								<select class="form-control input-sm" style="width:auto" name="{$vo['field']}[value]">
+									<option value="all">全部</option>
+									<option value="1" <if condition ="$_GET['type'][value] eq 1">selected="selected"</if> >普通审批</option>
+									<option value="2" <if condition ="$_GET['type'][value] eq 2">selected="selected"</if> >请假审批</option>
+									<option value="3" <if condition ="$_GET['type'][value] eq 3">selected="selected"</if> >普通报销</option>
+									<option value="4" <if condition ="$_GET['type'][value] eq 4">selected="selected"</if> >差旅报销</option>
+									<option value="5" <if condition ="$_GET['type'][value] eq 5">selected="selected"</if> >出差申请</option>
+									<option value="6" <if condition ="$_GET['type'][value] eq 6">selected="selected"</if> >借款申请</option>
+								</select>
+							<elseif condition="$vo['field'] eq 'examine_status'"/>
+								<select class="form-control input-sm" style="width:auto" name="{$vo['field']}[value]">
+									<option value="all" <if condition ="$vo['value'] eq 'all'">selected="selected"</if>>全部</option>
+									<option value="0" <if condition ="$vo['value'] eq '0'">selected="selected"</if> >待审批</option>
+									<option value="1" <if condition ="$vo['value'] eq 1">selected="selected"</if> >审批中</option>
+									<option value="2" <if condition ="$vo['value'] eq 2">selected="selected"</if> >已通过</option>
+									<option value="3" <if condition ="$vo['value'] eq 3">selected="selected"</if> >已拒绝</option>
+								</select>
+							<else/>	
+								<input name="{$vo['field']}[value]" type="text" class="form-control input-sm" class="{$vo['form_type']}" value="{$_GET[$vo['field']][value]}" rel="product">
+							</if>
+						</if>
+						</li>
+					</ul>
+				</div>
+				<?php $max_key = $key1;?>
+			</volist>
+		</empty>
+		</div>
+		<input type="hidden" name="this_page" value="{$this_page}" />
+		<div class="clearfix"></div>
+		<div style="margin-left: 35px;margin-top:0px;"><a href="javascript:void(0);" style="display: -moz-stack;margin: 30px 0px 0px; font-size: 12px; color: rgb(62, 133, 233);" id="add_btn">+添加筛选条件</a>
+		</div>
+		<div class="pull-right" class="button_type" style="margin:20px;"> 
+			<input type="hidden" name="m" value="examine"/>
+			<input type="hidden" name="a" id="act" value="index"/>
+			<if condition="$Think.get.by neq null">
+				<input type="hidden" name="by" value="{$Think.get.by}"/>
+			</if>
+		</div>
+	</form>
+</div>
+<script type="text/javascript">
+//高级搜索
+$("#search_type").click(function(){
+	$("#dialog-field-search").dialog('open');
+});
+
+$("#dialog-field-search").dialog({
+	autoOpen: false,
+	width: 700,
+	modal: true,
+	height: 500,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+			doh();
+			if(dosearch == 1){
+				$(this).dialog("close");
+			}
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+/*添加筛选条件*/
+var m = {$max_key};
+$('#add_btn').click(function(){
+	m += 1;
+	$('#search_add').append('<div id="con_search_'+m+'" style="float:left;width:650px;padding-top:10px;margin:0px 10px 0 10px;"><div  id="rem_'+m+'" class="pull-left" style="line-height:30px;"><a href="javascript:void(0);" class="rem_search" rel="'+m+'" title="移除"><span class="fa fa-times-circle"></span></a></div>&nbsp;<ul class="nav pull-left" style="margin:0px 0 0 5px;width:620px"><li class="pull-left"><select id="field_'+m+'"  style="width:auto" class="form-control input-sm field_name new-select" onchange="changeCondition('+m+')" name=""><option class=""  value="name">--请选择条件--</option><option class="role" value="owner_role_id">申请人</option><option class="datetime" value="create_time">申请时间</option><option class="examine_type" value="type">审批类型</option><option class="is_examine" value="examine_status">审核状态</option></select>&nbsp;&nbsp;</li><li class="pull-left" id="conditionContent_'+m+'"><select id="condition_'+m+'" style="width:auto" class="form-control input-sm new-select" name="condition" onchange="changeSearch()"><option value="contains">{:L('CONTAINS')}</option><option value="is">{:L('IS')}</option><option value="start_with">{:L('START_WITH')}</option><option value="end_with">{:L('END_WITH')}</option><option value="is_empty">{:L('IS_EMPTY')}</option></select>&nbsp;&nbsp;</li><li class="pull-left" id="searchContent_'+m+'"><input id="search_'+m+'" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name="search"/>&nbsp;&nbsp;</li></ul></div>');  
+});
+$(document).on('click','.rem_search',function(){
+	var num = $(this).attr('rel');
+	$('#con_search_'+num).remove();
+});
+
+// 筛选重复判断
+var dosearch = 1;
+function doh(){
+	var ary = new Array();
+	var field_name = '';
+	var is_submit = 1;
+	$('.field_name').each(function(k, v){
+		field_name = $(this).find("option:selected").val();
+		if(jQuery.inArray(field_name,ary) >= 0){
+			is_submit = 0;
+			swal({
+				title: "筛选条件中有重复项！",
+				text: '',
+				type: "error"
+			});
+			dosearch = 0;
+			return false;
+		}
+		ary[k] = field_name;
+	})
+	if(is_submit == 1){
+		$("#searchForm").submit();
+	}
+}
+// $('#type').val("{$type}");
+// $('#examine_status').val("{$Think.get.examine_status}");
+//搜索
+$('#type').change(function(){
+	$('#examine_form').submit();
+});
+$('#examine_status').change(function(){
+	$('#examine_form').submit();
+});
+
+$(".role_info").click(function(){
+	$role_id = $(this).attr('rel');
+	$('#dialog-role-info').dialog('open');
+	$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+});
+$("#dialog-role-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 600,
+	maxHeight: 550,
+	position: ["center",100]
+});
+$("#dialog-examine").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 600,
+	maxHeight: 450,
+	position: ["center",100]
+});
+$("#dialog-add-examine").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 550,
+	maxHeight: 450,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+			var examine_role = $('#examine_role').val();
+			var openrecycle = $('input:radio[name="examine_status"]:checked').val();
+			if(examine_role == '' && openrecycle == 1){
+				alert_crm('请选择下一审批人');
+				$('#examine_role').focus();
+				return false;
+			}else{
+				$('#form_check').submit();
+				$(this).dialog("close");
+			}
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$("#add_examine").click(function(){
+	$('#dialog-examine').dialog('open');
+	$('#dialog-examine').load('{:U("examine/checktype")}'); 
+});
+//审核
+$("#check_examine").click(function(){
+	$('#dialog-add-examine').dialog('open');
+	$('#dialog-add-examine').load('{:U("examine/add_examine","id=")}'+$(this).attr('rel')+"&type="+$('#examine_type').val()); 
+});
+//编辑
+$("#edit_examine").click(function(){
+	window.location.href="{:U('examine/edit', 'id=')}"+$(this).attr('rel')+"&type="+$('#examine_type').val();
+});
+$('#delete').click(function(){
+	var id_array = new Array();
+	$("input.check_list:checked").each(function(){  
+		id_array.push($(this).val());
+	});
+	if(id_array.length == 0){
+		alert_crm('您没有选中任何审批！');
+		return false;
+	}
+	swal({
+		title: "您确定要删除审批信息吗？",
+		text: "删除后将无法恢复，请谨慎操作！",
+		type: "warning",   
+		showCancelButton: true,   
+		confirmButtonColor: "#DD6B55",   
+		confirmButtonText: "是的，我要删除！",
+		cancelButtonText:'让我再考虑一下…',
+		closeOnConfirm:false,
+		closeOnCancel:false
+	},
+	function(isConfirm){
+		if (isConfirm) {
+			$.ajax({
+				type:'post',
+				url: "{:U('examine/delete')}",
+				data: {ids: id_array},
+				async: false,
+				success: function (data) {
+					if (data.status == 1) {
+						swal("删除成功！", "您已经永久删除了信息！", "success");
+						location.reload();
+					}else{
+						swal({
+							title: "操作失败！",
+							text:data.info,
+							type: "error"
+						})
+						return false;
+					}
+				},
+				dataType: 'json'
+			});
+		} else {
+			swal("已取消","您取消了删除操作！","error");
+		}
+	});
+});
+/*让复选框默认取消选择*/
+$(':checkbox').prop('checked', false);  
+
+</script>
+<include file="Public:footer" />	

@@ -1,0 +1,53 @@
+<form class="form-horizontal" enctype="multipart/form-data" action="{:U('examine/add_examine')}" method="post">	
+	<div class="col-lg-12" style="margin-left:0px;">
+		<volist name="status_list" id="vo">
+			<div class="pull-left col-lg-4" style="margin:auto;">
+				<div>
+					<span class="col-lg-12" style="text-align:center">
+						<a class="examine_status" rel="{$vo['status']}" href="{:U('examine/add','type='.$vo['status'])}">
+							<if condition="$vo['status'] eq 1">
+								<img rel="{$vo['status']}" src="__PUBLIC__/img/menu/001-1.png"/>
+							<elseif condition="$vo['status'] eq 2"/>
+								<img rel="{$vo['status']}" src="__PUBLIC__/img/menu/002-1.png"/>
+							<elseif condition="$vo['status'] eq 3"/>
+								<img rel="{$vo['status']}" src="__PUBLIC__/img/menu/003-1.png"/>
+							<elseif condition="$vo['status'] eq 4"/>
+								<img rel="{$vo['status']}" src="__PUBLIC__/img/menu/004-1.png"/>
+							<elseif condition="$vo['status'] eq 5"/>
+								<img rel="{$vo['status']}" src="__PUBLIC__/img/menu/005-1.png"/>
+							<elseif condition="$vo['status'] eq 6"/>
+								<img rel="{$vo['status']}" src="__PUBLIC__/img/menu/006-1.png"/>
+							</if>
+						</a>
+					</span>
+				</div>
+				<div>
+					<span class="col-lg-12" style="text-align:center;padding:10px 0px;">
+						<if condition="$vo['status'] eq 1">
+							普通审批
+						<elseif condition="$vo['status'] eq 2"/>
+							请假审批
+						<elseif condition="$vo['status'] eq 3"/>
+							普通报销
+						<elseif condition="$vo['status'] eq 4"/>
+							差旅报销
+						<elseif condition="$vo['status'] eq 5"/>
+							出差申请
+						<elseif condition="$vo['status'] eq 6"/>
+							借款申请
+						</if>
+					</span>
+				</div>
+			</div>
+		</volist>
+	</div>
+</form>
+<script>
+	$('.examine_status img').mouseover(function(){
+		var type = $(this).attr('rel');
+		$(this).attr('src', "__PUBLIC__/img/menu/00"+type+".png");
+	}).mouseout(function(){
+		var type = $(this).attr('rel');
+		$(this).attr('src', "__PUBLIC__/img/menu/00"+type+"-1.png");
+	});
+</script>

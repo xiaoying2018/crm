@@ -1,0 +1,11 @@
+@charset "UTF-8";
+.onFocus
+{
+    background:#FFDADB url(../img/onFocus.png) no-repeat 6px 9px;
+    padding-left:25px; 
+	font-size: 12px;
+	line-height:32px;
+	vertical-align:middle;
+	height: 32px;
+	color: #666666;
+}

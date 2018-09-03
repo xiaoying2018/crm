@@ -1,0 +1,578 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css"/>
+<script src="https://cdn.bootcss.com/vue/2.5.13/vue.min.js"></script>
+<link href="/Public/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="/Public/js/images-loaded.min.js" type="text/javascript"></script>
+<script src="/Public/js/litebox.min.js" type="text/javascript"></script>
+<style type="text/css">
+    .add_title{
+        padding-bottom:10px;
+        height: 60px;
+        margin-bottom:15px;
+    }
+    .add_title>span{
+        border-bottom: 2px solid #1ab394;
+        font-size: 24px;
+    }
+    .add_body >div >.full-height-scroll{
+        border-right:1px dotted #ccc
+    }
+    .add_body_title{
+        margin:20px auto 20px auto;
+        padding-left: 25px;
+    }
+    .add_body_form{
+        padding-left: 38px;
+    }
+    .add_body_form>form>.form-group{
+        margin-bottom: 25px;
+    }
+    body{overflow-y:hidden;}
+    .form-control{
+        float:left;
+    }
+    .checkbox{float:left;}
+    .table_display{}
+</style>
+<script>
+    $(function () {
+        $(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+        $(window).resize(function () {
+            $(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+        })
+    })
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+    <include file="Public:alert" />
+    <form class="form-horizontal" id="form" role="form" action="{:U('cooperations/adddata')}" method="post">
+        <div class="ibox-content add_body" id="add_body" style="">
+            <div class="row">
+                <div class="col-md-12 add_body" style="padding-right: 0px;">
+                    <div class="full-height-scroll">
+                        <div class="row" >
+                            <div class="col-md-12 add_body_title">
+                                <div class="all-inline">
+                                    <span class="sq-tag"></span>
+                                    <div class="text-tag">
+                                        <span>基础信息</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-11 add_body_form">
+                                <!-- 校区选择 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">机构名称：</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control required" type="text" id="contacts_name" name="cooperation_name" value="" aria-required="true" aria-invalid="true">     
+                                    </div>
+                                </div>
+                                <!-- 分类选择 -->
+                                <div class="form-group cluecateBox">
+                                    <label class="col-md-4 control-label">机构分类：</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" required id="coopcate" name="cooperation_cate_id" value="">
+                                            <option value=''>--请选择--</option>
+                                            <volist name="coopcate" id="vo" key="key">
+                                                <option value="{$vo['cooperation_cate_id']}">
+                                                    {$vo['cooperation_cate_name']}
+                                                </option>
+                                            </volist>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!--地址-->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">机构地址：</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" type="text" id="address" name="address" value="" aria-required="true" aria-invalid="true">     
+                                    </div>
+                                </div>
+                                <!--联系人-->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">联系人：</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" type="text" id="contacts_name" name="contacts_name" value="" aria-required="true" aria-invalid="true">     
+                                    </div>
+                                </div>
+                                <!--职位-->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">联系人职位：</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" type="text" id="position" name="position" value="" aria-required="true" aria-invalid="true">     
+                                    </div>
+                                </div>
+                                <!--电话-->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">电话：</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" type="text" id="contacts_name" name="tel" value="" aria-required="true" aria-invalid="true">     
+                                    </div>
+                                </div>
+                                <!--邮箱-->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">邮箱：</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" type="text" id="contacts_name" name="email" value="" aria-required="true" aria-invalid="true">     
+                                    </div>
+                                </div>
+                                <!--qq/微信-->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">qq/微信：</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" type="text" id="contacts_name" name="onlineNum" value="" aria-required="true" aria-invalid="true">     
+                                    </div>
+                                </div>
+                                <!--合作维护人-->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">合作维护人：</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" type="text" id="contacts_name" name="manage_p" value="" aria-required="true" aria-invalid="true">     
+                                    </div>
+                                </div>
+
+                                <div class="form-group _files" style="padding-bottom: 20px; padding-top: 20px;">
+                                    <label class="col-md-3 control-label" style="margin-bottom: 15px;">合作协议：<br/></label>
+                                    <div class="col-md-5" style="margin-bottom: 15px;">
+                                        <span id="main_word_name"></span>
+                                    </div>
+                                    <div class="col-md-2" style="margin-bottom: 15px;">
+                                        <a href="javascript:void(0);" class="add_file btn btn-success" data-flag="1">上传合作协议</a>
+                                    </div>
+                                    <div class="" style="width: 85%;">
+                                        <table class="table table_display" >
+                                            <tr id="btou" style="display: none">
+                                                <td class="col-md-4">附件名称</td>
+                                                <td class="col-md-1">大小</td>
+                                                <td class="col-md-3">上传人</td>
+                                                <td class="col-md-2">上传时间</td>
+                                                <td class="col-md-2">操作</td>
+                                            </tr>
+                                            <!-- 文件列表 -->
+
+                                        </table>
+                                        <span class="col-md-2"></span>
+                                    </div>
+
+                                </div>
+                                <div class="" style="display:none" id="detail-dialog-file" title="添加文件">
+                                    <div class="spiner-example">
+                                        <div class="sk-spinner sk-spinner-three-bounce">
+                                            <div class="sk-bounce1"></div>
+                                            <div class="sk-bounce2"></div>
+                                            <div class="sk-bounce3"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" value="" id="case_1" name="jihua"/>
+                                <input type="hidden" value="" id="case_2" name="offer"/>
+                                <input type="hidden" value="" id="case_3" name="zp"/>
+                                <input type="hidden" value="" id="case_4" name="other"/>
+                                <input type="hidden" value="" id="case_01"/>
+                                <input type="hidden" value="" id="case_02"/>
+                                <input type="hidden" value="" id="case_03"/>
+                                <input type="hidden" value="" id="case_04"/>
+                                <input type="hidden" id="allowExts"
+                                       value="pdf,doc,ppt,txt,xls,zip,docx,rar,pptx,xlsx,jpg,jpeg,png,gif">
+                                <script>
+                                    var arry = ""
+                                    var _this = ""
+                                    var _index;
+                                    var arry_;
+                                    $(".add_file").click(function () {
+                                        _index = $(this).attr("data-flag");
+                                        arry = "#case_" + $(this).attr("data-flag")
+//                                        alert(arry)
+                                        arry_ = "#case_0" + $(this).attr("data-flag")
+                                        $(arry_).val("")
+                                        _this = $(this).parent().parent().find("table")
+
+                                    })
+
+                                    $("body").on("click", ".ui-button-text-only", function () {
+                                        var files = $(arry_).val()
+                                        $.ajax({
+                                            type: "get",
+                                            url: "/index.php?m=case&a=getfile&file_id=" + files,
+                                            success: function (data) {
+                                                console.log(data)
+//												if(!data=""){
+                                                _this.css({"display": "inherit"})
+                                                for (var i = 0; i < data.length; i++) {
+
+                                                    if (data[i].no_p_file_path.split(".")[1] == "docx") {
+                                                        var _str = "<a  href=" + data[i].no_p_file_path + " title='点击查看大图'>" + data[i].name + "</a>"
+                                                    } else if (data[i].no_p_file_path.split(".")[1] == "doc") {
+                                                        var _str = "<a  href=" + data[i].no_p_file_path + " title='点击查看大图'>" + data[i].name + "</a>"
+                                                    }
+                                                    else if (data[i].no_p_file_path.split(".")[1] == "xls") {
+                                                        var _str = "<a  href=" + data[i].no_p_file_path + " title='点击查看大图'>" + data[i].name + "</a>"
+                                                    } else if (data[i].no_p_file_path.split(".")[1] == "xlsx") {
+                                                        var _str = "<a  href=" + data[i].no_p_file_path + " title='点击查看大图' >" + data[i].name + "</a>"
+                                                    } else {
+                                                        var _str = "<a class='litebox_file'  href=" + data[i].no_p_file_path + " title='点击查看大图' data-litebox-group='group-" + _index + "'>" + data[i].name + "</a>"
+                                                    }
+                                                    _this.append(
+                                                        "<tr>" +
+                                                        "<td>" + _str +
+                                                        //														"<img :src=" + data[i].no_p_file_path + " alt=''>" +
+                                                        //														"<img :src=" + data[i].file_path + " alt=''>&nbsp;&nbsp;&nbsp;" +
+                                                        //														"<a class='litebox_file' href=" + data[i].file_path + " title='点击查看大图' data-litebox-group='group-1'>aaa</a>" +
+                                                        //														"<a class='litebox_file' href=" + data[i].no_p_file_path + " title='点击查看大图'data-litebox-group='group-1' >"+data[i].name+"</a>" +
+                                                        //														"<a href='javascript:;' file='" + data[i].no_p_file_path + "' filename='" + data[i].name + "'>" + data[i].name + "</a>" +
+                                                        "</td>" +
+                                                        "<td>" + parseInt(data[i].size / 1024) + "kb</td>" +
+                                                        "<td>" +
+                                                        "<a class='role_info' rel='file.owner.role_id' 'href='javascript:void(0)'> <?php echo $_SESSION['full_name']; ?></a>" +
+                                                        "</td>" +
+                                                        "<td>" + data[i].cerate_time + "</td>" +
+                                                        "<td class='tdleft'>" +
+                                                        "<a href='javascript:void(0);' class='file_delete'data_fildid ='" + data[i].file_id + "'rel='file.file_id'>删除</a>" +
+                                                        "</td>" +
+                                                        "</tr>"
+                                                    )
+
+                                                }
+                                                $('.litebox_file').liteBox({
+                                                    revealSpeed: 400,
+                                                    background: 'rgba(0,0,0,.8)',
+                                                    overlayClose: true,
+                                                    escKey: true,
+                                                    navKey: true,
+                                                    errorMessage: '图片加载失败.'
+                                                });
+//												}
+                                            }
+
+                                        });
+                                    })
+
+                                    $("body").on("click", ".file_delete", function () {
+//                                        alert(1)
+                                        if ($(this).parent().parent().siblings().length < 2) {
+                                            $(this).parent().parent().parent().parent().hide()
+                                        }
+                                        $(this).parent().parent().remove()
+
+
+                                        $.ajax({
+                                            url: "/index.php?m=cooperations&a=delfile&file_id=" + $(this).attr("data_fildid"),
+                                            methods: "get",
+                                            success: function (res) {
+                                                console.log(res);
+                                            }
+                                        })
+                                    })
+
+
+                                    $(document).on('click', '.add_file', function () {
+                                        var _type = $(this).attr("data-flag");
+                                        $('#detail-dialog-file').dialog('open');
+                                        $('#detail-dialog-file').load('/index.php?m=file&a=addcasefile&id=' + _type);
+
+                                    });
+
+                                    $("#detail-dialog-file").dialog({
+                                        autoOpen: false,
+                                        modal: true,
+                                        width: 800,
+                                        maxHeight: 400,
+                                        position: ["center", 200],
+                                        buttons: {
+                                            "确认": function () {
+                                                $('#btou').css('display','table-row ')
+//                                                alert(222)
+                                                //												window.location.reload();
+                                                $(this).dialog("close");
+                                            },
+                                            "取消": function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+
+
+                                    $(".customerModal select.form-control").addClass("edit");
+
+                                    window.setTimeout(function () {
+                                        $(".dv_textarea.textarea_edit").txtaAutoHeight();
+                                    }, 1000)
+
+                                    $("#main_word").change(function () {
+                                        var myfile = document.getElementById('main_word');
+                                        $("#main_word_name").text(myfile.files[0].name)
+                                    });
+
+                                    $.fn.extend({
+                                        txtaAutoHeight: function () {
+                                            return this.each(function () {
+                                                var $this = $(this);
+                                                if (!$this.attr('initAttrH')) {
+                                                    $this.attr('initAttrH', $this.outerHeight());
+                                                }
+                                                setAutoHeight(this).on('input', function () {
+                                                    setAutoHeight(this);
+                                                });
+                                            });
+
+                                            function setAutoHeight(elem) {
+                                                var $obj = $(elem);
+                                                return $obj.css({
+                                                    height: $obj.attr('initAttrH'),
+                                                    'overflow-y': 'hidden'
+                                                }).height(elem.scrollHeight);
+                                            }
+                                        }
+                                    });
+                                </script>
+
+
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">备注：</label>
+                                    <div class="col-md-6">
+                                        <!--<input class="form-control" type="text" id="remark" name="remark" value="" aria-required="true" aria-invalid="true">-->     
+                                        <textarea rows="8" class="form-control " id="remark" name="remark"></textarea>
+                                        
+                                    </div>
+                                </div>
+                                <!--数据录入人-->
+                                <!--                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label">数据录入人：</label>
+                                                                    <div class="col-md-6">
+                                                                        <input class="form-control required error" type="text" id="contacts_name" name="coop_addr" value="" aria-required="true" aria-invalid="true">     
+                                                                    </div>
+                                                                </div>-->
+
+
+                                <script>
+                                    var CC = new Vue({
+                                        el: '.cluecateBox',
+                                        data: {
+                                            lists: {}
+                                        },
+                                        methods: {
+                                            refreshCluecate: function () {
+                                                var id = $('#block').val(),
+                                                        that = this;
+                                                $.ajax({
+                                                    url: "{:U('clueblock/search_cate')}",
+                                                    data: {block: id},
+                                                    dataType: 'JSON',
+                                                    type: 'GET',
+                                                    success: function (res) {
+                                                        that.lists = res.data;
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                    function refreshCluecate() {
+                                        CC.refreshCluecate();
+                                    }
+
+                                    refreshCluecate();
+                                </script>
+
+                                <volist name="field_list['main']" id="vo" key="key">
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label">{$vo.name}：</label>
+                                        <if condition="$vo['form_type'] == 'textarea'">
+                                            <if condition = "$vo['tip_start'] eq 1">
+                                                <div class="col-md-6">
+                                                    <textarea class="form-control" rows="5" name="{$vo.field}"></textarea>
+                                                </div>
+                                                <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                <else/>
+                                                <div class="col-md-8">
+                                                    <textarea class="form-control" rows="5" name="{$vo.field}"></textarea>
+                                                </div>
+                                            </if>
+                                            <elseif condition="$vo['form_type'] == 'address'"/>
+                                            <if condition = "$vo['tip_start'] eq 1">
+                                                <div class="col-md-7">
+                                                    {$vo.html}
+                                                </div>
+                                                <div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                <else/>
+                                                <div class="col-md-8">
+                                                    {$vo.html}
+                                                </div>
+                                            </if>
+                                            <elseif condition="$vo['form_type'] == 'box'"/>
+                                            <div class="col-md-6">
+                                                {$vo.html}
+                                            </div>
+                                            <if condition = "$vo['tip_start'] eq 1">
+                                                <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                <else/>
+                                                <div class="col-md-2"></div>
+                                            </if>
+                                            <elseif condition="$vo['field'] == 'name'"/>
+                                            <div class="col-md-6">
+                                                <input class="form-control required" id="name" name="name" onkeyup="checkinfo(name)" placeholder="" type="text" />
+                                            </div>
+                                            <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                            <else/>
+                                            <div class="col-md-6">
+                                                {$vo.html}
+                                            </div>
+                                            <if condition = "$vo['tip_start'] eq 1">
+                                                <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                <else/>
+                                                <div class="col-md-2"></div>
+                                            </if>
+                                        </if>
+                                    </div>
+                                </volist>
+                            </div>
+                            <!--						<div class="col-md-12 add_body_title">
+                                                                                    <div class="all-inline">
+                                                                                            <span class="sq-tag"></span>
+                                                                                            <div class="text-tag">
+                                                                                                    <span>附加信息</span>
+                                                                                            </div>
+                                                                                    </div>
+                                                                            </div>
+                                                                            <div class="col-md-11 add_body_form">
+                                                                                    <volist name="field_list['data']" id="vo" key="key">
+                                                                                            <div class="form-group">
+                                                                                                    <label class="col-md-4 control-label">{$vo.name}：</label>
+                                                                                                    <if condition="$vo['form_type'] == 'address' || $vo['form_type'] == 'box' || $vo['form_type'] == 'textarea'">
+                                                                                                            <div class="col-md-7">
+                                                                                                                    {$vo.html}
+                                                                                                            </div>
+                                                                                                            <if condition = "$vo['tip_start'] eq 1">
+                                                                                                                    <div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                                                                            <else/>
+                                                                                                                    <div class="col-md-1"></div>
+                                                                                                            </if>
+                                                                                                    <else/>
+                                                                                                            <div class="col-md-6">
+                                                                                                                    {$vo.html}
+                                                                                                            </div>
+                                                                                                            <if condition = "$vo['tip_start'] eq 1">
+                                                                                                                    <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                                                                            <else/>
+                                                                                                                    <div class="col-md-2"></div>
+                                                                                                            </if>
+                                                                                                    </if>
+                                                                                            </div>
+                                                                                    </volist>
+                                                                            </div>-->
+                            <div class="col-md-1 pull-right">
+                                <!-- <div style="height: 100%; border-right: 1px dashed gray;">&nbsp;sadf</div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tfoot_div" class="clearfix">
+            <div class="clearfix" id="tfoot_page">
+                <div class="ibox-content" style="border-top: none;">
+                    <div class="col-sm-offset-2"><button type="submit" id="save_submit" class="btn btn-primary">创建合作机构</button></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="" style="display:none;" id="dialog-validate" title="{:L('VALIDATE_COMPANY_RESULT')}">
+    <div id="search_leads_content"></div>
+    <div id="search_customer_content"></div>
+</div>
+<script type="text/javascript">
+    function checkinfo(param) {
+        var field_value = $('#' + param).val();
+        if (field_value) {
+            $.post('{:U("leads/checkinfo")}',
+                    {
+                        field_value: field_value,
+                        field_name: param,
+                    },
+                    function (data) {
+                        if (data.status == 1) {
+                            $('#' + param + '-error').remove('');
+                            $('#' + param).after('<label id="' + param + '-error" class="error" for="source"><i class="fa fa-times-circle"></i></label>');
+                            $('#' + param + '-error').html('<i class="fa fa-times-circle"></i>' + data.data);
+                        } else {
+                            $('#' + param + '-error').remove('');
+                        }
+                    },
+                    'json');
+        }
+    }
+    $(document).ready(function () {
+        $('#save_submit').prop('disabled', false);
+        /*form表单验证*/
+        $("#form").validate({
+            submitHandler: function (form) {
+                $('#save_submit').click(function () {
+                    $('#save_submit').prop('disabled', true);
+                });
+                form.submit();
+            }
+        });
+    });
+    $("[data-type='nummber']").keyup(function () {
+        if (isNaN($(this).val())) {
+            $(this).val($(this).val().replace(/\D/g, ''))
+        }
+    });
+//    $("#dialog-validate").dialog({
+//        autoOpen: false,
+//        modal: true,
+//        width: 400,
+//        maxHeight: 400,
+//        buttons: {
+//            "确定": function () {
+//                $(this).dialog("close");
+//            }
+//        },
+//        position: ["center", 100]
+//    });
+//    $(function () {
+//        $('#owner_name').click(
+//                function () {
+//                    $('#dialog-role-list').dialog('open');
+//                    $('#dialog-role-list').load("{:U('user/listDialog')}");
+//                }
+//        );
+//        $('#name').blur(
+//                function () {
+//                    name = $('#name').val();
+//                    if (name != '') {
+//                        $.post('{:U("leads/check")}',
+//                                {
+//                                    name: name
+//                                },
+//                                function (data) {
+//                                    if (data.data != 0) {
+//                                        var leads_result = '';
+//                                        var customer_result = '';
+//                                        if (data.data['leads'].length > 0) {
+//                                            $.each(data.data['leads'], function (k, v) {
+//                                                leads_result += (k + 1) + '、' + v + '</br>';
+//                                            });
+//                                            $("#search_leads_content").html("<h5>{:L('SAME_LEADS_COMPANY')}</h5>" + leads_result);
+//                                        }
+//                                        if (data.data['customer'].length > 0) {
+//                                            $.each(data.data['customer'], function (k, v) {
+//                                                customer_result += (k + 1) + '、' + v + '</br>';
+//                                            });
+//                                            $("#search_customer_content").html("<h5>{:L('SAME_CUSTOMER_COMPANY')}</h5>" + customer_result);
+//                                        }
+//                                        if (data.data['customer'].length > 0 || data.data['leads'].length > 0)
+//                                            $('#dialog-validate').dialog('open');
+//
+//
+//                                    }
+//                                },
+//                                'json');
+//                    }
+//                }
+//        );
+//    });
+</script>
+<include file="Public:footer" />

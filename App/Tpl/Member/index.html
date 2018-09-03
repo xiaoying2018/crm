@@ -1,0 +1,431 @@
+<include file="Public:header" />
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/mxcrm_more.js" type="text/javascript"></script>
+<style>
+body{
+	overflow-y: hidden;
+}
+.option{padding-left:-30px;}
+</style>
+<script>
+$(function(){
+	var scroll_width = 5;
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+		$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+	})
+	if ("{$Think.get.by}") {
+		$("#filter_ul").prev().html($("#filter_ul>li>a.active").text()+'<span class="fa fa-angle-down small_fa"></span>');
+	}
+	$("#tab_Test3").FrozenTable(1,0,3);
+	$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width).width($("#oTableLH_tab_Test3").width()).css({'zIndex':9});
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width).css({'zIndex':9});
+	//$("#oDivH_tab_Test3").css('top','-7px');
+})
+</script>
+<div class="wrapper wrapper-content">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins"> 
+				<div class="title-bar">
+					<div class="row  clearfix" id="title-hide" style="display:none;">
+						<ul class="breadcrum pull-left">
+							<li>已选中&nbsp;<span id="icheck_num"></span>&nbsp;项</li>
+							<li class="single_btn"><a href="javascript:void(0)" id="edit_member"><i class="fa fa-pencil"></i>&nbsp;编辑</a></li>
+							<li><a id="delete" href="javascript:void(0)"><i class="fa fa-times"></i>&nbsp;删除</a></li>
+							<li class="last_li"><big><a class="fa fa-times pull-right" id="back-show"></a></big></li>
+						</ul>
+					</div>
+					<div class="row " id="title-show">
+						<form class="form-inline" id="" action="" method="get">
+						<ul class="breadcrum pull-right" style="margin-bottom: 0px">
+							<li>
+								搜索：
+								<div class="input-group">
+									<input type="hidden" name="m" value="member"/>
+									<input type="hidden" name="a" value="index"/>
+									<input type="hidden" name="condition" value="contains"/>
+									<input type="hidden" name="field" value="name"/>
+									<input id="short_search" type="text" style="width:160px;" placeholder="请输入客户名称" onkeydown='if(event.keyCode==13) {$("#short_search_btn").trigger("click");return false;}' class="form-control input-sm" name="search" <if condition = "$_GET['field'] eq 'name'">value="{$_GET['search']}"</if>/>
+									<span class="input-group-btn">
+										<button class="btn btn-default btn-search" id="short_search_btn" type="submit"><i class="fa fa-search"></i></button>
+									</span>
+								</div>
+								&nbsp;&nbsp;<a title="高级搜索" href="javascript:void(0)" id="search_type" class="btn btn-white btn-bitbucket"><i class="fa fa-filter" style="color: #D8E3EF;"></i></a>
+							</li>
+						</ul>
+						</form>
+					</div>
+				</div>
+				<div class="row" style="margin: 0">
+					<div class="ibox-content" style="padding:0px;">
+						<div class="ibox-content clearfix" id="table_container" style="padding:0px;border: none;">
+							<form id="form1" action="" method="Post" style="position:relative;"> 
+								<div id="table_div" class="full-height-scroll" style="left:0px;top:0px;">
+								<if condition="$member_list eq null">
+									<include file="Public:nodata" />
+								<else/>
+									<table class="table table-hover table-striped table_thead_fixed" id="tab_Test3" style="background:#fff;margin-bottom:0px;">
+										<tr id="childNodes_num" class="tabTh">
+											<td style="max-width: 60px;width:74px;padding:0 10px 0 7px;">
+												<div class="checkbox checkbox-primary">
+													<input type="checkbox" class="check_all"/>
+													<label for=""></label>
+												</div>
+											</td>
+											<td>姓名</td>
+											<td>手机号码</td>
+											<td>注册时间</td>
+										</tr>
+										<volist name="member_list" id="vo">
+											<tr class="controls_tr">
+												<td>
+													<div class="checkbox checkbox-primary">
+														<input name="member_id[]" class="check_list" type="checkbox" value="{$vo.member_id}" />
+														<label for=""></label>
+													</div>
+												</td> 
+												<td><a href="{:U('member/view','id='.$vo['member_id'])}">{$vo.name}</a></td>
+												<td><a href="{:U('member/view','id='.$vo['member_id'])}">{$vo.telephone}</a></td>
+												<td><notempty name="vo.create_time">{$vo.create_time|date="Y-m-d",###}</notempty></td>
+											</tr> 
+										</volist>
+									</table>
+								</if>
+								</div>
+								<div id="tfoot_div" class="clearfix">
+									<tr>
+										<div class="clearfix" id="tfoot_page">				
+											{$page}<include file="Public:listrows" />
+										</div>
+									</tr>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+    		</div>
+        </div>
+    </div>
+</div>
+<div style="display:none" id="dialog-field-search" title="高级搜索">
+	<form class="form-inline" id="searchForm" action="" method="get">
+		<div id="search_add" style="width:450px;float:left;">
+		<empty name="fields_search">
+			<div id="con_search_1" style="float:left;width:450px;margin:0 10px 0 10px;">
+				<ul class="nav pull-left" style="margin:0px 0 0 23px;width:450px">
+					<li class="pull-left">
+						<select id="field_1" style="width:auto" class="form-control input-sm field_name new-select" onchange="changeCondition(1)" >
+							<option class="" value="name">--请选择条件--</option>
+							<option class="word" value="number">{:L('CONTRACT_NO')}</option>
+							<option class="contract_check" value="is_checked">审核状态</option>
+							<option class="role" value="owner_role_id">合同签约人</option>
+							<option class="word" value="customer_name">{:L('CUSTOMER')}名称</option>
+							<option class="word" value="code">商机编号</option>
+							<option class="number" value="price">{:L('QUOTATION')}</option>
+							<option class="date" value="create_time">{:L('CREATION_DATE')}</option>
+							<option class="date" value="update_time">{:L('MODIFICATION_DATE')}</option>
+							<option class="date" value="due_time">到期时间</option>
+						</select>&nbsp;&nbsp;
+					</li>
+					<li class="pull-left" id="conditionContent_1">
+						<select id="condition_1" style="width:auto" class="form-control input-sm new-select" onchange="changeSearch()" name="name[condition]">
+							<option value="contains">{:L('CONTAINS')}</option>
+							<option value="is">{:L('IS')}</option>								
+							<option value="start_with">{:L('START_WITH')}</option>
+							<option value="end_with">{:L('END_WITH')}</option>
+							<option value="is_empty">{:L('IS_EMPTY')}</option>
+						</select>&nbsp;&nbsp;
+					</li>
+					<li class="pull-left" id="searchContent_1">
+						<input id="search_1" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name="name[value]"/>&nbsp;&nbsp;
+					</li>
+				</ul>
+			</div>
+			<?php $max_key = 1;?>
+		<else />
+			<volist name="fields_search" key="key1" id="vo">
+				<div id="con_search_{$key1}" style="float:left;width:470px;margin:0px 10px 0 10px;padding-top:10px;">
+					<div id="rem_{$key1}" class="pull-left" style="line-height:30px;"><a href="javascript:void(0);" class="rem_search" rel="{$key1}" title="移除"><span class="fa fa fa-times-circle"></span></a></div>
+					<ul class="nav pull-left" style="margin:0px 0 0 5px;width:430px;">
+						<li class="pull-left">
+							<select id="field_{$key1}" style="width:auto" class="form-control input-sm field_name new-select" onchange="changeCondition({$key1})" >
+								<option class=""  value="name">--请选择条件--</option>
+								<option class="word" <if condition = "$vo['field'] eq 'number'">selected="selected"</if> value="number">{:L('CONTRACT_NO')}</option>
+								<option class="contract_check" <if condition = "$vo['field'] eq 'is_checked'">selected="selected"</if> value="is_checked">审核状态</option>
+								<option class="role" <if condition = "$vo['field'] eq 'owner_role_id'">selected="selected"</if> value="owner_role_id">合同签约人</option>
+								<option class="word" <if condition = "$vo['field'] eq 'customer_name'">selected="selected"</if> value="customer_name">{:L('CUSTOMER')}名称</option>
+								<option class="word" <if condition = "$vo['field'] eq 'code'">selected="selected"</if> value="code">商机编号</option>
+								<option class="number" <if condition = "$vo['field'] eq 'price'">selected="selected"</if> value="price">{:L('QUOTATION')}</option>
+								<option class="date" <if condition = "$vo['field'] eq 'create_time'">selected="selected"</if> value="create_time">{:L('CREATION_DATE')}</option>
+								<option class="date" <if condition = "$vo['field'] eq 'update_time'">selected="selected"</if> value="update_time">{:L('MODIFICATION_DATE')}</option>
+								<option class="date" <if condition = "$vo['field'] eq 'due_time'">selected="selected"</if> value="due_time">到期时间</option>
+							</select>&nbsp;&nbsp;
+						</li>
+						<li class="pull-left" id="conditionContent_{$key1}">
+						<if condition="$vo.form_type eq 'number'">
+							<select id="condition" style="width:auto" class="form-control input-sm" name="{$vo['field']}[condition]">
+								<option value="gt" <if condition="$_GET[$vo['field']][condition] eq 'gt'">selected="selected"</if>>{:L('GT')}</option>
+								<option value="lt" <if condition="$_GET[$vo['field']][condition] eq 'lt'">selected="selected"</if>>{:L('LT')}</option>
+								<option value="eq" <if condition="$_GET[$vo['field']][condition] eq 'eq'">selected="selected"</if>>{:L('EQ')}</option>
+								<option value="neq" <if condition="$_GET[$vo['field']][condition] eq 'neq'">selected="selected"</if>>{:L('NEQ')}</option>
+							</select>		
+						<elseif condition="$vo.form_type eq 'datetime'"/>
+							<select id="condition" style="width:auto" class="form-control input-sm" name="{$vo['field']}[condition]">
+								<option value="tgt" <if condition="$_GET[$vo['field']][condition] eq 'tgt'">selected="selected"</if>>{:L('PAST')}</option>
+								<option value="lt" <if condition="$_GET[$vo['field']][condition] eq 'lt'">selected="selected"</if>>{:L('BEFORE')}</option>
+								<option value="between" <if condition="$_GET[$vo['field']][condition] eq 'between'">selected="selected"</if>>{:L('IN')}</option>
+								<option value="nbetween" <if condition="$_GET[$vo['field']][condition] eq 'nbetween'">selected="selected"</if>>{:L('NOTIN')}</option>
+							</select>
+						<elseif condition="$vo.field eq 'owner_role_id'"/>
+						<elseif condition="$vo.form_type eq 'box'" />
+							<span id="{$vo['field']}"></span>							
+							<script type="text/javascript">
+								var b = '{$vo[field]}';
+								var c = 'product';
+								$.ajax({
+									type:'get',
+									url:'index.php?m=setting&a=boxfield&model='+c+'&field='+b,
+									async:false,
+									success:function(data){
+										options = '';
+										$.each(data.data, function(k, v){
+											if('{$vo.value}' == v){
+												select = 'selected';
+											}else{
+												select = '';
+											}
+											options += "<option value='"+v+"' "+select+">"+v+"</option>";
+										});
+										$("#{$vo['field']}").html('<select class="{$vo["field"]} form-control input-sm" style="width:auto" name="{$vo["field"]}" ><option value="">--{:L('PLEASE_CHOOSE')}--</option>' + options + '</select>&nbsp;&nbsp;');	
+									},
+									dataType:'json'
+								});	
+								<if condition="!empty($_GET[$vo['field']])">
+									$(".{$vo['field']} option[value='{$_GET[$vo['field']]}']").attr('selected','selected');
+								</if>
+							</script>	
+						<elseif condition="$vo.form_type eq 'address'" />
+							<select id="condition" style="width:auto" class="form-control input-sm" name="{$vo['field']}[condition]">
+								<option value="contains" <if condition="$_GET[$vo['field']][condition] eq 'contains'">selected="selected"</if>>{:L('IN')}</option>
+								<option value="not_contain" <if condition="$_GET[$vo['field']][condition] eq 'not_contains'">selected="selected"</if>>{:L('NOTIN')}</option>
+							</select>
+							<select name="{$vo['field']}[state]" class="form-control input-sm" id="state" style="width:135px;"></select>
+							<select name="{$vo['field']}[city]" class="form-control input-sm" id="city" style="width:110px;"></select>
+							<select name="{$vo['field']}[area]" class="form-control input-sm" id="area" style="width:110px"></select>
+							<input type="text" id="search" name="{$vo['field']}[search]" value="{$_GET[$vo['field']][search]}" class="form-control input-sm" placeholder="{:L('THE_STREET_INFORMATION')}" class="input-large">
+							<script type="text/javascript">
+								 new PCAS("{$vo['field']}[state]","{$vo['field']}[city]","{$vo['field']}[area]","<php>echo $_GET[$vo['field']]['state'];</php>","<php>echo $_GET[$vo['field']]['city'];</php>","<php>echo $_GET[$vo['field']]['area'];</php>");
+							</script>
+						<else />
+							<select id="condition" style="width:auto" class="form-control input-sm" name="{$vo['field']}[condition]">
+								<option value="contains" <if condition="$_GET[$vo['field']][condition] eq 'contains'">selected="selected"</if>>{:L('INCLUDE')}</option>
+								<option value="not_contain" <if condition="$_GET[$vo['field']][condition] eq 'not_contain'">selected="selected"</if>>{:L('EXCLUSIVE')}</option>
+								<option value="is" <if condition="$_GET[$vo['field']][condition] eq 'is'">selected="selected"</if>>{:L('YES')}</option>
+								<option value="isnot" <if condition="$_GET[$vo['field']][condition] eq 'isnot'">selected="selected"</if>>{:L('NO')}</option>					
+								<option value="start_with" <if condition="$_GET[$vo['field']][condition] eq 'start_with'">selected="selected"</if>>{:L('BEGINNING_CHARACTER')}</option>
+								<option value="end_with" <if condition="$_GET[$vo['field']][condition] eq 'end_with'">selected="selected"</if>>{:L('TERMINATION_CHARACTER')}</option>
+								<option value="is_empty" <if condition="$_GET[$vo['field']][condition] eq 'is_empty'">selected="selected"</if>>{:L('MANDATORY')}</option>
+								<option value="is_not_empty" <if condition="$_GET[$vo['field']][condition] eq 'is_not_empty'">selected="selected"</if>>{:L('ISNOTEMPTY')}</option>
+							</select>
+						</if>
+						</li>
+						<li class="pull-left" id="searchContent_{$key1}" style="margin-left:5px;">
+						<if condition="$vo.form_type neq 'box' && $vo.form_type neq 'address'">
+							<if condition="$vo.form_type eq 'datetime'">
+								<input name="{$vo['field']}[value]" type="text" class="form-control input-sm" onclick="WdatePicker()" class="input-medium" value="{$_GET[$vo['field']][value]}" rel="product">
+							<elseif condition="$vo['field'] eq 'owner_role_id'"/>
+								<span id="owner_role_search" rel="{$key1}" rel1="{$vo['field']}[value]" rel2="{$_GET[$vo['field']][value]}"/>
+								<script type="text/javascript">
+									var key_id = $('#owner_role_search').attr('rel');
+									var search_owner_role_id = $('#owner_role_search').attr('rel1');
+									var owner_roleid = $('#owner_role_search').attr('rel2');
+									$.ajax({
+										type:'get',
+										url:'index.php?m=user&a=getrolelist',
+										async:false,
+										success:function(data){
+											options = '';
+											$.each(data.data, function(k, v){
+												options += '<option value="'+v.role_id+'" checkedit>'+v.user_name+' ['+v.department_name+'-'+v.role_name+'] </option>';
+											});
+											$("#searchContent_"+key_id+"").html('<select class="selectpicker show-tick form-control input-sm" data-live-search="true" id="search_'+key_id+'" name="'+search_owner_role_id+'" style="width:auto">' + options + '</select>');
+											var owner_roleid = "{$_GET[$vo['field']][value]}";
+											$('#search_'+key_id+' option[value='+owner_roleid +']').prop('selected',true);
+										},
+										dataType:'json'
+									});		
+								</script>
+							<else/>	
+								<input name="{$vo['field']}[value]" type="text" class="form-control input-sm" class="{$vo['form_type']}" value="{$_GET[$vo['field']][value]}" rel="product">
+							</if>
+						</if>
+						</li>
+					</ul>
+				</div>
+				<?php $max_key = ++$key1;?>
+			</volist>
+		</empty>
+		</div>
+		<input type="hidden" name="this_page" value="{$this_page}" />
+		<div class="clearfix"></div>
+		<div style="margin-left: 35px;margin-top:0px;"><a href="javascript:void(0);" style="display: -moz-stack;margin: 30px 0px 0px; font-size: 12px; color: rgb(62, 133, 233);" id="add_btn">+添加筛选条件</a>
+		</div>
+		<div class="pull-right" class="button_type" style="margin:20px;"> 
+			<input type="hidden" name="m" value="member"/>
+			<input type="hidden" name="act" id="act" value="index"/>
+			<if condition="$Think.get.by neq null">
+				<input type="hidden" name="by" value="{$Think.get.by}"/>
+			</if>
+		</div>
+	</form>
+</div>
+<script type="text/javascript">
+/*让复选框默认取消选择*/
+var is_receivables = '{$is_receivables}';
+$(':checkbox').prop('checked', false);
+
+$("#edit_member").click(function(){
+	window.location.href="{:U('member/edit', 'id=')}"+$(this).attr('rel');
+});
+$("#short_search").val('{$Think.get.search}');
+
+<if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else/>width=600;</if>
+$("#dialog-role-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: width,
+	maxHeight: 550,
+	position: ["center",100]
+});
+
+/**添加筛选条件**/
+var m = {$max_key};
+$('#add_btn').click(function(){
+	m += 1;
+	$('#search_add').append('<div id="con_search_'+m+'" style="float:left;width:450px;padding-top:10px;margin:0px 10px 0 10px;"><div  id="rem_'+m+'" class="pull-left" style="line-height:30px;"><a href="javascript:void(0);" class="rem_search" rel="'+m+'" title="移除"><span class="fa fa-times-circle"></span></a></div>&nbsp;<ul class="nav pull-left" style="margin:0px 0 0 5px;width:420px"><li class="pull-left"><select id="field_'+m+'"  style="width:auto" class="form-control input-sm field_name new-select" onchange="changeCondition('+m+')" name=""><option class="" value="name">--请选择条件--</option><option class="word" value="number">{:L('CONTRACT_NO')}</option><option class="role" value="owner_role_id">合同签约人</option><option class="word" value="customer_name">{:L('CUSTOMER')}名称</option><option class="word" value="code">商机编号</option><option class="contract_check" value="is_checked">审核状态</option><option class="date" value="create_time">{:L('CREATION_DATE')}</option><option class="date" value="update_time">{:L('MODIFICATION_DATE')}</option><option class="date" value="due_time">{:L('CONTRACT_TIME')}</option><option class="number" value="price">{:L('QUOTATION')}</option></select>&nbsp;&nbsp;</li><li class="pull-left" id="conditionContent_'+m+'"><select id="condition_'+m+'" style="width:auto" class="form-control input-sm new-select" name="condition" onchange="changeSearch()"><option value="contains">{:L('CONTAINS')}</option><option value="is">{:L('IS')}</option><option value="start_with">{:L('START_WITH')}</option><option value="end_with">{:L('END_WITH')}</option><option value="is_empty">{:L('IS_EMPTY')}</option></select>&nbsp;&nbsp;</li><li class="pull-left" id="searchContent_'+m+'"><input id="search_'+m+'" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name="search"/>&nbsp;&nbsp;</li></ul></div>');  
+});
+$(document).on('click','.rem_search',function(){
+	var num = $(this).attr('rel');
+	$('#con_search_'+num).remove();
+});
+
+// 筛选重复判断
+var dosearch = 1;
+function doh(){
+	var ary = new Array();
+	var field_name = '';
+	var is_submit = 1;
+	$('.field_name').each(function(k, v){
+		field_name = $(this).find("option:selected").val();
+		if(jQuery.inArray(field_name,ary) >= 0){
+			is_submit = 0;
+			swal({
+				title: "筛选条件中有重复项！",
+				text: data.info,
+				type: "error"
+			});
+			dosearch = 0;
+			return false;
+		}
+		ary[k] = field_name;
+	})
+	if(is_submit == 1){
+		$("#searchForm").submit();
+	}
+}
+
+$("#dialog-field-search").dialog({
+	autoOpen: false,
+	width: 500,
+	modal: true,
+	minHeight: 350,
+	maxHeight: 450,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+			doh();
+			if(dosearch == 1){
+				$(this).dialog("close");
+			}
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$("#search_type").click(function(){
+	$("#dialog-field-search").dialog('open');
+})
+
+
+$(function(){
+<if condition="$Think.get.field neq null">
+	$("#field option[value='{$Think.get.field}']").prop("selected", true);changeCondition();
+	$("#condition option[value='{$Think.get.condition}']").prop("selected", true);changeSearch();
+	$("#search").val('{$Think.get.search}');
+</if>
+	$('#delete').click(function(){
+		var id_array = new Array();
+		$("input.check_list:checked").each(function(){  
+			id_array.push($(this).val());
+		});
+		if(id_array.length == 0){
+			alert_crm('您没有选中任何客户！');
+			return false;
+		}
+		swal({
+			title: "您确定要删除客户信息吗？",
+   			text: "删除后将无法恢复，请谨慎操作！",
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "是的，我要删除！",
+	        cancelButtonText:'让我再考虑一下…',
+	        closeOnConfirm:false,
+	        closeOnCancel:false
+		},
+		function(isConfirm){
+	        if (isConfirm) {
+	        	$.ajax({
+		            type:'post',
+		            url: "{:U('member/delete')}",
+		            data: {member_id: id_array},
+		            async: false,
+		            success: function (data) {
+						if (data.status == 1) {
+							swal("删除成功！", "您已经永久删除了信息！", "success");
+							location.reload();
+						}else{
+							swal({
+								title: "操作失败！",
+								text:data.info,
+								type: "error"
+							})
+							return false;
+						}
+		            },
+		            dataType: 'json'
+		        });
+	        } else {
+	            swal("已取消","您取消了删除操作！","error");
+	        }
+	    });
+	});
+	$("#dosearch").click(function(){
+		result = checkSearchForm();
+		if(result){
+			$("#act").val('search');$("#searchForm").submit();
+		} 
+	});
+});
+<if condition="$list neq null">
+	$nodes_num = document.getElementById("childNodes_num").children.length;
+	$("#td_colspan").attr('colspan',$nodes_num);
+</if>
+</script>
+<include file="Public:footer" />	

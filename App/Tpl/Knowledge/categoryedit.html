@@ -1,0 +1,54 @@
+<link rel="stylesheet" href="__PUBLIC__/css/treeview/jquery.treeview.css" type="text/css">
+<script type="text/javascript" src="__PUBLIC__/js/treeview/jquery.treeview.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/treeview/jquery.treeview.edit.js"></script>
+<script type="text/javascript">
+	$(function() {
+		$("#browser").treeview();
+	})
+	$('.check_list').click(function(){
+		if($(this).is(':checked')){
+			$(this).parent('span').parent('.collapsable').find('ul li span :input').prop('checked',true);
+		}else{
+			$(this).parent('span').parent('.collapsable').find('ul li span :input').prop('checked',false);
+		}
+	});
+</script>
+<style>
+	.control-labels{width:50px;float: left;padding-top: 5px;text-align: right;}
+	.controlsss{margin-left:55px;}
+</style>
+<form class="form-horizontal" id="knowledge_form2" action="{:U('knowledge/categoryEdit')}" method="post" >
+	<input type="hidden" name="category_id" value="{$knowledge_category.category_id}"/>
+	<div class="span6" style="margin-left:0px">
+		<div class="span3 bs-docs-sidebar " style="margin-left:0px" >
+			{$tree_code}
+		</div>
+		<div class="tab-content span3" style="margin:12px 0px 0px 0px">
+			<table class="table" style="border:none;">
+				<tr>
+					<td style="border:none;text-align:right">{:L('CATEGORY_NAME')}：</td>
+					<td style="border:none;">
+						<input class="form-control" type="text" id="name" name="name" value="{$knowledge_category.name}"/>
+					</td>
+				</tr>
+				<tr>
+					<td style="border:none;text-align:right">{:L('PARENT_CATEGORY')}：</td>
+					<td style="border:none;">
+						<select class="form-control" name="parent_id" id="categoryList">
+							<option value="0" >{:L('TOP_CATEGORY')}</option>
+							<volist  name="category_list" id="vo">
+							<option value="{$vo.category_id}" <if condition="($knowledge_category.parent_id eq $vo['category_id'])">selected="selected"</if>>{$vo.name}</option>
+							</volist>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td style="border:none;text-align:right">{:L('DESCRIPTION')}：</td>
+					<td style="border:none;">
+						<textarea class="form-control" class="span3" name="description">{$knowledge_category.description}</textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</form>

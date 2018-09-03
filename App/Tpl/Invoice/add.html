@@ -1,0 +1,510 @@
+<include file="Public:header" />
+<style type="text/css">
+.add_body >div >.full-height-scroll{
+	border-right:1px dotted #ccc
+}
+.add_body_title{
+	margin:20px auto 20px auto;
+	padding-left: 25px;
+}
+.add_body_form{
+	padding-left: 38px;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.form-control{
+	float:left;
+}
+.checkbox{float:left;}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn">
+	<form class="form-horizontal" id="form" role="form" action="{:U('invoice/add')}" method="post">
+		<div class="ibox-content add_body" id="add_body" >
+			<div class="row">
+				<div class="col-md-6 add_body" >
+					<div class="full-height-scroll">
+						<div class="row" >
+							<div class="col-md-12 add_body_title">
+								<div class="all-inline">
+									<span class="sq-tag"></span>
+									<div class="text-tag">
+										<span>业务信息</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">发票编号：</label>
+									<div class="col-md-6">
+										<input class="form-control required valid" name="name" id="name" value="{$name}" type="text" aria-required="true" aria-invalid="false" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开票合同：</label>
+									<div class="col-md-6">
+										<input type="hidden" name="contract_id" id="contract_id" value="{$data['contract_info']['contract_id']}"/>
+										<input type="hidden" id="contract_price" value="{$data['contract_info']['price']}"/>
+										<input class="form-control required valid" name="" id="contract_num" value="{$data['contract_info']['number']}" type="text" aria-required="true" aria-invalid="false" placeholder="请点击选择" readonly="true" style="cursor:pointer;"/>
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">客户名称：</label>
+									<div class="col-md-6">
+										<input type="hidden" name="customer_id" id="customer_id" value="{$data['contract_info']['customer_id']}" />
+										<input class="form-control required valid" name="" id="customer_name" value="{$data['customer_name']}" type="text" aria-required="true" aria-invalid="false" placeholder="请点击选择" readonly="true" style="cursor:pointer;" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开票时间：</label>
+									<div class="col-md-6">
+										<input class="form-control required Wdate" name="invoice_time" id="invoice_time" value="<?php echo date('Y-m-d',time()); ?>" type="text" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:'2038-01-01'})" aria-required="true" aria-invalid="false" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开票金额：</label>
+									<div class="col-md-6">
+										<input class="form-control required valid" name="price" id="invoice_price" value="{$data['contract_info']['no_price']}" type="text" aria-required="true" aria-invalid="false" placeholder="0.00" onkeyup="num_input(this)" onblur="bu(this)"/>
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开票类型：</label>
+									<div class="col-md-6">
+										<select name="billing_type" id="" class="form-control required valid" aria-required="true" aria-invalid="false">
+											<option value="">--请选择--</option>
+											<option value="1">增值税普通发票</option>
+											<option value="2">增值税专用发票</option>
+											<option value="3">收据</option>
+										</select>
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">发票号码：</label>
+									<div class="col-md-6">
+										<input class="form-control required valid" name="number" value="" type="text" aria-required="true" aria-invalid="false" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">快递单号：</label>
+									<div class="col-md-6">
+										<input class="form-control" name="express" value="" type="text"  />
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">备注：</label>
+									<div class="col-md-6">
+										<textarea name="description" class="form-control" cols="30" rows="3"></textarea>
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 add_body" >
+					<div class="full-height-scroll">
+						<div class="row" >
+							<div class="col-md-12 add_body_title">
+								<div class="all-inline">
+									<span class="sq-tag"></span>
+									<div class="text-tag">
+										<span>发票信息</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开票抬头：</label>
+									<div class="col-md-6">
+										<input class="form-control required valid" name="invoice_header" id="invoice_header" value="{$data['invoice_data']['invoice_header']}" type="text" aria-required="true" aria-invalid="false" />
+									</div>
+									<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">纳税识别号：</label>
+									<div class="col-md-6">
+										<input class="form-control" name="taxes_num" id="taxes_num" value="{$data['invoice_data']['taxes_num']}" type="text" />
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开户行：</label>
+									<div class="col-md-6">
+										<input class="form-control" name="opening_bank" id="opening_bank" value="{$data['invoice_data']['opening_bank']}" type="text" />
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开户账号：</label>
+									<div class="col-md-6">
+										<input class="form-control" name="account_number" id="account_number" value="{$data['invoice_data']['account_number']}" type="text" />
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">开票地址：</label>
+									<div class="col-md-6">
+										<input class="form-control" name="billing_address" id="billing_address" value="{$data['invoice_data']['billing_address']}" type="text" />
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group">
+									<label class="col-md-4 control-label">电话：</label>
+									<div class="col-md-6">
+										<input class="form-control" name="telephone" id="telephone" value="{$data['invoice_data']['telephone']}" type="text" />
+									</div>
+									<div class="col-md-2"></div>
+								</div>
+							</div>
+							<div class="col-md-12 add_body_title" >
+								<div class="pull-left">
+									<div class="all-inline">
+										<span class="sq-tag"></span>
+										<div class="text-tag">
+											<span>附件信息</span>
+										</div>
+									</div>
+								</div>
+								<div class="pull-right" style="margin-right:20px;">
+									<a href="javascript:void(0);" style="padding-top:10px;" class="addfile" >请选择附件</a>
+								</div>
+							</div>
+							<div class="col-md-12 ibox-content" style="border:0px;">
+								<div id="filecontent" class="hide">
+									<span class="tishiinfo"><img src="__PUBLIC__/img/addFile.png"/><span class="fujian">附件</span></span>
+									<span id="addfilediv">本次共添加了<span id="file_num"></span>文件,总大小<span id="file_size"></span>KB&nbsp;<a href="javascript:;" style="color: #5a8ee2;" onclick="delall();">全部删除</a></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="tfoot_div" class="clearfix">
+			<div class="clearfix" id="tfoot_page">
+				<div class="ibox-content" style="border-top: none;">
+					<div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><button type="submit" id="save_submit" class="btn btn-primary">保存</button></div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div id="dialog-contract-list" style="display:none;" title="选择合同">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-customer-list" title="选择客户">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-file" title="添加文件">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	$('#save_submit').prop('disabled',false);
+	/*form表单验证*/
+	$("#form").validate({
+		submitHandler:function(form){
+            $('#save_submit').click(function(){
+				$('#save_submit').prop('disabled',true);
+			});
+            form.submit();
+        }    
+	});
+});
+
+$(function(){
+	$("#contract_num").click(function(){
+		var customer_id = $('#customer_id').val();
+		$('#dialog-contract-list').dialog('open');
+		$('#dialog-contract-list').load('{:U("contract/listDialog","by=all&customer_id=")}'+customer_id+'&type=invoice');
+	});
+	$('#customer_name').click(function () {
+		var contract_id = $('#contract_id').val();
+		$('#dialog-customer-list').dialog('open');
+		$('#dialog-customer-list').load("{:U('Customer/listDialog','contract_id=')}"+contract_id);
+	});
+
+	//发票金额提示
+	$('#form').on('blur','#invoice_price',function(){
+		var contract_id = $('#contract_id').val();
+		var invoice_price = parseInt(parseFloat($('#invoice_price').val())*100);
+		var contract_price = parseInt(parseFloat($('#contract_price').val())*100);
+		if((contract_id != null && contract_id != '') && (contract_price != null && contract_price != '')){
+			$.ajax({
+				'type':'get',
+				'data': {'contract_id':contract_id},
+				'dataType':'json',
+				'url':'{:U("invoice/getContractInvoice")}',
+				'success':function(data){
+					if(data.status == 1){
+						var price = parseInt(parseFloat(data.data)*100);
+						var addprice = price+invoice_price;
+						if(addprice > contract_price){
+							alert_crm('开票金额已大于合同金额,是否继续添加?');
+						}
+					}
+				}
+			});
+		}
+	});
+});
+
+$('#dialog-customer-list').dialog({
+	autoOpen: false,
+	modal: true,
+	width: 700,
+	maxHeight: 400,
+	buttons: {
+		"{:L('CONFIRM')}": function () {
+			var item = $('input:radio[name="customer"]:checked').val();
+			var name = $('input:radio[name="customer"]:checked').parent().next().html();
+			$('#customer_name').val(name);
+			$('#customer_id').val(item);
+			$.ajax({
+                cache: true,
+                type: "POST",
+                url:'{:U("invoice/customer_invoice")}',
+                data:{'customer_id':item},
+                async: false,
+                success: function(data) {
+                    var result = data.data;
+                    if (result) {
+                    	$('#invoice_header').val(result.invoice_header);
+	                  	$('#taxes_num').val(result.taxes_num);
+	                  	$('#opening_bank').val(result.opening_bank);
+	                  	$('#account_number').val(result.account_number);
+	                  	$('#billing_address').val(result.billing_address);
+	                  	$('#telephone').val(result.telephone);
+                    }
+                }
+            });
+			$(this).dialog("close");
+		},
+		"{:L('CANCEL')}": function () {
+			$(this).dialog("close");
+		}
+	},
+	position:["center",100]
+});
+
+$("#dialog-contract-list").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 800,
+	maxHeight: 400,
+	buttons: {
+		"确定": function () {
+			var item = $('input:radio[name="contract"]:checked').val();
+			var name = $('input:radio[name="contract"]:checked').parent().parent().next().html();
+			var next_item = $('input:radio[name="contract"]:checked').parent().parent().next().next().html();
+			var next_name = $('input:radio[name="contract"]:checked').parent().parent().next().next().next().html();
+			var price = $('input:radio[name="contract"]:checked').parent().parent().next().next().next().next().html();
+			if(item){
+				$('#contract_num').val(name);
+				$('#contract_id').val(item);
+				$('#customer_id').val(next_item);
+				$('#customer_name').val(next_name);
+				$('#contract_price').val(price);
+				$('#invoice_price').val(price);
+			}
+			$.ajax({
+                cache: true,
+                type: "POST",
+                url:'{:U("invoice/customer_invoice")}',
+                data:{'customer_id':next_item},
+                async: false,
+                success: function(data) {
+                    var result = data.data;
+                    if (result) {
+                    	$('#invoice_header').val(result.invoice_header);
+	                  	$('#taxes_num').val(result.taxes_num);
+	                  	$('#opening_bank').val(result.opening_bank);
+	                  	$('#account_number').val(result.account_number);
+	                  	$('#billing_address').val(result.billing_address);
+	                  	$('#telephone').val(result.telephone);
+                    }
+                }
+            });
+			$(this).dialog("close");
+		},
+		"取消": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+
+$("#dialog-file").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 800,
+	maxHeight: 400,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+		   $.ajax({
+                cache: true,
+                type: "POST",
+                url:'{:U("file/getfiles")}',
+                data:$('#uploadForm').serialize(),
+                async: false,
+                success: function(data) {
+                   var result = data.data.file_list;
+                   $('#filecontent').removeAttr('class');
+                   var temp = '';
+                   if(result){
+                   		 $.each(result,function(k,v){
+                   		 	temp += '<div class="showfile" id="del_'+v.file_id+'"><input type="hidden" name="file[]" value="'+v.file_id+'"/><img src="__PUBLIC__/productImg/'+v.pic+'">&nbsp;<span style="color:#646464;">'+v.name+'&nbsp;(&nbsp;'+v.size+'KB&nbsp;)</span>&nbsp;&nbsp;<a href="javascript:;" rel="'+v.file_id+'" onclick="del_file(this);"><img src="__PUBLIC__/img/delfile.png"/></a></div>';
+                  		 });
+                  		 $('#addfilediv').before(temp);
+                  		 var old_file_num = Number($('#file_num').html());
+                  		 var old_file_size = Number($('#file_size').html());
+                  		 var new_file_num = old_file_num+data.data.file_num;
+                  		 var new_file_size = old_file_size+data.data.file_size;
+                  		 $('#file_num').html(new_file_num);
+                  		 $('#file_size').html(new_file_size);
+                   }
+                  
+                }
+            });
+		   $(this).dialog("close");
+		},
+		"取消": function () {
+			 $(this).dialog("close");
+		}
+	}
+});
+
+$(".addfile").click(function(){
+	$('#dialog-file').dialog('open');
+	$('#dialog-file').load('{:U("file/addlogfile")}');
+});
+
+//删除 函数
+function del_obj(id){
+    var module = 'invoice';
+    $.post("{:U('file/filedel')}",{file_id:id,module:module},function(data){
+		if(data.status == 1){
+			$('#del_'+id).remove();
+			swal("删除成功！", "你的文件被删除了", "success");
+			if($('.showfile').length > 0){
+				return true;
+			}else{
+				$('#filecontent').addClass('hide');
+			}
+		}else{
+		 	swal({
+				title: "提示",
+				text: data.info,
+				type: "error"
+			});
+		}
+		},"json"
+	);
+}
+//删除
+function del_file(obj){
+	var id = $(obj).attr('rel');
+	swal({
+		title: "您确定要删除附件信息吗？",
+		text: "删除后将无法恢复，请谨慎操作！",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "删除",
+		cancelButtonText: "取消",
+		closeOnConfirm: false
+	},
+	function(isConfirm){
+		if (isConfirm) {
+			del_obj(id);
+		}else{
+			return false;
+		}
+	});
+}
+//全部删除 函数
+function delall(){
+	swal({
+		title: "您确定要删除附件信息吗？",
+		text: "删除后将无法恢复，请谨慎操作！",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "删除",
+		cancelButtonText: "取消",
+		closeOnConfirm: false
+	},
+	function(isConfirm){
+		if (isConfirm) {
+			$('.showfile').each(function(){
+				var id = $(this).find('input[type="hidden"]').val();
+				del_obj(id);		
+			});
+		}else{
+			return false;
+		}
+	});
+}
+</script>

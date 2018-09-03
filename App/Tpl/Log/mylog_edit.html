@@ -1,0 +1,330 @@
+<include file="Public:header" />
+<style type="text/css">
+	.test_div {
+	    width: 98.8%;
+	    background-color: #f9f9f9;
+	    height: 30px;
+	    position: relative;
+	    top: 0px;
+	    right: -1px;
+	}
+	.test_div>.addfile{
+		display: inline-block;
+	    line-height: 30px;
+	    margin-left: 11px;
+	    cursor: pointer;
+	}
+	#filecontent{
+		width: 99.2%;
+	    border: 1px dashed #d8e3ef;
+	    margin-top: 0px;
+	}
+	.showfile{
+		padding:6px;
+	}
+	#filecontent .tishiinfo{
+		margin-top: 10px;
+	    margin-bottom: 10px;
+	    display: block;
+	    margin-left: 10px;
+	}
+	#filecontent .fujian{
+		margin-left: 8px;
+    	color: #646464;
+	}
+	#addfilediv{
+		color: #cccccc;
+	    margin-left: 6px;
+	    padding-top: 8px;
+	    display: block;
+	    margin-bottom: 6px;
+	}
+	.ibox-title{
+		border:none;
+	}
+	.ibox-title-small{
+		border-top: 1px solid #e7eaec;
+	    background: #ffffff;
+	   	padding: 5px 15px 0px 15px;
+	}
+	.ibox-title-small{
+	    background: #ffffff;
+	   	padding: 5px 15px 0px 15px;
+	}
+</style>
+<div class="wrapper wrapper-content animated fadeIn">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-lg-12">
+			<div class="title-bar" style="padding:12px 10px 12px 20px">
+				<div class="row animated" id="title-show">
+					<ul class="nav pull-left" style="margin:2px 0 5px 15px;">
+						<span><img src="__PUBLIC__/img/log_view_icon.png" style="margin-bottom:9px;" alt=""></span>
+						<span style="font-size:21px;" id="demo_name">{$log.subject}</span>
+					</ul>
+				</div>
+			</div>
+			<div class="col-sm-7 ibox-content" style="background-color:#fff;">
+				<form action="{:U('log/mylog_edit')}" method="post" id="form1">
+					<input type="hidden" name="jump_url" value="{$jump_url}"/>
+					<input type="hidden" name="log_id" value="{$log.log_id}"/>
+					<div class="ibox-title clearfix">
+						<div class="pull-left">
+							<em style="color:#999;font-size:15px;">{:session('full_name')}，工作一天辛苦了！</em>
+						</div>
+						<div class="pull-right">
+							<select name="category_id" class="form-control" style="width:150px;line-height:40px;color:#999;">
+								<option value="4" <if condition = "$log['category_id'] eq 4">selected</if>>日报</option>
+								<option value="3" <if condition = "$log['category_id'] eq 3">selected</if>>周报</option>
+								<option value="2" <if condition = "$log['category_id'] eq 2">selected</if>>月报</option>
+							</select>
+						</div>
+					</div>
+					<table class="table form-inline" width="95%" border="0" cellspacing="1" cellpadding="0">
+						<tfoot>
+							<tr> 
+								<td style="border-style:none;">&nbsp;</td>
+								<td style="border-style:none;text-align: right;">
+									<input name="submit" class="btn btn-primary btn-sm" type="submit" value="{:L('SAVE')}"/> &nbsp;
+									<input class="btn btn-default btn-sm" onclick="javascript:history.go(-1)" type="reset" value="{:L('CANCEL')}"/>
+								</td>					
+							</tr>
+						</tfoot>
+						<tbody >
+							<tr>
+								<td class="tdleft">{:L('SUBJECT')}：</td>
+								<td  style="width:90%">
+									<input type="text" class="form-control" name="subject" id="subject" maxlength="20" style="width:250px;" value="{$log.subject}" oninput="document.getElementById('demo_name').innerHTML=this.value;" onpropertychange="document.getElementById('demo_name').innerHTML=this.value;" />
+								</td>						
+							</tr>
+							<tr>
+								<td class="tdleft" style="vertical-align: top;border-top-style: none;">内容：</td>
+								<td style="border-top-style: none;">
+									<textarea rows="12" class="form-control" style="width:99.2%;padding: 15px;" id="log_content" name="content" placeholder="请填写今日工作总结">{$log.content}</textarea>
+									<div class="test_div">
+										<span class="addfile"><img src="__PUBLIC__/img/addFile.png" title="添加附件"/></span>
+									</div>
+									<div id="filecontent" <if condition="empty($log['file_list'])">class="hide"</if>>
+										<span class="tishiinfo"><img src="__PUBLIC__/img/addFile.png"/><span class="fujian">附件</span></span>
+										<volist name="log['file_list']" id="fvo">
+											<div class="showfile" id="del_{$fvo['file_id']}"><input type="hidden" name="file[]" value="{$fvo['file_id']}"/><img src="__PUBLIC__/productImg/{$fvo['pic']}">&nbsp;<a <if condition="in_array(getExtension($fvo['name']),imgFormat())">class="litebox_file" href="{$fvo['file_path']}" title="点击查看大图"</if>>{$fvo.name}</a><span style="color:#646464;">&nbsp;(&nbsp;{$fvo['size']}KB&nbsp;)</span>&nbsp;&nbsp;<a href="javascript:;" rel="{$fvo['file_id']}" onclick="del_file(this);"><img src="__PUBLIC__/img/delfile.png"/></a></div>
+										</volist>
+										<span id="addfilediv">本次共添加了<span id="file_num"></span>文件,总大小<span id="file_size"></span>KB&nbsp;<a href="javascript:;" style="color: #5a8ee2;" onclick="delall();">全部删除</a></span>
+									</div>
+								</td>							
+							</tr>
+						</tbody>
+					</table>
+				</form>
+			</div>
+			<div class="col-sm-5">
+				<div class="ibox-content">
+					<div class="ibox-title" style="border-top: 3px solid #e7eaec;">
+						<div class="pull-left">
+							<span style="font-size:14px;">当日工作总汇</span>
+						</div>
+					</div>
+					<div class="ibox-title-small">
+						<div>
+							<span style="line-height:35px;">销售简报</span>
+						</div>
+					</div>
+					<div class="container-fluid ">
+						<div class="col-sm-12" style="margin-bottom: 15px;">
+							<div class="col-sm-3">
+								<span>新增客户</span>
+								<div style="margin-top:10px;"><span style="font-size:20px;">{$anly_count['customer_count']}</span>个</div>
+							</div>
+							<div class="col-sm-3">
+								<span>新增联系人</span>
+								<div style="margin-top:10px;"><span style="font-size:20px;">{$anly_count['contacts_count']}</span>个</div>
+							</div>
+							<div class="col-sm-3">
+								<span>新增商机</span>
+								<div style="margin-top:10px;"><span style="font-size:20px;">{$anly_count['business_count']}</span>个</div>
+							</div>
+							<div class="col-sm-3">
+								<span>沟通日志</span>
+								<div style="margin-top:10px;"><span style="font-size:20px;">{$anly_count['log_count']}</span>个</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+					<div class="ibox-title-small" >
+						<div>
+							<span style="line-height:35px;">交易</span>
+						</div>
+					</div>
+					<div class="container-fluid ">
+						<div class="col-sm-12">
+							<div class="col-sm-4">
+								<span>签订合同</span>
+								<div style="margin-top:10px;color:#1985DC;"><span style="font-size:20px;">{$anly_count['contract_count']}</span>个</div>
+							</div>
+							<div class="col-sm-4">
+								<span>回款总金额</span>
+								<div style="margin-top:10px;"><span style="font-size:20px;">{$anly_count['receivingorder_sum']}</span>万元</div>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div style="clear:both;"></div>
+        </div>
+    </div>
+</div>
+<div style="display:none;" id="dialog-file" title="添加文件">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/litebox.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/images-loaded.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+/**
+ * 附件 如果是图片时 双击可查看大图
+ */
+$('.litebox_file').liteBox({
+  revealSpeed: 400,
+  background: 'rgba(0,0,0,.8)',
+  overlayClose: true,
+  escKey: true,
+  navKey: true,
+  errorMessage: '图片加载失败.'
+});
+$("#form1").submit(function(){
+	if($("#subject").val() == ""){
+		swal({
+			title: "温馨提示",
+			text: "请填写标题！"
+		})
+		$("#subject").focus();
+		return false;
+	}
+	if($("#log_content").val() == ""){
+		swal({
+			title: "温馨提示",
+			text: "日志内容不能为空！"
+		})
+		$("#log_content").focus();
+		return false;
+	}
+});
+$("#dialog-file").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 800,
+	maxHeight: 400,
+	position: ["center",100],
+	buttons: {
+		"确定": function () {
+		   $.ajax({
+                cache: true,
+                type: "POST",
+                url:'{:U("file/getfiles")}',
+                data:$('#uploadForm').serialize(),
+                async: false,
+                success: function(data) {
+                   var result = data.data.file_list;
+                   $('#filecontent').removeAttr('class');
+                   var temp = '';
+                   if(result){
+                   		 $.each(result,function(k,v){
+                   		 	temp += '<div class="showfile" id="del_'+v.file_id+'"><input type="hidden" name="file[]" value="'+v.file_id+'"/><img src="__PUBLIC__/productImg/'+v.pic+'">&nbsp;<span style="color:#646464;">'+v.name+'&nbsp;(&nbsp;'+v.size+'KB&nbsp;)</span>&nbsp;&nbsp;<a href="javascript:;" rel="'+v.file_id+'" onclick="del_file(this);"><img src="__PUBLIC__/img/delfile.png"/></a></div>';
+                  		 });
+                  		 $('#addfilediv').before(temp);
+                  		 var old_file_num = Number($('#file_num').html());
+                  		 var old_file_size = Number($('#file_size').html());
+                  		 var new_file_num = old_file_num+data.data.file_num;
+                  		 var new_file_size = old_file_size+data.data.file_size;
+                  		 $('#file_num').html(new_file_num);
+                  		 $('#file_size').html(new_file_size);
+                   }
+                  
+                }
+            });
+		   $(this).dialog("close");
+		},
+		"取消": function () {
+			 $(this).dialog("close");
+		}
+	}
+});
+$(".addfile").click(function(){
+	$('#dialog-file').dialog('open');
+	$('#dialog-file').load('{:U("file/addlogfile")}');
+});
+//删除 函数
+function del_obj(id){
+	var module = 'log';
+    $.post("{:U('file/filedel')}",{file_id:id,module:module},function(data){
+		if(data.status == 1){
+			$('#del_'+id).remove();
+			swal("删除成功！", "你的文件被删除了", "success");
+			if($('.showfile').length > 0){
+				return true;
+			}else{
+				$('#filecontent').addClass('hide');
+			}
+		}else{
+		 	swal({
+				title: "提示",
+				text: data.info,
+				type: "error"
+			});
+		}
+		},"json"
+	);
+}
+//删除
+function del_file(obj){
+	var id = $(obj).attr('rel');
+	swal({
+		title: "您确定要删除附件信息吗？",
+		text: "删除后将无法恢复，请谨慎操作！",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "删除",
+		cancelButtonText: "取消",
+		closeOnConfirm: false
+	},
+	function(isConfirm){
+		if (isConfirm) {
+			del_obj(id);
+		}else{
+			return false;
+		}
+	});
+}
+//全部删除 函数
+function delall(){
+	swal({
+		title: "您确定要删除附件信息吗？",
+		text: "删除后将无法恢复，请谨慎操作！",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "删除",
+		cancelButtonText: "取消",
+		closeOnConfirm: false
+	},
+	function(isConfirm){
+		if (isConfirm) {
+			$('.showfile').each(function(){
+				var id = $(this).find('input[type="hidden"]').val();
+				del_obj(id);		
+			});
+		}else{
+			return false;
+		}
+	});
+}
+</script>
+<include file="Public:footer" />

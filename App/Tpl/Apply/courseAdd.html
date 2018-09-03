@@ -1,0 +1,136 @@
+<include file="Public:header" />
+<style type="text/css">
+    .add_title{
+        padding-bottom:10px;
+        height: 60px;
+        margin-bottom:15px;
+    }
+    .add_title>span{
+        border-bottom: 2px solid #1ab394;
+        font-size: 24px;
+    }
+    .add_body >div >.full-height-scroll{
+        border-right:1px dotted #ccc
+    }
+    .add_body_title{
+        margin:15px auto 30px auto;
+        padding-left: 14px;
+    }
+    .add_body_form>form>.form-group{
+        margin-bottom: 25px;
+    }
+    body{overflow-y:hidden;}
+    .form-control{
+        float:left;
+    }
+</style>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<script>
+    $(function(){
+        $(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+        $(window).resize(function(){
+            $(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+        })
+    })
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+    <form class="form-horizontal" id="form" role="form" action="{:U('apply/courseAdd')}" method="post" enctype="multipart/form-data">
+        <div class="ibox-content " id="add_body" >
+            <div class="row">
+                <div class="col-md-12 add_body">
+                    <div class="full-height-scroll">
+                        <div class="row" >
+                            <div class="col-md-12 add_body_title" style="margin:20px 0 0 0px;">
+                                <div class="all-inline">
+                                    <span class="sq-tag"></span>
+                                    <div class="text-tag">
+                                        <span>基础信息</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+                                <!-- 名称 -->
+                                <div class="form-group" >
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 课程名称</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control " type="text" name="name" id="name" aria-required="true" value="" placeholder="请输入课程名称"/>
+                                    </div>
+                                </div>
+                                <!-- 描述 -->
+                                <div class="form-group" >
+                                    <label class="col-md-4 control-label"> 课程描述</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control " type="text" name="desc" id="desc" aria-required="true" value="" placeholder="请输入课程描述"/>
+                                    </div>
+                                </div>
+                                <!-- 课程logo -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 课程logo</label>
+                                    <div class="col-md-4">
+                                        <img id="main_pic_prev" class="thumb80" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="btn btn-success fileinput-button">
+                                            <span>选择图片</span>
+                                            <input type="file" name="logo" id="main_pic"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 课程分类 -->
+                                <div class="form-group ">
+                                    <label class="col-md-4 control-label" for="range"><span style="color:#FF0011;">*</span> 课程分类：</label>
+                                    <div class="col-sm-6">
+                                        <select id="range" class="form-control checkit" onchange="" style="float:left;" rel="require" rell="课程分类" name="cate_id">
+
+                                            <volist name="cates" id="cate">
+
+                                                <option value="{$cate.id}">{$cate.name}</option>
+
+                                            </volist>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tfoot_div" class="clearfix">
+            <div class="clearfix" id="tfoot_page">
+                <div class="ibox-content" style="border-top: none;">
+                    <div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><a href="javascript:void(0)" id="submit" class="btn btn-primary">确认添加</a></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript" src="__PUBLIC__/js/uploadPreview.js"></script>
+<script type="text/javascript">
+    //初始化上传图片
+    $("body").on('click','input[type="file"]', function(){
+        var selector = $(this).attr('id');
+        $("#"+selector).uploadPreview({ Img: selector+"_prev", Width: 120, Height: 120 });
+    });
+
+    if ("{:C('isMobile')}" == "1") {
+        width = $('.container').width() * 0.9;
+    } else {
+        width = 800;
+    }
+
+    $(document).ready(function(){
+        /*form表单验证*/
+        $("#form").validate({
+
+        });
+    });
+
+    $("#submit").click(function(){
+        $('#form').submit();
+    });
+
+</script>
+<include file="Public:footer" />

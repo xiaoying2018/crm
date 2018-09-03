@@ -1,0 +1,62 @@
+html body .add-rule.ui-add {
+  padding: 4px 12px;
+  width: auto;
+}
+html body .ui-jqdialog .ui-jqdialog-title {
+  margin: 0;
+  margin-top: 9px;
+  padding: 7px 0;
+  padding-left: 6px;
+  padding-right: 6px;
+  font-size: 16px;
+}
+html body .ui-jqdialog {
+  position: absolute !important;
+}
+html body .ui-jqdialog .opsel,
+html body .ui-jqdialog .add-group {
+  display: none;
+}
+html body .table_vue .ui-widget-content {
+  border: none;
+}
+html body .table > tbody > tr.success > td,
+html body .table > tbody > tr.success > th,
+html body .table > tbody > tr > td.success,
+html body .table > tbody > tr > th.success,
+html body .table > tfoot > tr.success > td,
+html body .table > tfoot > tr.success > th,
+html body .table > tfoot > tr > td.success,
+html body .table > tfoot > tr > th.success,
+html body .table > thead > tr.success > td,
+html body .table > thead > tr.success > th,
+html body .table > thead > tr > td.success,
+html body .table > thead > tr > th.success {
+  background-color: #dcedff !important;
+}
+.a_name {
+    color: #5C8FFC !important;
+}
+.ui-jqgrid tr.jqgrow td{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    word-space:nowrap;
+}
+.ui-jqgrid-bdiv{
+    background-color: #fff;
+    /*overflow-x: scroll !important;*/
+}
+#table_list_2{
+    overflow: scroll !important;
+}
+.frozen-bdiv{
+    overflow-x: hidden !important;
+}
+
+.ui-jqgrid tr.jqgrow td{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    word-space:nowrap;
+}

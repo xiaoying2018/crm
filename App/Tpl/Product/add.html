@@ -1,0 +1,192 @@
+<include file="Public:header" />
+<style>
+	body{overflow-y:hidden; }
+	#main_pic_prev{width: 120px;height: 120px;border: 1px dashed #d3d3d6;}
+	.add_body_title{
+		margin:15px auto 30px auto;
+	}
+</style>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/ueditor.all.js"> </script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript">
+    //实例化编辑器
+    window.UEDITOR_UPLOAD_URL = "{:U('file/editor')}";
+</script>
+<script type="text/javascript" src="__PUBLIC__/js/PCASClass.js" ></script>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-10">
+		<form class="form-horizontal" id="form" role="form" action="{:U('product/add')}" method="post" enctype="multipart/form-data">
+			<input type='hidden' name="r" <present name="r">value="{$r}"</present>/>
+			<input type='hidden' name="module" <present name="r">value="{$module}"</present>/> 
+			<input type='hidden' name="id" <present name="r">value="{$model_id}"</present>/> 
+			<div class="ibox-content add_body" id="add_body">
+				<div class="row">
+					<div class="col-md-12 add_body" >
+						<div class="full-height-scroll">
+							<div class="row" >
+								<div class="col-md-12 add_body_title">
+									<div class="all-inline">
+										<span class="sq-tag"></span>
+										<div class="text-tag">
+											<span>基础信息</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-11 add_body_form" style="margin-left:15px;">
+									<volist name="field_list['main']" id="vo" key="key">
+										<div class="form-group">
+											<label class="col-md-2 control-label">{$vo.name}：</label>
+											<if condition="$vo['form_type'] == 'textarea'">
+												<if condition = "$vo['tip_start'] eq 1">
+													<div class="col-md-8">
+														<textarea class="form-control" rows="5"></textarea>
+													</div>
+													<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+													<if condition ="$vo['field'] eq 'product_info'" >
+														<div class="col-md-10">
+															<div  class="col-md-10" id="editor" name="product_info" type="text/plain" style="width:100%;height:359px;padding-left: 0"></div>
+														</div>
+													<else/>
+														<div class="col-md-8">
+															{$vo.html}
+														</div>
+													</if>
+
+												</if>
+											<elseif condition="$vo['form_type'] == 'address'"/>
+												<if condition = "$vo['tip_start'] eq 1">
+													<div class="col-md-8">
+														{$vo.html}
+													</div>
+													<div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+													<div class="col-md-8">
+														{$vo.html}
+													</div>	
+												</if>
+											<else/>
+												<div class="col-md-8">
+													{$vo.html}
+												</div>
+												<if condition = "$vo['tip_start'] eq 1 || $vo['field'] eq 'customer_id'">
+													<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+													<div class="col-md-2"></div>
+												</if>
+											</if>
+										</div>
+									</volist>
+									<!-- <div class="form-group">
+										<label class="col-md-4 control-label">选择仓库：</label>
+										<div class="col-md-6">
+											<volist name="house_list" id="vi"><label for=""><input type="checkbox" style="margin:-3px 3px 0px 8px" checked="true" name="warehouse_id[]" value="{$vi.warehouse_id}">{$vi.name}</label></volist>
+										</div>
+										<div class="col-md-2"></div>
+									</div> -->
+									<div class="form-group">
+										<label class="col-md-2 control-label">产品图片：</label>
+										<div class="col-md-2">
+											<img id="main_pic_prev" class="thumb80" />
+										</div>
+										<div class="col-md-4">
+											<div class="btn btn-success fileinput-button">
+												<span>选择图片</span>
+												<input type="file" name="main_pic[]" id="main_pic"/>
+											</div>
+										</div>
+									</div>
+									<volist name="field_list['data']" id="vo" key="key">
+										<div class="form-group">
+											<label class="col-md-2 control-label">{$vo.name}：</label>
+											<if condition="$vo['form_type'] == 'textarea'">
+
+												<if condition = "$vo['tip_start'] eq 1">
+													<div class="col-md-8">
+														<textarea class="form-control" id="description" name="description" rows="5"></textarea>
+													</div>
+													<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+													<div class="col-md-8">
+														<textarea class="form-control" id="description" name="description" rows="5"></textarea>
+													</div>	
+												</if>
+											<elseif condition="$vo['form_type'] == 'address'"/>
+												<if condition = "$vo['tip_start'] eq 1">
+													<div class="col-md-7">
+														{$vo.html}
+													</div>
+													<div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+													<div class="col-md-8">
+														{$vo.html}
+													</div>	
+												</if>
+											<else/>
+												<div class="col-md-8">
+													{$vo.html}
+												</div>
+												<if condition = "$vo['tip_start'] eq 1 || $vo['field'] eq 'customer_id'">
+													<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+
+													<else/>
+													<div class="col-md-2"></div>
+												</if>
+											</if>
+										</div>
+									</volist>
+								</div>
+								<div class="col-md-1 pull-right">
+									<!-- <div style="height: 100%; border-right: 1px dashed gray;">&nbsp;sadf</div> -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="tfoot_div" class="clearfix">
+				<div class="clearfix" id="tfoot_page">
+					<div class="ibox-content" style="border-top: none;">
+						<div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><button type="submit" id="save_submit" class="btn btn-primary">创建产品</button></div>
+					</div>
+				</div>
+			</div>
+		</form>
+</div>
+
+<div class="" style="display:none;" id="dialog-validate" title="{:L('TEST_RESULTS')}">
+	{:L('HAVE_THE_FOLLOWING_PRODUCTS_ARE_SIMILAR_TO_THE_PRODUCT_NAME')}
+	<div id="search_content"></div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/js/uploadPreview.js"></script>
+<script type="text/javascript">
+//初始化上传图片
+$("body").on('click','input[type="file"]', function(){
+	var selector = $(this).attr('id');
+	$("#"+selector).uploadPreview({ Img: selector+"_prev", Width: 120, Height: 120 });
+});
+$(document).ready(function(){
+    var ue = UE.getEditor('editor');
+	$('#save_submit').prop('disabled',false);
+	/*form表单验证*/
+	$("#form").validate({
+		submitHandler:function(form){
+            $('#save_submit').click(function(){
+				$('#save_submit').prop('disabled',true);
+			});
+            form.submit();
+        }    
+	});
+});
+</script>
+<include file="Public:footer" />	

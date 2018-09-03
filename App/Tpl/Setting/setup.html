@@ -1,0 +1,391 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<!-- ladda -->
+<script src="__PUBLIC__/style/js/plugins/ladda/spin.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/ladda/ladda.min.js"></script>
+<script src="__PUBLIC__/style/js/plugins/ladda/ladda.jquery.min.js"></script>
+<link href="__PUBLIC__/style/css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+<style>
+	.nav.nav-tabs-left li{width:100%;}
+	.nav-tabs-left>li.active>a{border-top:white;color: #19aa8d !important;background-color:#fff;}
+	.table>tbody>tr>td{border-top:0px;}
+	.table>tfoot>tr>td{border-top:0px;}
+</style>
+<script>
+	$(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+		$(window).resize(function(){
+			$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+		})
+	})
+</script>
+<div class="wrapper wrapper-content animated fadeIn">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-lg-12">
+			<include file="Setting:setting_left" />
+			<form class="form-horizontal" enctype="multipart/form-data" action="{:U('setting/setup')}" method="post">
+				<div class="col-sm-10" >
+					<div class="ibox-content add_body" id="add_body">
+						<div class="row">
+							<div class="col-md-12 full-height-scroll add_body" >
+								<table class="table" style="">
+									<thead>
+										<tr>
+											<th colspan="2">基本参数设置</th>
+										</tr>
+									</thead>
+									<tbody class="form-inline">
+										<tr>
+											<th colspan="2" style="padding-top: 10px;">{:L('SECURITY_AND_DEBUGGING')}</th>
+										</tr>
+										<!-- <tr>
+											<td class="tdleft" style="width:150px;">{:L('ALLOW_THE_UPLOAD_FILE_TYPE')}</td>  
+											<td>
+												<input class="form-control" name="allow_file_type" id="name" type="text" value="{$defaultinfo.allow_file_type}" style="width: 65%;">
+												&nbsp;<span title="{:L('USE_COMMAS_BETWEEN_TYPES')}" style="color:#E3E3E3;font-size:20px;margin-top:2px;cursor:pointer;" class="fa fa-question-circle"></span>
+											</td>
+										</tr>  -->
+										<tr>
+											<td class="tdleft">{:L('CLEAR_THE_CACHE')}</td>  
+											<td>
+												<input type="button" style="background:#fff;border:1px solid #e3e3e3;color:#000;" class="btn btn-primary btn-sm" id="clear" value="{:L('EMPTY')}"/>
+											</td>
+										</tr>
+										<!-- <tr>
+											<td class="tdleft">{:L('DEBUG_MODE')}</td>
+											<td>
+												<div class="switch">
+					                                <div class="onoffswitch">
+					                                    <input type="checkbox" <if condition = "$app_debug eq 1">checked="checked"</if> class="onoffswitch-checkbox" id="app_debug">
+					                                    <label class="onoffswitch-label" for="app_debug">
+					                                        <span class="onoffswitch-inner"></span>
+					                                        <span class="onoffswitch-switch"></span>
+					                                    </label>
+					                                </div>
+					                            </div>
+				                            </td>
+										</tr> -->
+										<tr>
+											<th colspan="2">{:L('OTHER_SETTING')}</th>
+										</tr>
+										<tr>
+											<td class="tdleft">{:L('THE_CONTRACT_TIME_TO_REMIND')}</td>  
+											<td>
+												{:L('AHEAD_OF_TIME')}<input type="text" style="width:50px;" class="form-control" name="contract_alert_time" value="{$defaultinfo['contract_alert_time']|default=30}"/>{:L('DAY')}
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">回款到期提醒</td>  
+											<td>
+												{:L('AHEAD_OF_TIME')}<input type="text" style="width:50px;" class="form-control" name="receivables_time" value="{$config_array['receivables_time']|default=30}"/>{:L('DAY')}
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">商机编码前缀</td>  
+											<td>
+												<input class="form-control input-sm" type="text" name="business_custom" value="{$config_array['business_custom']|default='5k_crm'}">
+												<div class="checkbox checkbox-primary" style="margin-top:-4px;">
+													<input value="1" id="bc_check" name="bc_check" <if condition="$config_array['bc_check'] eq 1">checked</if> type="checkbox"/>
+													<label for="">替换原前缀</label>
+												</div>
+												&nbsp;<span title="此处可修改商机编码的前缀" onclick="btypeFile(this)" style="color:#E3E3E3;font-size:20px;margin-top:5px;cursor:pointer;" class="fa fa-question-circle"></span>
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">合同编码前缀</td>  
+											<td>
+												<input class="form-control input-sm" type="text" name="contract_custom" value="{$config_array['contract_custom']|default='5k_crm'}">
+												<div class="checkbox checkbox-primary" style="margin-top:-4px;">
+													<input value="1" id="cc_check" name="cc_check" <if condition="$config_array['cc_check'] eq 1">checked</if> type="checkbox"/>
+													<label for="">替换原前缀</label>
+												</div>
+												&nbsp;<span title="此处可修改合同编号的前缀" onclick="typeFile(this)" style="color:#E3E3E3;font-size:20px;margin-top:5px;cursor:pointer;" class="fa fa-question-circle"></span>
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">应收款编码前缀 :</td>   
+											<td> 
+												<input class="form-control input-sm" type="text" name="receivables_custom" value="{$config_array['receivables_custom']|default='5k_crm'}">
+												<div class="checkbox checkbox-primary" style="margin-top:-4px;">
+													<input value="1" id="fc_check" name="fc_check" <if condition="$config_array['fc_check'] eq 1">checked</if> type="checkbox"/>
+													<label for="">替换原前缀</label>
+												</div>
+												&nbsp;<span title="此处可修改财务中应收款前缀" onclick="ftypeFile(this)" style="color:#E3E3E3;font-size:20px;margin-top:5px;cursor:pointer;" class="fa fa-question-circle"></span>
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">员工编码前缀 :</td>   
+											<td> 
+												<input class="form-control input-sm" type="text" name="user_custom" value="{$config_array['user_custom']|default='5k_crm'}">
+												<div class="checkbox checkbox-primary" style="margin-top:-4px;">
+													<input value="1" id="uc_check" name="uc_check" <if condition="$config_array['uc_check'] eq 1">checked</if> type="checkbox"/>
+													<label for="">替换原前缀</label>
+												</div>
+												&nbsp;<span title="此处可修改员工编号前缀" onclick="utypeFile(this)" style="color:#E3E3E3;font-size:20px;margin-top:5px;cursor:pointer;" class="fa fa-question-circle"></span>
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">客户回收周期:</td>
+											<td>
+												<div class="radio radio-info radio-inline">
+													<input type="radio" name="openrecycle" <if condition="$config_array['openrecycle'] eq 1">checked</if> id="openrecycle" class="openrecycle" value="1"><label for="openrecycle">不启用回收规则</label>
+												</div>
+												<div class="radio radio-info radio-inline">
+													<input type="radio" name="openrecycle" <if condition="$config_array['openrecycle'] eq 2">checked</if> id="openrecycle1" class="openrecycle" value="2"><label for="openrecycle1">启用</label>&nbsp;
+												</div>
+												<span id="is_recycle" <if condition="$config_array['openrecycle'] eq 1">style="display:none"</if>>
+													<input class="input-sm form-control" type="text" id="customer_outdays" name="customer_outdays" value="{$config_array['customer_outdays']}" size="5"/>{:L('DAY')}未跟进或<input class="input-sm form-control" type="text" id="contract_outdays" name="contract_outdays" value="{$config_array['contract_outdays']}" size="5"/>{:L('DAY')}未签合同
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">客户数限制:</td>
+											<td>
+												<div class="radio radio-info radio-inline">
+													<input type="radio" name="opennum" <if condition="$config_array['opennum'] eq 0">checked</if> id="opennum" class="opennum" value="0"><label for="opennum">不启用</label>
+												</div>
+												<div class="radio radio-info radio-inline">
+													<input type="radio" name="opennum" <if condition="$config_array['opennum'] eq 1">checked</if> id="opennum1" class="opennum" value="1"><label for="opennum">启用</label>&nbsp;
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">{:L('LEADS_POOL_RECOVERY_CYCLE')}</td>
+											<td>
+												<input class="input-small form-control" type="text" id="leads_outdays" name="leads_outdays" value="{$config_array['leads_outdays']}" size="5"/>{:L('DAY')}
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">{:L('CUSTOMERS_RECEIVE_CYCLE')}</td>
+											<td>
+												<select name="customer_limit_condition" class="input-sm form-control">
+													<option value="day" <if condition="'day' eq $config_array['customer_limit_condition']">selected="selected"</if>>{:L('TODAY')}</option>
+													<option value="week" <if condition="'week' eq $config_array['customer_limit_condition']">selected="selected"</if>>{:L('THIS_WEEK')}</option>
+													<option value="month" <if condition="'month' eq $config_array['customer_limit_condition']">selected="selected"</if>>{:L('THIS_MONTH')}</option>
+												</select>
+												<span>{:L('WITHIN_LIMITS_TO_RECEIVE')}</span>
+												<input class="input-sm form-control" type="text" id="customer_limit_counts" name="customer_limit_counts" value="{$config_array['customer_limit_counts']}" size="5"/>{:L('CI')}
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">{:L('TASK_ALLOCATION_MODE')}</td>
+											<td>
+												<div class="radio radio-info radio-inline">
+													<input name="task_model" id="task_model_1" style="margin-bottom:5px;" type="radio" <if condition="$defaultinfo.task_model != 2">checked="checked"</if> value="1"/>
+													<label for="task_model_1">{:L('ALLOW_ONLY_ASSIGNED_TO_THE_LOWER')}</label>
+
+													<input name="task_model" id="task_model_2" type="radio" value="2" <if condition="$defaultinfo.task_model == 2">checked="checked"</if> style="margin-bottom:5px;"/> 
+													<label for="task_model_2">{:L('RANDOM_DISTRIBUTION')}</label>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="tdleft">{:L('THE_DEFAULT_AREA')}</td>  
+											<td>
+												<select id="state" name="state" class="form-control"></select>
+												<select id="city" name="city" class="form-control"></select>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div id="tfoot_div" class="clearfix">
+						<div class="clearfix" id="tfoot_page">
+							<div class="ibox-content" style="border-top:none;">
+								<div class="col-sm-offset-2">
+									<button class="ladda-button btn btn-primary" data-style="zoom-in" type="submit" >
+										<span class="ladda-label">{:L('SAVE')}</span><span class="ladda-spinner"></span>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+			<div style="clear:both;" ></div>
+		</div>
+	</div>
+</div>
+
+<!-- 模态框 -->
+<div class="modal inmodal fade" id="Modal" tabindex="-1"  style=" overflow:auto; border:1px solid #000000;" role="dialog" >
+	<div class="modal-dialog">
+        <div class="modal-content animated flipInY">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">使用帮助</h4>
+                <!-- <small class="font-bold">设置合同前缀 -->
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 14px;">可修改合同编号的前缀</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal fade" id="Modal1" tabindex="-1"  style=" overflow:auto; border:1px solid #000000;" role="dialog" >
+	<div class="modal-dialog">
+        <div class="modal-content animated flipInY">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">使用帮助</h4>
+                <!-- <small class="font-bold">设置合同前缀 -->
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 14px;">可修改应收款编号的前缀</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal fade" id="Modal2" tabindex="-1"  style=" overflow:auto; border:1px solid #000000;" role="dialog" >
+	<div class="modal-dialog">
+        <div class="modal-content animated flipInY">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">使用帮助</h4>
+                <!-- <small class="font-bold">设置合同前缀 -->
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 14px;">可修改应商机编号的前缀</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal fade" id="Modal3" tabindex="-1"  style=" overflow:auto; border:1px solid #000000;" role="dialog" >
+	<div class="modal-dialog">
+        <div class="modal-content animated flipInY">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">使用帮助</h4>
+                <!-- <small class="font-bold">设置合同前缀 -->
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 14px;">可修改员工编号的前缀</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+/*模态框关闭或打开 先清除内容*/
+$(".modal").on("hide.bs.modal", function() {
+    $(this).removeData("bs.modal");
+});
+$(".modal").on("show.bs.modal", function() {
+    $(this).removeData("bs.modal");
+});
+
+$(function(){
+	new PCAS("state","city","{$defaultinfo.state}","{$defaultinfo.city}");
+	$('.openrecycle').change(function(){
+		var values = $(this).val();
+		if(values == 1){
+			$('#is_recycle').hide();
+			$('#customer_outdays').val(9999);
+			$('#contract_outdays').val(9999);
+		}else{
+			$('#is_recycle').show();
+			$('#customer_outdays').val(7);
+			$('#contract_outdays').val(30);
+		}
+	});
+	$('#clear').click(function(){
+		swal({
+			title: "",
+			text: "{:L('SURE_YOU_WANT_TO_EMPTY_THE_CACHE')}",
+			type: "warning",
+			showCancelButton: true,
+			//confirmButtonText: "停用",
+			closeOnConfirm: false
+		},
+		function(){
+			$.ajax({
+				type: "GET",
+				url: "{:U('setting/clearcache')}",
+				async: true,
+				success: function(result) {
+					if(result.status == 1){
+						swal({
+							title: "温馨提示",
+							text: "{:L('HAVE_TO_EMPTY_THE_CACHE')}",
+							type: "success"
+						})
+					}else{
+						swal({
+							title: "温馨提示",
+							text: "{:L('EMPTY_THE_CACHE_FAUILRE')}",
+							type: "error"
+						})
+					}
+				}
+			});
+		});
+	});
+
+	$('#app_debug').change(function(){
+		if($("#app_debug").prop("checked")){
+			$.get("{:U('setting/opendebug')}", function(result){
+				if(result.status == 1){
+					swal({
+						title: "温馨提示",
+						text: "{:L('DEBUG_MODE_HAS_BEEN_OPEN')}",
+						type: "success"
+					})
+				}else if(result.status == 2){
+					swal({
+						title: "温馨提示",
+						text: "{:L('CONFIGURATION_FILE_NOT_WRITE_PERMISSIONS')}",
+						type: "error"
+					})
+				}
+			});
+		}else{
+			$.get("{:U('setting/closedebug')}", function(result){
+				if(result.status == 1){
+					swal({
+						title: "温馨提示",
+						text: "{:L('DEBUG_MODE_HAS_BEEN_CLOSE')}",
+						type: "success"
+					})
+				}else if(result.status == 2){
+					swal({
+						title: "温馨提示",
+						text: "{:L('CONFIGURATION_FILE_NOT_WRITE_PERMISSIONS')}",
+						type: "error"
+					})
+				}
+			});
+		}
+	})
+	//保存按钮loading
+	$( '.ladda-button' ).ladda( 'bind', { timeout: 2000 } );
+});
+function typeFile(obj){
+    $('#Modal').modal('show');
+}
+function btypeFile(obj){
+    $('#Modal2').modal('show');
+}
+function ftypeFile(obj){
+    $('#Modal1').modal('show');
+}
+function utypeFile(obj){
+    $('#Modal3').modal('show');
+}
+</script>
+<include file="Public:footer" />	

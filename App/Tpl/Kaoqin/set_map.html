@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>编辑折线、多边形、圆</title>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=84a2c54ee72a8b73dac2d010e50ff1cd&plugin=AMap.PolyEditor,AMap.CircleEditor,AMap.Autocomplete,AMap.PlaceSearch"></script>
+    <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+</head>
+<body>
+<div id="container"></div>
+<div class="button-group">
+    <input type="button" class="button" value="开始编辑圆" onClick="editor.startEditCircle()"/>
+    <input type="button" class="button" value="结束编辑圆" onClick="editor.closeEditCircle()"/>
+</div>
+<div id="myPageTop">  
+    <table>
+        <tr>
+            <td>
+                <label>请输入关键字：</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input id="tipinput"/>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    var y = window.parent.$('#y').val() ? window.parent.$('#y').val() : 116.397428;
+    var x = window.parent.$('#x').val() ? window.parent.$('#x').val() : 39.90923;
+    var radius = window.parent.$('#radius').val() ? window.parent.$('#radius').val() : 1000;
+
+    var editorTool, map = new AMap.Map("container", {
+        resizeEnable: true,
+        //center: [113.766353, 34.724393],//地图中心点
+        zoom: 13 //地图显示的缩放级别
+    });
+
+ 
+    //根据经纬度获得地址
+    AMap.service('AMap.Geocoder',function(){
+        
+    });
+    
+    function regeocoder(y, x) {  //逆地理编码
+        lnglatXY = [y, x]; //已知点坐标
+        var geocoder = new AMap.Geocoder({
+            // radius: 1000,
+            extensions: "all"
+        });        
+        geocoder.getAddress(lnglatXY, function(status, result) {
+            if (status === 'complete' && result.info === 'OK') {
+                // console.log(result.regeocode);
+                var address = result.regeocode.formattedAddress; //返回地址描述
+                window.parent.reg_address(address);
+                // geocoder_CallBack(result);
+            }
+        });
+        // var marker = new AMap.Marker({  //加点
+        //     map: map,
+        //     position: lnglatXY
+        // });
+        // map.setFitView();
+    }
+    // function geocoder_CallBack(data) {
+    //     var address = data.regeocode.formattedAddress; //返回地址描述
+    //     console.log(address);
+    //     return address;
+    //     // document.getElementById("tipinput").innerHTML = address;
+    // }
+
+    //在地图上画圆
+    var editor={};
+    editor._circle=(function(){
+        var circle = new AMap.Circle({
+            center: [y, x],// 圆心位置
+            radius: radius, //半径
+            strokeColor: "#0D9BF2", //线颜色
+            strokeOpacity: 1, //线透明度
+            strokeWeight: 1, //线粗细度
+            fillColor: "#38AFF8", //填充颜色
+            fillOpacity: 0.35//填充透明度
+        });
+        circle.setMap(map);
+        return circle;
+    })();
+    map.setFitView();
+
+    editor._circleEditor = new AMap.CircleEditor(map, editor._circle);
+    editor.startEditCircle = function(){
+
+        //开始编辑地图时，获取地图中心点并移动圆心位置
+        var LngLat = map.getCenter();
+        var lnglat_arr = LngLat.toString().split(",");
+        editor._circle.setCenter(new AMap.LngLat(lnglat_arr[0], lnglat_arr[1]));
+
+        editor._circleEditor.open();
+    };
+
+    editor.closeEditCircle = function(){
+        var add_arr = editor._circle.getCenter().toString().split(",");
+        var new_y = add_arr[0];
+        var new_x = add_arr[1];
+        //根据经纬度获得地址
+        regeocoder(new_y, new_x);
+        //var point = new AMap.LngLat(113.766353, 34.724393);
+        // console.log(editor._circle);
+        // alert(editor._circle.getRadius());
+        // alert(editor._circle.getCenter());
+        window.parent.setShippingResult(editor._circle.getCenter(),editor._circle.getRadius());//给父页面传值(经纬度和半径)
+        //alert(editor._circle.contains(point));
+        editor._circleEditor.close();
+    };
+
+
+    //输入提示
+    var autoOptions = {
+        input: "tipinput"
+    };
+    var auto = new AMap.Autocomplete(autoOptions);
+    var placeSearch = new AMap.PlaceSearch({
+        map: map
+    });  //构造地点查询类
+    AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+    function select(e) {
+        placeSearch.setCity(e.poi.adcode);
+        placeSearch.search(e.poi.name);  //关键字查询查询
+    };
+</script>
+</body>
+</html>

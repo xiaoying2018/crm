@@ -1,0 +1,107 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+
+<style type="text/css">
+    .add_title{
+        padding-bottom:10px;
+        height: 60px;
+        margin-bottom:15px;
+    }
+    .add_title>span{
+        border-bottom: 2px solid #1ab394;
+        font-size: 24px;
+    }
+    .add_body >div >.full-height-scroll{
+        border-right:1px dotted #ccc
+    }
+    .add_body_title{
+        margin:20px auto 20px auto;
+        padding-left: 25px;
+    }
+    .add_body_form{
+        padding-left: 38px;
+    }
+    .add_body_form>form>.form-group{
+        margin-bottom: 25px;
+    }
+    body{overflow-y:hidden;}
+    .form-control{
+        float:left;
+    }
+    .checkbox{float:left;}
+</style>
+<script>
+    $(function () {
+        $(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+        $(window).resize(function () {
+            $(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+        })
+    })
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-8">
+    <include file="Public:alert" />
+    <form class="form-horizontal" id="form" enctype="multipart/form-data" role="form" action="{:U('CourseDocument/add')}" method="post">
+        <div class="ibox-content add_body" id="add_body" style="">
+            <div class="full-height-scroll">
+                <div class="row">
+                    <div class="col-md-12 add_body_title" style="margin:20px 0 0 0px;">
+                        <div class="all-inline">
+                            <span class="sq-tag"></span>
+                            <div class="text-tag">
+                                <span>基础信息</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-11 add_body_form">
+                        <!-- 校区选择 -->
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">操作类型：</label>
+                            <div class="col-md-8">
+                                <input class="form-control required" type="text" value="本地上传"  disabled="disabled">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">选择文件：</label>
+                            <div class="col-md-8">
+                                <input class="form-control required"   type="file"  name="file" value="" aria-required="true" aria-invalid="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">文件属性：</label>
+                            <div class="col-md-6">
+                                &nbsp;
+                                <div class="checkbox checkbox-info" style="float:left;">
+                                <input type="checkbox" name="property" id="property" value="1">&nbsp;
+                                <label for="property">动态ppt</label>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">文件类型：</label>
+                            <div class="col-md-6">
+                                <div class="checkbox checkbox-info" style="float:left;">
+                                    您可以上传资料文件大小限制在100M以内,文件的类型如下(*.xls;*.xlsx;*.ppt;*.pptx;*.doc;*.docx;*.txt;*.pdf;*.jpg;*.gif;*.jpeg;*.png;*.bmp;*.mp3;*.mp4)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-1 pull-right">
+                            <!-- <div style="height: 100%; border-right: 1px dashed gray;">&nbsp;sadf</div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tfoot_div" class="clearfix">
+            <div class="clearfix" id="tfoot_page">
+                <div class="ibox-content" style="border-top: none;">
+                    <div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><button type="submit" id="save_submit" class="btn btn-primary">上传文档</button></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+
+</script>
+<include file="Public:footer" />

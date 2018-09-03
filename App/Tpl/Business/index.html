@@ -1,0 +1,660 @@
+<include file="Public:header" />
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<!-- nice-scroll -->
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/mxcrm_more.js" type="text/javascript"></script>
+<style>
+body{
+	overflow-y: hidden;
+}
+.option{padding-left:-30px;}
+#oDivL_tab_Test3{background-color: #fff;}
+.table{max-width: none;}
+</style>
+<script>
+$(function(){
+	var scroll_width = 7;
+	// var oTableLH_tab_Test3 = 38;
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-parseInt($("#table_container").css("padding-bottom").replace("px",""))-10);
+		$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width);
+	})
+	$(".nicescroll").niceScroll({
+		cursorcolor: "#999",//#CC0071 光标颜色 
+	    cursoropacitymax: 0.4, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0 
+	    touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备 
+	    cursorwidth: scroll_width+"px", //像素光标的宽度 
+	    cursorborder: "0", //     游标边框css定义 
+	    cursorborderradius: "3px",//以像素为光标边界半径 
+	    autohidemode: false, //是否隐藏滚动条 
+	    zindex:100,
+	    background:"#F3F3F5",//滚动条背景色
+	});
+	if ("{$Think.get.by}") {
+		$("#filter_ul").prev().html($("#filter_ul>li>a.active").text()+'<span class="fa fa-angle-down small_fa"></span>');
+	}
+	$("#tab_Test3").FrozenTable(1,0,3);
+	$("#oDivL_tab_Test3").height($("#table_div").height()-scroll_width-1).width($("#oTableLH_tab_Test3").width()).css({'zIndex':9});
+	$("#oDivL_tab_Test3").css({"background-color":"#fff","border-right":"1px solid #e7eaec"});
+	$("#oTableLH_tab_Test3").css({"border-right":"1px solid #e7eaec"});
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width()-scroll_width).css({'zIndex':9});
+})
+</script>
+<div class="wrapper wrapper-content">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+            	<div class="title-bar" style="position: relative;z-index: 99;">
+					<div class="row clearfix" id="title-hide" style="display:none;">
+						<ul class="breadcrum pull-left">
+							<li>已选中&nbsp;<span id="icheck_num"></span>&nbsp;项</li>
+							<li class="single_btn"><a href="javascript:void(0)" id="log_business"><i class="fa fa-file-text"></i>&nbsp;添加沟通日志</a></li>
+							<li class="single_btn business_btn"><a href="javascript:void(0)" id="remind"><i class="fa fa-bell-o"></i>&nbsp;提醒</a></li>
+							<li class="single_btn"><a href="javascript:void(0)" id="edit_business"><i class="fa fa-pencil"></i>&nbsp;编辑</a></li>
+							<li class="single_btn business_btn"><a href="javascript:void(0)" id="to_top"><i class="fa fa-arrow-up"></i><span id="to_top_span">&nbsp;置顶</span></a></li>
+							<if condition = "$_GET['content'] neq 'resource'">
+								<li><a id="delete" href="javascript:void(0)"><i class="fa fa-times"></i>&nbsp;删除</a></li>
+							</if>
+							<li class="last_li"><big><a class="fa fa-times pull-right" id="back-show"></a></big></li>
+						</ul>
+					</div>
+					<div class="row " id="title-show">
+						<ul class="nav pull-left" style="margin:2px 0 0 15px;">
+							<a href="{:U('business/add')}" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 新建商机</a>
+						</ul>
+						<form class="form-inline" id="business_search" action="" method="get">
+							<ul class="breadcrum pull-right" style="margin-bottom: 0px">
+								<li>
+									<div class="input-group" style="margin-right: 10px;margin-bottom: 5px;">
+										<select class="form-control" onchange="window.open(this.options[this.selectedIndex].value,target='_self')" >
+											<option value="{:U('business/index','by=me&'.$by_parameter)}" <if condition = "$_GET['by'] eq 'me' || $_GET['by'] eq ''">selected="selected"</if>>我的商机</option>
+											<option value="{:U('business/index','by=sub&'.$by_parameter)}" <if condition = "$_GET['by'] eq 'sub'">selected="selected"</if>>下属商机</option>
+											<option value="{:U('business/index','by=all&'.$by_parameter)}" <if condition = "$_GET['by'] eq 'all'">selected="selected"</if>>全部商机</option>
+										</select>
+									</div>
+								</li>
+								<li>
+									搜索：
+									<div class="input-group">
+										<input type="hidden" name="m" value="business"/>
+										<input type="hidden" name="a" value="index"/>
+										<input type="hidden" name="field" value="name"/>
+										<input type="hidden" name="condition" value="contains"/>
+										<input type="hidden" name="by" value="{$_GET['by']}"/>
+										<input id="short_search" type="text" style="width:200px;" placeholder="商机名/客户名/联系人/电话" onkeydown='if(event.keyCode==13) {$("#short_search_btn").trigger("click");return false;}' class="form-control input-sm" name="search" <if condition = "$_GET['field'] eq 'name'">value="{$_GET['search']}"</if>/>
+										<span class="input-group-btn">
+											<button class="btn btn-default btn-search" id="short_search_btn" type="submit"><i class="fa fa-search"></i></button>
+										</span>
+										<select class="form-control" name="status_type_id" id="status_type_id" style="margin:0px 10px;width:150px;">
+											<volist name= "status_type_list" id="vo">
+												<option value="{$vo['id']}">{$vo['name']}</option>
+											</volist>
+										</select>
+										<select class="form-control" name="status_id" id="status_id" style="margin:0px 10px;width:150px;">
+											<option value="">--请选择--</option>
+											<volist name= "status_list" id="vo">
+												<option value="{$vo['status_id']}">{$vo['name']}</option>
+											</volist>
+										</select>
+									</div>
+									<!-- &nbsp;&nbsp;&nbsp;&nbsp;<a title="高级搜索" href="javascript:void(0)" id="search_type" class="btn btn-white btn-bitbucket"><i class="fa fa-filter" style="color: #D8E3EF;"></i></a> -->
+								</li>
+							</ul>
+						</form>
+					</div>
+				</div>
+				<div class="ibox-content clearfix" id="table_container">
+					<form id="form1"  method="post" style="position:relative;">
+						<div id="table_div" class="nicescroll">
+							<table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
+								<empty name="list">
+									<div style="background-color:#fff;"><include file="Public:nodata" /></div>
+								<else/>	
+									<tr id="childNodes_num" class="tabTh">
+										<td style="width:30px;padding-left: 20px">
+											<div class="checkbox checkbox-primary">
+												<input type="checkbox" class="check_all"/>
+												<label for=""></label>
+											</div>
+										</td>
+										<td style="width: 6px;">&nbsp;</td>
+										<td>商机名称</td>
+										<volist name="field_array" id="vo">
+											<if condition = "$vo['field'] eq 'contacts_id'" >	
+												<td>{$vo.name}</td>
+												<td>联系电话</td>
+											<elseif condition = "$vo['field'] eq 'status_id'" />	
+												<td colspan="3">{$vo.name}</td>
+											<else />
+												<td>{$vo.name}</td>
+											</if>
+										</volist>
+										<td>收款进度</td>
+										<td>商机负责人</td>
+										<td>
+											<if condition="$_GET['desc_order'] == 'create_time'">
+												<a href="{:U('business/index','asc_order=create_time&'.$parameter)}" title="点击按时间正序排列">
+													{:L('CREATE_TIME')}&nbsp;<span class="fa fa-caret-down"></span>
+												</a>
+											<elseif condition="$_GET['asc_order'] == 'create_time'"/>
+												<a href="{:U('business/index','desc_order=create_time&'.$parameter)}"  title="点击按时间倒序排列">
+													{:L('CREATE_TIME')}&nbsp;<span class="fa fa-caret-up"></span>
+												</a>
+											<else/>
+												<a href="{:U('business/index','asc_order=create_time&'.$parameter)}" title="点击按时间正序排列">{:L('CREATE_TIME')}&nbsp;<span class="fa fa-caret-down"></a>
+											</if>
+										</td>
+									</tr>
+									<volist name="list" id="vo">
+										<tr class="controls_tr">
+											<td style="width: 30px;padding-left: 20px">
+												<div class="checkbox checkbox-primary">
+													<input name="business_id[]" class="check_list" type="checkbox" value="{$vo.business_id}" rel="{$vo['business_id']}" rel1="{$vo['set_top']}" rel2="{$vo['remind_time']}" />
+													<label for=""></label>
+												</div>
+											</td>
+											<td>
+												<a href="javascript:void(0);" class="remind_view" rel="{$vo['business_id']}">
+													<span class="fa fa-bell-o {$vo['remind_time'] > time() ? '':'hide'}" id="remind_view_{$vo['business_id']}" style="font-size:16px;color:orange"></span>
+												</a>
+											</td>
+											<td>
+												<if condition ="$vo['set_top'] eq 1">
+													<a style="border-left: 5px solid #ffb07b;padding-left: 5px;" href="{:U('business/view','id='.$vo['business_id'])}" >{$vo['name']}</a>
+												<else />
+													<a style="padding-left: 5px;" href="{:U('business/view','id='.$vo['business_id'])}" >{$vo['name']}</a>
+												</if>
+											</td>
+											<volist name="field_array" id="v">
+												<if condition = "$v['field'] eq 'customer_id'">
+													<td>
+														<a href="{:U('customer/view','id='.$vo['customer_id'])}">{$vo['customer_name']}</a>
+													</td>
+												<elseif condition = "$v['field'] eq 'contacts_id'" />
+													<td>
+														<notempty name="vo.contacts_id">
+															<a href="{:U('contacts/view','id='.$vo['contacts_id'])}">{$vo['contacts_name']}</a>
+														</notempty>
+													</td>
+													<td>{$vo['c_telephone']}</td>
+												<elseif condition = "$v['field'] eq 'status_id'" />
+													<td class="detail-right " style="max-width: 20px;">
+														<a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" data-original-title="{$vo['product_name']}" rel="{$vo['business_id']}" rel1 = "{$vo['customer_id']}" rel2="{$vo['code']}" class="product_view tooltip-show"><i class="fa fa-circle fa-1x"></i></a>
+													</td>
+													<td style="width: 100px;">
+														<div class="progress progress-mini m-b-sm" style="cursor:pointer;background-color: #DDD;" data-toggle="tooltip" data-placement="top" class="" data-original-title="{$vo['status_info']['name']}" >
+															<div class="progress-bar <?php if($vo['status_info']['is_end']==2){echo 'progress-bar-danger';}else{if($vo['progress']<=30){echo 'progress-bar-danger';}elseif($vo['progress']<=60){echo 'progress-bar-warning';}elseif($vo['progress']<99){echo '';}else{echo 'progress-bar-success';}} ?>" style="width: {$vo['progress']}%;"></div>
+														</div>
+													</td>
+													<td class="detail-right" style="min-width: 30px;">
+														<if condition = "$vo['status_info']['is_end'] eq 2">
+															<i class="fa fa-times-circle" style="color: #ED5565;"></i>
+														<else />
+															<a href="javascript:void(0);" data-toggle="tooltip" data-placement="right"  data-original-title="推进进度" rel="{$vo['business_id']}" rel1 = "{$vo['customer_id']}" rel2="{$vo['code']}" class="advance">
+																<i class="fa fa-forward"></i>
+															</a>
+														</if>
+													</td>
+												<else />
+													<td>
+														<span style="color:#{$v['color']}">
+															<if condition="$v['form_type'] eq 'datetime'">
+																<if condition="$vo[$v['field']]">
+																	{$vo[$v['field']]|date='Y-m-d H:i',###}
+																</if>
+															<else />
+																{$vo[$v['field']]}
+															</if>
+														</span>
+													</td>
+												</if>
+											</volist>
+											<td class="project-completion">
+	                                            <small>当前进度：{$vo['schedule']}%</small>
+	                                            <div class="progress progress-mini">
+	                                                <div style="width: {$vo['schedule']}%;" class="progress-bar"></div>
+	                                            </div>
+	                                        </td>
+											<td>
+												<notempty name="vo.owner.full_name"><a class="role_info" rel="{$vo.owner.role_id}" href="javascript:void(0)">{$vo.owner.full_name}</a></notempty>
+											</td>
+											<td>{$vo['create_time']|date='Y-m-d H:i:s',###}</td>
+										</tr> 
+									</volist>
+								</empty>
+							</table>
+						</div>
+						<div id="tfoot_div" class="clearfix">
+							<div class="clearfix" id="tfoot_page">
+								{$page}<include file="Public:listrows" />
+							</div>
+						</div>
+					</form>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display:none" id="dialog-log" title="{:L('ADD_THE_LOG')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-role-info" title="{:L('EMPLOYEE_INFORMATION')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-advance" title="阶段变更">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-remind" title="提醒">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-remind_view" title="提醒内容">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none" id="dialog-product_view" title="产品详情">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+/*让复选框默认取消选择*/
+$(':checkbox').prop('checked', false);
+
+$('[data-toggle="tooltip"]').tooltip({html:true});
+
+//商机状态
+$('#status_id').val("{$Think.get.status_id}"); 
+$('#status_id').change(function(){ 
+	$('#business_search').submit(); 
+});
+
+//状态分组
+var status_type_id = {$_GET['status_type_id']|default=1};
+$('#status_type_id').val(status_type_id); 
+$('#status_type_id').change(function(){
+	var type_id = $(this).val();
+	var temp = '<option value="">--请选择--</option>';
+	if(type_id){
+		$.ajax({
+			'type':'get',
+			'data': {'type_id':type_id},
+			'dataType':'json',
+			'url':'{:U("business/getbusinessStatus")}',
+			'success':function(data){
+				if(data.status == 1){
+					$('#status_id').html('');
+					$.each(data.data, function(k, v){
+						temp += '<option value="'+v.status_id+'">'+v.name+'</option>';
+					});
+					$('#status_id').html(temp);
+				}else{
+					alert_crm(data.info)
+				}
+			}
+		});
+	}
+	$('#business_search').submit();
+});
+
+$('#example').mouseenter(function(){
+	$('.tooltip').css('opacity','1');
+})
+$('#example').mouseleave(function(){
+	$('.tooltip').css('opacity','0');
+});
+$(".controls_tr").mouseenter(function(){
+	$(this).find(".controls").show();
+}).mouseleave(function(){
+	$(this).find(".controls").hide();
+});
+
+var url = "{:U('business/getcurrentstatus')}";
+var limit_size = 1000;
+var count = {$count};
+var i = 1;  
+function remainTime(){
+	var id_array = new Array(); 
+	$("input[class='check_list']:checked").each(function() {   
+		id_array.push($(this).val());
+	});  
+	$.get(url,function(data){
+		if(data.data == 0){
+			if((i-1)*limit_size < count){
+				$("#act").val('excel');	
+				$("#current_page").val(i);
+				$("#export_limit").val(limit_size);
+				$("#daochu").val(id_array);
+				$("#searchForm").submit();
+				setTimeout("remainTime()",1000); 
+				i++; 
+			}else{
+				i = 1;
+			}
+		}else{
+			setTimeout("remainTime()",1000); 
+		}
+	}, 'json');
+}
+
+$("#dialog-product_view").dialog({
+    autoOpen: false,
+    modal: true,
+    minWidth: 800,
+    maxHeight: 600,
+    position: ["center",100]
+});
+//产品详情
+$(".product_view").click(function(){
+    var business_id = $(this).attr('rel');
+    var customer_id = $(this).attr('rel1');
+    var code = $(this).attr('rel2');
+    //判断是否有商机编号，如果没有则提示添加产品
+    if(!code){
+    	swal({
+	        title: "请先添加产品信息",
+	        text: "",
+	        type: "warning",
+	        showCancelButton: true,
+	        confirmButtonColor: "#DD6B55",
+	        confirmButtonText: "添加产品",
+	        closeOnConfirm: true,
+	    }, function () {
+			$('#dialog-addproduct').dialog('open');
+			$('#dialog-addproduct').load('{:U("product/mutildialog_product","customer_id=")}'+customer_id);
+	    });
+    }else{
+    	$('#dialog-product_view').dialog('open');
+    	$('#dialog-product_view').load('{:U("business/product_view","id=")}'+business_id);
+    }
+});
+/*营销阶段*/
+$("#dialog-advance").dialog({
+    autoOpen: false,
+    modal: true,
+    minWidth: 320,
+    maxHeight: 800,
+    position: ["center",100]
+});
+//推进
+$(".advance").click(function(){
+    var business_id = $(this).attr('rel');
+    var customer_id = $(this).attr('rel1');
+    var code = $(this).attr('rel2');
+	$('#dialog-advance').dialog('open');
+	$('#dialog-advance').load('{:U("business/advance","id=")}'+business_id);
+});
+
+$("#remind").click(function(){
+	var business_id = $(this).attr('rel1');
+	$('#dialog-remind').dialog('open');
+	$('#dialog-remind').load("{:U('remind/add','module=business&module_id=')}"+business_id);
+});
+
+$(".remind_view").click(function(){
+	var business_id = $(this).attr('rel');
+	$('#dialog-remind_view').dialog('open');
+	$('#dialog-remind_view').load("{:U('remind/view','module=business&module_id=')}"+business_id);
+});
+
+$("#to_top").click(function(){
+	var business_id = $(this).attr('rel');
+	$("#form1").attr('action', '{:U("customer/settop","module=business&module_id=")}'+business_id);
+	$("#form1").submit();
+});
+
+$("#log_business").click(function(){
+	$('#dialog-log').dialog('open');
+	$('#dialog-log').load('{:U("log/add","r=RBusinessLog&module=business&id=")}'+$(this).attr('rel'));
+});
+
+$('#delete').click(function(){
+	var id_array = new Array();
+	$("input.check_list:checked").each(function(){  
+		id_array.push($(this).val());
+	});
+	if(id_array.length == 0){
+		alert_crm('您没有选择任何数据！');
+		return false;
+	}
+	swal({
+		title: "您确定要删除商机信息吗？",
+		text: "删除后将无法恢复，请谨慎操作！",
+		type: "warning",   
+		showCancelButton: true,   
+		confirmButtonColor: "#DD6B55",   
+		confirmButtonText: "是的，我要删除！",
+        cancelButtonText:'让我再考虑一下…',
+        closeOnConfirm:false,
+        closeOnCancel:false
+	},
+	function(isConfirm){
+        if (isConfirm) {
+        	$.ajax({
+	            type:'post',
+	            url: "{:U('business/delete')}",
+	            data: {business_id: id_array},
+	            async: false,
+	            success: function (data) {
+					if (data.status == 1) {
+						swal("删除成功！", "您已经永久删除了信息！", "success");
+						location.reload();
+					} else {
+						swal({
+							title: "操作失败！",
+							text:data.info,
+							type: "error"
+						});
+						return false;
+					}
+	            },
+	            dataType: 'json'
+	        });
+        } else {
+            swal("已取消","您取消了删除操作！","error");
+        }
+    });
+});
+
+<if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else/>width=800;</if>
+
+$("#dialog-role-info").dialog({
+    autoOpen: false,
+    modal: true,
+	width: width,
+	maxHeight: 550,
+	position: ["center",100]
+});
+
+$(function(){
+	$("#edit_business").click(function(){
+		window.location.href="{:U('business/edit', '&p='.$this_page.'&id=')}"+$(this).attr('rel');
+	})
+	$("#excelExport").click(function(){
+		if(count > limit_size){
+			if(confirm('当前导出量过大，将分几次导出，可能需要您等待一段时间，是否继续?')){
+				remainTime();
+			}
+		}else{
+			var id_array = new Array(); 
+			$("input[class='check_list']:checked").each(function() {   
+				id_array.push($(this).val());
+			});  
+			if(id_array !=''){
+				if(confirm("{:L('ARE_YOU_SURE_YOU_WANT_TO_EXPORT_THE_BUSINESS_OPPORTUNITIES')}")){
+					remainTime();
+				}
+			}else{
+				if(confirm("确定要导出全部吗？")){
+					remainTime();
+				}
+			}
+		}
+	});
+
+	$(".role_info").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+
+	$("#dialog-log").dialog({
+	    autoOpen: false,
+	    modal: true,
+		width: width,
+		maxHeight: 400,
+		position: ["center",100],
+		buttons: {
+			"确定": function () {
+				// $('#dialog_form1').submit();
+				// $(this).dialog("close");
+
+				var log_content = $('#log_content').val();
+				var nextstep_time = $('#nextstep_time').val();
+				if(log_content == ""){
+					alert_crm("请填写内容！");
+					$("#log_content").focus();
+					return false;
+				}
+	        	$.ajax({
+		            type:'post',
+		            url: "{:U('Log/add')}",
+		            data:$('#dialog_form1').serialize(),
+		            async: false,
+		            success: function (data) {
+						if (data.status == 1) {
+							swal("操作成功！", "沟通日志添加成功！", "success");
+							$("#dialog-log").dialog("close");
+							$('#nextstep_time_'+dialog_module_value).html(nextstep_time);
+							$('#nextstep_'+dialog_module_value).html(log_content);
+							// location.reload();
+						} else {
+							swal({
+								title: "操作失败！",
+								text:data.info,
+								type: "error"
+							})
+							return false;
+						}
+		            },
+		            dataType: 'json'
+		        });
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+
+	$("#dialog-remind").dialog({
+		autoOpen: false,
+		modal: true,
+		width: width,
+		maxHeight: 400,
+		position: ["center",100],
+		buttons: {
+			"确定": function () {
+				if($('#dialog_content').val() == ''){
+					alert_crm("请填写提醒内容！")
+					$("#dialog_content").focus(); 
+				}else{
+					$('#remind_form').submit();
+					$(this).dialog("close");
+				}
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+	$("#dialog-remind_view").dialog({
+		autoOpen: false,
+		modal: true,
+		width: width,
+		maxHeight: 400,
+		position: ["center",100],
+		buttons: {
+			"删除": function () {
+				var business_id = $('#dislog_module_id').val();
+				swal({
+					title: "您确认删除吗？" ,
+					type: "warning",   
+					showCancelButton: true,   
+					confirmButtonColor: "#DD6B55",   
+					confirmButtonText: "确定",   
+					closeOnConfirm: false 
+				}, 
+				function(){
+					var dislog_module_id = $('#dislog_module_id').val();
+					var dislog_module = $('#dislog_module').val();
+					$.ajax({
+			            type:'post',
+			            url: "{:U('remind/delete')}",
+			            data: {module_id: dislog_module_id,module: dislog_module},
+			            async: false,
+			            success: function (data) {
+							if (data.status == 1) {
+								$('#remind_view_'+dislog_module_id).addClass('hide');
+								swal("操作成功！", "提醒删除成功！", "success");
+								$("#dialog-remind_view").dialog("close");
+							} else {
+								swal({
+									title: "操作失败！",
+									text:data.info,
+									type: "error"
+								})
+								return false;
+							}
+			            },
+			            dataType: 'json'
+			        });
+					// $("#dialog_remind").submit();
+					// $(this).dialog("close");
+				});
+			},
+			"取消": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+})
+</script>
+
+<include file="Public:footer" />

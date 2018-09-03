@@ -1,0 +1,344 @@
+<style>
+	.thumb80 {
+		height: 100px;
+		width: 100px
+	}
+	
+	.materialsModal .cm_modal {
+		border-radius: 5px;
+		background-color: #fff;
+	}
+	
+	.materialsModal .title-bar {
+		border: none;
+		font-size: 16px;
+		padding-bottom: 0;
+		margin-top: 5px;
+	}
+	
+	.materialsModal .text-tag {
+		display: inline-block;
+	}
+	
+	.materialsModal .text-tag {
+		font-size: 16px;
+		padding-left: 4px;
+		border-left: 4px solid #18a689;
+		line-height: 16px;
+		margin-top: 10px;
+	}
+	
+	.materialsModal .table {
+		font-size: 14px;
+		width: 90%;
+		margin: 0 auto;
+		padding: 20px;
+		margin-bottom: 20px;
+	}
+	
+	.materialsModal .table td {
+		border-color: #f2f2f2;
+	}
+	
+	.td_title {
+		color: #8d8d8d !important;
+		width: 20%;
+	}
+	
+	textarea {
+		outline: none;
+		border: 1px solid #e7eaec;
+		height: 100px;
+		padding: 10px;
+		overflow-y: scroll;
+		background: #fff !important;
+		width: 100%;
+	}
+	
+	.nodata {
+		color: #ccc;
+	}
+	
+	.download {
+		color: #4865ff;
+		text-decoration: underline;
+	}
+	
+	.ui-dialog[aria-describedby="detail-dialog-file"] {
+		z-index: 2051;
+	}
+	
+	ul,
+	li {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	
+	.r_table {
+		width: 90%;
+		margin: 0 auto;
+		float: none;
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+		overflow: hidden;
+		border-bottom: 1px dotted #D8D8D8;
+	}
+	
+	.r_table>li {
+		font-size: 14px;
+	}
+	
+	.r_table>li>div {
+		padding: 16px;
+		/*border-bottom: 1px solid #e7eaec;*/
+	}
+	
+	.r_table>li:nth-last-of-type(1),
+	.r_table>li:nth-last-of-type(2) {
+		border-bottom: none;
+	}
+	
+	.d_title {
+		color: #8d8d8d;
+	}
+	
+	.td_title {
+		display: inline-block;
+		margin-bottom: 20px;
+	}
+	
+	._row {
+		position: relative;
+	}
+	
+	.item_table {
+		width: 90%;
+		margin: 0 auto;
+		margin-top: 30px;
+		overflow: hidden;
+	}
+	
+	.item_table>div {
+		width: 45%;
+		float: left;
+	}
+	
+	.item_table>div:nth-of-type(2) {
+		margin-left: 5%;
+	}
+	
+	@media only screen and (max-width:998px) {
+		.item_table>div {
+			width: 100%;
+		}
+		.item_table>div:nth-of-type(2) {
+			margin-left: 0;
+		}
+	}
+	
+	._prompt {
+		color: #dc4c4c;
+		white-space: nowrap;
+		font-size: 12px;
+	}
+	
+	.item_table ._scrollbar {
+		max-height: 200px;
+		overflow-y: auto;
+		display: inherit;
+	}
+	
+	.item_table {
+		margin-bottom: 30px;
+	}
+	
+	.item_table ._scrollbar::-webkit-scrollbar {
+		/*滚动条整体样式*/
+		width: 2px;
+		/*高宽分别对应横竖滚动条的尺寸*/
+		height: 10px;
+	}
+	
+	.item_table ._scrollbar::-webkit-scrollbar-thumb {
+		/*滚动条里面小方块*/
+		border-radius: 5px;
+		/*  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);*/
+		background: #d8d8d8;
+	}
+	
+	.item_table ._scrollbar::-webkit-scrollbar-track {
+		/*滚动条里面轨道*/
+		/*-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);*/
+		/*border-radius: 5px;*/
+		background: #F6F6F6;
+	}
+	
+	.modal-dialog {
+		max-height: 90%;
+		overflow: scroll;
+	}
+	
+	.modal-dialog::-webkit-scrollbar {
+		display: none;
+	}
+	.select2-container{
+		z-index: 9999;
+	}
+</style>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+<div class="modal fade bs-example-modal-lg materialsModal" role="dialog" aria-labelledby="exampleModalLabel">
+	<div class="modal-dialog" role="document" style="width: 30%;">
+		<div class="row cm_modal form-horizontal">
+			<div class="col-lg-12">
+				<div class="title-bar">
+					<div class="row " id="title-show">
+						<div class="all-inline clearfix">
+							<div style="float: left;">
+								<span class="text-tag">分配任务</span>
+							</div>
+							<button type="button" class="btn btn-default" data-dismiss="modal" style="float: right;margin-right: 15px;">
+                                关闭
+                            </button>
+						</div>
+					</div>
+				</div>
+				<!-- 分配任务 -->
+				<div id="allot">
+					<form id="allot_data" class="col-md-12">
+						<!-- 名称 -->
+						<div class="form-group">
+							<label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 姓名</label>
+							<div class="col-md-8">
+								<select class="select_name form-control" name="to_role_id" id="to_role_id">
+									<option value="">输入老师姓名后选择老师</option>
+								</select>
+							</div>
+						</div>
+						<!-- 任务内容 -->
+						<div class="form-group">
+							<label class="col-md-4 control-label">任务内容</label>
+							<div class="col-md-8">
+								<textarea class="form-control" placeholder="任务内容" rows="5" name="content" id="content"></textarea>
+							</div>
+						</div>
+						<div class="form-group" style="margin-top: 15px;">
+							<a href="javascript:void(0)" id="send_allot" class="btn btn-primary btn-sm pull-right" style="margin-right: 10px;"> 发送 </a>
+						</div>
+					</form>
+				</div>
+				<!-- 分配任务 -->
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	$(function() {
+		var caseModal = new Vue({
+			el: '.materialsModal',
+			data: {
+				data: {},
+				arry: {}
+			},
+			methods: {
+				getDetail: function(id) {
+
+				}
+			},
+			mounted: function() {
+				var _this = this;
+				//关闭浮层
+				$(".caseModal-close").click(function() {
+					$(".caseModal").modal('hide');
+				})
+			}
+		});
+
+        // 选择老师弹框
+        $(".select_name").select2({
+        	width:"100%",
+            ajax: {
+                placeholder:'请选择',
+                allowClear:true,
+                url: "{:U('materials/getteachers')}",
+                data: function(params) {
+                    var query = {
+                        "name": params.term
+                    }
+                    return query;
+                },
+                dataType: 'json',
+                processResults: function(data) {
+                    return {
+                        results: data.data
+                    };
+                },
+                processResults: function(data, params) {
+                    if (data.status) {
+                        var itemList = [];
+                        //当数据对象不是{id:0,text:'ANTS'}这种形式的时候，可以使用类似此方法创建新的数组对象
+                        var arr = data.data
+                        for(var i = 0; i < arr.length; i++){
+                            itemList.push({id: arr[i]['role_id'], text: arr[i]['full_name'], email: arr[i]['email']})
+                        }
+                        return {
+                            results: itemList
+                        };
+                    }else{
+                        return []
+                    }
+                },
+            }
+        });
+
+		$('.materialsModal').on('show.bs.modal', function(ele) {
+			caseModal.data = {};
+			caseModal.getDetail(ele.relatedTarget);
+		})
+
+
+        // 分配任务
+        $('#send_allot').click(function () {
+            var _selected = $("#to_role_id").select2("data")[0];
+            $.ajax({
+                type:'post',
+                url: "{:U('message/ajaxsend')}", // 请求接口
+                data: {
+                    email:_selected.email,
+                    to_role_id:_selected.id, // 接受者的role_id
+                    content:$('#content').val(), // 站内信内容
+                },
+                async: true,
+                success: function (data) {
+
+                    // TODO 发送邮件 收件人地址为 _selected.email
+                    $.ajax({
+                        type:'post',
+                        url: "{:U('api/sendtask')}", // 请求接口
+                        data: {
+                            to:_selected.email,
+                            content:$('#content').val(), // 任务内容
+                        },
+                        async: true,
+                        success: function (data) {
+							console.log(data);
+                        },
+                        dataType: 'json'
+                    });
+
+                    if (data.status == 1) {
+                        alert('发送成功') // 发送成功
+                    }else{
+                        alert('no') // 发送失败
+                    }
+                },
+                dataType: 'json'
+            });
+
+        })
+
+	});
+</script>

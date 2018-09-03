@@ -1,0 +1,96 @@
+<form class="form-inline" id="searchFormDialog" action="" method="post">
+	<input type="hidden" name="module" value="{$module_name}"/>
+	<input type="hidden" id="scene_dialog" value="{$_GET['dialog']}" />
+	<div class="pull-left col-sm-12">
+		<label class="control-label col-sm-3" for="name" style="width:110px;"><span style="color:#FF0011;">*</span>场景名称：</label>
+	</div>
+	<div class="pull-left col-sm-12">
+		<div class="col-sm-12" style="margin-top:10px;">
+			<input type="text" class="form-control" name="scene_name" id="scene_name" style="width:500px;" />
+		</div>
+	</div>
+	<div class="pull-left col-sm-12" style="margin-top:10px;">
+		<label class="control-label col-sm-3" for="name" style="width:110px;"><span style="color:#FF0011;">*</span>筛选条件：</label>
+	</div>
+	<div class="pull-left col-sm-12" style="margin-top:10px;">
+		<div class="col-sm-12">
+			<div id="search_add_dialog" style="width:650px;float:left;">
+				<div id="con_search_1" style="float:left;width:650px;margin-left:34px;">
+					<ul class="nav pull-left" style="width:650px;">
+						<li class="pull-left">
+							<select id="field_1" style="width:auto" class="form-control input-sm field_name_dialog new-select" onchange="changeCondition(1)" name="data[1][field]" >
+								<option class="" value="name">--{:L('PLEASE_SELECT_A_FILTER_CONDITION')}--</option>
+								<volist name="field_list" id="v">
+									<if condition="$v['field'] neq 'customer_owner_id'">
+									<option class="{$v['form_type']}" value="{$v[field]}" rel="customer" <if condition = "$_GET['field'] eq '' && $v['field'] eq 'name'">selected="selected"</if>>{$v[name]}</option>
+									</if>
+								</volist>
+								<if condition="$Think.get.content neq 'resource'">
+									<option class="role" value="owner_role_id">{:L('PRINCIPAL')}</option>
+								</if>
+								<option class="date" value="create_time">{:L('CREATION_TIME')}</option>
+								<option class="date" value="update_time">{:L('MODIFICATION_TIME')}</option>
+								<if condition = "$module_name eq 'customer'">
+									<option class="text" value="contacts_name">首要联系人姓名</option>
+									<option class="mobile" value="contacts_telephone">首要联系人电话</option>
+								</if>
+							</select>&nbsp;&nbsp;
+						</li>
+						<li class="pull-left" id="conditionContent_1">
+							<select id="condition_1" style="width:auto" class="form-control input-sm new-select" onchange="changeSearch()" name="name[condition]">
+								<option value="contains">{:L('INCLUDE')}</option>
+								<option value="not_contain">{:L('EXCLUSIVE')}</option>
+								<option value="is">{:L('YES')}</option>
+								<option value="isnot">{:L('ISNOT')}</option>						
+								<option value="start_with">{:L('BEGINNING_CHARACTER')}</option>
+								<option value="end_with">{:L('TERMINATION_CHARACTER')}</option>
+								<option value="is_empty">{:L('MANDATORY')}</option>
+								<option value="is_not_empty">{:L('ISNOTEMPTY')}</option>
+							</select>&nbsp;&nbsp;
+						</li>
+						<li class="pull-left" id="searchContent_1">
+							<input id="search_1" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name="name[value]"/>&nbsp;&nbsp;
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div style="margin-left: 35px;margin-top:10px;"><a href="javascript:void(0);" style="display: -moz-stack;margin: 30px 0px 0px; font-size: 12px; color: rgb(62, 133, 233);" id="add_btn_dialog">+添加筛选条件</a>
+			</div>
+		</div>
+	</div>
+</form>
+<script>
+/*添加筛选条件*/
+var m = 1;
+$('#searchFormDialog').on('click','#add_btn_dialog',function(){
+	m += 1;
+	$('#search_add_dialog').append('<div id="con_search_'+m+'" style="float:left;width:650px;padding-top:10px;margin:0px 10px 0 0px;"><div  id="rem_'+m+'" class="pull-left" style="line-height:30px;"><a href="javascript:void(0);" class="rem_search" rel="'+m+'" title="移除"><span class="fa fa-times-circle"></span></a></div>&nbsp;<ul class="nav pull-left" style="margin:0px 0 0 5px;width:620px"><li class="pull-left"><select id="field_'+m+'"  style="width:auto" class="form-control input-sm field_name_dialog new-select" onchange="changeCondition('+m+')" name="data['+m+'][field]"><option class="" value="name">--{:L('PLEASE_SELECT_A_FILTER_CONDITION')}--</option><volist name="field_list" id="v"><if condition="$v[field] neq 'customer_owner_id'"><option class="{$v['form_type']}" value="{$v[field]}" rel="customer">{$v[name]}</option></if></volist><if condition="$Think.get.content neq 'resource'"><option class="role" value="owner_role_id">{:L('PRINCIPAL')}</option></if><option class="date" value="create_time">{:L('CREATION_TIME')}</option><option class="date" value="update_time">{:L('MODIFICATION_TIME')}</option><option class="text" value="contacts_name">首要联系人姓名</option><option class="mobile" value="contacts_telephone">首要联系人电话</option></select>&nbsp;&nbsp;</li><li class="pull-left" id="conditionContent_'+m+'"><select id="condition_'+m+'" style="width:99px" class="form-control input-sm new-select" name="data['+m+'][data][1]" onchange="changeSearch()"><option value="contains">{:L('INCLUDE')}</option><option value="not_contain">{:L('EXCLUSIVE')}</option><option value="is">{:L('YES')}</option><option value="isnot">{:L('ISNOT')}</option><option value="start_with">{:L('BEGINNING_CHARACTER')}</option><option value="end_with">{:L('TERMINATION_CHARACTER')}</option><option value="is_empty">{:L('Mandatory')}</option><option value="is_not_empty">{:L('ISNOTEMPTY')}</option></select>&nbsp;&nbsp;</li><li class="pull-left" id="searchContent_'+m+'"><input id="search_'+m+'" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name="data['+m+'][data][2]"/>&nbsp;&nbsp;</li></ul></div>');
+});
+$('#searchFormDialog').on('click','.rem_search',function(){
+	var num = $(this).attr('rel');
+	$('#con_search_'+num).remove();
+});
+
+// 筛选重复判断
+var dosearchDialog = 1;
+function dohDialog(){
+	var aryDialog = new Array();
+	var field_name_dialog = '';
+	var is_submit_dialog = 1;
+	$('.field_name_dialog').each(function(k, v){
+		field_name_dialog = $(this).find("option:selected").val();
+		if(jQuery.inArray(field_name_dialog,aryDialog) >= 0){
+			is_submit_dialog = 0;
+			swal({
+				title: "筛选条件中有重复项！",
+				text: "",
+				type: "error"
+			});
+			dosearchDialog = 0;
+			return false;
+		}
+		aryDialog[k] = field_name_dialog;
+	});
+}
+</script>

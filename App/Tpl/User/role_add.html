@@ -1,0 +1,84 @@
+<form id="dialog_form" class="form-horizontal" action="{:U('user/role_add')}" method="Post">
+	<input type="hidden" name="charge_department_id" value="{:intval($_GET['department_id'])}"/>
+	<input type="hidden" name="son_id" value="{$son_id}"/>
+	<div class="control-group">
+		<label class="control-label" for="name">{:L('POSITION_NAME')}</label>  
+		<div class="controls">
+			<input type="text" class="text-input large-input" name="name"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="name">{:L('WHICH_DEPARTMENT_BELONGS_TO')}</label>  
+		<div class="controls">
+			<select name="department_id">
+				<volist name="departmentList" id="temp">
+					<if condition="$department_id eq $temp['department_id']"><option selected  value="{$temp.department_id}">{$temp.name}</option></if>
+				</volist>
+			</select>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">{:L('SUPERIORS_POSITION')}</label>  
+		<div class="controls">
+			<select id="department" onchange="changeRoleContent()" style="width:auto;">
+				<if condition="$act == 'first'">
+					<option value="">--选择部门--</option>
+					<volist name="departmentList" id="temp">
+						<option  value="{$temp.department_id}">{$temp.name}</option>
+					</volist>
+				<else />
+					<volist name="departmentList" id="temp">
+						<if condition="$department_id eq $temp['department_id'] "><option  value="{$temp.department_id}">{$temp.name}</option></if>
+					</volist>
+				</if>
+			</select>
+			<select id="role" name="parent_id" style="width:auto;"><option>--选择上级岗位--</option></select>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="name">{:L('POSITION_DESCRIPTION')}</label>  
+		<div class="controls">
+			<textarea name="description"></textarea>
+		</div>
+	</div>
+</form>
+<script>
+	function changeRoleContent(){
+		department_id = $('#department').val();
+		if(department_id == ''){
+			$("#role").html('<option>--选择上级岗位--</option>');
+		}else{
+			$.ajax({
+				type:'get',
+				url:'index.php?m=user&a=getpositionlist&id='+department_id,
+				async:false,
+				success:function(data){
+					
+					<if condition="$position_id">
+						var pos_id = "{$position_id}";
+						var options = '';
+						//var options = '<option>--选择上级岗位--</option>';
+					<else/>
+						var pos_id = 0;
+						var options = '';
+					</if>
+					
+					$.each(data.data, function(k, v){
+						if(pos_id){
+							if(pos_id == v.position_id){
+								var check = ' selected ';
+								options += '<option value="'+v.position_id+'" '+check+'">'+v.name+'</option>';
+							}
+						}else{
+							options += '<option value="'+v.position_id+'" '+check+'">'+v.name+'</option>';
+						}
+						
+					});
+					$("#role").html(options);
+				},
+				dataType:'json'
+			});		
+		}
+	}
+	changeRoleContent();
+</script>

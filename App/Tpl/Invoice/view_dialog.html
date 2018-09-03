@@ -1,0 +1,80 @@
+<style>
+    .body-span{
+        line-height:25px;
+        padding-top:0px;
+    }
+    .form-horizontal .control-label{
+        text-align: right;
+    }
+    .close{font-size:34px;font-weight:400;color:#fff;}
+    .close:hover{color:#fff;}
+</style>
+<div class="modal-header" style="border:none;">
+    <b style="font-size:16px;">发票信息</b>
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+</div>
+<div class="modal-body col-sm-12">
+    <div class="form-group ">
+        <div class="col-sm-1"></div>
+        <label class="control-label col-sm-2" >开票抬头：</label>
+        <div class="col-sm-9">
+            <span style="line-height: 30px;">{$invoice_info['invoice_header']}</span>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div class="col-sm-1"></div>
+        <label class="control-label col-sm-2" >纳税识别号：</label>
+        <div class="col-sm-9">
+            <span style="line-height: 30px;">{$invoice_info['taxes_num']}</span>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div class="col-sm-1"></div>
+        <label class="control-label col-sm-2" >开户行：</label>
+        <div class="col-sm-9">
+            <span style="line-height: 30px;">{$invoice_info['opening_bank']}</span>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div class="col-sm-1"></div>
+        <label class="control-label col-sm-2" >开户账号：</label>
+        <div class="col-sm-9">
+            <span style="line-height: 30px;">{$invoice_info['account_number']}</span>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div class="col-sm-1"></div>
+        <label class="control-label col-sm-2" >开票地址：</label>
+        <div class="col-sm-9">
+            <span style="line-height: 30px;">{$invoice_info['billing_address']}</span>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div class="col-sm-1"></div>
+        <label class="control-label col-sm-2" >电话：</label>
+        <div class="col-sm-9">
+            <span style="line-height: 30px;">{$invoice_info['telephone']}</span>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <div class="form-actions">
+        <button class="btn btn-primary" id="edit_invoice" rel="{$invoice_info['id']}" data-dismiss="modal" type="button">
+            编辑
+        </button>
+        <a class="btn btn-sm btn-white" data-dismiss="modal" href="javascript:;">取消</a>
+    </div>
+</div>
+
+<script>
+    $('#edit_invoice').click(function(){
+        var invoice_id = $(this).attr('rel');
+        // $('#viewInvoice').modal('hide');
+        $('#viewInvoice').on('hidden.bs.modal', function (e) {
+            $('#editInvoice').modal('show');
+            var url = "{:U('invoice/editData','invoice_id=')}"+invoice_id;
+            $('#edit_invoice_dialog').load(url);
+        });
+    });
+</script>

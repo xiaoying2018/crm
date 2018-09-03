@@ -1,0 +1,1110 @@
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<style type="text/css">
+	#main_pic_prev {
+		width: 120px;
+		height: 120px;
+		border: 1px dashed #d3d3d6;
+	}
+	
+	ul,
+	li {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	
+	.add_body_title {
+		margin: 15px auto 30px auto;
+	}
+	
+	.add_title {
+		padding-bottom: 10px;
+		height: 60px;
+		margin-bottom: 15px;
+	}
+	
+	.add_title>span {
+		border-bottom: 2px solid #1ab394;
+		font-size: 24px;
+	}
+	
+	.add_body>div>.full-height-scroll {
+		border-right: 1px dotted #ccc
+	}
+	
+	.add_body_title {
+		margin: 20px auto 20px auto;
+		padding-left: 25px;
+	}
+	
+	.add_body_form {
+		padding-left: 38px;
+		padding-bottom: 30px;
+		margin-bottom: 10px;
+		border-bottom: 1px dotted #D8D8D8;
+	}
+	
+	.add_body_form>form>.form-group {
+		margin-bottom: 25px;
+	}
+	
+	body {
+		overflow-y: hidden;
+	}
+	
+	.form-control {
+		float: left;
+	}
+	
+	.checkbox {
+		float: left;
+	}
+	
+	.caseModal li,
+	.caseModal li>div {
+		margin-bottom: 40px;
+	}
+	
+	.add_file {
+		float: right;
+		margin-right: 20px;
+		background-color: #00aaef;
+		border-color: #00aaef;
+		color: #FFFFFF;
+		padding: 5px 12px;
+		border-radius: 3px;
+	}
+		._prompt{
+		color: #dc4c4c;white-space: nowrap;font-size: 12px;
+	}
+		.caseModal  li{
+			max-height: 200px;
+			overflow-y:auto;
+			overflow-x: hidden;
+			display: inherit;
+		}
+		.caseModal  table,.caseModal tbody{
+			margin-left: 0;
+		}
+	   	.caseModal  li::-webkit-scrollbar {/*滚动条整体样式*/
+            width: 8px;     /*高宽分别对应横竖滚动条的尺寸*/
+            height: 10px;
+        }
+       	.caseModal  li::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+            border-radius: 5px;
+          /*  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);*/
+            background:#d8d8d8;
+        }
+       	.caseModal  li::-webkit-scrollbar-track {/*滚动条里面轨道*/
+            /*-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);*/
+            /*border-radius: 5px;*/
+            background:#F6F6F6;
+        }
+</style>
+<link href="/Public/css/litebox.css" rel="stylesheet" type="text/css">
+<script src="/Public/js/images-loaded.min.js" type="text/javascript"></script>
+<script src="/Public/js/litebox.min.js" type="text/javascript"></script>
+<script>
+	$(function() {
+		$(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+		$(window).resize(function() {
+			$(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+		})
+	})
+</script>
+<input type="hidden" id='idss' value="{$ids}" />
+<div class="wrapper wrapper-content animated fadeIn col-md-12">
+	<!--	<include file="Public:alert" />-->
+	<form class="form-horizontal" id="form" role="form" action="{:U('case/editdata')}" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="cid" value="{$cid}">
+		<div class="ibox-content add_body" id="add_body" style="">
+			<div class="row">
+				<div class="col-md-12 add_body" style="padding-right: 0px;">
+					<div class="full-height-scroll">
+						<div class="row">
+							<div class="col-md-12 add_body_title">
+								<div class="all-inline">
+									<span class="sq-tag"></span>
+									<div class="text-tag">
+										<span>案例基础信息</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-11 add_body_form">
+								<div class="form-group col-md-6">
+									<label class="col-md-4 control-label">姓名：</label>
+									<div class="col-md-6">
+										<input class="form-control" type="text" id="names" name="names" value="{$casedata.names}" aria-required="true" aria-invalid="true">
+										<!--                                        <select class="form-control required"  id="names" name="names" value="">
+                                            <option value=''>--请选择--</option>
+                                            <volist name="customer" id="vo" key="key">
+                                                <option value="{$vo['name']}"  <?php if($casedata['names']==$vo['name']) echo 'selected'; ?> >
+                                                        {$vo['name']}
+                                            </option>
+                                        </volist>-->
+										<!--</select>-->
+										<!--<input class="form-control required" type="text" id="names" name="names" value="{$casedata.names}" aria-required="true" aria-invalid="true">-->
+									</div>
+								</div>
+								<div class="form-group col-md-6">
+									<label class="col-md-4 control-label">录入大学：</label>
+									<div class="col-md-6">
+										<input class="form-control" type="text" id="receive_college" name="receive_college" value="{$casedata.receive_college}" aria-required="true" aria-invalid="true">
+									</div>
+								</div>
+								<!--项目分类-->
+								<div class="form-group col-md-6">
+									<label class="col-md-4 control-label">项目分类：</label>
+									<div class="col-md-6">
+										<select class="form-control" id="programcate" name="programcate" value="">
+											<option value=''>--请选择--</option>
+											<volist name="programcate" id="vo" key="key">
+												<option value="{$vo['name']}" <?php if($casedata[ 'programcate']==$vo[ 'name'])echo 'selected'; ?> > {$vo['name']}
+												</option>
+											</volist>
+										</select>
+									</div>
+								</div>
+								<!--专业分类-->
+								<div class="form-group col-md-6">
+									<label class="col-md-4 control-label">专业分类：</label>
+									<div class="col-md-6">
+										<select class="form-control" id="majorcate" name="majorcate" value="">
+											<option value=''>--请选择--</option>
+											<volist name="majorcate" id="vo" key="key">
+												<option value="{$vo['name']}" <?php if($casedata[ 'majorcate']==$vo[ 'name'])echo 'selected'; ?> > {$vo['name']}
+												</option>
+											</volist>
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group col-md-6">
+									<label class="col-md-4 control-label">录取专业：</label>
+									<div class="col-md-6">
+										<input class="form-control" type="text" id="receive_major" name="receive_major" value="{$casedata.receive_major}" aria-required="true" aria-invalid="true">
+									</div>
+								</div>
+								<div class="form-group col-md-6">
+									<label class="col-md-4 control-label">本科大学：</label>
+									<div class="col-md-6">
+										<input class="form-control" type="text" id="Undergraduate_college" name="undergraduate_college" value="{$casedata.undergraduate_college}" aria-required="true" aria-invalid="true">
+									</div>
+								</div>
+								<div class="form-group col-md-6">
+									<label class="col-md-4 control-label">本科专业：</label>
+									<div class="col-md-6 col-md-6">
+										<input class="form-control" type="text" id="Undergraduate_major" name="undergraduate_major" value="{$casedata.undergraduate_major}" aria-required="true" aria-invalid="true">
+									</div>
+								</div>
+								<div class="form-group cluecateBox col-md-6">
+									<label class="col-md-4 control-label">学校级别：</label>
+									<div class="col-md-6 ">
+										<select class="form-control" id="college_lev" name="college_lev" value="">
+											<option value=''>--请选择--</option>
+											<option value="S" <?php if($casedata[ 'college_lev']=='S' )echo "selected"; ?> >S</option>
+											<option value="A" <?php if($casedata[ 'college_lev']=='A' )echo "selected"; ?> >A</option>
+											<option value="B" <?php if($casedata[ 'college_lev']=='B' )echo "selected"; ?> >B</option>
+											<option value="C" <?php if($casedata[ 'college_lev']=='C' )echo "selected"; ?> >C</option>
+											<option value="Z" <?php if($casedata[ 'college_lev']=='Z' )echo "selected"; ?> >Z</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group cluecateBox col-md-6">
+									<label class="col-md-4 control-label">日语等级：</label>
+									<div class="col-md-6">
+										<select class="form-control" id="japan_language" name="japan_language" value="">
+											<option value=''>--请选择--</option>
+											<option value="N1" <?php if($casedata[ 'japan_language']=='N1' )echo "selected"; ?> >N1</option>
+											<option value="N2" <?php if($casedata[ 'japan_language']=='N2' )echo "selected"; ?> >N2</option>
+											<option value="N3" <?php if($casedata[ 'japan_language']=='N3' )echo "selected"; ?> >N3</option>
+											<option value="N4" <?php if($casedata[ 'japan_language']=='N4' )echo "selected"; ?> >N4</option>
+											<option value="N5" <?php if($casedata[ 'japan_language']=='N5' )echo "selected"; ?> >N5</option>
+											<option value="0基础" <?php if($casedata[ 'japan_language']=='0基础' )echo "selected"; ?> >0基础</option>
+											<!--	<div class="form-group cluecateBox">
+-->
+										</select>
+									</div>
+								</div>
+								<!--                                <div class="form-group cluecateBox">
+                                                                <label class="col-md-4 control-label">英语等级：</label>
+                                                                <div class="col-md-6">
+                                                                    <select class="form-control required"  id="eng_language" name="eng_language" value="">
+                                                                        <option value=''>--请选择--</option>
+                                                                        <option value="100分以上" <?php if($casedata['eng_language']=='100分以上')echo "selected"; ?> >100分以上</option>
+                                                                        <option value="80-90" <?php if($casedata['eng_language']=='80-90')echo "selected"; ?> >80-90</option>
+                                                                        <option value="70-80" <?php if($casedata['eng_language']=='70-80')echo "selected"; ?> >70-80</option>
+                                                                        <option value="70分以下" <?php if($casedata['eng_language']=='70分以下')echo "selected"; ?> >70分以下</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>-->
+								<div class="form-group col-md-6">
+									<label class="col-md-4 control-label">英语等级：</label>
+									<div class="col-md-6">
+										<input class="form-control" type="text" id="eng_language" name="eng_language" value="{$casedata.eng_language}" aria-required="true" aria-invalid="true">
+									</div>
+								</div>
+
+								<!-- 分类选择 -->
+								<div class="form-group cluecateBox col-md-6">
+									<label class="col-md-4 control-label">录入年份：</label>
+									<div class="col-md-6">
+										<select class="form-control" id="receive_year" name="receive_year" value="">
+											<option value=''>--请选择--</option>
+											<for start="2010" end="2020">
+												<option value="{$i}" <?php if($casedata[ 'receive_year']==$i)echo "selected"; ?> > {$i}
+												</option>
+											</for>
+										</select>
+									</div>
+								</div>
+								<!--联系人-->
+								<div class="form-group col-md-6">
+									<label class="col-md-4 control-label">签约产品：</label>
+									<div class="col-md-6">
+										<select class="form-control" id="contract_product" name="contract_product" value="">
+											<option value=''>--请选择--</option>
+											<volist name="productdata" id="vo" key="key">
+												<option value="{$vo['name']}" <?php if($casedata[ 'contract_product']==$vo[ 'name']){echo 'selected';} ?> > {$vo['name']}
+												</option>
+											</volist>
+										</select>
+									</div>
+								</div>
+
+								<!-- 814 change lqs -->
+								<div class="form-group col-md-8">
+									<label class="col-md-3 control-label">学生学历：</label>
+									<div class="col-md-5">
+										<select class="form-control" id="education" name="education" value="" style="width: 88%">
+											<option value='' >--请选择--</option>
+											<option value="初中"  <?php if($casedata[ 'education']=='初中' )echo "selected"; ?> >初中</option>
+											<option value="高中"  <?php if($casedata[ 'education']=='高中' )echo "selected"; ?> >高中</option>
+											<option value="大学/大专在读"  <?php if($casedata[ 'education']=='大学/大专在读' )echo "selected"; ?> >大学/大专在读</option>
+											<option value="毕业工作"  <?php if($casedata[ 'education']=='毕业工作' )echo "selected"; ?> >毕业工作</option>
+										</select>
+									</div>
+								</div>
+								<!-- 814 end -->
+
+								<div class="form-group col-md-6">
+									<label class="col-md-4 control-label">案例特点：</label>
+									<div class="col-md-6">
+										<textarea rows="4" class="form-control " style="resize: none;" id="character" name="character">{$casedata.character}</textarea>
+
+									</div>
+								</div>
+								<div class="form-group col-md-6">
+									<label class="col-md-4 control-label">备注：</label>
+									<div class="col-md-6">
+										<textarea rows="4" class="form-control " style="resize: none;" id="remark" name="remark">{$casedata.remark}</textarea>
+									</div>
+								</div>
+
+							</div>
+							<div class="col-md-11">
+								<div class="table caseModal form-group col-md-12" style="padding-top: 20px;">
+									<ul class="col-md-6">
+										<li>
+											<div>
+												<span class="td_title">研究计划书：<br /><span class="_prompt">(*PS个人陈述/SOP/ESSAY)</span></span>
+												<span class="add_file" data-flag="1">上传研究计划书</span>
+											</div>
+											<table v-show="arry[1]" id="table1" class="table product-table row ">
+												<tr>
+													<td>附件名称</td>
+													<td>大小</td>
+													<td>上传人</td>
+													<td>上传时间</td>
+													<td>操作</td>
+												</tr>
+												<!-- 文件列表 -->
+												<tr v-for="n in arry[1]">
+													<td width="40%">
+														<!--<a :href="n.no_p_file_path" class="litebox_file" data-litebox-group="group-1">{{n.name}}</a>-->
+														<a v-if="n.no_p_file_path.split('.')[1] == 'docx' " :href="n.no_p_file_path" >{{n.name}}</a>
+														<a v-else-if="n.no_p_file_path.split('.')[1] == 'xlsx'" :href="n.no_p_file_path"  >{{n.name}}</a>
+														<a v-else-if="n.no_p_file_path.split('.')[1] == 'doc' " :href="n.no_p_file_path" >{{n.name}}</a>
+														<a v-else-if="n.no_p_file_path.split('.')[1] == 'xls' " :href="n.no_p_file_path" >{{n.name}}</a>
+														<a v-else :href="n.no_p_file_path"  class="litebox_file" data-litebox-group="group-1">{{n.name}}</a>
+													</td>
+													<td>{{parseInt(n.size/1024)}}kb</td>
+													<td>{{n.from_pp}}</td>
+													<td>{{n.create_time}}</td>
+													<td class="tdleft">
+														<a href="javascript:void(0)" :data_fildid="n.file_id" class="file_delete">删除</a>
+													</td>
+												</tr>
+
+											</table>
+											<div v-show="!arry[1]" class="nothing" style="text-align:center;color:#E4E4E4;font-size:22px;font-weight:700;padding-top:15px;">
+												<img src="/Public/img/exclamation_mark.png"  style="margin-top:-3px;">&nbsp;&nbsp;暂无数据
+											</div>
+										</li>
+
+										<li>
+											<div>
+												<span class="td_title">学员照片：<br /><span class="_prompt">(*建议手拿录取证书与讲师合影或正装照)</span></span>
+												<span class="add_file" data-flag="3">上传图片</span>
+											</div>
+											<table v-show="arry[3]" data_ccc = "wwwww" class="table product-table" style="width: 100%; ">
+												<tr>
+													<td>附件名称</td>
+													<td>大小</td>
+													<td>上传人</td>
+													<td>上传时间</td>
+													<td>操作</td>
+												</tr>
+
+												<tr v-for="n in arry[3]">
+													<td width="40%">
+														<!--<a :href="n.no_p_file_path" class="litebox_file" data-litebox-group="group-3">{{n.name}}</a>-->
+														
+														<a v-if="n.no_p_file_path.split('.')[1] == 'docx'" :href="n.no_p_file_path"  >{{n.name}}</a>
+														<a v-else-if="n.no_p_file_path.split('.')[1] == 'xlsx'" :href="n.no_p_file_path"  >{{n.name}}</a>
+														<a v-else-if="n.no_p_file_path.split('.')[1] == 'doc' " :href="n.no_p_file_path" >{{n.name}}</a>
+														<a v-else-if="n.no_p_file_path.split('.')[1] == 'xls' " :href="n.no_p_file_path" >{{n.name}}</a>
+														<a v-else :href="n.no_p_file_path"  class="litebox_file" data-litebox-group="group-3">{{n.name}}</a>
+													</td>
+													<td>{{parseInt(n.size/1024)}}kb</td>
+													<td>{{n.from_pp}}</td>
+													<td>{{n.create_time}}</td>
+													<td class="tdleft">
+														<a href="javascript:void(0)" :data_fildid="n.file_id" class="file_delete">删除</a>
+													</td>
+												</tr>
+
+											</table>
+											<div v-show="!arry[3]" class="nothing" style="text-align:center;color:#E4E4E4;font-size:22px;font-weight:700;padding-top:15px;">
+												<img src="/Public/img/exclamation_mark.png"  style="margin-top:-3px;">&nbsp;&nbsp;暂无数据
+											</div>
+										</li>
+
+									</ul>
+									<ul class="col-md-6">
+										<li>
+											<div>
+												<span class="td_title">上传offer：<br /><span class="_prompt">(*注意添加小莺水印)</span></span>
+												<span class="add_file" data-flag="2">上传offer</span>
+											</div>
+											<table v-show="arry[2]" class="table product-table" style="width: 100%;">
+												<tr>
+													<td>附件名称</td>
+													<td>大小</td>
+													<td>上传人</td>
+													<td>上传时间</td>
+													<td>操作</td>
+												</tr>
+												<tr v-for="n in arry[2]">
+													<td width="40%">
+														<!--<a :href="n.no_p_file_path" class="litebox_file" data-litebox-group="group-2">{{n.name}}</a>-->
+														
+														<a v-if="n.no_p_file_path.split('.')[1] == 'docx'" :href="n.no_p_file_path"  >{{n.name}}</a>
+														<a v-else-if="n.no_p_file_path.split('.')[1] == 'xlsx'" :href="n.no_p_file_path"  >{{n.name}}</a>
+														<a v-else-if="n.no_p_file_path.split('.')[1] == 'doc' " :href="n.no_p_file_path" >{{n.name}}</a>
+														<a v-else-if="n.no_p_file_path.split('.')[1] == 'xls' " :href="n.no_p_file_path" >{{n.name}}</a>
+														<a v-else :href="n.no_p_file_path"  class="litebox_file" data-litebox-group="group-2">{{n.name}}</a>
+													</td>
+													<td>{{parseInt(n.size/1024)}}kb</td>
+													<td>{{n.from_pp}}</td>
+													<td>{{n.create_time}}</td>
+													<td class="tdleft">
+														<a href="javascript:void(0)" :data_fildid="n.file_id" class="file_delete">删除</a>
+													</td>
+												</tr>
+
+											</table>
+											<div v-show="!arry[2]"class="nothing" style="text-align:center;color:#E4E4E4;font-size:22px;font-weight:700;padding-top:15px;">
+												<img src="/Public/img/exclamation_mark.png"  style="margin-top:-3px;">&nbsp;&nbsp;暂无数据
+											</div>
+										</li>
+										<li>
+											<div>
+												<span class="td_title">其他文件：<br /><span class="_prompt">(*简历/签约协议纸质扫描件/报名表/收据等)</span></span>
+												<span class="add_file" data-flag="4">其他文件上传</span>
+											</div>
+											<table v-show="arry[4]" class="table product-table" style="width: 100%;">
+												<tr>
+													<td>附件名称</td>
+													<td>大小</td>
+													<td>上传人</td>
+													<td>上传时间</td>
+													<td>操作</td>
+												</tr>
+												<tr v-for="n in arry[4]">
+													<td width="40%">
+														<a v-if="n.no_p_file_path.split('.')[1] == 'docx'" :href="n.no_p_file_path"  >{{n.name}}</a>
+														<a v-else-if="n.no_p_file_path.split('.')[1] == 'xlsx'" :href="n.no_p_file_path"  >{{n.name}}</a>
+														<a v-else-if="n.no_p_file_path.split('.')[1] == 'doc' " :href="n.no_p_file_path" >{{n.name}}</a>
+														<a v-else-if="n.no_p_file_path.split('.')[1] == 'xls' " :href="n.no_p_file_path" >{{n.name}}</a>
+														<a v-else :href="n.no_p_file_path"  class="litebox_file" data-litebox-group="group-4">{{n.name}}</a>
+													</td>
+													<td>{{parseInt(n.size/1024)}}kb</td>
+													<td>{{n.from_pp}}</td>
+													<td>{{n.create_time}}</td>
+													<td class="tdleft">
+														<a href="javascript:void(0)" :data_fildid="n.file_id" class="file_delete">删除</a>
+													</td>
+												</tr>
+
+											</table>
+											<div v-show="!arry[4]"  class="nothing" style="text-align:center;color:#E4E4E4;font-size:22px;font-weight:700;padding-top:15px;">
+												<img src="/Public/img/exclamation_mark.png"  style="margin-top:-3px;">&nbsp;&nbsp;暂无数据
+											</div>
+										</li>
+									</ul>
+
+									<!--<tr>
+											<tr>
+												<td class="td_title">其他附件上传：</td>
+												<td class="add_file" data-flag="4"> 上传</td>
+
+											</tr>
+											<td>
+												<table v-if="arry[4]" class="table product-table" style="width: 100%;">
+													<tr>
+														<td>附件名称</td>
+														<td>操作</td>
+													</tr>
+
+													<tr v-for="n in arry[4]">
+														<td width="60%">
+															<a :href="n.file_path" class="litebox_file">{{n.name}}</a>
+														</td>
+														<td class="tdleft">
+															<a href="javascript:void(0)" :data_fildid="n.file_id" class="file_delete">删除</a>
+														</td>
+													</tr>
+												</table>
+												<div v-else style="text-align:center;color:#E4E4E4;font-size:22px;font-weight:700;padding-top:15px;">
+													<img src="/Public/img/exclamation_mark.png" style="margin-top:-3px;">&nbsp;&nbsp;暂无数据
+												</div>
+											</td>
+										</tr>-->
+								</div>
+								<div class="" style="display:none" id="detail-dialog-file" title="添加文件">
+									<div class="spiner-example">
+										<div class="sk-spinner sk-spinner-three-bounce">
+											<div class="sk-bounce1"></div>
+											<div class="sk-bounce2"></div>
+											<div class="sk-bounce3"></div>
+										</div>
+									</div>
+								</div>
+
+								<input type="hidden" value="" id="case_1" name="jihua" />
+								<input type="hidden" value="" id="case_2" name="offer" />
+								<input type="hidden" value="" id="case_3" name="zp" />
+								<input type="hidden" value="" id="case_4" name="other" />
+								
+								<input type="hidden" value="" id="case_01" />
+								<input type="hidden" value="" id="case_02"  />
+								<input type="hidden" value="" id="case_03"  />
+								<input type="hidden" value="" id="case_04"  />
+								<input type="hidden" id="allowExts" value="pdf,doc,ppt,txt,xls,zip,docx,rar,pptx,xlsx,jpg,jpeg,png,gif">
+								<script>
+									$(function() {
+
+										var arry = ""
+										var _this = ""
+										var _index;
+										$("body").on("click", ".add_file", function() {
+											_index = $(this).attr("data-flag");
+											arry = "#case_" + $(this).attr("data-flag")
+											arry_ = "#case_0" + $(this).attr("data-flag")
+											$(arry_).val("")
+											_this = $(this).parent().parent().find("table")
+										})
+
+										$("body").on("click", ".ui-button-text-only", function() {
+											var files = $(arry_).val()
+											_this.show()
+											//												alert(files)
+											$.ajax({
+												type: "get",
+												url: "/index.php?m=case&a=getfile&file_id=" + files,
+												success: function(data) {
+//																										console.log(data)
+													//			con										caseModal.arry[_index] = data;
+													console.log('xxxx', _this.find("tr").length)
+													for(var i = 0; i < data.length; i++) {
+														
+														if(data[i].no_p_file_path.split(".")[1] == "docx"){
+															var _str = "<a  href=" +data[i].no_p_file_path + " title='点击查看大图'>" + data[i].name + "</a>" 
+														}else if(data[i].no_p_file_path.split(".")[1] == "doc"){
+															var _str = "<a  href=" +data[i].no_p_file_path + " title='点击查看大图'>" + data[i].name + "</a>" 
+														}
+														else if(data[i].no_p_file_path.split(".")[1] == "xls"){
+															var _str = "<a  href=" +data[i].no_p_file_path + " title='点击查看大图'>" + data[i].name + "</a>" 
+														}else if(data[i].no_p_file_path.split(".")[1] == "xlsx"){
+															var _str = "<a  href=" +data[i].no_p_file_path + " title='点击查看大图' >" + data[i].name + "</a>" 
+														}else{
+															var _str = "<a class='litebox_file'  href=" +data[i].no_p_file_path + " title='点击查看大图' data-litebox-group='group-" + _index + "'>" + data[i].name + "</a>" 
+														}
+//														console.log(_str)
+														
+														_this.append(
+															"<tr>" +
+															"<td>" +_str+
+//															"<a href='javascript:;' file='" + data[i].file_path + "' filename='" + data[i].name + "' onclick='filedown(this);'>" + data[i].name + "</a>" +
+															"</td>" +
+
+															"<td>" + parseInt(data[i].size / 1024) + "kb</td>" +
+															"<td>" +
+															"<a class='role_info'style='color: #000000;' rel='file.owner.role_id' 'href='javascript:void(0)'> <?php echo $_SESSION['full_name']; ?></a>" +
+															"</td>" +
+															"<td>" + data[i].cerate_time + "</td>" +
+															"<td class='tdleft'>" +
+															"<a href='javascript:void(0);' class='file_delete'data_fildid ='" + data[i].file_id + "'rel='file.file_id'>删除</a>" +
+															"</td>" +
+															"</tr>"
+
+														)
+													}
+													
+													$(".nothing").hide()
+
+													$('.litebox_file').liteBox({
+														revealSpeed:  400,
+														background:   'rgba(0,0,0,.8)',
+														overlayClose:  true,
+														escKey:  true,
+														navKey:  true,
+														errorMessage:   '图片加载失败.'
+													});
+													
+													
+
+												}
+
+											});
+										})
+
+										$(document).on('click', '.add_file', function() {
+
+											var _type = $(this).attr("data-flag");
+											$('#detail-dialog-file').dialog('open');
+											$('#detail-dialog-file').load('/index.php?m=file&a=addcasefile&id=' + _type);
+
+										});
+
+										$("#detail-dialog-file").dialog({
+											autoOpen: false,
+											modal: true,
+											width: 800,
+											maxHeight: 400,
+											position: ["center", 200],
+											buttons: {
+												"确认": function() {
+													//												window.location.reload();
+													$(this).dialog("close");
+												},
+												"取消": function() {
+													$(this).dialog("close");
+												}
+											}
+										});
+
+										$('.litebox_file').liteBox({
+											revealSpeed:  400,
+											background:   'rgba(0,0,0,.8)',
+											overlayClose:  true,
+											escKey:  true,
+											navKey:  true,
+											errorMessage:   '图片加载失败.'
+										});
+										$(".customerModal select.form-control").addClass("edit");
+
+										window.setTimeout(function() {
+											$(".dv_textarea.textarea_edit").txtaAutoHeight();
+										}, 1000)
+
+										$("#main_word").change(function() {
+											var myfile = document.getElementById('main_word');
+											$("#main_word_name").text(myfile.files[0].name)
+										});
+
+										$.fn.extend({
+											txtaAutoHeight: function() {
+												return this.each(function() {
+													var $this = $(this);
+													if(!$this.attr('initAttrH')) {
+														$this.attr('initAttrH', $this.outerHeight());
+													}
+													setAutoHeight(this).on('input', function() {
+														setAutoHeight(this);
+													});
+												});
+
+												function setAutoHeight(elem) {
+													var $obj = $(elem);
+													return $obj.css({
+														height: $obj.attr('initAttrH'),
+														'overflow-y': 'hidden'
+													}).height(elem.scrollHeight);
+												}
+											}
+										});
+
+										$("body").on("click", ".file_delete", function() {
+											if($(this).parent().parent().siblings().length < 2) {
+												$(this).parent().parent().parent().parent().hide()
+											}
+											$(this).parent().parent().remove()
+											$.ajax({
+												url: "/index.php?m=case&a=delfile&file_id=" + $(this).attr("data_fildid") + "&caseid=" + $("#idss").val(),
+												methods: "get",
+												success: function(res) {
+													console.log(res);
+												}
+											})
+										})
+										var caseModal = new Vue({
+											el: '.caseModal',
+											data: {
+												data: {},
+												arry: {}
+											},
+											methods: {
+												getDetail: function(id) {
+													if(!id)
+														return;
+													var _this = this;
+													$.ajax({
+														url: "/case/detail?id=" + id,
+														dataType: 'JSON',
+														type: 'GET',
+														success: function(res) {
+															
+															//                  	console.log(res.files)
+															if(res) {
+																var _res = res;
+																for(var key in _res) {
+
+																	//                          	console.log(key)
+																	if(key == 'files') {
+																		console.log(_res["files"])
+																		_this.arry = _res["files"];
+																		//                              	for (var i = 0; i < _res["files"].length; i++) {
+																		//                              		_res["files"][i]
+																		//                              	}
+
+																		//                              	console.log()
+																		//                                  _res["update_time"] = timestampToFormat(_res["update_time"], 'yyyy-MM-dd hh:mm:ss');
+																	}
+																	//                              
+
+																	//                                    if (key == 'id') {
+																	//                                        for (var i = 0; i < res.catedata.length; i++) {
+																	//                                            if (res.catedata[i]["cooperation_cate_id"] == _res[key]) {
+																	//                                                _res["cooperation_cate_name"] = res.catedata[i].cooperation_cate_name;
+																	//                                            }
+																	//                                        }
+																	//                                    }
+																	//                                    if (_res[key].length == 0) {
+																	//                                        _res[key] = "<span class='nodata'>暂无数据</span>"
+																	//                                    }
+																}
+																//																for (var i = 0; i < _this.arry.length; i++) {
+																//																	console.log(_this.arry[i])
+																//																	if(arry[i]){
+																//																		$(".caseModal li").eq(i).find("table").show()
+																//																	}
+																//																	
+																//																}
+																console.log(_this.arry)
+																_this.data = _res;
+//																format();
+																_this.$nextTick(function() {
+																	$('.litebox_file').liteBox({
+																		revealSpeed:  400,
+																		background:   'rgba(0,0,0,.8)',
+																		overlayClose:  true,
+																		escKey:  true,
+																		navKey:  true,
+																		errorMessage:   '图片加载失败.'
+																	});
+
+																	$(".oDownLoad").click(function() {
+																		var src = $(this).attr("file")
+																		var $a = document.createElement('a');
+																		$a.setAttribute("href", src);
+																		$a.setAttribute("download", "");
+
+																		var evObj = document.createEvent('MouseEvents');
+																		evObj.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, true, false, 0, null);
+																		$a.dispatchEvent(evObj);
+																	})
+																	
+																	
+																});
+															}
+															
+															
+														},
+														error: function(e) {
+															console.log(e);
+															alert('网络异常！');
+														}
+													});
+													
+//													format()
+												}
+											},
+											mounted: function() {
+												var _this = this;
+												//关闭浮层
+												$(".caseModal-close").click(function() {
+													$(".caseModal").modal('hide');
+												})
+											}
+										})
+										var idss = $('#idss').val()
+										caseModal.getDetail(idss);
+										
+//										format()
+
+									});
+								</script>
+								<!--<div class="form-group">
+                        <label class="col-md-4 control-label">照片：</label>
+                        <div class="col-md-4">
+                            <img id="main_pic_prev" class="thumb80 litebox_file" src="{$casedata.pic}" href="{$casedata.pic}" title="点击查看大图" data-litebox-group="group-1" />
+                        </div>
+                        <div class="col-md-4">
+                            <div class="btn btn-success fileinput-button">
+                                <span>选择图片</span>
+                                <input type="file" name="main_pic" id="main_pic"/>
+                            </div>
+                        </div>
+                    </div>-->
+								<!--offer-->
+								<!-- <if condition="$wordext=='jpg' || $wordext=='jpeg' || $wordext=='png' || $wordext=='gif' ">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">附件offer：</label>
+                            <div class="col-md-4">
+                                <img class="thumb80 litebox_file" src="{$casedata.words}" href="{$casedata.words}" title="点击查看大图" data-litebox-group="group-2" style="width: 120px; height: 120px;  border: 1px dashed #d3d3d6;" />
+                            </div>
+
+                            <div class="btn btn-success fileinput-button">
+                                <span>上传Offer</span>
+                                <input  type="file" name="main_word" id="main_word" value="{$casedata.wname}" />
+                            </div>
+                        </div>
+                        <else />
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">附件offer：</label>
+                            <span class="col-md-4">
+                            {$casedata.wname}
+                            </span>
+
+                            <div class="btn btn-success fileinput-button">
+                                <span>上传Offer</span>
+                                <input  type="file" name="main_word" id="main_word" value="{$casedata.wname}" />
+                            </div>
+                        </div>
+                    </if> -->
+								<!--<div class="form-group">
+                        <label class="col-md-4 control-label">上传offer：</label>
+                        <span class="col-md-4">
+                            <span id="main_word_name">{$casedata.wname}</span>
+                        </span>
+
+                        <div class="btn btn-success fileinput-button">
+                            <span>上传Offer</span>
+                            <input  type="file" name="main_word" id="main_word" value="{$casedata.wname}" />
+                        </div>
+                        <script>
+                            $("#main_word").change(function(){
+                                var myfile = document.getElementById('main_word');
+                                    $("#main_word_name").text(myfile.files[0].name)
+                            })
+                        </script>
+                        <input class="col-md-4" type="file" name="main_word" id="main_word" value="{$casedata.pname}" style="color: #fff;" /> 
+                    </div>-->
+								<!--                        <div class="form-group">
+                                                <label class="col-md-4 control-label">附件offer：</label>
+                                                <input type="file" name="main_word" id="main_word" value='1'/>
+                                            </div>-->
+								<!--数据录入人-->
+								<!--                                <div class="form-group">
+                                                        <label class="col-md-4 control-label">数据录入人：</label>
+                                                        <div class="col-md-6">
+                                                            <input class="form-control required error" type="text" id="contacts_name" name="coop_addr" value="" aria-required="true" aria-invalid="true">     
+                                                        </div>
+                                                    </div>-->
+
+								<script>
+									var CC = new Vue({
+										el: '.cluecateBox',
+										data: {
+											lists: {}
+										},
+										methods: {
+											refreshCluecate: function() {
+												var id = $('#block').val(),
+													that = this;
+												$.ajax({
+													url: "{:U('clueblock/search_cate')}",
+													data: {
+														block: id
+													},
+													dataType: 'JSON',
+													type: 'GET',
+													success: function(res) {
+														that.lists = res.data;
+													}
+												});
+											}
+										}
+									});
+
+									function refreshCluecate() {
+										CC.refreshCluecate();
+									}
+
+									refreshCluecate();
+								</script>
+
+								<!--<volist name="field_list['main']" id="vo" key="key">
+									<div class="form-group">
+										<label class="col-md-4 control-label">{$vo.name}：</label>
+										<if condition="$vo['form_type'] == 'textarea'">
+											<if condition="$vo['tip_start'] eq 1">
+												<div class="col-md-6">
+													<textarea class="form-control" rows="5" name="{$vo.field}"></textarea>
+												</div>
+												<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+												<div class="col-md-8">
+													<textarea class="form-control" rows="5" name="{$vo.field}"></textarea>
+												</div>
+											</if>
+											<elseif condition="$vo['form_type'] == 'address'" />
+											<if condition="$vo['tip_start'] eq 1">
+												<div class="col-md-7">
+													{$vo.html}
+												</div>
+												<div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+												<div class="col-md-8">
+													{$vo.html}
+												</div>
+											</if>
+											<elseif condition="$vo['form_type'] == 'box'" />
+											<div class="col-md-6">
+												{$vo.html}
+											</div>
+											<if condition="$vo['tip_start'] eq 1">
+												<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+												<div class="col-md-2"></div>
+											</if>
+											<elseif condition="$vo['field'] == 'name'" />
+											<div class="col-md-6">
+												<input class="form-control required" id="name" name="name" onkeyup="checkinfo(name)" placeholder="" type="text" />
+											</div>
+											<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+											<else/>
+											<div class="col-md-6">
+												{$vo.html}
+											</div>
+											<if condition="$vo['tip_start'] eq 1">
+												<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+												<div class="col-md-2"></div>
+											</if>
+										</if>
+									</div>
+								</volist>-->
+							</div>
+
+							<!--222xxx-->
+							<!--                        <div class="col-md-12 add_body_title">
+                                                                        <div class="all-inline">
+                                                                                <span class="sq-tag"></span>
+                                                                                <div class="text-tag">
+                                                                                        <span>附加信息</span>
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="col-md-11 add_body_form">
+                                                                        <volist name="field_list['data']" id="vo" key="key">
+                                                                                <div class="form-group">
+                                                                                        <label class="col-md-4 control-label">{$vo.name}：</label>
+                                                                                        <if condition="$vo['form_type'] == 'address' || $vo['form_type'] == 'box' || $vo['form_type'] == 'textarea'">
+                                                                                                <div class="col-md-7">
+                                                                                                        {$vo.html}
+                                                                                                </div>
+                                                                                                <if condition = "$vo['tip_start'] eq 1">
+                                                                                                        <div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                                                                <else/>
+                                                                                                        <div class="col-md-1"></div>
+                                                                                                </if>
+                                                                                        <else/>
+                                                                                                <div class="col-md-6">
+                                                                                                        {$vo.html}
+                                                                                                </div>
+                                                                                                <if condition = "$vo['tip_start'] eq 1">
+                                                                                                        <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                                                                                <else/>
+                                                                                                        <div class="col-md-2"></div>
+                                                                                                </if>
+                                                                                        </if>
+                                                                                </div>
+                                                                        </volist>
+                                                                </div>-->
+							<div class="col-md-1 pull-right">
+								<!-- <div style="height: 100%; border-right: 1px dashed gray;">&nbsp;sadf</div> -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="tfoot_div" class="clearfix">
+			<div class="clearfix" id="tfoot_page">
+				<div class="ibox-content" style="border-top: none;">
+					<div class="col-sm-offset-2"><button type="submit" id="save_submit" class="btn btn-primary">修改案例</button></div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="" style="display:none;" id="dialog-validate" title="{:L('VALIDATE_COMPANY_RESULT')}">
+	<div id="search_leads_content"></div>
+	<div id="search_customer_content"></div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/js/uploadPreview.js"></script>
+<script type="text/javascript">
+	//初始化上传图片
+	//	$("body").on('click', '#main_pic', function() {
+	//		var selector = $(this).attr('id');
+	//		$("#" + selector).uploadPreview({
+	//			Img: selector + "_prev",
+	//			Width: 120,
+	//			Height: 120
+	//		});
+	//	});
+	$(document).ready(function() {
+		$('#save_submit').prop('disabled', false);
+		/*form表单验证*/
+		$("#form").validate({
+			submitHandler: function(form) {
+				$('#save_submit').click(function() {
+					$('#save_submit').prop('disabled', true);
+				});
+				form.submit();
+			}
+		});
+	});
+	//                                             $("body").on('click', '#main_word', function () {
+	//                                                var selectors = $(this).attr('id');
+	////                                                alert(selectors)
+	//                                                $("#" + selectors).uploadPreview({Img: selectors + "_prev", Width: 120, Height: 120});
+	//                                            });
+</script>
+<script type="text/javascript">
+	function checkinfo(param) {
+		var field_value = $('#' + param).val();
+		if(field_value) {
+			$.post('{:U("leads/checkinfo")}', {
+					field_value: field_value,
+					field_name: param,
+				},
+				function(data) {
+					if(data.status == 1) {
+						$('#' + param + '-error').remove('');
+						$('#' + param).after('<label id="' + param + '-error" class="error" for="source"><i class="fa fa-times-circle"></i></label>');
+						$('#' + param + '-error').html('<i class="fa fa-times-circle"></i>' + data.data);
+					} else {
+						$('#' + param + '-error').remove('');
+					}
+				},
+				'json');
+		}
+	}
+	$(document).ready(function() {
+		$('#save_submit').prop('disabled', false);
+		/*form表单验证*/
+		$("#form").validate({
+			submitHandler: function(form) {
+				$('#save_submit').click(function() {
+					$('#save_submit').prop('disabled', true);
+				});
+				form.submit();
+			}
+		});
+		//		$('.litebox_file').liteBox({
+		//			revealSpeed:  400,
+		//			background:   'rgba(0,0,0,.8)',
+		//			overlayClose:  true,
+		//			escKey:  true,
+		//			navKey:  true,
+		//			errorMessage:   '图片加载失败.'
+		//		});
+	});
+	$("[data-type='nummber']").keyup(function() {
+		if(isNaN($(this).val())) {
+			$(this).val($(this).val().replace(/\D/g, ''))
+		}
+	});
+	//    $("#dialog-validate").dialog({
+	//        autoOpen: false,
+	//        modal: true,
+	//        width: 400,
+	//        maxHeight: 400,
+	//        buttons: {
+	//            "确定": function () {
+	//                $(this).dialog("close");
+	//            }
+	//        },
+	//        position: ["center", 100]
+	//    });
+	//    $(function () {
+	//        $('#owner_name').click(
+	//                function () {
+	//                    $('#dialog-role-list').dialog('open');
+	//                    $('#dialog-role-list').load("{:U('user/listDialog')}");
+	//                }
+	//        );
+	//        $('#name').blur(
+	//                function () {
+	//                    name = $('#name').val();
+	//                    if (name != '') {
+	//                        $.post('{:U("leads/check")}',
+	//                                {
+	//                                    name: name
+	//                                },
+	//                                function (data) {
+	//                                    if (data.data != 0) {
+	//                                        var leads_result = '';
+	//                                        var customer_result = '';
+	//                                        if (data.data['leads'].length > 0) {
+	//                                            $.each(data.data['leads'], function (k, v) {
+	//                                                leads_result += (k + 1) + '、' + v + '</br>';
+	//                                            });
+	//                                            $("#search_leads_content").html("<h5>{:L('SAME_LEADS_COMPANY')}</h5>" + leads_result);
+	//                                        }
+	//                                        if (data.data['customer'].length > 0) {
+	//                                            $.each(data.data['customer'], function (k, v) {
+	//                                                customer_result += (k + 1) + '、' + v + '</br>';
+	//                                            });
+	//                                            $("#search_customer_content").html("<h5>{:L('SAME_CUSTOMER_COMPANY')}</h5>" + customer_result);
+	//                                        }
+	//                                        if (data.data['customer'].length > 0 || data.data['leads'].length > 0)
+	//                                            $('#dialog-validate').dialog('open');
+	//
+	//
+	//                                    }
+	//                                },
+	//                                'json');
+	//                    }
+	//                }
+	//        );
+	//    });
+</script>
+<include file="Public:footer" />

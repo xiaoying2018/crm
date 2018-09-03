@@ -1,0 +1,153 @@
+<form action="{:U('task/add')}" method="post">
+	<input type="hidden" name="creator_role_id" value="{$Think.session.role_id}"/>
+	<input type="hidden" name="r" value="{$r}"/>
+	<input type="hidden" name="module" value="{$module}"/>
+	<input type="hidden" name="module_id" value="{$id}"/>
+	<table type="hidden" class="table table-hover form-inline">
+		<tfoot>
+			<tr>
+				<td>&nbsp;</td>
+				<td colspan="3"><input class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp; <input class="btn" onclick="javascript:$('#dialog-task').dialog('close');" type="button" value="{:L('CANCEL')}"/></td>
+			</tr>
+		</tfoot> 
+		<tbody>
+
+			<tr>
+				<td class="tdleft">{:L('THEME')}</td>
+				<td width="40%"><input type="text" name="subject" class="form-control"/></td>
+				
+			</tr>
+			<tr>
+				<td class="tdleft">负责人</td>
+				<td> <input type="hidden" name="owner_role_id_str" id="owner_id"/><input class="form-control" type="text" id="owner_name" name="owner_name" />&nbsp; {:L('CLICK_TO_SELECT')}</td>
+				<td class="tdleft" <if condition="C('ismobile') eq 1"></if>>{:L('NOTIFICATION_METHODS')}</td>
+				<td><input type="checkbox" class="" name="message_alert" value="1" checked="checked">{:L('MESSAGE')} &nbsp; <input type="checkbox" class="" name="email_alert" value="1">{:L('EMAIL')}</td>
+			</tr>	
+			<tr>
+				<td class="tdleft">任务相关人</td>
+				<td ><input type="hidden" name="about_roles" id="about_roles"/><input class="form-control" type="text" id="about_roles_name" name="about_roles_name" />&nbsp; {:L('CLICK_TO_SELECT')}</td>
+				<td class="tdleft" >{:L('EXPIRATION_DATE')}</td>
+				<td><input type="text" id="due_date" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" name="due_date" class="form-control Wdate"/></td>
+			</tr>
+			<tr>
+				<td class="tdleft" >{:L('STATUS')}</td>
+				<td><select name="status" class="form-control">
+					<option>{:L('NOT_START')}</option>
+					<option>{:L('DELAY')}</option>
+					<option>{:L('ONGOING')}</option>
+					<option>{:L('COMPLETE')}</option>
+					<option>{:L('WAIT_FOR_SOMEONE')}</option>
+				</select></td>
+				<if condition="C('ismobile') eq 1"></tr><tr></if>
+				<td class="tdleft" >{:L('PRECEDENCE')}</td>
+				<td><select name="priority" class="form-control">
+					<option>{:L('HIGH')}</option>
+					<option>{:L('HIGHEST')}</option>
+					<option>{:L('LOW')}</option>
+					<option>{:L('LOWEST')}</option>
+					<option>{:L('NORMAL')}</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td class="tdleft" >{:L('DESCRIPTION')}</td>
+				<td <if condition="C('ismobile') neq 1">colspan="3"</if>>
+					<textarea rows="6" class="form-control" style="width:90%" name="description"></textarea>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	</form>
+<div id="dialog-task-role-list" title="{:L('SELECT_TASK_OWNER')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div id="dialog-about-role-list" title="选择任务相关人">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+	$('#owner_name').click(
+		function(){
+			$owner_ids = $("#owner_id").val();
+			$('#dialog-task-role-list').dialog('open');
+			$('#dialog-task-role-list').load('{:U("user/mutiListDialog","by=task&check_ids=")}'+$owner_ids);
+		}
+	);
+});
+
+$("#dialog-task-role-list").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 800,
+	height:400,
+    close: function () {
+        $(this).html(""); 
+    },
+    buttons: { 
+        "确定": function () {
+			checked_role_id = ',';
+			checked_role_name = '';
+			$(".muti_role_id:checked").each(function(){
+				checked_role_id += ($(this).val()+',');
+				checked_role_name += ($(this).attr('rel')+',');
+			});
+			$('#owner_id').val(checked_role_id);
+			$('#owner_name').val(checked_role_name);
+			$(this).html(""); 
+            $(this).dialog("close"); 
+        },
+		"取消": function () {
+			$(this).html(""); 
+            $(this).dialog("close");
+        }
+    },
+	position:["center",100]
+});	
+$(function(){
+	$('#about_roles_name').click(
+		function(){
+			$about_roles = $("#about_roles").val();
+			$('#dialog-about-role-list').dialog('open');
+			$('#dialog-about-role-list').load('{:U("user/mutiListDialog","by=task&check_ids=")}'+$about_roles);
+		}
+	);
+});
+
+$("#dialog-about-role-list").dialog({
+	autoOpen: false,
+    modal: true,
+	width: 800,
+	height:400,
+    buttons: {
+        "确定": function () {
+			checked_role_id = ',';
+			checked_role_name = '';
+			$(".muti_role_id:checked").each(function(){
+				checked_role_id += ($(this).val()+',');
+				checked_role_name += ($(this).attr('rel')+',');
+			});
+			$('#about_roles').val(checked_role_id);
+			$('#about_roles_name').val(checked_role_name);
+			$(this).html(""); 
+            $(this).dialog("close"); 
+        },
+		"取消": function () {
+			$(this).html(""); 
+            $(this).dialog("close");
+        }
+    },
+	position:["center",100]
+});
+
+</script>

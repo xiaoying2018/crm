@@ -1,0 +1,101 @@
+<style>
+	#datas tr{cursor : pointer;}
+</style>
+<div class="clearfix">
+	<input type="hidden" name="m" value="product" />
+	<input type="hidden" name="a" value="allproductdialog" />
+	<input type="hidden" name="row" id="row" value="{$_GET['row']}" />
+	<ul class="nav pull-left form-inline">
+		<li class="pull-left">
+			&nbsp;&nbsp;
+			<select id="field" class="form-control input-sm" style="width:auto" onchange="changeCondition()" name="field">
+				<option class="word" value="name">{:L('PRODUCT_NAME')}</option>
+				<option class="number" value="cost_price" rel="product">{:L('COST_PRICE')}</option>
+				<option class="number" value="suggested_price" rel="product">{:L('SUGGESTED_PRICE')}</option>
+				<option class="date" value="create_time">{:L('CREATE_TIME')}</option>
+				<option class="role" value="creator_role_id">{:L('CREATOR_ROLE')}</option>
+				
+			</select>&nbsp;&nbsp;
+		</li>
+		<li id="conditionContent" class="pull-left">
+			<select class="form-control" id="condition" style="width:auto" name="condition" onchange="changeSearch()">
+				<option value="contains" <if condition = "$search_field['condition'] eq 'contains'">selected</if>>{:L('CONTAINS')}</option>
+				<option value="not_contain" <if condition = "$search_field['condition'] eq 'not_contain'">selected</if>>{:L('NOT_CONTAIN')}</option>
+				<option value="is" <if condition = "$search_field['condition'] eq 'is'">selected</if>>{:L('IS')}</option>
+				<option value="isnot" <if condition = "$search_field['condition'] eq 'isnot'">selected</if>>{:L('ISNOT')}</option>						
+				<option value="start_with" <if condition = "$search_field['condition'] eq 'start_with'">selected</if>>{:L('START_WITH')}</option>
+				<option value="end_with" <if condition = "$search_field['condition'] eq 'end_with'">selected</if>>{:L('END_WITH')}</option>
+				<option value="is_empty" <if condition = "$search_field['condition'] eq 'is_empty'">selected</if>>{:L('IS_EMPTY')}</option>
+				<option value="is_not_empty" <if condition = "$search_field['condition'] eq 'is_not_empty'">selected</if>>{:L('IS_NOT_EMPTY')}</option>
+			</select>&nbsp;&nbsp;
+		</li>
+		<li id="searchContent" class="pull-left">
+			<input id="search" type="text" class="input-medium form-control input-sm search-query" name="search" value="{$search_field['search']}" onkeydown="if(event.keyCode==13)changeCondition1(0)"/>&nbsp;&nbsp;
+		</li>
+		<li class="pull-left">
+			<button type="button" onclick="changeCondition1()" class="btn btn-sm btn-primary">{:L('SEARCH')}</button>
+		</li>
+	</ul>
+</div>
+<empty name="list">
+	<div style="clear:both">
+		<include file="Public:nodata" />
+	</div>
+<else/>
+<table class="table table-hover">
+	<thead>
+		<tr style="background-color:#F5F5F6;">
+			<th>&nbsp;</th>
+			<th>{:L('PRODUCT_NAME')}</th>
+			<th>{:L('PRODUCT_CATEGORY')}</th>
+			<!-- <th>{:L('INVENTORYS')}</th> -->
+		</tr>
+	</thead>
+	<tfoot id="footers">
+		<tr>
+			<td colspan="3">
+				{$page}
+			</td>
+		</tr>
+	</tfoot>
+	<tbody id="datas">
+		<volist name="list" id="vo">
+			<tr title="{$vo.stock_count_detail}">
+				<td>
+					<input type="radio" name="product_id" class="product_rad" value="{$vo.product_id}"/>
+					<input type="hidden" value="{$vo.standard}"/>
+					<input type="hidden" name="cost_price" value="{$vo.cost_price}"/>
+					<input type="hidden" name="suggested_price" value="{$vo.suggested_price}"/>
+				</td>
+				<td>{$vo.name}</td>
+				<td>{$vo.category_name}</td>
+				<!-- <td>{$vo.stock_count}</td> -->
+			</tr>
+		</volist>
+	</tbody>
+</table>
+<script type="text/javascript">
+	$('#go_page').change(function(){
+		var sel = $(this).val();
+		$('#dialog-product').load(sel);
+		return false;
+	});
+	$("#datas tr").click(function(){
+		$(this).find('td:first-child .product_rad').prop('checked', true);
+	});
+	$(function(){
+		$('#footers a').click(function(){ 
+			var rel = $(this).attr('href'); 
+			$('#dialog-product').load(rel);   
+			return false;
+		});
+	}); 
+	function changeCondition1(){
+		var field = $('#field option:selected').val();
+		var condition = $('#condition option:selected').val();
+		var search = $('#search').val();
+		var url = "{:U('product/allProductDialog','&field=')}"+field+'&condition='+condition+'&search='+search;
+		$('#dialog-product').load(url);
+	}
+</script>
+</empty>

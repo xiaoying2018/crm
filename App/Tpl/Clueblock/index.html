@@ -1,0 +1,241 @@
+<include file="Public:header" />
+
+
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="title-bar" style="position: relative;z-index: 99;">
+                    <div class="row " id="title-show">
+                        <ul class="nav pull-left" style="margin:2px 0 0 15px;">
+                            <a onclick="showAdd()" href="javascript:;" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 新建线索区</a>
+                        </ul>
+                    </div>
+                </div>
+                <div class="ibox-content clearfix" id="table_container" style="z-index: 1;">
+                    <table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
+                        <tr id="childNodes_num" class="tabTh">
+                            <!-- 表头 -->
+                            <td>编号</td>
+                            <td>线索区名称</td>
+                            <td>负责人ID</td>
+                            <td>负责人</td>
+                            <td>操作</td>
+                        </tr>
+                        <tbody id="dataStore">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div style="display:none" id="dialog-block-add" title="新建线索区">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+<div style="display:none" id="dialog-block-edit" title="编辑线索区">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $('#dialog-block-add').dialog( {
+        autoOpen: false,
+        width: "40%",
+        maxHeight: 600,
+        position: ["center",100],
+        buttons: {
+            "提交": function () {
+                var form                =   $('#block-create-form'),
+                    formData            =   form.serializeArray(),
+                    data                =   [],
+                    that                =   this;
+
+                $.each( formData, function (k,v) {
+                    if( data[v.name] != 'undefined' ){
+                        var old             =   data[v.name];
+                        data[v.name]        =   [];
+                        data[v.name].push(old);
+                        data[v.name].push(v.value);
+                    }
+                    data[v.name]    =   v.value;
+                } );
+
+                if( !data['name'] || !data['person_id'] ){
+                    layer.msg( '数据填写不完整' );
+                    return ;
+                }
+
+                $.ajax({
+                    url:"{:U('clueblock/add')}",
+                    data:formData,
+                    dataType:"JSON",
+                    type:"POST",
+                    success:function (obj) {
+                        if( obj.status == true ){
+                            $(that).dialog("close");
+                            search();
+                            return ;
+                        }else {
+                            layer.msg( obj.remark );
+                        }
+                    }
+                });
+            },
+            "取消": function () {
+                $(this).dialog("close");
+            }
+        },
+        close: function() {
+            $(this).html('');
+        }
+    } );
+
+    $('#dialog-block-edit').dialog( {
+        autoOpen: false,
+        width: "40%",
+        maxHeight: 600,
+        position: ["center",100],
+        buttons: {
+            "提交": function () {
+                var form                =   $('#block-create-form'),
+                    formData            =   form.serializeArray(),
+                    data                =   [],
+                    that                =   this;
+
+                $.each( formData, function (k,v) {
+                    if( data[v.name] != 'undefined' ){
+                        var old             =   data[v.name];
+                        data[v.name]        =   [];
+                        data[v.name].push(old);
+                        data[v.name].push(v.value);
+                    }
+                    data[v.name]    =   v.value;
+                } );
+
+                if( !data['id'] || !data['name'] || !data['person_id'] ){
+                    layer.msg( '数据填写不完整' );
+                    return ;
+                }
+
+                $.ajax({
+                    url:"{:U('clueblock/edit')}",
+                    data:formData,
+                    dataType:"JSON",
+                    type:"POST",
+                    success:function (obj) {
+                        if( obj.status == true ){
+                            $(that).dialog("close");
+                            search();
+                            return ;
+                        }else {
+                            layer.msg( obj.remark );
+                        }
+                    }
+                });
+            },
+            "取消": function () {
+                $(this).dialog("close");
+            }
+        },
+        close: function() {
+            $(this).html('');
+        }
+    } );
+
+    function search ()
+    {
+        $.ajax({
+            url:"{:U('clueblock/search')}",
+            data:"",
+            dataType:"JSON",
+            type:"POST",
+            success:function (obj) {
+                if( obj.status == true ){
+                    renderView(obj.data);
+                    return ;
+                }else {
+                    layer.msg( obj.remark );
+                }
+            }
+        });
+    }
+
+    function showAdd ()
+    {
+        var url     =   "{:U('Clueblock/add')}";
+        $('#dialog-block-add').dialog( 'open' );
+        $('#dialog-block-add').load( url );
+    }
+
+    function renderView(obj)
+    {
+        var newHtml             =   '';
+        if( obj != '' ){
+            $.each( obj, function (k,v) {
+                newHtml += createItem(v);
+            } );
+            layer.msg('刷新成功!');
+        }else{
+            layer.msg('无数据!');
+        }
+
+        $('#dataStore').html( newHtml);
+    }
+
+    function createItem(item)
+    {
+        var itemHtml            =   "<tr class='controls_tr' data-id='"+item.id+"'>";
+
+        itemHtml        +=  "<td>"+item.id+"</td>";
+        itemHtml        +=  "<td>"+item.name+"</td>";
+        itemHtml        +=  "<td>"+item.person_id+"</td>";
+        itemHtml        +=  "<td>"+item.person_name+"</td>";
+        itemHtml        +=  "<td data-id='"+item.id+"'  title='操作'>";
+        itemHtml        +=      "<button type='button' onclick='showEdit(this)' class='btn btn-default'>编辑</button>";
+        itemHtml        +=      "<button type='button' onclick='delThis(this)' class='btn btn-default'>删除</button>";
+        itemHtml        +=      "<button type='button' onclick='cluecate(this)' class='btn btn-default'>线索分类管理</button>";
+        itemHtml        +=  "</td>";
+        itemHtml        +=  "</tr>";
+
+        return itemHtml;
+    }
+
+    function showEdit (that){
+        var id          =   $(that).parent().attr('data-id'),
+            url         =   "{:U('Clueblock/edit')}";
+        $('#dialog-block-edit').dialog( 'open' );
+        $('#dialog-block-edit').load( url, 'id='+id );
+    }
+
+    function delThis (that){
+        layer.msg( '暂不开启删除功能' );
+    }
+
+    function cluecate (that){
+
+    }
+
+    search();
+</script>
+
+
+<include file="Public:footer" />

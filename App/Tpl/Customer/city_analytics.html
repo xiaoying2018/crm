@@ -1,0 +1,202 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+<!-- daterangepicker -->
+<link href="__PUBLIC__/css/daterangepicker.css" rel="stylesheet">
+<script src="__PUBLIC__/js/daterangepicker/daterangepicker.js"></script>
+<!--jQuery导出插件-->
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jquery.base64.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/tableExport.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jspdf/libs/sprintf.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jspdf/jspdf.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/table-export/jspdf/libs/base64.js"></script>
+<!--jQuery导出插件-->
+<style>
+	body{
+		overflow-y: hidden;
+	}
+</style>
+<script>
+$(function(){
+	$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-30);
+	$(window).resize(function(){
+		$("#table_div").height(window.innerHeight-$("#table_div").offset().top-$("#tfoot_div").height()-30);
+		$("#oDivL_tab_Test3").height($("#table_div").height()).width($("#oTableLH_tab_Test3").width());
+		$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width());
+	});
+	var scroll_width = 7;
+	$(".nicescroll").niceScroll({
+		cursorcolor: "#999",//#CC0071 光标颜色 
+	    cursoropacitymax: 0.4, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0 
+	    touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备 
+	    cursorwidth: scroll_width+"px", //像素光标的宽度 
+	    cursorborder: "0", //     游标边框css定义 
+	    cursorborderradius: "3px",//以像素为光标边界半径 
+	    autohidemode: false, //是否隐藏滚动条 
+	    zindex:100,
+	    background:"#F3F3F5",//滚动条背景色
+	});
+	$("#tab_Test3").FrozenTable(1,0,1);
+	$("#oDivL_tab_Test3").height($("#table_div").height()).width($("#oTableLH_tab_Test3").width());
+	$("#oDivH_tab_Test3").height($("#oTableLH_tab_Test3").height()).width($("#table_div").width());
+});
+</script>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<include file="Public:alert" />
+			<div class="ibox float-e-margins">
+				<include file="Public:analytics_left" />
+				<input type="hidden" id="content_id" value="{$content_id}">
+				<div class="col-lg-10">
+					<div class="ibox-content" style="padding-bottom:10px;border-bottom: none;">
+						<form id="" class="form-group" method="get" style="margin-bottom: 0px;">
+								<div class="row" style="height: 45px;">
+									<div class="col-lg-4">
+										<div class="pull-left" >
+											<span style="font-size: 18px;color: #000;">
+												客户地区统计
+											</span>
+										</div>
+									</div>
+									<div class="col-lg-5">
+									</div>
+									<div class="col-lg-3">
+										<div class="pull-right" >
+											<div class="pull-left" style="margin-left: 15px;line-height: 40px;">
+												<span class="fa fa-download" style="color:#75899D;"></span>
+												<a style="color: #75899D;" title="点击导出Excel表格" onClick ="$('#tab_Test3').tableExport({type: 'excel', escape: 'false'});">导出</a>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row" >
+									<input type="hidden" name="m" value="customer" />
+									<input type="hidden" name="a" value="city_analytics" />
+									<input type="hidden" name="content_id" value="{$_GET['content_id']}" />
+									<div class="col-lg-12" >
+										<!-- <ul class="nav pull-left" style="margin:2px 0 0 15px;">
+											<li>
+												<div class="input-group">
+													<input type="text" name="between_date" id="reservation" class="form-control" style="width:300px;"/>
+													<i class="glyphicon glyphicon-calendar fa fa-calendar" style="position: absolute;bottom: 10px;right: 24px;top: auto;cursor: pointer;"></i>
+												</div>
+											</li>
+										</ul> -->
+										<ul class="nav pull-left" style="margin:2px 0 0 15px;">
+											<li>
+												<div class="input-group">
+													<select class="form-control input-sm " style="min-width:165px;max-width: 165px;" name="department" id="department" onchange="changeRole()">
+														<option class="all" value="all">{:L('ALL')}</option>
+														<volist name="departmentList" id="vo">
+															<option value="{$vo.department_id}" <if condition="$_GET['department'] eq $vo['department_id']">selected</if>>{$vo.name}</option>
+														</volist>
+													</select>
+												</div>
+											</li>
+										</ul>
+										<ul class="nav pull-left" style="margin:2px 0 0 15px;">
+											<li>
+												<div class="input-group">
+													<select class="form-control input-sm " style="min-width:165px;max-width: 165px;" name="role" id="role" onchange="changeCondition()">
+														<option class="all" value="all">{:L('ALL')}</option>
+														<volist name="roleList" id="vo">
+															<option value="{$vo.role_id}" <if condition="$_GET['role'] eq $vo['role_id']">selected</if>>{$vo.role_name}-{$vo.user_name}</option>
+														</volist>
+													</select>
+												</div>
+											</li>
+										</ul>
+										<div class="pull-left" style="margin-left: 20px;">
+											<button type="submit" id="analytics_search" class="btn btn-primary">{:L('SEARCH')}</button>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="ibox-content" id="right_height" style="border-top: none;padding-top: 0px;">
+							<div id="content_1" class="th_content" style="position:relative;">
+								<div id="table_div" class="nicescroll" style="left:0px;top:0px;">
+									<table class="table table-hover table-striped table_thead_fixed table-bordered" id="tab_Test3" style="background:#fff;margin-bottom:0px;">
+										<tr class="tabTh">
+											<td>地区</td>
+											<td>客户数</td>
+										</tr>
+										<volist name="area_list_arr" id="vo">
+											<tr>
+												<td>
+													<if condition = "$vo['area_info']['level'] lt 2">
+														<a href="{:U('customer/city_analytics','&content_id=3&parent_id='.$vo['area_info']['id'].'&'.$parameter)}">{$vo['area_info']['name']}</a>
+													<else />
+														{$vo['area_info']['name']}
+													</if>
+												</td>
+												<td>
+													<a href="{:U('customer/index','address[state]='.$vo['area_info']['state'].'&address[city]='.$vo['area_info']['city'].'&address[area]=&address[value]=')}" target="_blank">{$vo['customer_count']}</a>
+												</td>
+											</tr>
+										</volist>
+									</table>
+								</div>
+								<div id="tfoot_div" class="clearfix">
+								</div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+	//时间插件  
+    $('#reservation').daterangepicker({
+        startDate: '{$start_date}', 
+        endDate: '{$end_date}',   
+        //minDate: '01/01/2012',    //最小时间  
+        maxDate : moment(), //最大时间
+        showDropdowns : true,  
+        showWeekNumbers : false, //是否显示第几周  
+        // timePicker : true, //是否显示小时和分钟  
+        // timePickerIncrement : 60, //时间的增量，单位为分钟  
+        timePicker12Hour : false, //是否使用12小时制来显示时间  
+        ranges : {  
+            //'最近1小时': [moment().subtract('hours',1), moment()],  
+            '今日': [moment().startOf('day'), moment()],  
+            '昨日': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')], 
+            '上月': [moment().subtract('days', '{$daterange[0][start_day]}'), moment().subtract('days', '{$daterange[0][end_day]}')],
+            '本月': [moment().subtract('days', '{$daterange[1][start_day]}'), moment()], 
+            '上季度': [moment().subtract('days', '{$daterange[2][start_day]}'), moment().subtract('days', '{$daterange[2][end_day]}')],
+            '本季度': [moment().subtract('days', '{$daterange[3][start_day]}'), moment()], 
+            '上一年': [moment().subtract('days', '{$daterange[4][start_day]}'), moment().subtract('days', '{$daterange[4][end_day]}')],
+            '本年': [moment().subtract('days', '{$daterange[5][start_day]}'), moment()], 
+            // '最近7日': [moment().subtract('days', 6), moment()],  
+            // '最近30日': [moment().subtract('days', 29), moment()]  
+        },  
+        opens : 'right', //日期选择框的弹出位置  
+        buttonClasses : [ 'btn btn-default' ],  
+        applyClass : 'btn-small btn-primary blue',  
+        cancelClass : 'btn-small', 
+        separator : ' to ',  
+        locale : {  
+            applyLabel : '确定',  
+            cancelLabel : '取消',  
+            fromLabel : '起始时间',  
+            toLabel : '结束时间',  
+            customRangeLabel : '自定义',  
+            daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],  
+            monthNames: ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"],
+            firstDay : 1 ,
+            format : 'YYYY-MM-DD', //控件中from和to 显示的日期格式
+        },
+        "alwaysShowCalendars": true,
+        function(start, end, label) {
+        	//回调
+        	$('#reservation').val(start.format('YYYY-MM-DD HH:mm:ss') + ' - ' + end.format('YYYY-MM-DD HH:mm:ss'))
+  			// console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+    	}
+    });
+</script>
+<include file="Public:footer" />

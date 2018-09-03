@@ -1,0 +1,260 @@
+<style>
+	.div-left {
+		height: 400px;
+		overflow-y: auto; 
+		float: left;
+		width: 55%;
+		border-right: 1px solid #eee;
+	}
+	.div-left ul {
+		margin-left: -25px;
+	}
+	.div-left ul li{ 
+		cursor: pointer;
+		list-style-type:none;
+	}
+	.role-ul li:hover{
+		background-color: #eee; 
+	}
+
+	.div-right {
+		height: 400px;
+		overflow-y: auto; 
+		float: left;
+		margin-left: 10px;
+	}
+
+	.user-li {
+		padding: 4px 5px;
+		margin: 4px 0;
+	}
+
+	.user-box {
+	    padding-left: 10px;
+	    padding-top: 10px;
+	    font-size: 14px;
+	    width: 230px;
+	    padding-right: 20px;
+	}
+	.remove-user {
+		float: right;
+		cursor: pointer;
+		color: #c1c1c1;
+	}
+	.choose-user {
+		padding: 3px 5px;
+		border-radius: 3px;
+	}
+	.choose-user:hover {
+		background-color: #eee; 
+	}
+
+	.dep-name:hover {
+		background-color: #eee;
+	}
+</style>
+
+<style>
+    /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+    ::-webkit-scrollbar
+    {
+        width: 8px;
+        height: 8px;
+        background-color: #F5F5F5;
+    }
+
+    /*定义滚动条轨道 内阴影+圆角*/
+    ::-webkit-scrollbar-track
+    {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 4px;
+        background-color: #F5F5F5;
+    }
+
+    /*定义滑块 内阴影+圆角*/
+    ::-webkit-scrollbar-thumb
+    {
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        background-color: #ccc;
+    }
+</style>
+
+<div> 
+<div class="input-group">
+	<div class="div-left">
+
+		<div class="input-group" style="padding-left: 19px;margin-bottom: 5px;">
+			<select class="form-control input-sm select2" style="min-width:220px;height: 0px;" id="select_user" >
+				<option value="">请选择</option>
+				<volist name="role_list" id="vo">
+					<option value="{$vo.role_id}" img_path="{$vo.thumb_path}">{$vo.role_name}-{$vo.user_name}</option>
+				</volist>
+			</select>
+		</div>
+
+		<ul>
+			<volist	name="list" id="vo">
+	            <li>
+	                <div class="dep-name" style="padding: 5px;">
+	                	<i class="fa fa-caret-right" style="font-size: 15px; margin-right: 5px;"></i> 
+	                	{$vo.name}({:count($vo['role_list'])})
+	                </div>
+	                <ul class="role-ul" style="display: none;">
+	                	<volist	name="vo.role_list" id="vo2">
+		                    <li class="user-li" role_id="{$vo2.role_id}">
+		                    	<if condition="$vo2['thumb_path']">
+		                    		<img src="{$vo2.thumb_path}" style="width:20px; height:20px; border-radius:50%;margin-right: 5px;"> 
+		                    	<else />
+		                    		<img src="__PUBLIC__/img/default_img.png" style="width:20px; height:20px; border-radius:50%;margin-right: 5px;"> 
+		                    	</if>
+		                    	{$vo2.role_name}-{$vo2.user_name}
+		                    </li>
+		                </volist>
+	                </ul>
+	            </li>
+            </volist>
+        </ul>
+	</div>
+	<div class="div-right">
+		<div>已选员工数：<span id="number">0</span></div>
+		<div class="user-box"></div>
+	</div>
+	<div style="clear:both"></div>
+</div>
+
+
+<script type="text/javascript">
+	$(".select2").select2();
+
+	//部门展开闭合效果
+    $('.dep-name').click(function(){
+    	//$('.role-ul').hide();
+
+    	var i_class = $(this).children('i').attr('class');
+    	if (i_class == 'fa fa-caret-right') {
+    		$(this).children('i').attr('class','fa fa-caret-down');
+    	} else {
+    		$(this).children('i').attr('class','fa fa-caret-right');
+    	}
+
+    	$(this).next().slideToggle('fast');
+    });
+
+    //右侧添加选中效果
+    $(document).on('click','.user-li',function(){
+    	var user = $(this).html();
+    	var role_id = $(this).attr('role_id');
+    	
+    	var id_array = new Array();
+    	$('.choose-user').each(function(){
+    		id_array.push($(this).attr('role_id'));
+    	});
+
+    	//未选择的添加选中效果
+		if ($.inArray(role_id, id_array) == -1) {
+			$('.user-box').append('<div class="choose-user" role_id="'+role_id+'">'+user+'\
+										<span class="remove-user">\
+											<i class="fa fa-times-circle"></i>\
+										</span>\
+									</div>');
+
+			//父页面增加选中效果
+			$('.div-box').append('<div class="p-choose-user" role_id="'+role_id+'">'+user+'\
+							<span class="p-remove-user">\
+								<i class="fa fa-times-circle"></i>\
+							</span>\
+							<input type="hidden" name="role_ids[]" value="'+role_id+'">\
+						</div>');
+
+			//更新已选员工数量
+			user_count();
+		}
+    });
+
+    //移除选中
+    $(document).on('click','.remove-user',function(){
+    	var role_id = $(this).parent().attr('role_id');
+    	$(this).parent().remove();
+
+    	//父页面删除已选中
+    	$('.p-choose-user[role_id='+role_id+']').remove();
+
+    	//更新已选员工数量
+    	user_count();
+    });
+
+    //打开本页面时记录父页面以选中的选项
+    $(document).ready(function(){
+    	if ($('.p-choose-user')) {
+    		var number = 0;
+    		$('.p-choose-user').each(function(){
+
+    			var head_img = $(this).children('img').prop("outerHTML"); //获取自身html
+				//console.log(head_img);
+
+    			//只获取文字
+				//console.log($(this).text());
+    			$('.user-box').append('<div class="choose-user" role_id="'+$(this).attr('role_id')+'">'+head_img+$(this).text()+'\
+    									<span class="remove-user">\
+    										<i class="fa fa-times-circle"></i>\
+    									</span>\
+    								</div>');
+    			number++;
+    		});
+
+    		//记录已选员工数量
+			$('#number').html(number);
+    	}
+    });
+
+
+    //计算已选择的员工数量
+    function user_count(){
+    	var number = 0;
+    	$('.choose-user').each(function(){
+    		number++;
+    	});
+    	$('#number').html(number);
+    }
+
+
+    //搜索选择
+   	$('#select_user').change(function(){
+   		var role_id = $(this).val();
+   		if (role_id) {
+   			var user_name = $('#select_user').find("option:selected").text();
+	   		var img_path = $('#select_user').find("option:selected").attr('img_path');
+	   		if (img_path) {
+	   			var head_img = '<img src="'+img_path+'" style="width:20px; height:20px; border-radius:50%;margin-right: 5px;"> ';
+	   		} else {
+	   			var head_img = '<img src="__PUBLIC__/img/default_img.png" style="width:20px; height:20px; border-radius:50%;margin-right: 5px;"> ';
+	   		}
+
+	   		var id_array = new Array();
+	    	$('.choose-user').each(function(){
+	    		id_array.push($(this).attr('role_id'));
+	    	});
+
+	    	//未选择的添加选中效果
+			if ($.inArray(role_id, id_array) == -1) {
+				$('.user-box').append('<div class="choose-user" role_id="'+role_id+'">'+head_img+user_name+'\
+											<span class="remove-user">\
+												<i class="fa fa-times-circle"></i>\
+											</span>\
+										</div>');
+
+				//父页面增加选中效果
+				$('.div-box').append('<div class="p-choose-user" role_id="'+role_id+'">'+head_img+user_name+'\
+								<span class="p-remove-user">\
+									<i class="fa fa-times-circle"></i>\
+								</span>\
+								<input type="hidden" name="role_ids[]" value="'+role_id+'">\
+							</div>');
+
+				//更新已选员工数量
+				user_count();
+			}
+   		}
+   	});
+</script>

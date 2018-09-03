@@ -1,0 +1,399 @@
+
+
+<div class="col-sm-12 text-center">
+    <form class="form-horizontal" id="program-create-form">
+
+        <div class="form-group">
+            <!-- name -->
+            <label class="col-sm-1 control-label">学校名称</label>
+            <div class="col-sm-2">
+                <input <if condition="$is_edit" >value="{$info.school_name}"</if> type="text" class="form-control required" name="school_name" aria-required="true" placeholder="请输入项目中文名称">
+            </div>
+            <!-- name_jp -->
+            <label class="col-sm-1 control-label">日文名称</label>
+            <div class="col-sm-2">
+                <input <if condition="$is_edit" >value="{$info.name_jp}"</if> type="text" class="form-control required" name="name_jp" aria-required="true" placeholder="请输入日文名称">
+            </div>
+            <!-- rank -->
+            <label class="col-sm-1 control-label">学校排名</label>
+            <div class="col-sm-2">
+                <input <if condition="$is_edit" >value="{$info.school_rank}"</if> type="number" class="form-control required" name="school_rank" aria-required="true" placeholder="请输入项目中文名称">
+            </div>
+            <!-- nature -->
+            <label class="col-sm-1 control-label">学校性质</label>
+            <div class="col-sm-2">
+                <select name="nature_id" class="form-control">
+                    <option value="">选择学校性质</option>
+                    <volist name="nature" id="vo" key="k">
+                        <option
+                        <if condition="$is_edit && $info['nature_id'] eq $vo['id']" >selected</if>
+                        value="{$vo.id}">{$vo.name}</option>
+                    </volist>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- area -->
+            <label class="col-sm-1 control-label">学校地址</label>
+            <div class="col-sm-2">
+                <select name="area_id" onchange="resetCity(this)" class="form-control">
+                    <option value="">选择地区</option>
+                    <volist name="area" id="vo" key="k">
+                        <option value="{$vo.id}">{$vo.name}</option>
+                    </volist>
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <select name="city_id" id="city_id" class="form-control">
+                    <option value="">选择城市</option>
+                </select>
+            </div>
+            <!-- address -->
+            <label class="col-sm-1 control-label">详细地址</label>
+            <div class="col-sm-6">
+                <input <if condition="$is_edit" >value="{$info.address}"</if> type="text" class="form-control required" name="address" aria-required="true" placeholder="请输入详细地址">
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <!-- department -->
+            <label class="col-sm-2 control-label">学部/研究科</label>
+            <div class="col-sm-4">
+                <input
+                    <if condition="$is_edit" >value="{$info.department}"</if>
+                type="text" class="form-control" name="department" placeholder="请输入学部/研究科">
+            </div>
+            <!-- include_major -->
+            <label class="col-sm-2 control-label">项目/专业名</label>
+            <div class="col-sm-4">
+                <input
+                <if condition="$is_edit" >value="{$info.include_major}"</if>
+                type="text" class="form-control" name="include_major" placeholder="多项请用’|‘隔开">
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <!-- program_category -->
+            <label class="col-sm-1 control-label">项目划分</label>
+            <div class="col-sm-3">
+                <select name="program_category" class="form-control">
+                    <option value="">选择分类</option>
+                    <volist name="program_category" id="vo" key="k">
+                        <option
+                        <if condition="$is_edit && $info['program_category'] eq $vo['id']" >selected</if>
+                        value="{$vo.id}">{$vo.name}</option>
+                    </volist>
+                </select>
+            </div>
+
+            <!-- major_category -->
+            <label class="col-sm-1 control-label">专业分类</label>
+            <div class="col-sm-3">
+                <select name="major_category" class="form-control">
+                    <option value="">选择分类</option>
+                    <volist name="major_category" id="vo" key="k">
+                        <option
+                        <if condition="$is_edit && $info['major_category'] eq $vo['id']" >selected</if>
+                        value="{$vo.id}">{$vo.name}</option>
+                    </volist>
+                </select>
+            </div>
+
+            <!-- homepage -->
+            <label class="col-sm-1 control-label">招生主页</label>
+            <div class="col-sm-3">
+                <input <if condition="$is_edit" >value="{$info.homepage}"</if>
+                type="text" class="form-control" name="homepage" placeholder="请输入招生主页">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- required_jp -->
+            <label class="col-sm-1 control-label">日语要求</label>
+            <div class="col-sm-3">
+                <input <if condition="$is_edit" >value="{$info.required_jp}"</if>
+                type="text" class="form-control" name="required_jp" placeholder="请输入日语要求">
+            </div>
+
+            <!-- required_en -->
+            <label class="col-sm-1 control-label">英语要求</label>
+            <div class="col-sm-3">
+                <input <if condition="$is_edit" >value="{$info.required_en}"</if>
+                type="text" class="form-control" name="required_en" placeholder="请输入英语要求">
+            </div>
+
+            <!-- required_special -->
+            <label class="col-sm-1 control-label">特殊要求</label>
+            <div class="col-sm-3">
+                <input <if condition="$is_edit" >value="{$info.required_special}"</if>
+                type="text" class="form-control" name="required_special" placeholder="请输入特殊要求">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- mail_to -->
+            <label class="col-sm-1 control-label">材料邮寄地址</label>
+            <div class="col-md-5">
+                <input <if condition="$is_edit" >value="{$info.mail_to}"</if>
+                type="text" class="form-control" name="mail_to" placeholder="请输入邮寄地址">
+            </div>
+
+            <!-- deadline -->
+            <label class="col-sm-1 control-label">材料截止时间</label>
+            <div class="col-md-2">
+                <input <if condition="$is_edit" >value="{$info.deadline}"</if>
+                type="text" class="form-control" name="deadline" placeholder="格式 07/05">
+            </div>
+
+            <!-- exam_time -->
+            <label class="col-sm-1 control-label">考试时间</label>
+            <div class="col-md-2">
+                <input <if condition="$is_edit" >value="{$info.exam_time}"</if>
+                type="text" class="form-control" name="exam_time" placeholder="格式 07/05">
+            </div>
+
+
+        </div>
+
+        <div class="form-group">
+            <!-- volume -->
+            <label class="col-sm-1 control-label">招生人数</label>
+            <div class="col-md-2">
+                <input <if condition="$is_edit" >value="{$info.volume}"</if>
+                type="number" class="form-control" name="volume" placeholder="格式 07/05">
+            </div>
+
+            <!-- volume_cn -->
+            <label class="col-sm-1 control-label">中国预招人数</label>
+            <div class="col-md-2">
+                <input <if condition="$is_edit" >value="{$info.volume_cn}"</if>
+                type="number" class="form-control" name="volume_cn" placeholder="格式 07/05">
+            </div>
+
+            <!-- filter_plan -->
+            <label class="col-sm-1 control-label">选拔方式</label>
+            <div class="col-md-2">
+                <input <if condition="$is_edit" >value="{$info.filter_plan}"</if>
+                type="text" class="form-control" name="filter_plan" placeholder="请输入选拔方式">
+            </div>
+
+            <!-- start_time -->
+            <label class="col-sm-1 control-label">入学时间</label>
+            <div class="col-md-2">
+                <input <if condition="$is_edit" >value="{$info.start_time}"</if>
+                type="text" class="form-control" name="start_time" placeholder="格式 07/05">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- tuition -->
+            <label class="col-sm-1 control-label">学费(万日元)</label>
+            <div class="col-md-2">
+                <input <if condition="$is_edit" >value="{$info.tuition}"</if>
+                type="number" class="form-control" name="tuition" placeholder="">
+            </div>
+            <!-- derate -->
+            <label class="col-sm-1 control-label">减免(万日元)</label>
+            <div class="col-md-2">
+                <input <if condition="$is_edit" >value="{$info.derate}"</if>
+                type="number" class="form-control" name="derate" placeholder="">
+            </div>
+            <!-- reward -->
+            <label class="col-sm-1 control-label">项目佣金(万日元)</label>
+            <div class="col-md-2">
+                <input <if condition="$is_edit" >value="{$info.reward}"</if>
+                type="number" class="form-control" name="reward" placeholder="">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- recommend_level -->
+            <label class="col-sm-1 control-label">推荐等级</label>
+            <div class="col-sm-2">
+                <select name="recommend_level" class="form-control">
+                    <option value="">选择分类</option>
+                    <volist name="recommend_level" id="vo" key="k">
+                        <option
+                        <if condition="$is_edit && $info['recommend_level'] eq $vo['id']" >selected</if>
+                        value="{$vo.id}">{$vo.name}</option>
+                    </volist>
+                </select>
+            </div>
+            <!-- recommend_teacher -->
+            <label class="col-sm-1 control-label">研究方向</label>
+            <div class="col-sm-2">
+                <input <if condition="$is_edit" >value="{$info.recommend_teacher}"</if> type="text" class="form-control required" name="recommend_teacher" aria-required="true" placeholder="请输入研究方向">
+            </div>
+            <!-- sign_type -->
+            <label class="col-sm-1 control-label">报名方式</label>
+            <div class="col-sm-2">
+                <select name="sign_type" class="form-control">
+                    <option value="">选择分类</option>
+                    <volist name="sign_type" id="vo" key="k">
+                        <option
+                        <if condition="$is_edit && $info['sign_type'] eq $vo['id']" >selected</if>
+                        value="{$vo.id}">{$vo.name}</option>
+                    </volist>
+                </select>
+            </div>
+
+            <!-- aoo_time -->
+            <label class="col-sm-1 control-label">AOO时间</label>
+            <div class="col-md-2">
+                <input <if condition="$is_edit" >value="{$info.aoo_time}"</if>
+                type="text" class="form-control" name="aoo_time" placeholder="格式 07/05">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- whether_abroad -->
+            <label class="col-sm-1 control-label">可否海外出愿</label>
+            <div class="col-sm-2 ">
+                <label class="radio-inline">
+                    <input <if condition="$is_edit && $info['whether_abroad'] eq 1">checked</if> type="radio" name="whether_abroad"  value="1"> 是
+                </label>
+                <label class="radio-inline">
+                    <input <if condition="$is_edit && $info['whether_abroad'] eq 0">checked</if> type="radio" name="whether_abroad"  value="0"> 否
+                </label>
+            </div>
+            <!-- is_aoo_check -->
+            <label class="col-sm-2 control-label">是否需要AOO材料审查</label>
+            <div class="col-sm-2 ">
+                <label class="radio-inline">
+                    <input <if condition="$is_edit && $info['is_aoo_check'] eq 1">checked</if> type="radio" name="is_aoo_check"  value="1"> 是
+                </label>
+                <label class="radio-inline">
+                    <input <if condition="$is_edit && $info['is_aoo_check'] eq 0">checked</if> type="radio" name="is_aoo_check"  value="0"> 否
+                </label>
+            </div>
+            <!-- aoo_check_url -->
+            <label class="col-sm-1 control-label">AOO审查地址</label>
+            <div class="col-sm-4 ">
+                <input <if condition="$is_edit" >value="{$info.aoo_check_url}"</if> type="text" class="form-control required" name="aoo_check_url" aria-required="true" placeholder="请输入AOO审核地址 http://">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- person -->
+            <label class="col-sm-1 control-label">负责人</label>
+            <div class="col-md-2">
+                <input <if condition="$is_edit" >value="{$info.person}"</if> type="text" class="form-control required" name="person" placeholder="请输入负责人">
+            </div>
+
+            <!-- term -->
+            <label class="col-sm-1 control-label">学期选择</label>
+            <div class="col-md-3">
+                <foreach name="term" item="v">
+                    <label class="checkbox-inline"><input <if condition="$is_edit && in_array($v['id'],$termIds)">checked</if> type="checkbox" name="terms[]" value="{$v.id}"> {$v.name}期</label>
+                </foreach>
+            </div>
+
+            <!-- specialty_enable -->
+            <label class="col-sm-2 control-label">专科生是否可申请</label>
+            <div class="col-sm-2 ">
+                <label class="radio-inline">
+                    <input <if condition="$is_edit && $info['specialty_enable'] eq 1">checked</if> type="radio" name="specialty_enable"  value="1"> 是
+                </label>
+                <label class="radio-inline">
+                    <input <if condition="$is_edit && $info['specialty_enable'] eq 0">checked</if> type="radio" name="specialty_enable"  value="0"> 否
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">募集要项下载地址</label>
+            <div class="col-sm-4 ">
+                <input <if condition="$is_edit" >value="{$info.required_download_url}"</if> type="text" class="form-control required" name="required_download_url" aria-required="true" placeholder=" http://">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!-- point -->
+            <label class="col-sm-1 control-label">项目卖点</label>
+            <div class="col-md-5">
+                <textarea name="point" class="form-control" rows="5"><if condition="$is_edit" >{$info.point}</if></textarea>
+            </div>
+            <!-- aoo_mate -->
+            <label class="col-sm-1 control-label">aoo资料</label>
+            <div class="col-md-5">
+                <textarea name="aoo_mate" class="form-control" rows="5"><if condition="$is_edit" >{$info.aoo_mate}</if></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <!-- zx_email -->
+            <label class="col-sm-2 control-label">官方咨询邮箱</label>
+            <div class="col-sm-4">
+                <input <if condition="$is_edit" >value="{$info.zx_email}"</if>
+                type="text" class="form-control" name="zx_email" placeholder="请输入官方咨询邮箱地址">
+            </div>
+            <!-- zx_tel -->
+            <label class="col-sm-2 control-label">官方咨询电话</label>
+            <div class="col-sm-4 ">
+                <input <if condition="$is_edit" >value="{$info.zx_tel}"</if> type="text" class="form-control required" name="zx_tel" aria-required="true" placeholder="请输入官方咨询电话">
+            </div>
+        </div>
+        <div class="form-group">
+            <!-- whether_abroad -->
+            <label class="col-sm-2 control-label">可否海外出愿</label>
+            <div class="col-sm-2 ">
+                <label class="radio-inline">
+                    <input <if condition="$is_edit && $info['whether_abroad'] eq 1">checked</if> type="radio" name="whether_abroad"  value="1"> 是
+                </label>
+                <label class="radio-inline">
+                    <input <if condition="$is_edit && $info['whether_abroad'] eq 0">checked</if> type="radio" name="whether_abroad"  value="0"> 否
+                </label>
+            </div>
+            <!-- taoci -->
+            <label class="col-sm-2 control-label">是否需要教授套磁</label>
+            <div class="col-sm-2 ">
+                <label class="radio-inline">
+                    <input <if condition="$is_edit && $info['taoci'] eq 1">checked</if> type="radio" name="taoci"  value="1"> 是
+                </label>
+                <label class="radio-inline">
+                    <input <if condition="$is_edit && $info['taoci'] eq 0">checked</if> type="radio" name="taoci"  value="0"> 否
+                </label>
+            </div>
+        </div>
+        <div>
+            <if condition="$is_edit" >
+                <input type="hidden" name="id" value="{$info.id}">
+            </if>
+        </div>
+    </form>
+</div>
+
+<script src="/Public/js/JapanArea.js"></script>
+<script>
+    // this.options[this.options.selectedIndex].value
+    <if condition="$is_edit">
+        var area_id         =   '<?php echo $info['area_id'];?>',
+            current_area_id =   isProvinceByNowid(area_id) ? area_id : getProvinceidByCityid(area_id),
+            current_city_id =   isProvinceByNowid(area_id) ? 0 : area_id;
+        console.log(current_area_id);
+        console.log(current_city_id);
+        $('select[name="area_id"]').find('option[value="'+current_area_id+'"]').attr('selected',true);
+        resetCity('select[name="area_id"]');
+        $('select[name="city_id"]').find('option[value="'+current_city_id+'"]').attr('selected',true);
+    </if>
+
+    function resetCity(that)
+    {
+        // 当前地区id
+        var area_id             =   $(that).val(),
+            citys               =   fetchJapanCityData( area_id ),
+            newHtml             =   "<option value=''>选择城市</option>",
+            city_id             =   $('#city_id');
+
+        if(citys != undefined ){
+            $.each( citys,function(k,item){
+                newHtml += "<option value='"+item.id+"'>--"+item.name+"--</option>";
+            } );
+        }
+        city_id.html( newHtml );
+    }
+
+</script>
+

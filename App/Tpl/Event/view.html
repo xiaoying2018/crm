@@ -1,0 +1,196 @@
+<style>
+	.body-span{
+		line-height:25px;
+		padding-top:0px;
+	}
+	.form-horizontal .control-label{
+		text-align: right;
+	}
+	.close{font-size:34px;font-weight:400;color:#fff;}
+    .close:hover{color:#fff;}
+</style>
+<div class="modal-header" style="border:none;">
+    <b style="font-size:16px;">日程详情</b>
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+</div>
+<div class="modal-body col-sm-12">
+    <if condition = "$event_info['event_type'] eq 1">
+    	<div class="form-group ">
+    		<label class="control-label col-sm-2">内容：</label>
+    		<div class="col-sm-10">
+    			<span class="body-span">{$event_info['subject']}</span>
+    		</div>
+    	</div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">开始：</label>
+            <div class="col-sm-10">
+                <span class="body-span">{$event_info['start_date']|date='Y-m-d H:i:s',###}</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">结束：</label>
+            <div class="col-sm-10">
+                <span class="body-span">{$event_info['end_date']|date='Y-m-d H:i:s',###}</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">相关{$event_info['relevant_name']}：</label>
+            <div class="col-sm-10">
+                <span class="body-span"><a target="_blank" href="./index.php?m={$event_info['module']}&a=view&id={$event_info['module_id']}">{$event_info['module_name']}</a></span>
+            </div>
+        </div>
+        <!-- <div class="form-group">
+            <label class="col-sm-2 control-label">内容：</label>
+            <div class="col-sm-10">
+                <span class="body-span">{$event_info['venue']}</span>
+            </div>
+        </div> -->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">描述：</label>
+            <div class="col-sm-10">
+            	<span class="body-span">{$event_info['description']}</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">标记：</label>
+            <div class="col-sm-10">
+                <ul class="color-selector" style="padding-left: 0px;">
+                    <li>
+                        <div class="radio bg-blue-600">
+                            <input id="radio1" type="radio" name="color" <if condition = "$event_info['color'] eq '#62a8ea' || $event_info['color'] eq ''">checked="checked"</if> value="#62a8ea">
+                            <label for="radio1"></label>
+                        </div>
+                    </li>
+                    <li>
+                    	<div class="radio bg-green-600">
+                            <input id="radio2" type="radio" name="color" value="#46be8a" <if condition = "$event_info['color'] eq '#46be8a'">checked="checked"</if>>
+                            <label for="radio2"></label>
+                        </div>
+                    </li>
+                    <li>
+                    	<div class="radio bg-cyan-600">
+                            <input id="radio3" type="radio" name="color" value="#57c7d4" <if condition = "$event_info['color'] eq '#57c7d4'">checked="checked"</if>>
+                            <label for="radio3"></label>
+                        </div>
+                    </li>
+                    <li>
+                    	<div class="radio bg-orange-600">
+                            <input id="radio4" type="radio" name="color" value="#f2a654" <if condition = "$event_info['color'] eq '#f2a654'">checked="checked"</if>>
+                            <label for="radio4"></label>
+                        </div>
+                    </li>
+                    <li >
+                    	<div class="radio bg-red-600">
+                            <input id="radio5" type="radio" name="color" value="#f96868" <if condition = "$event_info['color'] eq '#f96868'">checked="checked"</if>>
+                            <label for="radio5"></label>
+                        </div>
+                    </li>
+                    <li >
+                    	<div class="radio bg-blue-grey-600">
+                            <input id="radio6" type="radio" name="color" value="#526069" <if condition = "$event_info['color'] eq '#526069'">checked="checked"</if>>
+                            <label for="radio6"></label>
+                        </div>
+                    </li>
+                    <li >
+                    	<div class="radio bg-purple-600">
+                            <input id="radio7" type="radio" name="color" value="#926dde" <if condition = "$event_info['color'] eq '#926dde'">checked="checked"</if>>
+                            <label for="radio7"></label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    <else />
+        <div class="form-group">
+            <label class="col-sm-2 control-label">类型：</label>
+            <div class="col-sm-10">
+                <span class="body-span">{$event_info['subject']}</span>
+            </div>
+        </div>
+        <if condition = "$event_info['remind_info'] neq ''">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">内容：</label>
+                <div class="col-sm-10">
+                    <span class="body-span">{$event_info['remind_info']['content']}</span>
+                </div>
+            </div>
+        </if>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">相关：</label>
+            <div class="col-sm-10">
+                <span class="body-span">
+                    <if condition = "$event_info['module'] eq 'receivables'">
+                        <a target="_blank" href="{:U('finance/view','id='.$event_info['module_id'].'&t='.$event_info['t'])}">{$event_info['module_name']}</a>
+                    <else />
+                        <a target="_blank" href="{:U($event_info['module'].'/view','id='.$event_info['module_id'])}">{$event_info['module_name']}</a>
+                    </if>
+                </span>
+            </div>
+        </div>
+    </if>
+</div>
+
+<div class="modal-footer">
+    <div class="form-actions">
+        <if condition = "$event_info['event_type'] eq 1">
+            <button class="btn btn-primary" id="edit_dialog" rel="{$event_info['event_id']}" data-dismiss="modal" type="button">
+                编辑
+            </button>
+        </if>
+        <if condition = "$event_info['event_type'] neq 3">
+            <a class="btn btn-danger" id="dialog_delete" rel="{$event_info['event_id']}" href="javascript:;">删除</a>
+        </if>
+    </div>
+</div>
+
+
+<script>
+	$('#edit_dialog').click(function(){
+		var event_id = $(this).attr('rel');
+		$('#editNewEvent').modal('show');
+		var url = "{:U('event/edit','event_id=')}"+event_id;
+		$('#edit_event').load(url);
+	});
+
+	//删除日程
+	$('#dialog_delete').click(function(){
+		var event_id = $(this).attr('rel');
+		swal({
+			title: "您确定要删除该日程吗？",
+   			text: "删除后将无法恢复，请谨慎操作！",
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#DD6B55",   
+			confirmButtonText: "是的，我要删除！",
+	        cancelButtonText:'让我再考虑一下…',
+	        closeOnConfirm:false,
+	        closeOnCancel:false
+		},
+		function(isConfirm){
+	        if (isConfirm) {
+	        	$.ajax({
+		            type:'post',
+		            url: "{:U('event/delete')}",
+		            data: {event_id: event_id},
+		            async: false,
+		            success: function (data) {
+						if (data.status == 1) {
+							swal("删除成功！", "您已经永久删除了信息！", "success");
+							location.reload();
+						}else{
+							swal({
+								title: "操作失败！",
+								text:data.info,
+								type: "error"
+							})
+							return false;
+						}
+		            },
+		            dataType: 'json'
+		        });
+	        } else {
+	            swal("已取消","您取消了删除操作！","error");
+	        }
+	    });
+	});
+</script>

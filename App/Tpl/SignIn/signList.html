@@ -1,0 +1,207 @@
+<style>
+    .group_item {
+        margin: 5px 0;
+    }
+    .title-bar{
+        padding: 0 15px;
+        background: none;
+        border:none;
+    }
+    #title-show{
+        padding-top: 10px;
+        background: #fff;
+    }
+    td{
+        background-color:#f9fafc;
+        padding:14px;
+        color:#999;
+        text-align:center;
+        color:#666;
+        border-right: 1px solid #e7eaec;
+    }
+    td a{
+        color: #5C8FFC !important;
+    }
+    .modal-backdrop{
+        display: none !important;
+    }
+    .modal{
+        top: 120px;
+    }
+    .ui-dialog-content{
+        overflow: hidden !important;
+    }
+</style>
+<script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script>
+
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<div class="wrapper wrapper-content animated fadeIn signIn_detail">
+    <div class="row">
+        <div class="title-bar col-lg-12">
+            <div id="title-show" class="clearfix">
+                <ul class="nav pull-left" style="margin:0px 10px 0px 20px;">
+                    <span>
+                        <img src="/Public/img/contract_view_icon.png" style="margin-bottom:9px;" alt="">
+                    </span>
+                    <span style="font-size:21px;margin-left:5px">&nbsp;&nbsp;&nbsp; {{detail.name}}</span>&nbsp;&nbsp;
+                </ul>
+            </div>
+            <div style="margin-top: 10px;">
+                <div class="tabs-container">
+                    <div style="padding: 20px 20px; background: rgb(255, 255, 255); min-height: 492.48px;" id="left-content">
+                        <ul class="nav nav-tabs" id="left_list" style="height:40px;">
+                            <li><a href="#tab91" data-toggle="tab" type="tab91">全部学生({{count.all}})</a></li>
+                            <li><a href="#tab92" data-toggle="tab" type="tab92">已签到学生({{count.sign}})</a></li>
+                            <li><a href="#tab93" data-toggle="tab" type="tab93">未签到学生({{count.unsign}})</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane" id="tab91">
+                                <div class="panel-body">
+                                    <table class="table select-table table-bordered">
+                                        <thead>
+                                        <tr style="background-color:#f9fafc;text-align:center;">
+                                            <td style="">学员名字</td>
+                                            <td style="">学员手机</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <tr v-for="s in allStudents" :data-id="s.schedule_id">
+
+                                            <td style="">{{s.realname}}</td>
+                                            <td style="">{{s.mobile}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab92">
+                                <div class="panel-body">
+                                    <table class="table select-table table-bordered">
+                                        <thead>
+                                        <tr style="background-color:#f9fafc;text-align:center;">
+                                            <td style="">学员名字</td>
+                                            <td style="">学员手机</td>
+                                            <td style="">签到时间</td>
+                                            <td style="">状态</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                        <tr v-for="ss in signStudents" :data-id="ss.schedule_id">
+                                            <td style="">{{ss.realname}}</td>
+                                            <td style="">{{ss.mobile}}</td>
+                                            <td style="">{{ss.create_at}}</td>
+                                            <template v-if="ss.status && ss.status == 1">
+                                                <td style="">已签到</td>
+                                            </template>
+                                            <template v-else-if=" ss.status == -7">
+                                                <td style="">已请假</td>
+                                            </template>
+                                            <template v-else>
+                                                <td style="">未签到</td>
+                                            </template>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab93">
+                                <div class="panel-body">
+                                    <table class="table select-table table-bordered">
+                                        <thead>
+                                        <tr style="background-color:#f9fafc;text-align:center;">
+                                            <td style="">学员名字</td>
+                                            <td style="">学员手机</td>
+                                            <td style="">签到时间</td>
+                                            <td style="">状态</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                        <tr v-for="sss in unSignStudents" :data-id="sss.schedule_id">
+                                            <td style="">{{sss.realname}}</td>
+                                            <td style="">{{sss.mobile}}</td>
+                                            <td style="">{{sss.create_at}}</td>
+                                            <td style="">未签到</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="schedule_id" value="{$schedule_id}">
+
+
+    <script>
+        // 添加课时弹框显示
+        var period_Detail = new Vue({
+            el: '.signIn_detail',
+            data: {
+                detail:{},
+                count:{},
+                signStudents:{},
+                unSignStudents:{},
+                allStudents:{}
+            },
+            methods:{
+                getPeriodDetail:function(){
+                    var id          =   $('#schedule_id').val();
+                    if( !id )   return ;
+                    var _this       =   this;
+                    $.ajax({
+                        url:"/index.php?m=sign_in&a=signList",
+                        data:{id:id},
+                        dataType:"JSON",
+                        type:"POST",
+                        success:function (res) {
+                            if( res.result == true ){
+                                _this.detail        =   res.detail;
+                                _this.count         =   res.count;
+                                _this.signStudents=   res.signStudents;
+                                _this.allStudents=   res.allStudents;
+                                _this.unSignStudents =   res.unSignStudents;
+                            }else{
+                                layer.msg( 'ERROR '+res.error );
+                            }
+                        }
+                    });
+                },
+                addSchedule:function(){
+                    var _this       =   this,
+                        form_data   =   $('#schedule_add_form').serialize();
+
+                    $('#schedule_add_form input,#schedule_add_form select').val('');
+                    $.ajax({
+                        url:"/index.php?m=education&a=schedule_add",
+                        data:form_data,
+                        dataType:"JSON",
+                        type:"POST",
+                        success:function (res) {
+                            if( res.result == true ){
+                                _this.getPeriodDetail();
+                                layer.msg( '排课成功！' );
+                            }else{
+                                layer.msg( 'ERROR '+res.error );
+                            }
+                        }
+                    });
+                },
+            },
+            mounted: function() {
+                $("[type='tab91']").click();
+                // 获取详情
+                this.getPeriodDetail();
+            }
+        });
+
+        function dd(data) {
+            console.log(data)
+        }
+
+    </script>

@@ -1,0 +1,832 @@
+<include file="Public:header" />
+<style type="text/css">
+    .add_title{
+        padding-bottom:10px;
+        height: 60px;
+        margin-bottom:15px;
+    }
+    .add_title>span{
+        border-bottom: 2px solid #1ab394;
+        font-size: 24px;
+    }
+    .add_body >div >.full-height-scroll{
+        border-right:1px dotted #ccc
+    }
+    .add_body_title{
+        margin:15px auto 30px auto;
+        padding-left: 14px;
+    }
+    .add_body_form>form>.form-group{
+        margin-bottom: 25px;
+    }
+    body{overflow-y:hidden;}
+    .form-control{
+        float:left;
+    }
+    .select2-container--default .select2-selection--single {
+        border-radius: 0px !important;
+        border: 1px solid #d8e3ef !important;
+    }
+    .select2-container .select2-selection--single{
+        height: 35px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow{
+        height: 35px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered{
+        line-height: 35px !important;
+    }
+</style>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script>
+    $(function(){
+        $(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+        $(window).resize(function(){
+            $(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+        })
+    })
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-6">
+    <form class="form-horizontal" id="form" role="form" action="{:U('materials/applyEdit')}" method="post" enctype="multipart/form-data">
+        <div class="ibox-content " id="add_body" >
+            <div class="row">
+                <div class="col-md-12 add_body">
+                    <div class="full-height-scroll">
+                        <div class="row" >
+                            <div class="col-md-12 add_body_title" style="margin:20px 0 0 0px;">
+                                <div class="all-inline">
+                                    <span class="sq-tag"></span>
+                                    <div class="text-tag">
+                                        <span>基础信息</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
+
+                                <!-- 名称 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 学员姓名</label>
+                                    <div class="col-md-6">
+                                        <select class="select_name form-control" name="student_id">
+                                            <option value="{$info['student_id']}">{$info['sname']}</option>
+                                        </select>
+                                        <input type="hidden" name="sname" id="sname" value="{$info['sname']}">
+                                    </div>
+                                </div>
+
+                                <!-- 顾问老师 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 顾问老师</label>
+                                    <div class="col-md-6">
+                                        <select class="select_adviser_name form-control" name="adviser">
+                                            <option id="guwen" value="{$info['adviser_id']}">{$info['adviser']}</option>
+                                        </select>
+                                        <input type="hidden" name="adviser" id="adviser" value="{$info['adviser']}">
+                                    </div>
+                                </div>
+
+                                <!-- 材料老师 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 材料老师</label>
+                                    <div class="col-md-6">
+                                        <select class="select_teacher_name form-control" name="teacher">
+                                            <option value="{$info['teacher_id']}">{$info['teacher']}</option>
+                                        </select>
+                                        <input type="hidden" name="teacher" id="teacher" value="{$info['teacher']}">
+                                    </div>
+                                </div>
+
+                                <!-- COE项目名称 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 项目名称</label>
+                                    <div class="col-md-6">
+                                        <select class="select_project_name form-control" name="project_name">
+                                            <option value="{$info['project_name']}">{$info['project_name']}</option>
+                                        </select>
+                                        <input type="hidden" name="project_name" id="project_name" value="{$info['project_name']}">
+                                    </div>
+                                </div>
+
+                                <!-- 学校名称 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 学校名称</label>
+                                    <div class="col-md-6">
+                                        <select class="select_school_name form-control" name="school_name">
+                                            <option value="{$info['school_name']}">{$info['school_name']}</option>
+                                        </select>
+                                        <input type="hidden" name="school_name" id="school_name" value="{$info['school_name']}">
+                                    </div>
+                                </div>
+
+                                <!-- 需要提交的材料 -->
+
+                                <!-- 分类 -->
+                                <hr>
+
+                                <if condition="$info['tag'] == 1"><!-- 如果是普通申请,显示分类选项 -->
+
+                                    <div class="form-group ">
+                                        <label class="col-md-4 control-label" for="cate_id"><span style="color:#FF0011;">*</span> 材料分类：</label>
+                                        <div class="col-sm-6">
+                                            <select id="cate_id" class="form-control checkit" onchange="changeMaterials(this.value)" style="float:left;" rel="require" rell="分类" name="cate_id">
+
+                                                <option value="">--请选择--</option>
+
+                                                <volist name="cates" id="cate">
+                                                    <!-- 如果材料分类不是签证 且 不是COE,则可选择 -->
+                                                    <if condition="$cate['id'] != 1 && $cate['id'] != 2">
+                                                        <option value="{$cate.id}" <if condition="$info['cate_id'] == $cate['id']">selected</if>>{$cate.name}</option>
+                                                    </if>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </if>
+
+                                <!-- 材料 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"> 需要提交的材料:</label>
+                                    <div class="col-md-6">
+                                        <div id="materials" class="checkbox checkbox-info" style="float:left;">
+
+                                            <!-- 填充处 -->
+                                            <volist name="all_materials" id="all_material">
+
+                                                <input type="checkbox" name="materials[]" id="{$all_material['id']}" value="{$all_material['id']}" <if condition="in_array($all_material['id'],$info['materials'])">checked</if>><label for="{$all_material['id']}">{$all_material['name']}</label><br>
+
+                                            </volist>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+
+                                <if condition="$info['tag'] == 1"><!-- 如果是普通申请,显示入学年份和月份 -->
+
+                                    <!-- 入学年份 -->
+                                    <div class="form-group ">
+                                        <label class="col-md-4 control-label" for="join_year"><span style="color:#FF0011;">*</span> 入学年份：</label>
+                                        <div class="col-sm-6">
+                                            <select id="join_year" class="form-control checkit" onchange="" style="float:left;" rell="入学年份" name="join_year">
+                                                <option value="" <if condition="$info['join_year'] == ''">selected</if>>--请选择--</option>
+                                                <option value="2018" <if condition="$info['join_year'] == '2018'">selected</if>>2018年</option>
+                                                <option value="2019" <if condition="$info['join_year'] == '2019'">selected</if>>2019年</option>
+                                                <option value="2020" <if condition="$info['join_year'] == '2020'">selected</if>>2020年</option>
+                                                <option value="2021" <if condition="$info['join_year'] == '2021'">selected</if>>2021年</option>
+                                                <option value="2022" <if condition="$info['join_year'] == '2022'">selected</if>>2022年</option>
+                                                <option value="2023" <if condition="$info['join_year'] == '2023'">selected</if>>2023年</option>
+                                                <option value="2024" <if condition="$info['join_year'] == '2024'">selected</if>>2024年</option>
+                                                <option value="2025" <if condition="$info['join_year'] == '2025'">selected</if>>2025年</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- 入学月份 -->
+                                    <div class="form-group ">
+                                        <label class="col-md-4 control-label" for="join_mouth"><span style="color:#FF0011;">*</span> 入学月份：</label>
+                                        <div class="col-sm-6">
+                                            <select id="join_mouth" class="form-control checkit" onchange="" style="float:left;" rell="入学月份" name="join_mouth">
+                                                <option value="" <if condition="$info['join_year'] == ''">selected</if>>--请选择--</option>
+                                                <option value="1" <if condition="$info['join_mouth'] == '1'">selected</if>>1月</option>
+                                                <option value="4" <if condition="$info['join_mouth'] == '4'">selected</if>>4月</option>
+                                                <option value="7" <if condition="$info['join_mouth'] == '7'">selected</if>>7月</option>
+                                                <option value="10" <if condition="$info['join_mouth'] == '10'">selected</if>>10月</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </if>
+
+                                <!-- 提交材料时间 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"> 提交材料时间</label>
+                                    <div class="col-md-6">
+                                        <input value="{$info['submit_time']}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="submit_time" id="submit_time" class="input_edit edit form-control">
+                                    </div>
+                                </div>
+
+                                <!-- 初审截止时间 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"> 初审截止时间</label>
+                                    <div class="col-md-6">
+                                        <input value="{$info['first_end_time']}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="first_end_time" id="first_end_time" class="input_edit edit form-control">
+                                    </div>
+                                </div>
+
+                                <!-- 最终截止时间 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"> 最终截止时间</label>
+                                    <div class="col-md-6">
+                                        <input value="{$info['end_time']}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="end_time" id="end_time" class="input_edit edit form-control">
+                                    </div>
+                                </div>
+
+                                <if condition="$info['tag'] != 3">
+                                    <!-- 考试时间 -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label"> 考试时间</label>
+                                        <div class="col-md-6">
+                                            <input value="{$info['exam_time']}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="exam_time" id="exam_time" class="input_edit edit form-control">
+                                        </div>
+                                    </div>
+
+                                    <!-- 面试时间 -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label"> 面试时间</label>
+                                        <div class="col-md-6">
+                                            <input value="{$info['ms_time']}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="ms_time" id="ms_time" class="input_edit edit form-control">
+                                        </div>
+                                    </div>
+
+                                    <!-- offer发布时间 -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label"> offer发布时间</label>
+                                        <div class="col-md-6">
+                                            <input value="{$info['offer_time']}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="offer_time" id="offer_time" class="input_edit edit form-control">
+                                        </div>
+                                    </div>
+                                </if>
+
+                                <!-- 状态 -->
+                                <div class="form-group ">
+                                    <label class="col-md-4 control-label" for="status"> 状态：</label>
+                                    <div class="col-sm-6">
+                                        <select id="status" class="form-control checkit" onchange="" style="float:left;" rel="require" rell="状态" name="status">
+                                            <option value="未提交" <if condition="$info['status'] == '未提交'">selected</if>>未提交</option>
+                                            <option value="已提交" <if condition="$info['status'] == '已提交'">selected</if>>已提交</option>
+                                            <option value="初审中" <if condition="$info['status'] == '初审中'">selected</if>>初审中</option>
+                                            <option value="初审失败" <if condition="$info['status'] == '初审失败'">selected</if>>初审失败</option>
+                                            <option value="初审成功" <if condition="$info['status'] == '初审成功'">selected</if>>初审成功</option>
+                                            <option value="邮寄中" <if condition="$info['status'] == '邮寄中'">selected</if>>邮寄中</option>
+                                            <option value="已签收" <if condition="$info['status'] == '已签收'">selected</if>>已签收</option>
+                                            <option value="邮寄异常" <if condition="$info['status'] == '邮寄异常'">selected</if>>邮寄异常</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- 快递单号 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"> 快递单号</label>
+                                    <div class="col-md-6">
+                                        <input value="{$info['ems_code']}" class="form-control " type="text" name="ems_code" id="ems_code" aria-required="true" value="" placeholder="材料邮寄后请更新快递单号" />
+                                    </div>
+                                </div>
+                                <!-- 附加服务 -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"> 附加服务</label>
+                                    <div class="col-md-8">
+                                        <textarea class="form-control" placeholder="附加服务项目" rows="5" name="outer" id="outer">{$info['outer']}</textarea>
+                                    </div>
+                                </div>
+
+                                <!-- ================================================================= -->
+
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 学员姓名</label>-->
+                                    <!--<div class="col-md-6">-->
+                                        <!--<select class="select_name form-control" name="name">-->
+                                            <!--<if condition="$info['sname']">-->
+                                                <!--<option value="{$info['student_id']}">{$info['sname']}</option>-->
+                                            <!--</else>-->
+                                                <!--<option value="">输入学员姓名后选择学员</option>-->
+                                            <!--</if>-->
+                                        <!--</select>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+
+                                <!--&lt;!&ndash; 顾问老师 &ndash;&gt;-->
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 顾问老师</label>-->
+                                    <!--<div class="col-md-6">-->
+                                        <!--<select class="select_adviser_name form-control" name="adviser">-->
+                                            <!--<if condition="$info['adviser_name']">-->
+                                                <!--<option value="{$info['adviser']}">{$info['adviser_name']}</option>-->
+                                                <!--</else>-->
+                                                <!--<option value="">输入顾问姓名后选择顾问</option>-->
+                                            <!--</if>-->
+                                        <!--</select>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+
+                                <!--&lt;!&ndash; 材料老师 &ndash;&gt;-->
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 材料老师</label>-->
+                                    <!--<div class="col-md-6">-->
+                                        <!--<select class="select_teacher_name form-control" name="teacher">-->
+                                            <!--<if condition="$info['teacher']">-->
+                                                <!--<option value="{$info['teacher']}">{$info['teacher']}</option>-->
+                                                <!--</else>-->
+                                                <!--<option value="">输入材料老师姓名后选择材料老师</option>-->
+                                            <!--</if>-->
+                                        <!--</select>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+
+                                <!--&lt;!&ndash; 标签 &ndash;&gt;-->
+                                <!--<div class="form-group ">-->
+                                    <!--<label class="col-md-4 control-label" for="cate_id"> 标签：</label>-->
+                                    <!--<div class="col-sm-6">-->
+                                        <!--<select id="tag" class="form-control checkit" onchange="" style="float:left;" rel="require" rell="标签" name="tag">-->
+                                            <!--<option value="1" <if condition="$info['tag'] == 1">selected</if>>普通申请</option>-->
+                                            <!--<option value="2" <if condition="$info['tag'] == 2">selected</if>>COE申请</option>-->
+                                            <!--<option value="3" <if condition="$info['tag'] == 3">selected</if>>签证办理</option>-->
+                                        <!--</select>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; COE项目名称 &ndash;&gt;-->
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-md-4 control-label"> COE项目名称</label>-->
+                                    <!--<div class="col-md-6">-->
+                                        <!--<input value="{$info['coe_name']}" class="form-control " type="text" name="coe_name" id="coe_name" aria-required="true" value="" placeholder="如果是COE项目,请输入名称" />-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; 需要提交的材料 &ndash;&gt;-->
+                                <!--&lt;!&ndash; 分类 &ndash;&gt;-->
+                                <!--<div class="form-group ">-->
+                                    <!--<label class="col-md-4 control-label" for="cate_id"><span style="color:#FF0011;">*</span> 分类：</label>-->
+                                    <!--<div class="col-sm-6">-->
+                                        <!--<select id="cate_id" class="form-control checkit" onchange="" style="float:left;" rel="require" rell="分类" name="cate_id">-->
+
+                                            <!--<volist name="cates" id="cate">-->
+                                                <!--&lt;!&ndash; 如果分类不属于签证 且 不属于COE,则可选择 &ndash;&gt;-->
+                                                    <!--<option value="{$cate.id}" <if condition="$info['cate_id'] == $cate['id']">selected</if>>{$cate.name}</option>-->
+                                            <!--</volist>-->
+
+                                        <!--</select>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; 材料 &ndash;&gt;-->
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-md-4 control-label"><span style="color:#FF0011;">*</span> 需要提交的材料:</label>-->
+                                    <!--<div class="col-md-6">-->
+                                        <!--<div id="materials" class="checkbox checkbox-info" style="float:left;">-->
+                                            <!--&lt;!&ndash; 填充处 &ndash;&gt;-->
+                                            <!--<volist name="all_materials" id="all_material">-->
+
+                                                <!--<input type="checkbox" name="materials[]" id="{$all_material['id']}" value="{$all_material['id']}" <if condition="in_array($all_material['id'],$info['materials'])">checked</if>><label for="{$all_material['id']}">{$all_material['name']}</label><br>-->
+
+                                            <!--</volist>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div class="col-md-2"></div>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; 初审截止时间 &ndash;&gt;-->
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-md-4 control-label"> 初审截止时间</label>-->
+                                    <!--<div class="col-md-6">-->
+                                        <!--<input value="{$info['first_end_time']}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="first_end_time" id="first_end_time" class="input_edit edit">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; 最终截止时间 &ndash;&gt;-->
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-md-4 control-label"> 最终截止时间</label>-->
+                                    <!--<div class="col-md-6">-->
+                                        <!--<input value="{$info['end_time']}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="end_time" id="end_time" class="input_edit edit">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; 提交材料时间 &ndash;&gt;-->
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-md-4 control-label"> 提交材料时间</label>-->
+                                    <!--<div class="col-md-6">-->
+                                        <!--<input value="{$info['submit_time']}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="submit_time" id="submit_time" class="input_edit edit">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; 面试时间 &ndash;&gt;-->
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-md-4 control-label"> 面试时间</label>-->
+                                    <!--<div class="col-md-6">-->
+                                        <!--<input value="{$info['ms_time']}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="ms_time" id="ms_time" class="input_edit edit">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; offer发布时间 &ndash;&gt;-->
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-md-4 control-label"> offer发布时间</label>-->
+                                    <!--<div class="col-md-6">-->
+                                        <!--<input value="{$info['offer_time']}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="offer_time" id="offer_time" class="input_edit edit">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; 考试时间 &ndash;&gt;-->
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-md-4 control-label"> 考试时间</label>-->
+                                    <!--<div class="col-md-6">-->
+                                        <!--<input value="{$info['exam_time']}" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" style="width: 100%;" name="exam_time" id="exam_time" class="input_edit edit">-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; 状态 &ndash;&gt;-->
+                                <!--<div class="form-group ">-->
+                                    <!--<label class="col-md-4 control-label" for="cate_id"> 状态：</label>-->
+                                    <!--<div class="col-sm-6">-->
+                                        <!--<select id="status" class="form-control checkit" onchange="" style="float:left;" rel="require" rell="状态" name="status">-->
+                                            <!--<option value="未提交" <if condition="$info['status'] == '未提交'">selected</if>>未提交</option>-->
+                                            <!--<option value="已提交" <if condition="$info['status'] == '已提交'">selected</if>>已提交</option>-->
+                                            <!--<option value="初审中" <if condition="$info['status'] == '初审中'">selected</if>>初审中</option>-->
+                                            <!--<option value="初审失败" <if condition="$info['status'] == '初审失败'">selected</if>>初审失败</option>-->
+                                            <!--<option value="初审成功" <if condition="$info['status'] == '初审成功'">selected</if>>初审成功</option>-->
+                                            <!--<option value="邮寄中" <if condition="$info['status'] == '邮寄中'">selected</if>>邮寄中</option>-->
+                                            <!--<option value="已签收" <if condition="$info['status'] == '已签收'">selected</if>>已签收</option>-->
+                                            <!--<option value="邮寄异常" <if condition="$info['status'] == '邮寄异常'">selected</if>>邮寄异常</option>-->
+                                        <!--</select>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; 快递单号 &ndash;&gt;-->
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-md-4 control-label"> 快递单号</label>-->
+                                    <!--<div class="col-md-6">-->
+                                        <!--<input value="{$info['ems_code']}" class="form-control " type="text" name="ems_code" id="ems_code" aria-required="true" value="" placeholder="材料邮寄后请更新快递单号" />-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash; 附加服务 &ndash;&gt;-->
+                                <!--<div class="form-group">-->
+                                    <!--<label class="col-md-4 control-label">附加服务</label>-->
+                                    <!--<div class="col-md-8">-->
+                                        <!--<textarea class="form-control" placeholder="附加服务项目" rows="5" name="outer" id="outer">{$info['outer']}</textarea>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tfoot_div" class="clearfix">
+            <div class="clearfix" id="tfoot_page">
+                <div class="ibox-content" style="border-top: none;">
+                    <input type="hidden" name="id" value="{$info.id}">
+                    <input type="hidden" name="tag" value="{$info.tag}">
+                    <input type="hidden" id="student_id" name="student_id" value="{$info.student_id}">
+                    <div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><a href="javascript:void(0)" id="submit" class="btn btn-primary">确认修改</a></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript" src="__PUBLIC__/js/uploadPreview.js"></script>
+<script type="text/javascript">
+
+    $(function() {
+        // 学员搜索
+        $(".select_name").select2({
+            ajax: {
+                placeholder:'请选择',
+                allowClear:true,
+                url: "{:U('materials/getstudents')}",
+                ajax:{
+                    url: "{:U('materials/getstudents')}",
+                    data:function(res){
+                        console.log(res);
+                    }
+                },
+                data: function(params) {
+                    var query = {
+                        "name": params.term
+                    }
+                    return query;
+                },
+                dataType: 'json',
+                processResults: function(data) {
+                    return {
+                        results: data.data
+                    };
+                },
+                processResults: function(data, params) {
+                    if (data.status) {
+                        var itemList = [];
+                        //当数据对象不是{id:0,text:'ANTS'}这种形式的时候，可以使用类似此方法创建新的数组对象
+                        var arr = data.data
+                        for(var i = 0; i < arr.length; i++){
+                            itemList.push({id: arr[i]['id'], text: arr[i]['realname']})
+                            // arr[i]['customer_id'] TODO 需要这个值,应该放在哪里
+                        }
+                        return {
+                            results: itemList
+                        };
+                    }else{
+                        return []
+                    }
+                },
+            }
+        });
+        // 顾问老师搜索
+        $(".select_adviser_name").select2({
+            ajax: {
+                placeholder:'请选择',
+                allowClear:true,
+                url: "{:U('materials/getteachers')}",
+                ajax:{
+                    url: "{:U('materials/getteachers')}",
+                    data:function(res){
+                        console.log(res);
+                    }
+                },
+                data: function(params) {
+                    var query = {
+                        "name": params.term
+                    }
+                    return query;
+                },
+                dataType: 'json',
+                processResults: function(data) {
+                    return {
+                        results: data.data
+                    };
+                },
+                processResults: function(data, params) {
+                    if (data.status) {
+                        var itemList = [];
+                        //当数据对象不是{id:0,text:'ANTS'}这种形式的时候，可以使用类似此方法创建新的数组对象
+                        var arr = data.data
+                        for(var i = 0; i < arr.length; i++){
+                            itemList.push({id: arr[i]['user_id'], text: arr[i]['full_name']})
+                        }
+                        return {
+                            results: itemList
+                        };
+                    }else{
+                        return []
+                    }
+                },
+            }
+        });
+        // 材料老师搜索
+        $(".select_teacher_name").select2({
+            ajax: {
+                placeholder:'请选择',
+                allowClear:true,
+                url: "{:U('materials/getteachers')}",
+                ajax:{
+                    url: "{:U('materials/getstudents')}",
+                    data:function(res){
+                        console.log(res);
+                    }
+                },
+                data: function(params) {
+                    var query = {
+                        "name": params.term
+                    }
+                    return query;
+                },
+                dataType: 'json',
+                processResults: function(data) {
+                    return {
+                        results: data.data
+                    };
+                },
+                processResults: function(data, params) {
+                    if (data.status) {
+                        var itemList = [];
+                        //当数据对象不是{id:0,text:'ANTS'}这种形式的时候，可以使用类似此方法创建新的数组对象
+                        var arr = data.data
+                        for(var i = 0; i < arr.length; i++){
+                            itemList.push({id: arr[i]['user_id'], text: arr[i]['full_name']})
+                        }
+                        return {
+                            results: itemList
+                        };
+                    }else{
+                        return []
+                    }
+                },
+            }
+        });
+
+        // 项目搜索
+        $(".select_project_name").select2({
+            ajax: {
+                placeholder:'请选择',
+                allowClear:true,
+                url: "{:U('materials/getprojectname')}",
+                ajax:{
+                    url: "{:U('materials/getprojectname')}",
+                    data:function(res){
+                        console.log(res);
+                    }
+                },
+                data: function(params) {
+                    var query = {
+                        "name": params.term
+                    }
+                    return query;
+                },
+                dataType: 'json',
+                processResults: function(data) {
+                    return {
+                        results: data.data
+                    };
+                },
+                processResults: function(data, params) {
+                    if (data.status) {
+                        var itemList = [];
+                        //当数据对象不是{id:0,text:'ANTS'}这种形式的时候，可以使用类似此方法创建新的数组对象
+                        var arr = data.data
+                        for(var i = 0; i < arr.length; i++){
+                            itemList.push({id: arr[i]['id'], text: arr[i]['name']})
+                        }
+                        return {
+                            results: itemList
+                        };
+                    }else{
+                        return []
+                    }
+                },
+            }
+        });
+
+        // 学校搜索
+        $(".select_school_name").select2({
+            ajax: {
+                placeholder:'请选择',
+                allowClear:true,
+                url: "{:U('materials/getschoolname')}",
+                ajax:{
+                    url: "{:U('materials/getschoolname')}",
+                    data:function(res){
+                        console.log(res);
+                    }
+                },
+                data: function(params) {
+                    var query = {
+                        "name": params.term,
+                        // 806新增 根据选择项目,筛选学校
+                        "cate": $('#project_name').attr('item-id')
+                    }
+                    return query;
+                },
+                dataType: 'json',
+                processResults: function(data) {
+                    return {
+                        results: data.data
+                    };
+                },
+                processResults: function(data, params) {
+                    if (data.status) {
+                        var itemList = [];
+                        //当数据对象不是{id:0,text:'ANTS'}这种形式的时候，可以使用类似此方法创建新的数组对象
+                        var arr = data.data
+                        for(var i = 0; i < arr.length; i++){
+                            itemList.push({id: arr[i]['id'], text: arr[i]['school_name']})
+                        }
+                        return {
+                            results: itemList
+                        };
+                    }else{
+                        return []
+                    }
+                },
+            }
+        });
+
+        // 学员选择框变更
+        $(".select_name").change(function () {
+            var s_id = $(this).val();
+            $.ajax({
+                type: 'get',
+                url: "{:U('materials/getguwen')}",
+                data: { id: s_id },
+                success: function(data) {
+
+                    $('#sname').val($(".select_name").find("option:selected").text());// 将学员姓名赋值到隐藏域
+
+                    if (data.status) {
+                        // 如果当前学员没有关联顾问老师
+                        if (!data.data.id || !data.data.full_name){
+                            $('#guwen').val('');
+                            $('#guwen').text('');
+                            $('#guwen').parent().next().find('.select2-selection__rendered').text('请输入顾问姓名后选择顾问老师');
+                        }
+                        // 将当前学员关联的顾问老师显示并赋值到相应的select
+                        $('#guwen').val(data.data.user_id);
+                        $(".select_adviser_name ").val(data.data.id)
+                        $('#guwen').text(data.data.full_name);
+                        $('#adviser').val(data.data.full_name);// 将顾问姓名赋值到隐藏域
+                        $('#guwen').parent().next().find('.select2-selection__rendered').text(data.data.full_name);
+                        $('#guwen').attr("selected","selected");
+
+                        console.log(data.data.id);
+                    } else {
+
+                        console.log(data.msg);
+                        return false;
+                    }
+                },
+                dataType: 'json'
+            });
+        });
+        // 顾问老师变更
+        $(".select_adviser_name").change(function () {
+            // 获取当前选中的顾问老师姓名
+            $('#adviser').val($(".select_adviser_name").find("option:selected").text());// 将顾问姓名赋值到隐藏域
+        });
+        // 顾问老师变更
+        $(".select_teacher_name").change(function () {
+            // 获取当前选中的顾问老师姓名
+            $('#teacher').val($(".select_teacher_name").find("option:selected").text());// 将材料老师姓名赋值到隐藏域
+        });
+        // 项目变更
+        $(".select_project_name").change(function () {
+            $('#project_name').val($(".select_project_name").find("option:selected").text());// 将项目名称赋值到隐藏域
+            // 806新增 根据选择项目,筛选学校
+            $('#project_name').attr('item-id',$(".select_project_name").find("option:selected").val());// 将项目ID赋值到隐藏域
+        });
+        // 学校变更
+        $(".select_school_name").change(function () {
+            // 获取当前选中的学校名称
+            $('#school_name').val($(".select_school_name").find("option:selected").text());// 将学校名称赋值到隐藏域
+        });
+
+    })
+
+    if ("{:C('isMobile')}" == "1") {
+        width = $('.container').width() * 0.9;
+    } else {
+        width = 800;
+    }
+
+    $(document).ready(function(){
+        /*form表单验证*/
+        $("#form").validate({
+
+        });
+    });
+
+    // 是否选中学员
+    $("#submit").click(function() {
+        // 是否选中学员
+        $('#student_id').val($(".select_name").val());
+        if (!$('#student_id').val()) {
+            alert('请选择关联学员');
+            return false;
+        }
+        // 是否选中顾问老师
+        if (!$('#adviser').val()) {
+            alert('请选择顾问老师');
+            return false;
+        }
+
+        // 是否选中材料老师
+        if (!$('#teacher').val()) {
+            alert('请选择材料老师');
+            return false;
+        }
+
+        // 是否填写项目名称
+        if (!$('#project_name').val()) {
+            alert('请填写项目名称');
+            return false;
+        }
+
+        // 如果是普通申请,则入学年份和月份是必须字段
+    <if condition="$info['tag'] == 1">
+
+            var join_year = $('#join_year').val();
+        var join_mouth = $('#join_mouth').val();
+
+        if (join_year == '')
+        {
+            alert('请填写入学年份');
+            return false;
+        }
+
+        if (join_mouth == '')
+        {
+            alert('请填写入学月份');
+            return false;
+        }
+
+    </if>
+        $('#form').submit();
+    });
+
+    function changeMaterials(id) {
+        // 725 dragon
+        if(!id){
+            $("#materials").html('');
+            return '';
+        }// 725 end
+
+        $.ajax({
+            type: 'get',
+            url: "{:U('materials/getmaterials')}",
+            data: { cate_id: id },
+            success: function(data) {
+                console.log(data);
+                if (data.status) {
+                    var str = "";
+                    $.each(data.data, function(k, v) {
+                        str += "<input type=\"checkbox\" name=\"materials[]\"";
+                        str += "id=\"" + v['id'] + "\" value=\"" + v['id'] + "\"> <label for=\"" + v['id'] + "\">" + v['name'] + "</label><br>";
+                    })
+                    $("#materials").html(str);
+                } else {
+                    alert('数据异常,请联系管理员')
+                    return false;
+                }
+            },
+            dataType: 'json'
+        });
+    }
+
+</script>
+<include file="Public:footer" />

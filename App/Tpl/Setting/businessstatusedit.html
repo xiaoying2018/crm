@@ -1,0 +1,17 @@
+<form class="form-horizontal" id="status_form2" action="{:U('setting/businessstatusedit')}" method="post">
+	<input type="hidden" name="status_id" value="{$status.status_id}"/>
+	<table class="table" style="border:none;">
+		<tr>
+			<td style="border:none;text-align:right">{:L('STATE_NAME')}：</td>
+			<td style="border:none;">
+				<input type="text" name="name" value="{$status.name}" class="form-control"/>
+			</td>
+		</tr>
+		<tr>
+			<td style="border:none;text-align:right">{:L('STATE_DESCRIBE')}：</td>
+			<td style="border:none;">
+				<textarea class="form-control" rows="4" name="description">{$status.description}</textarea>
+			</td>
+		</tr>
+	</table>
+</form>

@@ -1,0 +1,334 @@
+<include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/js/PCASClass.js" ></script>
+<link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/ueditor.all.js"> </script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript">
+    //实例化编辑器
+    window.UEDITOR_UPLOAD_URL = "{:U('file/editor')}";
+</script>
+<style type="text/css">
+.add_body >div >.full-height-scroll{
+	border-right:1px dotted #ccc
+}
+.add_body_title{
+	margin:15px auto 30px auto;
+}
+.add_body_form>form>.form-group{
+	margin-bottom: 25px;
+}
+body{overflow-y:hidden;}
+.form-control{
+	float:left;
+}
+#main_pic_prev{width: 120px;height: 120px;border: 1px dashed #d3d3d6;}
+</style>
+<script>
+$(function(){
+	$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	$(window).resize(function(){
+		$(".add_body").height(window.innerHeight-$("#add_body").offset().top-$("#tfoot_div").height()-40);
+	})
+})
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-10">
+		<form class="form-horizontal" id="form" role="form" action="{:U('product/edit', 'id='.$product['product_id'])}" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="product_id" value="{$product.product_id}"/>
+			<input type="hidden" name="jump_url" value="{$jump_url}"/>
+			<input name="a" type="hidden" value="edit">
+			<input type="hidden" name="main_images_id" value="{$product.images.main.images_id}"/>
+			<div class="ibox-content add_body" id="add_body">
+				<div class="row">
+					<div class="col-md-12 add_body" >
+						<div class="full-height-scroll">
+							<div class="row" >
+								<div class="col-md-12 add_body_title">
+									<div class="all-inline">
+										<span class="sq-tag"></span>
+										<div class="text-tag">
+											<span>基础信息</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-11 add_body_form" style="margin-left:12px;">
+									<volist name="field_list['main']" id="vo" key="key">
+										<div class="form-group">
+											<label class="col-md-2 control-label">{$vo.name}：</label>
+											<if condition="$vo['form_type'] == 'textarea' || $vo['form_type'] == 'address'">
+												<if condition = "$vo['tip_start'] eq 1">
+													<div class="col-md-8">
+														{$vo.html}
+													</div>
+													<div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+														<if condition ="$vo['field'] eq 'product_info'" >
+														<div class="col-md-10">
+															<textarea  class="col-md-10" id="C_editor" name="product_info" type="text/plain" style="width:100%;height:359px;padding-left: 0">{$product.product_info}</textarea>
+														</div>
+														<else/>
+														<div class="col-md-8">
+															{$vo.html}
+														</div>
+														</if>
+												</if>
+											<else/>
+												<div class="col-md-8">
+													{$vo.html}
+												</div>
+												<if condition = "$vo['tip_start'] eq 1">
+													<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+													<div class="col-md-2"></div>
+												</if>
+											</if>
+										</div>
+									</volist>
+									<!-- <div class="form-group">
+										<label class="col-md-4 control-label">选择仓库：</label>
+										<div class="col-md-6">
+											<volist name="house_list" id="vi"><label for=""><input type="checkbox" style="margin:-3px 3px 0px 8px" checked="true" name="warehouse_id[]" value="{$vi.warehouse_id}">{$vi.name}</label></volist>
+										</div>
+										<div class="col-md-2"></div>
+									</div> -->
+									<div class="form-group">
+										<label class="col-md-2 control-label">产品图片：</label>
+										<div class="col-md-2">
+											<img src="{$product['images']['main']['path']}" alt="" style="height: 120px; width: 120px;" id="main_pic_prev" class="thumb80">
+										</div>
+										<div class="col-md-4">
+											<div class="btn btn-success fileinput-button">
+												<span>选择图片</span>
+												<input type="file" name="main_pic[]" id="main_pic">
+											</div>
+										</div>
+									</div>
+									<volist name="field_list['data']" id="vo" key="key">
+										<div class="form-group">
+											<label class="col-md-2 control-label">{$vo.name}：</label>
+											<if condition="$vo['form_type'] == 'textarea'">
+												<if condition = "$vo['tip_start'] eq 1">
+													<div class="col-md-8">
+														{$vo.html}
+													</div>
+													<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+													<div class="col-md-8">
+														{$vo.html}
+													</div>	
+												</if>
+											<elseif condition="$vo['form_type'] == 'address'"/>
+												<if condition = "$vo['tip_start'] eq 1">
+													<div class="col-md-8">
+														{$vo.html}
+													</div>
+													<div class="col-md-1"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+													<div class="col-md-8">
+														{$vo.html}
+													</div>	
+												</if>
+											<else/>
+												<div class="col-md-8">
+													{$vo.html}
+												</div>
+												<if condition = "$vo['tip_start'] eq 1 || $vo['field'] eq 'customer_id'">
+													<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+												<else/>
+													<div class="col-md-2"></div>
+												</if>
+											</if>
+										</div>
+									</volist>
+								</div>
+								<div class="col-md-1 pull-right">
+									<!-- <div style="height: 100%; border-right: 1px dashed gray;">&nbsp;sadf</div> -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tfoot_div" class="clearfix">
+				<div class="clearfix" id="tfoot_page">
+					<div class="ibox-content" style="border-top: none;">
+						<div class="col-sm-offset-2" style="text-align:center;margin-left:0px;"><button type="submit" class="btn btn-primary">修改产品</button></div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="wrapper wrapper-content " style="padding-top:12px; display: none">
+	<include file="Public:alert" />
+    <div class="row">
+        <div class="col-lg-12">
+			<div class="ibox-content clearfix" style="padding-top:0px">
+				<form id="form1" action="{:U('product/edit', 'id='.$product['product_id'])}" method="post" enctype="multipart/form-data">
+				<input type="hidden" name="product_id" value="{$product.product_id}"/>
+				<input type="hidden" name="jump_url" value="{$jump_url}"/>
+				<input name="a" type="hidden" value="edit">
+				<input name="product_id" type="hidden" value="{$product['product_id']}">
+				<table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
+					<tfoot>
+						<tr>
+							<td style="text-align:center;" colspan="4"><input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/>&nbsp; 
+							<input class="btn  btn-primary" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/></td>
+						</tr>
+					</tfoot>
+					<tbody class="form-inline">
+						<tr><th colspan="4">{:L('BASIC_INFORMATION')}</th></tr>
+							<php>$j=0;</php>
+							<volist name="field_list['main']" id="vo">
+							<php>$j++;</php>
+							<if condition="$vo['form_type'] == 'textarea' or $vo['form_type'] == 'editor' or $vo['form_type'] == 'address'">
+								<if condition="$i%2 == 0">
+								<td colspan="2">&nbsp;</td>
+								</tr>
+								</if>
+								<tr>
+									<td class="tdleft" width="15%">{$vo.name}:</td>
+									<td colspan="3">{$vo.html}</td>
+								</tr>
+								<if condition="$i%2 != 0 && count($field_list['main']) != $j">
+								<php>$i++;</php>
+								</if>
+							<else/>
+								<if condition="$i%2 != 0">
+								<tr>
+								</if>
+									<td class="tdleft" width="15%">{$vo.name}:</td>
+									<td width="35%">{$vo.html}</td>
+								<if condition="$i%2 == 0">
+								</tr>
+								</if>
+								<if condition="$i%2 != 0 && count($field_list['main']) == $j">
+									<td colspan="2">&nbsp;</td>
+									</tr>
+								</if>
+							</if>
+							</volist>
+							<tr><th  colspan="4">{:L('PRODUCT_PICTURE')}</th></tr>
+							<tr>
+								<td class="tdleft" height="100">主图</td>
+								<td colspan="3" height="100">
+									<input type="hidden" name="main_images_id" value="{$product.images.main.images_id}"/>
+									<table  class="table table-striped">
+										<tbody>
+											<tr>
+												<td width="20%">
+													<div class="thumbnail thumb80">
+														<if condition="empty($product['images']['main']['path'])">
+															<img id="main_pic_prev" class="thumb80" />
+														<else />
+															<a href="{$product.images.main.path}" target="_self" class="litebox">
+																<img id="main_pic_prev" src="{$product.images.main.path}" class="thumb80" />
+															</a>
+														</if>
+													</div>
+												</td>
+												<td width="35%">
+													<p>
+														<span id="main_pic_prev_name">
+															<if condition="empty($product['images']['main']['name'])">无<else />{$product.images.main.name}</if>
+														</span>
+													</p>
+												</td>
+												<td width="25%">
+													<p>
+														<span id="main_pic_prev_size">
+															<if condition="empty($product['images']['main']['size'])">0<else />{$product.images.main.size}</if>
+														</span> KB
+													</p>
+												</td>
+												<td width="30%">
+													<div class="btn btn-success fileinput-button">
+														<span>选择文件</span>
+														<input type="file" name="main_pic[]" id="main_pic">
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td class="tdleft" style="min-height:50">副图</td>
+								<td colspan="3" style="min-height:50">
+									<notempty name="product['images']['secondary']">
+										<volist name="product['images']['secondary']" id="vo">
+											<div class="box-secondary" id="box-list-{$vo.images_id}">
+												<a href="{$vo.path}" target="_self" class="litebox" data-litebox-group="group-1">
+													<img src="{$vo.path}" class="thumbnail thumb80">
+													<a href="javascript:del_img({$vo.images_id});"><i class="fa fa-remove del_parts"></i></a>
+												</a>
+											</div>
+										</volist>
+									</notempty>
+									<div class="div_add">
+										<a class="btn btn-primary pull-right" id="btn_add_files" href="javascript:void(0);">
+											<i class="fa fa-plus"></i>&nbsp;&nbsp;新增
+										</a>
+									</div>
+								</td>
+							</tr>
+							<tr><th  colspan="4">{:L('ADDITIONAL_INFORMATION')}</th></tr>
+							<php>$j=0;</php>
+							<volist name="field_list['data']" id="vo">
+							<php>$j++;</php>
+							<if condition="$vo['form_type'] == 'textarea' or $vo['form_type'] == 'editor' or $vo['form_type'] == 'address'">
+								<if condition="$i%2 == 0">
+								<td colspan="2">&nbsp;</td>
+								</tr>
+								</if>
+								<tr>
+									<td class="tdleft" width="15%">{$vo.name}:</td>
+									<td colspan="3">{$vo.html}</td>
+								</tr>
+								<if condition="$i%2 != 0 && count($field_list['data']) != $j">
+								<php>$i++;</php>
+								</if>
+							<else/>
+								<if condition="$i%2 != 0">
+								<tr>
+								</if>
+									<td class="tdleft" width="15%">{$vo.name}:</td>
+									<td width="35%">{$vo.html}</td>
+								<if condition="$i%2 == 0">
+								</tr>
+								</if>
+								<if condition="$i%2 != 0 && count($field_list['data']) == $j">
+									<td colspan="2">&nbsp;</td>
+									</tr>
+								</if>
+							</if>
+							</volist>
+					</tbody>
+				</table>
+				<input name="a" type="hidden" value="edit">
+				<input name="product_id" type="hidden" value="{$product['product_id']}">
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!--<div class="" style="dispaly:none;" id="dialog-validate" title="{:L('PRODUCT_TEST_RESULTS')}">-->
+	<!--{:L('SELECT_ALL_OF_CUSTOMERS')}-->
+	<!--<div id="search_content"></div>-->
+<!--</div>-->
+<script type="text/javascript" src="__PUBLIC__/js/uploadPreview.js"></script>
+<script type="text/javascript">
+//初始化上传图片
+$("body").on('click','input[type="file"]', function(){
+	var selector = $(this).attr('id');
+	$("#"+selector).uploadPreview({ Img: selector+"_prev", Width: 120, Height: 120 });
+});
+$(document).ready(function(){
+    var ue = UE.getEditor('C_editor');
+	/*form表单验证*/
+	$("#form").validate({
+	
+	});
+});
+</script>
+<include file="Public:footer" />

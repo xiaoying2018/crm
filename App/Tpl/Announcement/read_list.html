@@ -1,0 +1,20 @@
+<style>
+	.folder-list li {line-height: 35px;}
+</style>
+<div>
+	<volist name="read_list" id="vo">
+		<div class="ibox-content" style="border:none;margin-top: 5px;border-bottom: 1px dashed #d3d3d6;">
+			<div class="social-feed-separated clearfix">
+	            <div class="social-feed-box">
+	                <div class="social-avatar">
+	                    <img alt="image" style="width:35px;height:35px;" class="img-circle" src="{$vo['user_info']['thumb_path']}">
+	                    <a class="role_info name-colors"  rel="{$vo['user_info']['role_id']}" href="javascript:void(0);">{$vo['user_info']['full_name']}</a>&nbsp;&nbsp;
+	                    <span class="text-muted">查看了此公告</span>&nbsp;&nbsp;&nbsp;
+	                    <span class="text-muted" >{$vo.read_time|date="Y-m-d  H:i",###}</span>
+	                </div>
+	            </div>
+	        </div>
+		</div>
+	</volist>
+</div>
+	

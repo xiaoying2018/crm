@@ -1,0 +1,336 @@
+<script type="text/javascript" src="__PUBLIC__/js/jscolor/jscolor.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
+<script type="text/javascript" language="javascript" src="__PUBLIC__/js/DateTimeMask.js" charset="UTF-8"></script>
+<style>
+	#parent select {margin-bottom:10px;}
+	.select_type{height:25px;}
+</style>
+<div class="col-md-12">
+    <div class="ibox float-e-margins">
+		<form class="form-horizontal" action="{:U('setting/fieldadd')}" method="post" name="form1" id="form1">	
+		<div class="col-md-3" id="parent">
+			<span>选择字段类型：</span>
+			<select name="form_type" class="form-control" id="form_type" multiple onchange="changeContent()" style="height:250px;padding:0px 3px;">
+				<option class="select_type" selected="selected" value="text">{:L('SINGLE_LINE_TEXT')}</option>
+				<option class="select_type" value="textarea">{:L('MULTILINE_TEXT')}</option>
+				<option class="select_type" value="box">{:L('SELECTED')}</option>	
+				<option class="select_type" value="datetime">{:L('DATE')}</option>	
+				<option class="select_type" value="number">{:L('NUMBER')}</option>
+				<option class="select_type" value="floatnumber">{:L('DECIMALS')}</option>
+				<option class="select_type" value="mobile">{:L('PHONE')}</option>
+				<option class="select_type" value="phone">{:L('TELEPHONE')}</option>
+				<option class="select_type" value="email">{:L('EMAIL')}</option>
+				<option class="select_type" value="address">{:L('ADDRESS')}</option>
+			</select>
+		</div>
+		<div class="col-md-9">
+			<input type="hidden" name="model" value="{$model}"/>
+			<table class="table form-inline" >
+				<tr> 
+					<th colspan="2"><span class="fa fa-th-list">&nbsp; 字段详细信息</span></th>
+				</tr>
+				<tr id="info_type_td">
+					<td style="width:130px;" class="tdleft">{:L('INFORMATION_TYPE')}</td>
+					<td>
+						<div class="radio radio-info radio-inline">
+							<input type="radio" name="is_main" id="is_main_1" value="1" checked="checked" />
+							<label for="is_main_1">{:L('MAIN_INFORMATION_SEARCH')}</label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input type="radio" name="is_main" id="is_main_2" value="0" />
+							<label for="is_main_2">{:L('ADDITIONAL_INFORMATION_REDUCE')}</label>
+						</div>
+					</td>
+				</tr>
+				<tr id="box_type_td" style="display:none;">
+					<td class="tdleft" >{:L('OPTION_TYPE')}</td>
+					<td>
+						<div class="radio radio-info radio-inline">
+							<input class="form-control" type="radio" id="setting_1" name="setting[boxtype]" value="radio" checked="checked"/>
+							<label for="setting_1">{:L('RADIO')}</label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input class="form-control" type="radio" id="setting_2" name="setting[boxtype]" value="checkbox" checked="checked"/>
+							<label for="setting_2">{:L('MULTISELECT')}</label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input class="form-control" type="radio" id="setting_3" name="setting[boxtype]" value="select" checked="checked"/>
+							<label for="setting_3">{:L('COMBOBOX')}</label>
+						</div>
+					</td>
+				</tr>
+				<tr id="box_data_td" style="display:none;">
+					<td class="tdleft">{:L('LIST_OF_OPTIONS')}</td>
+					<td>
+						<textarea rows="4" cols="60" class="form-control" id="setting_options" name="setting[options]"></textarea>
+						<br/><span style="color:red;">*</span><span id="setting_optionsTip"></span>
+					</td>
+				</tr>
+				<tr id="name_td">
+					<td class="tdleft">{:L('ID_NAME')}</td>
+					<td><input class="form-control" type="text" name="name" id="name"/><span style="color:red;">*</span><span id="nameTip"></span></td>
+				</tr>
+				<tr id="max_length_td">
+					<td class="tdleft">{:L('THE_LARGEST_FIELD_LENGTH')}</td>
+					<td>
+						<input class="form-control" type="text" name="max_length" id="max_length"/>
+						<br /><span id="max_lengthTip"></span>
+					</td>
+				</tr>
+				<tr id="default_value_td">
+					<td class="tdleft">{:L('DEFAULT_VALUE')}</td>
+					<td><input class="form-control" type="text" name="default_value" id="default_value"/><span id="max_length_tip" style="display:none;color:red;">&nbsp;注：数字类型最大数值为：2147483647</span><br /><span id="default_valueTip"></span></td>
+				</tr>
+				<tr id="is_validate_td">
+					<td class="tdleft">{:L('WHETHER_THE_VALIDATION')}</td>
+					<td>
+						<div class="radio radio-info radio-inline">
+							<input class="validate" name="is_validate" id="is_validate_1" onclick="validateSwitch(1)" type="radio" value="1"/>
+							<label for="is_validate_1"> {:L('IS')} </label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input class="validate" onclick="validateSwitch(0)" name="is_validate" id="is_validate_0" checked="checked" type="radio" value="0"/>
+							<label for="is_validate_0"> {:L('ISNOT')} </label>
+						</div>
+					</td>
+				</tr>
+				<tr id="is_unique_td" style="display:none;">
+					<td class="tdleft">{:L('WHETHER_ONLY')}</td>
+					<td>
+						<div class="radio radio-info radio-inline">
+							<input name="is_unique" id="is_unique_1" type="radio" value="1"/>
+							<label for="is_unique_1"> {:L('IS')} </label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input name="is_unique" id="is_unique_0" checked="checked" type="radio" value="0"/>
+							<label for="is_unique_0"> {:L('ISNOT')} </label>
+						</div>
+					</td>
+				</tr>
+			<if condition="$model eq 'customer' or $model eq 'leads'">
+				<tr id="is_recheck_td" style="display:none;">
+					<td class="tdleft">是否查重 :</td>
+					<td>
+						<div class="radio radio-info radio-inline">
+							<input name="is_recheck" id="is_recheck_1" type="radio" value="1"/>
+							<label for="is_recheck_1"> {:L('IS')} </label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input name="is_recheck" id="is_recheck_0" checked="checked" type="radio" value="0"/>
+							<label for="is_recheck_0"> {:L('ISNOT')} </label>
+						</div>
+					</td>
+				</tr>
+			</if>
+				<tr id="is_null_td" style="display:none;">
+					<td class="tdleft">{:L('WHETHER_ALLOW_NULL')}</td>
+					<td>
+						<div class="radio radio-info radio-inline">
+							<input name="is_null" id="is_null_1" type="radio" checked="checked" value="1"/>
+							<label for="is_null_1"> {:L('IS')} </label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input name="is_null" id="is_null_0" type="radio" checked="checked" value="0"/>
+							<label for="is_null_0"> {:L('ISNOT')} </label>
+						</div>
+					</td>
+				</tr>
+				<tr id="in_index_td">
+					<td class="tdleft">{:L('LIST_PAGE_DISPLAY')}</td>
+					<td>
+						<div class="radio radio-info radio-inline">
+							<input name="in_index" id="in_index_1" type="radio" value="1"/>
+							<label for="in_index_1"> {:L('IS')} </label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input name="in_index" id="in_index_0" checked="checked" type="radio" value="0"/>
+							<label for="in_index_0"> {:L('ISNOT')} </label>
+						</div>
+					</td>
+				</tr>
+				<tr id="in_add_td">
+					<td class="tdleft">{:L('ADD_PAGE_DISPLAY')}</td>
+					<td>
+						<div class="radio radio-info radio-inline">
+							<input name="in_add" id="in_add_1" checked="checked" type="radio" value="1"/>
+							<label for="in_add_1"> {:L('IS')} </label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input name="in_add" id="in_add_0" type="radio" value="0"/>
+							<label for="in_add_0"> {:L('ISNOT')} </label>
+						</div>
+					</td>
+				</tr>
+				<tr id="color_td">
+					<td class="tdleft">{:L('FIELD_DISPLAY_COLOR')}</td>
+					<td><input onclick="javascript:jscolor.install();" class="color form-control" value="333333" name="color"/></td>
+				</tr>
+				<tr id="tips_td">
+					<td class="tdleft">{:L('INPUT_PROMPT')}</td>
+					<td><input type="text" class=" form-control" name="input_tips"/><span style="color:red;">*</span>{:L('DISPLAYED_IN_THE_FIELD_INPUT_PROMPT')}</td>
+				</tr>
+				<!-- <tr>
+					<td>&nbsp;</td>
+					<td><input class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp;
+					<input class="btn" type="button" onclick="javascript:$('#dialog_field_add').dialog('close');" value="{:L('CANCEL')}"/></td>
+				</tr> -->
+			</table>
+		</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        jscolor.bind();
+        $.formValidator.initConfig({formID:"form1",debug:false,submitOnce:true,
+            onError:function(msg,obj,errorlist){
+                /*
+                $("#errorlist").empty();
+                $.map(errorlist,function(msg){
+                    $("#errorlist").append("<li>" + msg + "</li>")
+                });
+                */
+                alert(msg);
+            },
+            submitAfterAjaxPrompt : '<php>echo L('AJAX_VALIDATING_PLEASE_WAIT');</php>'
+        });
+        
+        $("#name").formValidator({
+			tipID:"nameTip",
+			empty:false,
+			onShow:"<php>echo L('FOR_EXAMPLE_THE_ARTICLE_TITLE');</php>",
+			onFocus:"<php>echo L('PLEASE_ENTER_A_NAME');</php>",
+			onCorrect:"<php>echo L('CORRECT_FORMAT');</php>"
+		}).inputValidator({
+			min:1,
+			empty:{
+				leftEmpty:false,
+				rightEmpty:false,
+				emptyError:"<php>echo L('BOTH_SIDES_ARE_NOT_FREE');</php>"
+			},
+			onError:"<php>echo L('LABEL_NAME_CANNOT_BE_EMPTY');</php>"
+		});
+        $("#max_length").formValidator({
+			tipID:"max_lengthTip",
+			empty:true,
+			onEmpty:'',
+			onShow:" ",
+			onFocus:" ",
+			onCorrect:"√"
+		}).regexValidator({
+			regExp:"intege1",
+			param:'i',
+			dataType:"enum",
+			onError:"<php>echo L('ONLY_FILL_IN_POSITIVE_INTEGER');</php>"
+		}).inputValidator({
+			max:1000,
+			type:"value",
+			onError:"<php>echo L('MUST_BE_BETWEEN_1_1000');</php>"
+		});
+        
+    });
+	function validateSwitch(set_val){
+		//1为开启验证，0为关闭验证
+		if(1 == set_val){
+			$('#is_unique_td').show();
+			$('#is_recheck_td').show();
+			
+			$('#is_null_td').show();
+			//开启后设置默值认为不验证‘是否唯一’和‘是否允许为空’和'是否查重'
+			$("input[name=is_unique]").last().prop('checked','true');
+			$("input[name=is_recheck]").last().prop('checked','true');
+			$("input[name=is_null]").first().prop('checked','true');
+		}else{
+			//如果选择不验证，则设置‘是否唯一’和'是否查重'和‘是否允许为空’的值为不验证
+			$("input[name=is_validate]").last().prop('checked','true');
+			$("input[name=is_unique]").last().prop('checked','true');
+			$("input[name=is_recheck]").last().prop('checked','true');
+			$("input[name=is_null]").first().prop('checked','true');
+			$('#is_unique_td').hide();
+			$('#is_recheck_td').hide();
+			$('#is_null_td').hide();
+		}
+	}
+	
+	function changeContent() {
+		var form_type = $("#form_type").val();
+		$("#setting_options").unFormValidator(true);
+		$('#max_length_tip').hide();
+		if(form_type == 'box'){
+			$("#box_data_td").show();
+			$("#box_type_td").show();
+			$("#max_length_td").hide();
+			$("#default_value_td").show();
+            $("#default_value").unFormValidator(true);
+            $("#max_length").unFormValidator(true);
+			$("#setting_options").formValidator({
+				tipID:"setting_optionsTip",
+				empty:false,
+				onShow:"<php> echo L('INPUT_OPTION_VALUE').'<br/>'.L('OPTION1').'<br/>'.L('OPTION2');</php>",
+				onFocus:"<php> echo L('INPUT_OPTION_VALUE').'<br/>'.L('OPTION1').'<br/>'.L('OPTION2');</php>",
+				onCorrect:"格式正确"
+			}).inputValidator({
+				min:1,
+				empty:{
+					leftEmpty:false,
+					rightEmpty:false,
+					emptyError:"<php> echo L('INPUT_OPTION_VALUE').'<br/>'.L('OPTION1').'<br/>'.L('OPTION2');</php>"
+				},
+				onError:"选项不能为空"
+			});
+		}else if(form_type == 'textarea'){
+			$("#box_data_td").hide();
+			$("#box_type_td").hide();
+			$("#max_length_td").hide();
+			$("#default_value_td").hide();
+            $("#default_value").unFormValidator(true);
+            $("#max_length").unFormValidator(true);
+		}else if(form_type == 'datetime'){
+			$("#box_data_td").hide();
+			$("#box_type_td").hide();
+			$("#default_value_td").hide();
+			$("#max_length_td").hide();
+            $("#default_value").unFormValidator(true);
+            $("#max_length").unFormValidator(true);
+		}else if(form_type == 'editor'){
+			$("#box_data_td").hide();
+			$("#box_type_td").hide();
+			$("#default_value_td").hide();
+			$("#max_length_td").hide();
+            $("#default_value").unFormValidator(true);
+            $("#max_length").unFormValidator(true);
+		}else if(form_type == 'address'){
+			$("#box_data_td").hide();
+			$("#box_type_td").hide();
+			$("#default_value_td").hide();
+			$("#max_length_td").hide();
+            $("#default_value").unFormValidator(true);
+            $("#max_length").unFormValidator(true);
+		}else if(form_type == 'number'){
+            $("#box_data_td").hide();
+			$("#box_type_td").hide();
+			$("#max_length_td").hide();
+			$("#default_value_td").show();
+			$("#default_value").formValidator({tipID:"default_valueTip",empty:true,onEmpty:'',onShow:" ",onFocus:" ",onCorrect:"√"}).regexValidator({regExp:"intege1",param:'i',dataType:"enum",onError:"<php>echo L('ONLY_FILL_IN_POSITIVE_INTEGER');</php>"}).inputValidator({min:-2147483647,max:2147483647,type:"value",onError:"<php>echo L('MUST_BE_BETWEEN');</php>"});
+            $("#max_length").formValidator({tipID:"max_lengthTip",empty:true,onEmpty:'',onShow:" ",onFocus:" ",onCorrect:"√"}).regexValidator({regExp:"intege1",param:'i',dataType:"enum",onError:"<php>echo L('ONLY_FILL_IN_POSITIVE_INTEGER');</php>"}).inputValidator({max:11,type:"value",onError:"<php>echo L('MUST_BE_BETWEEN_1_11');</php>"});
+            $('#max_length_tip').show();
+		}else if(form_type == 'floatnumber'){
+            $("#box_data_td").hide();
+			$("#box_type_td").hide();
+			$("#max_length_td").hide();
+			$("#default_value_td").show();
+			$("#default_value").formValidator({tipID:"default_valueTip",empty:true,onEmpty:'',onShow:" ",onFocus:" ",onCorrect:"√"}).regexValidator({regExp:"intege1",param:'i',dataType:"enum",onError:"<php>echo L('ONLY_FILL_OUT_A_POSITIVE_NUMBER');</php>"}).inputValidator({min:0.00,max:32767.99,type:"value",onError:"<php>echo L('MUST_BE_BETWEEN');</php>"});
+            $("#max_length").formValidator({tipID:"max_lengthTip",empty:true,onEmpty:'',onShow:" ",onFocus:" ",onCorrect:"√"}).regexValidator({regExp:"intege1",param:'i',dataType:"enum",onError:"<php>echo L('ONLY_FILL_OUT_A_POSITIVE_NUMBER');</php>"}).inputValidator({max:7,type:"value",onError:"<php>echo L('MUST_BE_BETWEEN_3_7');</php>"});
+            // $('#max_length_tip').show();
+		}else{
+			$("#box_data_td").hide();
+			$("#box_type_td").hide();
+			$("#max_length_td").hide();
+			$("#default_value_td").show();
+            $("#max_length").formValidator({tipID:"max_lengthTip",empty:true,onEmpty:'',onShow:" ",onFocus:" ",onCorrect:"√"}).regexValidator({regExp:"intege1",param:'i',dataType:"enum",onError:"<php>echo L('ONLY_FILL_IN_POSITIVE_INTEGER');</php>"}).inputValidator({max:1000,type:"value",onError:"<php>echo L('MUST_BE_BETWEEN_1_1000');</php>"});
+            $("#default_value").unFormValidator(true);
+		}
+		validateSwitch(0);
+	}
+</script>

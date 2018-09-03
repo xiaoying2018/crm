@@ -1,0 +1,312 @@
+<div class="nav-collapse collapse">
+	<ul class="nav"> 
+		<li class="dropdown" id="menu_customer">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">客户管理 <b class="caret"></b></a>
+			<ul class="dropdown-menu">
+				<if condition="checkPerByAction('leads','index')"><li><a href="{:U('leads/index')}">线索</a></li>
+				<li><a href="{:U('leads/index', 'by=public')}">线索池</a></li></if>
+				<li class="divider"></li>
+				<if condition="checkPerByAction('customer','index')"><li><a href="{:U('customer/index')}">客户</a></li></if>
+				<if condition="checkPerByAction('customer','index')"><li><a href="{:U('customer/index', 'content=resource')}">客户池</a></li></if>
+				<if condition="checkPerByAction('customer','cares')"><li><a href="{:U('customer/cares')}">客户关怀</a></li></if>
+				<if condition="checkPerByAction('contacts','index')"><li><a href="{:U('contacts/index')}">客户联系人</a></li></if>
+			</ul>
+		</li>	
+		<li class="dropdown" id="menu_business">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">销售机会 <b class="caret"></b></a>
+			<ul class="dropdown-menu">
+				<if condition="checkPerByAction('business','index')"><li><a href="{:U('business/index')}">商机</a></li></if>
+				<if condition="checkPerByAction('quote','index')"><li><a href="{:U('quote/index')}">报价单</a></li></if>
+				<if condition="checkPerByAction('contract','index')"><li><a href="{:U('contract/index')}">销售合同</a></li><li class="divider"></li>
+				</if>
+				
+			</ul>
+		</li>	
+		<li class="dropdown" id="menu_stock">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">进销存 <b class="caret"></b></a>
+			<ul class="dropdown-menu">		
+				<if condition="checkPerByAction('product','index')"><li><a href="{:U('product/index')}">产品</a></li></if>
+				<if condition="checkPerByAction('purchase','index')"><li><a href="{:U('purchase/index')}">采购单</a></li></if>
+				<if condition="checkPerByAction('sales','salesreturn')"><li><a href="{:U('sales/salesreturn')}">销售退货单</a></li></if>
+				<if condition="checkPerByAction('sales','distribution')"><li><a href="{:U('sales/distribution')}">配货单</a></li></if>
+				<if condition="checkPerByAction('stock','index')"><li><a href="{:U('stock/index')}">库存明细</a></li></if>
+				<if condition="checkPerByAction('stock','inoutorder')"><li><a href="{:U('stock/inoutorder')}">出入库单</a></li></if>
+				<if condition="checkPerByAction('stock','warehouse')"><li><a href="{:U('stock/warehouse')}">仓库管理</a></li></if>
+				<if condition="checkPerByAction('supplier','index')"><li><a href="{:U('supplier/index')}">供应商管理</a></li>
+				</if>
+
+			</ul>
+		</li>	
+		<li class="dropdown" id="menu_finance">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">财&nbsp;务 <b class="caret"></b></a>
+			<ul class="dropdown-menu">		
+				<if condition="checkPerByAction('finance','index_receivables')"><li><a href="{:U('finance/index','t=receivables')}">应收款</a></li></if>
+				<if condition="checkPerByAction('finance','index_payables')"><li><a href="{:U('finance/index','t=payables')}">应付款</a></li></if>
+				<if condition="checkPerByAction('finance','index_receivingorder')"><li><a href="{:U('finance/index','t=receivingorder')}">收款单</a></li></if>
+				<if condition="checkPerByAction('finance','index_paymentorder')"><li><a href="{:U('finance/index','t=paymentorder')}">付款单</a></li></if>
+			</ul>
+		</li>
+		<li class="dropdown" id="menu_office">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">办&nbsp;公 <b class="caret"></b></a>
+			<ul class="dropdown-menu">	
+				<if condition="checkPerByAction('task','index')"><li><a href="{:U('task/index')}">任&nbsp;务</a></li></if>
+				<if condition="checkPerByAction('knowledge','index')"><li><a href="{:U('knowledge/index')}">知&nbsp;识</a></li></if>
+				<if condition="checkPerByAction('workorder','index')"><li><a href="{:U('workorder/index')}">工&nbsp;单</a></li></if>
+				<if condition="checkPerByAction('examine','index')"><li><a href="{:U('examine/index')}">审&nbsp;批</a></li></if>
+				<li><a href="{:U('log/index')}">工作日志</a></li>
+				<li><a href="{:U('log/anly')}">跟进记录</a></li>
+				<if condition="checkPerByAction('event','index')"><li><a href="{:U('event/index')}">日程安排</a></li></if>
+				<li class="divider"></li>
+				<if condition="checkPerByAction('announcement','index')"><li><a href="{:U('announcement/index')}">公告管理</a></li></if>
+				<?php 
+					$role_vip = M('Config')->where('name = "role_vip"')->getField('value');
+					$role_vip_ids = array_filter(explode(',',$role_vip)); 
+				?>
+				<if condition="checkPerByAction('user','department') || in_array(session('role_id'),$role_vip_ids)"><li><a href="{:U('user/department')}">组织架构</a></li></if>
+				
+			</ul>
+		</li>
+		<li class="dropdown" id="menu_analy">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">统计分析 <b class="caret"></b></a>
+			<ul class="dropdown-menu">	
+				<if condition="checkPerByAction('finance','collection')"><li><a href="{:U('finance/collection')}">业绩管理</a></li></if>
+				<if condition="checkPerByAction('leads','analytics')"><li><a href="{:U('leads/analytics')}">线索统计</a></li></if>
+				<if condition="checkPerByAction('customer','analytics')"><li><a href="{:U('customer/analytics')}">客户统计</a></li></if>
+				<if condition="checkPerByAction('finance','analytics')"><li><a href="{:U('finance/analytics')}">财务统计</a></li></if>
+				<if condition="checkPerByAction('business','analytics')"><li><a href="{:U('business/analytics')}">商机统计</a></li></if>
+				<if condition="checkPerByAction('product','analytics')"><li><a href="{:U('product/analytics')}">产品销量统计</a></li></if>
+				<if condition="checkPerByAction('examine','analytics')"><li><a href="{:U('examine/analytics')}">审批统计</a></li></if>
+
+			</ul>
+		</li>
+		<li class="dropdown" id="menu_market">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">营&nbsp;销 <b class="caret"></b></a>
+			<ul class="dropdown-menu">		
+				<if condition="checkPerByAction('setting','sendsms')"><li><a href="{:U('setting/sendsms')}">发送短信</a></li></if>
+				<if condition="checkPerByAction('setting','sendsms')"><li><a href="{:U('setting/smsrecord')}">短信发件箱</a></li></if>
+				<if condition="checkPerByAction('setting','sendemail')"><li><a href="{:U('setting/sendemail')}">发送邮件</a></li></if>
+			</ul>
+		</li>
+		<if condition="session('?admin')">
+			<li class="dropdown" id="menu_setting">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">系统设置 <b class="caret"></b></a>
+				<ul class="dropdown-menu">		
+					<li><a href="{:U('setting/defaultinfo')}">系统基本设置</a></li>
+					<li><a href="{:U('setting/smtp')}">SMTP设置</a></li>
+					<li><a href="{:U('setting/sms')}">短信设置</a></li>
+					<li><a href="{:U('setting/fields')}">自定义字段设置</a></li>
+					<li><a href="{:U('action_log/index')}">操作日志</a></li>
+					<!-- <li class="divider"></li>
+					<li><a href="javascript:check_version();">{:L('CHECK_THE_NEW_VERSION')}</a></li> -->
+				</ul>
+			</li>
+		</if>
+	</ul>
+	<ul class="nav pull-right">
+		<li style=" width: 33px; "><div style="margin-top:10px;"><a  style="padding: 10px 0px; width: 70px; " href="{:U('message/index')}" title="{:L('NEW_MESSAGE')}"><span id="message_tips" style="color:#fff;"><i class="icon-envelope"></i> <span id="message_num">0</span> </span></a></div></li>
+		<li style=" width: 32px; "><div style="margin-top:10px;"><a  style="padding: 10px 0px; width: 70px; " href="{:U('task/index', 'by=me')}" title="{:L('MY_TASK')}"><span id="task_tips" style="color:#fff;"><i class="icon-tasks"style="margin-left:5px;"></i> <span id="task_num">0</span> </span></a></div></li>
+		<li style=" width: 32px; "><div style="margin-top:10px;"><a  style="padding: 10px 0px; width: 70px; " href="{:U('event/index','by=me')}" title="{:L('TODAY_SCHEDULE')}"><span id="event_tips" style="color:#fff;"><i class="icon-screenshot" style="margin-left:5px;"></i> <span id="event_num">0</span> </span></a></div></li>
+		<li style=" width: 32px; "><div style="margin-top:10px;"><a  style="padding: 10px 0px; width: 70px; " href="{:U('contract/index','by=me')}" title="{:L('CONTRACT_EXPIRES_REMIND')}"><span id="contract_tips" style="color:#fff;"><i class="icon-star-empty" style="margin-left:5px;"></i> <span id="contract_num">0</span> </span></a></div></li>
+		<li class="dropdown" >
+			<a href="#" title="{:L('QUICK_ADD')}" class="dropdown-toggle" data-toggle="dropdown" style="padding: 10px;"><i class="icon-plus"  style="padding: 2px 0px;"></i>  <b class="caret"></b></a>
+			<ul class="dropdown-menu">
+				<li><a id="header_send_message">{:L('MESSAGE')}</a></li>
+				<volist name="simple" id="vo">
+					<li><a href="{$vo.url}">{$vo.module_name}</a></li>
+				</volist>
+				<li class="divider"></li>
+				<li><a href="{:U('navigation/index')}">{:L('OPTION_SET')}</a></li>
+			</ul>
+		</li>
+		<li class="dropdown" id="menu_home">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 3px;line-height:32px">{$Think.session.name}
+			<if condition="$Think.session.user_img neq ''">
+                <img src="{$Think.session.user_img}" class="avatar"/>
+            <else />
+                <img src="__PUBLIC__/img/avatar_default.png" class="avatar" />
+            </if>
+            </a>
+			<ul class="dropdown-menu">							
+				<li><a href="{:U('user/edit')}">个人资料</a></li>
+				<li><a href="{:U('dynamic/index')}">工作动态</a></li>
+				<li><a href="{:U('message/index')}">站内信</a></li>
+				<li class="divider"></li>
+				<li><a href="{:U('user/logout')}">{:L('EXIT')}</a></li>
+			</ul>
+		</li>
+	</ul>
+	<div class="nav_menu_tool_tips" close-status="open">
+		<div class="tips_icon_close"><a href="javascript:void(0);" id="close_tips">X</a></div>
+		<div class="tips_panel">
+			<div class="tips_item" id="message_item">
+				<span class="tips_count">0</span> 封新站内信<span class="tips_link"><a href="{:U('message/index')}">查看站内信</a></span>
+			</div>
+			<div class="tips_item" id="task_item">
+				<span class="tips_count">0</span> 个新任务提醒<span class="tips_link"><a href="{:U('task/index')}">查看任务</a></span>
+			</div>
+			<div class="tips_item" id="event_item">
+				<span class="tips_count">0</span> 个新日程提醒<span class="tips_link"><a href="{:U('event/index')}">查看日程</a></span>
+			</div>
+			<div class="tips_item" id="contract_item">
+				<span class="tips_count">0</span> 个新合同提醒<span class="tips_link"><a href="{:U('contract/index')}">查看合同</a></span>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="dialog-upgrade" class="hide" title="{:L('VERSION_UPDATE')}">
+	<p>{:L('CURRENT_VERSION')}{:C("VERSION")} &nbsp; {:L('DELIVERY_TIME')}{:C("RELEASE")}</p>
+	<p id="process">{:L('CONNECT_REMOTE_SERVER')}</p>
+	<p id="info"></p>
+</div>
+<div id="message" class="hide"><p id="tips"></p></div>
+<div class="hide" id="dialog-message-send" title="{:L('WRITE_LETTER')}">loading...</div>
+<script type="text/javascript">
+$('.dropdown').hover(function(){
+	$(this).find('.dropdown-menu').animate({ opacity:'show', height:'show' },200);
+	$(this).find('.dropdown-toggle').addClass('navhover');
+}, function() {
+	$(this).find('.dropdown-menu').stop(true,true).hide();
+	$(this).find('.dropdown-toggle').removeClass('navhover');
+});
+$('#dialog-upgrade').dialog({
+	autoOpen: false,
+	modal: true,
+	width: 600,
+	maxHeight: 400,
+	position :["center",100],
+	buttons: { 
+		"Cancel": function () {
+			$(this).dialog("close");
+		}
+	}
+});
+$("#dialog-message-send").dialog({
+    autoOpen: false,
+    modal: true,
+	width: 800,
+	maxHeight: 600,
+	position: ["center",100]
+});
+function check_version() {
+	$('#dialog-upgrade').dialog('open');
+	$.get("{:U('upgrade/index')}", function(data){
+		if (data.status) {
+			info = "<span style='color:green;'>" + data.info + "</span>";
+		} else {
+			info = "<span style='color:red;'>" + data.info + "</span>";
+		}
+		$("#dialog-upgrade #info").html(info);
+	});
+}
+a = 1;
+function fn(){
+	if(a == 1){
+		$('#message_tips').css({color:'#fff'});
+		a = 0;
+	}else{
+		$('#message_tips').css({color:'#5AFF31'});
+		a = 1;
+	}
+}
+var myInterval;
+
+function message_tips(){
+	$.get("{:U('message/tips')}", function(data){
+		if((data.data['message'] != $('#message_tips #message_num').html()) && (data.data['message'] != 0)){
+			$('#message_tips').css({color:'#5AFF31'});
+			$('#message_item').css({display:'block'});	//显示站内信卡片
+			myInterval = setInterval(fn,1000);
+			$("#message #tips").html("<audio id='ttsoundplayer'  autoplay='autoplay'><source src='Public/sound/Global.wav' type='audio/wav'></audio>");
+		} else {
+			$("#message #tips").html('');
+			if(data.data['message'] == 0){
+				$('#message_tips').css({color:'#fff'});
+				$('#message_item').css({display:'none'});	//隐藏站内信卡片
+				clearInterval(myInterval);
+			}
+		}
+	
+		//导航提醒设置颜色
+		if(data.data['task'] != '0'){
+			$('#task_tips').css({color:'#5AFF31'});
+		}else{
+			$('#task_tips').css({color:'#fff'});
+		}
+		if(data.data['event'] != '0'){
+			$('#event_tips').css({color:'#5AFF31'});
+		}else{
+			$('#event_tips').css({color:'#fff'});
+		}
+		if(data.data['contract'] != '0'){
+			$('#contract_tips').css({color:'#5AFF31'});
+		}else{
+			$('#contract_tips').css({color:'#fff'});
+		}
+		
+		//卡片提醒显示与隐藏
+		if(data.data['task_count'] != '0'){
+			$('#task_item').css({display:'block'});	//显示任务卡片
+		}else{
+			$('#task_item').css({display:'none'});	//隐藏任务卡片
+		}
+		if(data.data['event_count'] != '0'){
+			$('#event_item').css({display:'block'});	//显示日程卡片
+		}else{
+			$('#event_item').css({display:'none'});	//隐藏日程卡片
+		}
+		if(data.data['contract_count'] != '0'){
+			$('#contract_item').css({display:'block'});	//显示合同卡片
+		}else{
+			$('#contract_item').css({display:'none'});	//隐藏合同卡片
+		}
+		
+		//导航提醒实时写入数值
+		$('#message_tips #message_num').html(data.data['message']);
+		$('#task_tips #task_num').html(data.data['task']);
+		$('#event_tips #event_num').html(data.data['event'] );
+		$('#contract_tips #contract_num').html(data.data['contract'] );
+		
+		//卡片提醒实时写入数值
+		$('#message_item .tips_count').html(data.data['message']);
+		$('#task_item .tips_count').html(data.data['task_count']);
+		$('#event_item .tips_count').html(data.data['event_count']);
+		$('#contract_item .tips_count').html(data.data['contract_count']);
+		
+		//根据站内信、任务、日程、合同是否存在数据来判断是否显示卡片提示
+		var closeStatus = $('.nav_menu_tool_tips').attr('close-status');	//卡片提示状态
+		if(data.status == 1 && (data.data.message != 0 || data.data.task_count != 0 || data.data.event_count != 0 || data.data.contract_count != 0) && closeStatus == 'open'){
+			$('.nav_menu_tool_tips').css({display:'block'});
+			$('.nav_menu_tool_tips').attr('close-status','closed');
+			$('.nav_menu_tool_tips').show(300).delay(5000).fadeOut("slow",function(){     
+			   //隐藏时把元素删除     
+			 // $(window).unbind();  
+			  
+			}); 
+		}else{
+			$('.nav_menu_tool_tips').css({display:'none'});
+		}
+	},'json');
+	setTimeout('message_tips()',5000);
+}
+
+
+$(function(){
+	message_tips();
+	
+	$("#header_send_message").click(function(){
+		$('#dialog-message-send').dialog('open');
+		$('#dialog-message-send').load('{:U("message/send")}');
+	});
+	
+	var select_menu = "{:setSelectedMenu($Think.MODULE_NAME, $Think.ACTION_NAME)}";
+	if(select_menu){
+		$("#"+select_menu).addClass('active');
+	}
+	
+	/** 点击卡片提醒关闭按钮，永久关闭任务、日程、合同，暂时关闭站内信 */
+	$('#close_tips').click(function(){
+		$('.nav_menu_tool_tips').attr('close-status','closed');
+		$('.nav_menu_tool_tips').css({display:'none'});
+	});
+});
+</script>

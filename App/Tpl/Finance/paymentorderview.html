@@ -1,0 +1,245 @@
+<include file="Public:header" />
+<style>
+	.col-lg-1{min-width: 140px;}
+</style>
+<div class="wrapper wrapper-content animated fadeIn">
+	<include file="Public:alert" />
+    <div class="row">
+	    <div class="col-lg-12">
+			<div class="title-bar">
+				<div class="row " id="title-show">
+					<ul class="nav pull-left" style="margin:0px 10px 0px 20px;">
+						<span><img src="__PUBLIC__/img/receivingorder_view_icon.png" style="margin-bottom:9px;" alt=""></span><span style="font-size:21px;margin-left:5px">&nbsp;&nbsp;&nbsp;{$info.name}</span>&nbsp;&nbsp;
+						<if condition="$info['status'] eq 1">
+							<span class="badge badge-success" style="padding:5px 20px;margin-top:-8px;background:#8BC34A;color:#fff;">通过</span>
+						<elseif condition="$info['status'] eq 2"/>
+							<span class="badge badge-error" style="color:#fff;padding:5px 20px;margin-top:-8px;background:#F5715F">拒绝</span>
+						<else />
+							<span class="badge badge-warning" style="color:#fff;padding:5px 20px;margin-top:-8px;background:#F5CA00">待审</span>
+						</if>
+					</ul>
+					<a href="{:U('finance/edit','t=paymentorder&id='.$info['paymentorder_id'])}" class="btn btn-outline btn-default pull-right" style="margin-right: 15px;"><i class="fa fa-pencil"></i>&nbsp;&nbsp;编辑</a>&nbsp;&nbsp; 
+				</div>
+			</div>
+			<div class="tabs-container" style="">
+				<div class="pull-left" style="width:100%;border:1px solid #ccc;">
+					<div style="padding:15px 0 0 20px;background:#fff;" id="left-content">
+						<div class="tab-content">
+							<div class="tab-pane in active" id="tab1">
+								<div class="panel-body" style="padding-top: 0px;">
+									<div style="font-size:13px;font-weight:700;margin-top:15px;margin-bottom: 10px;"><span style="border-left:5px solid #19AA8D;padding-left:10px;height:10px;"></span>基本信息</div>
+									<div class="form-horizontal view-group " >
+										<div class="form-group">
+											<label class="col-lg-1 control-label">付款单编号</label>
+											<div class="col-lg-3">
+												<p class="form-p">
+													{$info.name}
+												</p>
+											</div>
+											<label class="col-lg-1 control-label">应付款编号</label>
+											<div class="col-lg-3">
+												<p class="form-p">
+													<a href="{:U('finance/view','t=payables&id='.$info['payables_id'])}">{$info['payables_name']}</a>
+												</p>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-lg-1 control-label">付款时间</label>
+											<div class="col-lg-3">
+												<p class="form-p">
+													{$info['pay_time']|date="Y-m-d",###}
+												</p>
+											</div>
+											<label class="col-lg-1 control-label">付款金额</label>
+											<div class="col-lg-3">
+												<p class="form-p">
+													{$info['money']}
+												</p>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-lg-1 control-label">负责人</label>
+											<div class="col-lg-3">
+												<p class="form-p">
+													<a class="role_info" rel="{$info['owner_role_id']}" href="javascript:void(0)">{$info['owner']['full_name']}</a>
+												</p>
+											</div>
+											<label class="col-lg-1 control-label">{:L('CREATOR_ROLE')}</label>
+											<div class="col-lg-3">
+												<p class="form-p">
+													<a class="role_info" rel="{$info['creator_role_id']}" href="javascript:void(0)">{$info['creator_name']}</a>
+												</p>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-lg-1 control-label">开户行</label>
+											<div class="col-lg-3">
+												<p class="form-p">
+													{$info['receipt_account']}
+												</p>
+											</div>
+											<label class="col-lg-1 control-label">银行账户</label>
+											<div class="col-lg-3">
+												<p class="form-p">
+													{$info['receipt_account']}
+												</p>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-lg-1 control-label">收款单位</label>
+											<div class="col-lg-3">
+												<p class="form-p">
+													{$info['company']}
+												</p>
+											</div>
+											<label class="col-lg-1 control-label">创建时间</label>
+											<div class="col-lg-3">
+												<p class="form-p">
+													{$info['create_time']|date="Y-m-d",###}
+												</p>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-lg-1 control-label">{:L('DESCRIPTION')}</label>
+											<div class="col-lg-8">
+												<span>
+													{$info.description}
+												</span>
+											</div>
+										</div>
+									</div>
+									<div style="font-size:13px;font-weight:700;margin-top:20px;margin-bottom: 10px;">
+										<span style="border-left:5px solid #19AA8D;padding-left:10px;height:10px;"></span>审核信息
+									</div>
+									<div>
+										<div class="pull-left">
+											<img src="{$info['owner']['thumb_path']}" style="width:45px;height:45px;margin:10px 0 0 10px;border-radius:50px;">
+										</div>
+										<div class="pull-left" style="margin:10px 0 0 10px;">
+											<div class="control-label" style="margin-top:2px;font-size:16px;color:#B4B1C2">{$info['creator_name']}</div>
+											<div class="control-label" style="margin-top:2px;font-size:15px;">{$info.create_time|date="Y-m-d H:i",###}</div>
+										</div>
+										<div class="pull-left" style="margin-left:6%;margin-top:25px;">
+											<span class="fa fa-circle" style="color:#B4B1C2"></span>
+											<span class="fa fa-circle" style="color:#B4B1C2"></span>
+											<span class="fa fa-circle" style="color:#B4B1C2"></span>
+										</div>
+										<div class="pull-left" style="margin-left:6%;">
+											<if condition="$info['status'] eq 0">
+												<img src="__PUBLIC__/img/moren.png" style="width:45px;height:45px;margin:10px 0 0 10px;border-radius:50px;">
+											<else/>
+												<img src="{$info['examine']['img']}" style="width:45px;height:45px;margin:10px 0 0 10px;border-radius:50px;">
+											</if>
+										</div>
+										<div class="pull-left" style="margin:10px 0 0 10px;">
+											<div class="control-label" style="margin-top:2px;font-size:16px;color:#B4B1C2" title="">
+												<if condition="$info['status'] neq 0">
+													{$info['examine']['user_name']}
+												<else/>
+													财务审核员
+												</if>
+											</div>
+											<div class="control-label" style="margin-top:2px;font-size:15px;">
+												<if condition="$info['status'] eq 1">
+													<span style="color:#19AA8D">通过</span>
+												<elseif condition="$info['status'] eq 2"/>
+													<span style="color:#F5715F" data-container="body" title="审核结果" data-toggle="popover" data-placement="right" data-content="{$info['check_des']}">拒绝<if condition= "$info['check_des']">&nbsp;&nbsp;<span style="color:#ccc;">点击查看审核结果</span></if></span>
+												<else />
+													<span style="color:#F5CA00">待审</span>
+												</if>
+											</div>
+										</div>
+										<div style="clear:both"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<if condition="$info['status'] eq 0">
+						<div style="width:100%;border-top:1px solid #ccc;padding:15px 15px 15px 45px;background:#FcFcFc;margin-left:0px;">
+							<form action="{:U('finance/check','t=paymentorder')}" id="form_submit" method="post">
+								<input name="paymentorder_id" type="hidden" value="{$info['paymentorder_id']}" />
+								<input name="t" type="hidden" value="paymentorder" />
+								<input name="submit1" type="hidden" value="agree" />
+								<button type="button" id="checked_submit" value="agree" class="btn btn-primary pull-left" style="margin-right:20px;">同意</button> &nbsp; &nbsp;
+								<a href="javascript:void(0);" id="submit_deny" value="deny" style="background-color:#FF7663;border:1px solid #FF7663" class="btn btn-warning">拒绝</a>
+							</form>
+						</div>
+					</if>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-role-info" title="{:L('DIALOG_USER_INFO')}">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+<div style="display:none;" id="dialog-check-info" title="付款单审核">
+	<form action="{:U('finance/check','t=paymentorder')}" method="post">
+	<input name="paymentorder_id" type="hidden" value="{$info['paymentorder_id']}" />
+	<input name="t" type="hidden" value="paymentorder"/>
+		<table class="table">
+			<tr>
+				<td>
+					付款单号：<a href="javascript:;">{$info.name}</a>
+					<br/>
+					<br/>
+					<textarea style="width:400px;height:200px;" class="form-control" name="description" placeholder="填写理由(必填)"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align:center;">
+					<a href="javascript:void(0);" onclick="javascript:$('#dialog-check-info').dialog('close');" class="btn-sm btn btn-primary">取消</a>&nbsp;&nbsp;
+					<button type="submit" name="submit1" value="deny" class="btn btn-warning btn-sm">确认拒绝</button>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+<script type="text/javascript">
+var pm_heigth = window.screen.height * 0.56;
+$('#left-content').css('min-height',pm_heigth+'px');
+
+$("#dialog-role-info").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 750,
+	maxHeight: 600,
+	position: ["center",100]
+});
+$("#dialog-check-info").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 450,
+	maxHeight: 400,
+	position: ["center",100]
+});
+$(function(){
+	$(".role_info").click(function(){
+		$role_id = $(this).attr('rel');
+		$('#dialog-role-info').dialog('open');
+		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
+	});
+	$("#submit_deny").click(function(){
+		$('#dialog-check-info').dialog('open');
+	});
+	$('#checked_submit').click(function(){
+		swal({   
+			title: "确定要通过审核吗？",   
+			type: "warning",   
+			showCancelButton: true,   
+			confirmButtonColor: "#1AB394",   
+			confirmButtonText: "确定",   
+			closeOnConfirm: false 
+		},
+		function(){  $('#form_submit').submit(); });
+	});
+});
+</script>
+<include file="Public:footer" />	
