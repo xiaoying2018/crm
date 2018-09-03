@@ -518,53 +518,60 @@ $(function(){
 						<span class="fa arrow"></span>
 					</a>
 					<ul class="nav-second-level" <if condition="$module_name eq 'educationview' || $module_name eq 'publicclass' || $module_name eq 'coursedocument'">style="display: block;"</if>>
-					<if condition="session('?admin') || in_array(1,session('edu_roles')) ">
-				<li <if condition="$action_name eq 'index' && $module_name != 'publicclass' && $module_name != 'coursedocument'">class="active"</if>>
-				<i class="fa fa-angle-right"></i>
-				<a href="{:U('educationview/index')}">教务主页</a>
-				</li>
-				<li <if condition="preg_match( '/course/', $action_name )">class="active"</if>>
-				<i class="fa fa-angle-right"></i>
-				<a href="{:U('educationview/course_index')}">课程管理</a>
-				</li>
-				<li <if condition="$module_name eq 'coursedocument' &&  $action_name eq 'index'">class="active"</if>>
-				<i class="fa fa-angle-right"></i>
-				<a href="{:U('CourseDocument/index')}">课件管理</a>
-				</li>
-				<li <if condition="preg_match( '/teacher/', $action_name )">class="active"</if>>
-				<i class="fa fa-angle-right"></i>
-				<a href="{:U('educationview/teacher_index')}">教师管理</a>
-				</li>
-				</if>
+						<if condition="session('?admin') || in_array(1,session('edu_roles')) ">
+							<li <if condition="$action_name eq 'index' && $module_name != 'publicclass' && $module_name != 'coursedocument'">class="active"</if>>
+								<i class="fa fa-angle-right"></i>
+								<a href="{:U('educationview/index')}">教务主页</a>
+							</li>
+							<li <if condition="preg_match( '/course/', $action_name )">class="active"</if>>
+								<i class="fa fa-angle-right"></i>
+								<a href="{:U('educationview/course_index')}">课程管理</a>
+							</li>
+							<li <if condition="preg_match( '/teacher/', $action_name )">class="active"</if>>
+								<i class="fa fa-angle-right"></i>
+								<a href="{:U('educationview/teacher_index')}">教师管理</a>
+							</li>
+						</if>
 
-				<if condition="session('?admin') || in_array(4,session('edu_roles')) || in_array(1,session('edu_roles')) || in_array(5,session('edu_roles'))">
-					<li <if condition="preg_match( '/student/', $action_name )">class="active"</if>>
-					<i class="fa fa-angle-right"></i>
-					<a href="{:U('educationview/student_index')}">学员管理</a>
-					</li>
-				</if>
+						<if condition="session('?admin') || in_array(4,session('edu_roles')) || in_array(1,session('edu_roles')) || in_array(5,session('edu_roles'))">
+							<li <if condition="preg_match( '/student/', $action_name )">class="active"</if>>
+							<i class="fa fa-angle-right"></i>
+							<a href="{:U('educationview/student_index')}">学员管理</a>
+							</li>
+						</if>
 
-				<if condition="in_array(2,session('edu_roles'))">
-					<li <if condition="preg_match( '/headmaster/', $action_name )">class="active"</if>>
-					<i class="fa fa-angle-right"></i>
-					<a href="{:U('educationview/my_headmaster')}">我的班级</a>
-					</li>
-				</if>
-				<if condition="in_array(3,session('edu_roles'))">
-					<li <if condition="preg_match( '/lecturer/', $action_name )">class="active"</if>>
-					<i class="fa fa-angle-right"></i>
-					<a href="{:U('educationview/my_lecturer')}">我的课表</a>
-					</li>
-				</if>
-				<?php if ( checkPerByAction('publicclass','index') ): ?>
-				<li <if condition="$module_name eq 'publicclass' &&  $action_name eq 'index'">class="active"</if>">
-				<i class="fa fa-angle-right"></i>
-				<a href="{:U('publicclass/index')}">公开课</a>
+						<if condition="in_array(2,session('edu_roles'))">
+							<li <if condition="preg_match( '/headmaster/', $action_name )">class="active"</if>>
+								<i class="fa fa-angle-right"></i>
+								<a href="{:U('educationview/my_headmaster')}">我的班级</a>
+							</li>
+						</if>
+
+						<if condition="in_array(2,session('edu_roles')) || in_array(3,session('edu_roles')) || in_array(1,session('edu_roles')) || session('?admin')">
+							<li <if condition="$module_name eq 'coursedocument' &&  $action_name eq 'index'">class="active"</if>>
+								<i class="fa fa-angle-right"></i>
+								<a href="{:U('CourseDocument/index')}">课件管理</a>
+							</li>
+						</if>
+
+						<if condition="in_array(3,session('edu_roles'))">
+							<li <if condition="preg_match( '/lecturer/', $action_name )">class="active"</if>>
+								<i class="fa fa-angle-right"></i>
+								<a href="{:U('educationview/my_lecturer')}">我的课表</a>
+							</li>
+						</if>
+
+						<?php if ( checkPerByAction('publicclass','index') ): ?>
+							<li <if condition="$module_name eq 'publicclass' &&  $action_name eq 'index'">class="active"</if>">
+								<i class="fa fa-angle-right"></i>
+								<a href="{:U('publicclass/index')}">公开课</a>
+							</li>
+						<?php endif; ?>
+
+					</ul>
 				</li>
 				<?php endif; ?>
-				</ul>
-				</li>
-				<?php endif; ?>
+
 				<?php if ( checkPerByAction('salefaq','index') ): ?>
 	            	<li class="item_l">
 	            		<a class="showchild" href="javascript:void(0)">
