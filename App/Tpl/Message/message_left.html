@@ -12,7 +12,10 @@
 					<span style="font-weight:900;">我的消息</span>
 				</div>
 				<div class="nav pull-right" >
-					<a href="javascript:void(0)" id="to_role" title="选择收件人"><img src="__PUBLIC__/img/icon.png" /></a>
+					<!-- 如果是 www.liuxuecrm.com 进入 不显示选择此标签 -->
+					<if condition="$_SERVER['SERVER_NAME'] != 'www.liuxuecrm.com'">
+						<a href="javascript:void(0)" id="to_role" title="选择收件人"><img src="__PUBLIC__/img/icon.png" /></a>
+					</if>
 				</div>
 			</div>
 		</div>
