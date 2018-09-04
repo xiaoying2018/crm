@@ -478,18 +478,7 @@ class ProfessorAction extends Action {
                 $this->ajaxReturn(['status' => true, 'data' => $data]);
             }
             unset($where['name']);
-            ##研究领域
-            $where['research_keywords'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
-            $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
-            $datas1 = $this->setDate($datas1);
-            if (is_array($datas1)) {
-                $count1 = M('professor')->where($where)->count();
-                $data['list'] = $datas1;
-                $data['count'] = $count1;
-                $data['total'] = ceil($count1 / $rows);
-                $this->ajaxReturn(['status' => true, 'data' => $data]);
-            }
-            unset($where['research_keywords']);
+
             ##学校
             $where['university'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
             $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
@@ -538,6 +527,18 @@ class ProfessorAction extends Action {
                 $this->ajaxReturn(['status' => true, 'data' => $data]);
             }
             unset($where['department']);
+            ##研究领域
+            $where['research_keywords'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
+            $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
+            $datas1 = $this->setDate($datas1);
+            if (is_array($datas1)) {
+                $count1 = M('professor')->where($where)->count();
+                $data['list'] = $datas1;
+                $data['count'] = $count1;
+                $data['total'] = ceil($count1 / $rows);
+                $this->ajaxReturn(['status' => true, 'data' => $data]);
+            }
+            unset($where['research_keywords']);
 
 
 
