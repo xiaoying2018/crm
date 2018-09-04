@@ -73,7 +73,7 @@
                 <div class="row clearfix" id="title-hide" style="display:none;">
                     <ul class="breadcrum pull-left">
                         <li>已选中&nbsp;<span id="icheck_num"></span>&nbsp;项</li>
-                        <?php if ( checkPerByAction('abroadcoursecategory','delete') ): ?>
+
                         <if condition="$type eq 'guanlian'">
                             <li><a  onclick="guanlianById()" id="guanlian_check" href="javascript:void(0)"><i class="fa fa-plus"></i>&nbsp;关联</a></li>
                         <elseif condition="$type eq 'chakan'" />
@@ -82,11 +82,9 @@
                             <li><a id="delete" href="javascript:void(0)"><i class="fa fa-times"></i>&nbsp;删除</a></li>
                         </if>
 
-                        <?php endif; ?>
                         <li class="last_li"><big><a class="fa fa-times pull-right" id="back-show"></a></big></li>
                     </ul>
                 </div>
-                <?php if ( checkPerByAction('abroadcoursecategory','add') ): ?>
                 <div class="row " id="title-show">
                     <ul class="nav pull-left" style="margin:2px 0 0 15px;">
                         <a href="{:U('CourseDocument/add')}" class="btn btn-primary btn-sm pull-left" style="margin:2px 0 0 0; width: 100px;" onclick="course_add()">
@@ -94,8 +92,6 @@
                         </a>
                     </ul>
                 </div>
-                <?php endif; ?>
-
             </div>
             <!--<div class="title-bar" style="position: relative;z-index: 99;">-->
             <!--<div id="title-show" class="clearfix">-->
