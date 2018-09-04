@@ -20,7 +20,7 @@ class SectionModelEdu extends EducationModelEdu
         $_where             =   [];
         if( !is_null($where) && is_array($where) )
             $_where     =   $where;
-        $_fields        =   'c_sch.id schedule_id,c_sch.homework,c_sch.video,c_sec.title,c_sch.section_id,c_sec.node section_node,
+        $_fields        =   'mxu1.user_id teacher_user_id,c_sch.id schedule_id,c_sch.homework,c_sch.video,c_sec.title,c_sch.section_id,c_sec.node section_node,
         c_sec.name section_name,c_sec.duration,c_sch.start_time,date_add( c_sch.start_time, INTERVAL c_sec.duration MINUTE ) end_time,
         mxu1.full_name teacher_name,mxu2.full_name creator_name,c_sch.create_at,UNIX_TIMESTAMP(c_sch.start_time) stamp,mh.name homework_name,mh.path homework_path,mv.name video_name,mv.path video_path';
         return $this->field($_fields)

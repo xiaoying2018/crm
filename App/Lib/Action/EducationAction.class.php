@@ -690,7 +690,9 @@ class EducationAction extends Action
                     $section = $sectionModel->field('id,name')
                         ->where(['course_id' => ['eq', $course_id]])->select();
                     // 班级下已排课的课程
+
                     $scheduleYet = $sectionModel->period_schedule(['c_sch.period_id' => ['eq', $period_id]]);
+
                     $now = time();
                     foreach ($scheduleYet as $key => $value) {
                         // 课时已过期
@@ -1989,9 +1991,11 @@ class EducationAction extends Action
         }
     }
 
+
+
     public function mail_notify($to, $title, $message)
     {
-        if (!$to) $this->_throw('参数缺失');
+        if (!$to) $this->_throw('请补全接收邮件者的邮件地址');
         import("@.ORG.Mail");
         $mail = new \PHPMailer(true);
         $setting = M('Config')->field('value')->where(['name' => ['eq', 'smtp']])->find();

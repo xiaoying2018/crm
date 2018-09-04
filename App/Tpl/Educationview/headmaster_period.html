@@ -140,7 +140,7 @@
                                         <td style="">{{s.create_at}}</td>
                                         <td style="text-align:center;padding:14px;color:#666">
                                             <template v-if="s.schedule_status == 1">
-                                                <button class="btn btn-info btn-sm" onclick="notifyTeacher()">提醒授课老师</button>
+                                                <button class="btn btn-info btn-sm" :data-id="s.teacher_user_id"  onclick="notifyTeacher(this)">提醒授课老师</button>
                                             </template>
                                             <template v-else>
                                                 <button class="btn btn-success btn-sm" onclick="scheduleSignIn(this)">学员签到管理</button>
@@ -192,7 +192,15 @@
         </div>
     </div>
 </div>
-
+<div style="display:none" id="dialog-message-send" title="消息推送">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
 <include file="Public:footer" />
 <script>
     $(function() {
@@ -325,8 +333,79 @@
         }
     });
 
-    function notifyTeacher(){
-        layer.msg('ERROR 开发中');
+    // 消息群发
+    $("#dialog-message-send").dialog({
+        autoOpen: false,
+        modal: true,
+        width: '50%',
+        maxHeight: 600,
+        position: ["center",100],
+        buttons:{
+            '发送':function(){
+                var id_array = [];
+                id_array.push(tempid);
+//                var roleIds         =   fetchCheckboxValues('ids'),
+                var roleIds         =   id_array;
+                var role            =   1;
+                var title           =   $('#message_title').val();
+                var message         =   $('#message_content').val();
+                var send_types      =   fetchCheckboxValues('types');
+                var _this           =   this;
+
+                var data            =   {
+                    roleIds:id_array,
+                    role:role,
+                    title:title,
+                    send_types:send_types,
+                    message:message
+                };
+                console.log("xxx",data);
+                if( !data.message ){
+                    layer.msg('ERROR 内容为空');return;
+                }
+                $.ajax({
+                    url:"{:U('education/notify')}",
+                    data:data,
+                    dataType:"JSON",
+                    type:"POST",
+                    success:function(res){
+                        if( res.result ){
+                            $(_this).dialog('close');
+                            layer.msg('发送成功！');
+                        }else{
+                            layer.msg('ERROR '+res.error);
+                        }
+                    }
+                });
+            },
+            '关闭':function(){
+//                student_container.getLists();
+                $(this).dialog('close');
+//                location.reload()
+            }
+        },
+        close:function(){
+//            student_container.getLists();
+            $(this).html('');
+//            location.reload()
+        }
+    });
+    window.tempid;
+    function notifyTeacher(obj){
+        tempid = $(obj).attr("data-id");
+        $('#dialog-message-send').dialog('open');
+        $('#dialog-message-send').load('{:U("educationview/notify")}');
+       // layer.msg('ERROR 开发中');
+    }
+
+    function fetchCheckboxValues(name){
+        obj = document.getElementsByName(name);
+        check_val = [];
+        for(k in obj){
+            if(obj[k].checked)
+                check_val.push(obj[k].value);
+        }
+        return check_val;
     }
 
     function notifyStudent(){
