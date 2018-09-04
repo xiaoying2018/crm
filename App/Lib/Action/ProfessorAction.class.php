@@ -531,7 +531,7 @@ class ProfessorAction extends Action {
             $where['research_keywords'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
             $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
             $datas1 = $this->setDate($datas1);
-            if (is_array($datas1)) {
+            if (is_array($datas1)) { 
                 $count1 = M('professor')->where($where)->count();
                 $data['list'] = $datas1;
                 $data['count'] = $count1;
