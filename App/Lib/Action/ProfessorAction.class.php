@@ -466,6 +466,7 @@ class ProfessorAction extends Action {
                 $where['department'] = $mcate;
             }
 //            $this->ajaxReturn($where);
+            ##姓名
             $where['name'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
             $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
             $datas1 = $this->setDate($datas1);
@@ -477,6 +478,7 @@ class ProfessorAction extends Action {
                 $this->ajaxReturn(['status' => true, 'data' => $data]);
             }
             unset($where['name']);
+            ##研究领域
             $where['research_keywords'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
             $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
             $datas1 = $this->setDate($datas1);
@@ -487,7 +489,58 @@ class ProfessorAction extends Action {
                 $data['total'] = ceil($count1 / $rows);
                 $this->ajaxReturn(['status' => true, 'data' => $data]);
             }
+            unset($where['research_keywords']);
+            ##学校
+            $where['university'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
+            $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
+            $datas1 = $this->setDate($datas1);
+            if (is_array($datas1)) {
+                $count1 = M('professor')->where($where)->count();
+                $data['list'] = $datas1;
+                $data['count'] = $count1;
+                $data['total'] = ceil($count1 / $rows);
+                $this->ajaxReturn(['status' => true, 'data' => $data]);
+            }
+            unset($where['university']);
+            ##学部，研究科
+            $where['college'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
+            $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
+            $datas1 = $this->setDate($datas1);
+            if (is_array($datas1)) {
+                $count1 = M('professor')->where($where)->count();
+                $data['list'] = $datas1;
+                $data['count'] = $count1;
+                $data['total'] = ceil($count1 / $rows);
+                $this->ajaxReturn(['status' => true, 'data' => $data]);
+            }
+            unset($where['college']);
+            ##职称
+            $where['title'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
+            $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
+            $datas1 = $this->setDate($datas1);
+            if (is_array($datas1)) {
+                $count1 = M('professor')->where($where)->count();
+                $data['list'] = $datas1;
+                $data['count'] = $count1;
+                $data['total'] = ceil($count1 / $rows);
+                $this->ajaxReturn(['status' => true, 'data' => $data]);
+            }
+            unset($where['title']);
+            ##职称
+            $where['department'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
+            $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
+            $datas1 = $this->setDate($datas1);
+            if (is_array($datas1)) {
+                $count1 = M('professor')->where($where)->count();
+                $data['list'] = $datas1;
+                $data['count'] = $count1;
+                $data['total'] = ceil($count1 / $rows);
+                $this->ajaxReturn(['status' => true, 'data' => $data]);
+            }
             unset($where['department']);
+
+
+
             if (is_array($datas1)) {
                 $count1 = M('professor')->where($where)->count();
                 $data['list'] = $datas1;
