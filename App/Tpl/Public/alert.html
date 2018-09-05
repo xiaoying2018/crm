@@ -4,7 +4,12 @@
         <input type="hidden" class="alert_tishi" rel="{$k}" value="{$vv}">
     </foreach>  
 </foreach>
-<input type="hidden" id="alert_defaultinfo_name" value="{:C('defaultinfo.name')}" />
+
+    <!-- 如果是 果是 www.liuxuecrm.com 进入  进入 不显示选择此提示 -->
+    <if condition="$_SERVER['SERVER_NAME'] != 'www.liuxuecrm.net'">
+        <input type="hidden" id="alert_defaultinfo_name" value="{:C('defaultinfo.name')}" />
+    </if>
+
 <script>
     $(document).ready(function() {
         var tishi = $('.alert_tishi').val();
