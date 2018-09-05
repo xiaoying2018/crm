@@ -42,6 +42,7 @@ class CaseAction extends Action {
         $this->display();
     }
     public function getallprogramcate(){
+        header("Access-Control-Allow-Origin: n: http://i.xiaoying.net");
         $programdata = $this->getProgramDatas();
         $programcate = [];
         foreach ($programdata as $k => $v) {
@@ -632,6 +633,7 @@ class CaseAction extends Action {
     }
 
       public function search() {
+          header("Access-Control-Allow-Origin: n: http://i.xiaoying.net");
 //        if (IS_POST) {
         $wheredata = I('post.');
         $page = $wheredata['page'] ? $wheredata['page'] : 1;
@@ -880,6 +882,7 @@ unset($where['receive_college']);
     }
     public function frontsearch() {
 //        if (IS_POST) {
+        header("Access-Control-Allow-Origin: n: http://i.xiaoying.net");
         $wheredata = I('post.');
         $page = $wheredata['page'] ? $wheredata['page'] : 1;
         $rows = $wheredata['rows'] ? $wheredata['rows'] : 15;
