@@ -316,7 +316,7 @@ class CasedataAction extends Action {
 
     public function search() {
 //        if (IS_POST) {
-        header("Access-Control-Allow-Origin: n: http://i.xiaoying.net");
+        header("Access-Control-Allow-Origin:*");
         $wheredata = I('post.');
         $page = $wheredata['page'] ? $wheredata['page'] : 1;
         $rows = $wheredata['rows'] ? $wheredata['rows'] : 15;
