@@ -41,6 +41,16 @@ class CaseAction extends Action {
         $this->assign('majorcate', $majorcate);
         $this->display();
     }
+    public function getallprogramcate(){
+        $programdata = $this->getProgramDatas();
+        $programcate = [];
+        foreach ($programdata as $k => $v) {
+            if ($k == 2) {
+                $programcate = $v;
+            }
+        }
+        $this->ajaxReturn($programcate);
+    }
 
     public function buildInfo($file) {
         $i = 0;
@@ -621,14 +631,7 @@ class CaseAction extends Action {
         return $res;
     }
 
-    public function search() {
-
-    	// 允许来自 i.xiaoying.net 的请求
-//        header("Access-Control-Allow-Origin: http://i.xiaoying.net");
-
-        // 允许所有来源的请求
-        header("Access-Control-Allow-Origin: *");
-
+      public function search() {
 //        if (IS_POST) {
         $wheredata = I('post.');
         $page = $wheredata['page'] ? $wheredata['page'] : 1;
@@ -637,6 +640,10 @@ class CaseAction extends Action {
         $sord = $wheredata['sord'];
         $pcate = $wheredata['program_category'];
         $mcate = $wheredata['major_category'];
+//        $where['names|education|japan_language'] = ['like',['%' . $wheredata['lotwhere'] . '%']];
+//        $a = M('cases')->where($where)->select();
+//        var_dump($a);
+//        die;
 //            
         //姓名，日语，英语，学校级别，专业
         if ($wheredata['lotwhere'] != '' || $pcate != '' || $mcate != '') {
@@ -650,7 +657,14 @@ class CaseAction extends Action {
             $where['names'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
             $datas1 = M('cases')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
             $datas1 = $this->setDate($datas1);
+
             if (is_array($datas1)) {
+                $fileids = [];
+                foreach ($datas1 as $k=>$v){
+                    $fileids[] = M('rFileCases')->where(['type'=>3,'cases_id'=>$v['id']])->getField('file_id');
+                    $datas1[$k]['headfile'] = M('file')->where(['file_id'=>['in',$fileids]])->find();
+                }
+
                 $count1 = M('cases')->where($where)->count();
                 $data['list'] = $datas1;
                 $data['count'] = $count1;
@@ -659,11 +673,16 @@ class CaseAction extends Action {
             }
             unset($where['names']);
 
-            // 814 change lqs
+
             $where['education'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
             $datas1 = M('cases')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
             $datas1 = $this->setDate($datas1);
             if (is_array($datas1)) {
+                $fileids = [];
+                foreach ($datas1 as $k=>$v){
+                    $fileids[] = M('rFileCases')->where(['type'=>3,'cases_id'=>$v['id']])->getField('file_id');
+                    $datas1[$k]['headfile'] = M('file')->where(['file_id'=>['in',$fileids]])->find();
+                }
                 $count1 = M('cases')->where($where)->count();
                 $data['list'] = $datas1;
                 $data['count'] = $count1;
@@ -671,12 +690,17 @@ class CaseAction extends Action {
                 $this->ajaxReturn(['status' => true, 'data' => $data]);
             }
             unset($where['education']);
-            // 814 end
+
 
             $where['japan_language'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
             $datas1 = M('cases')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
             $datas1 = $this->setDate($datas1);
             if (is_array($datas1)) {
+                $fileids = [];
+                foreach ($datas1 as $k=>$v){
+                    $fileids[] = M('rFileCases')->where(['type'=>3,'cases_id'=>$v['id']])->getField('file_id');
+                    $datas1[$k]['headfile'] = M('file')->where(['file_id'=>['in',$fileids]])->find();
+                }
                 $count1 = M('cases')->where($where)->count();
                 $data['list'] = $datas1;
                 $data['count'] = $count1;
@@ -684,10 +708,17 @@ class CaseAction extends Action {
                 $this->ajaxReturn(['status' => true, 'data' => $data]);
             }
             unset($where['japan_language']);
+
+
             $where['eng_language'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
             $datas1 = M('cases')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
             $datas1 = $this->setDate($datas1);
             if (is_array($datas1)) {
+                $fileids = [];
+                foreach ($datas1 as $k=>$v){
+                    $fileids[] = M('rFileCases')->where(['type'=>3,'cases_id'=>$v['id']])->getField('file_id');
+                    $datas1[$k]['headfile'] = M('file')->where(['file_id'=>['in',$fileids]])->find();
+                }
                 $count1 = M('cases')->where($where)->count();
                 $data['list'] = $datas1;
                 $data['count'] = $count1;
@@ -695,10 +726,17 @@ class CaseAction extends Action {
                 $this->ajaxReturn(['status' => true, 'data' => $data]);
             }
             unset($where['eng_language']);
+
+
             $where['college_lev'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
             $datas1 = M('cases')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
             $datas1 = $this->setDate($datas1);
             if (is_array($datas1)) {
+                $fileids = [];
+                foreach ($datas1 as $k=>$v){
+                    $fileids[] = M('rFileCases')->where(['type'=>3,'cases_id'=>$v['id']])->getField('file_id');
+                    $datas1[$k]['headfile'] = M('file')->where(['file_id'=>['in',$fileids]])->find();
+                }
                 $count1 = M('cases')->where($where)->count();
                 $data['list'] = $datas1;
                 $data['count'] = $count1;
@@ -706,11 +744,18 @@ class CaseAction extends Action {
                 $this->ajaxReturn(['status' => true, 'data' => $data]);
             }
             unset($where['college_lev']);
+
+
 //echo 1;die;
             $where['undergraduate_major'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
             $datas1 = M('cases')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
             $datas1 = $this->setDate($datas1);
             if (is_array($datas1)) {
+                $fileids = [];
+                foreach ($datas1 as $k=>$v){
+                    $fileids[] = M('rFileCases')->where(['type'=>3,'cases_id'=>$v['id']])->getField('file_id');
+                    $datas1[$k]['headfile'] = M('file')->where(['file_id'=>['in',$fileids]])->find();
+                }
                 $count1 = M('cases')->where($where)->count();
                 $data['list'] = $datas1;
                 $data['count'] = $count1;
@@ -718,21 +763,64 @@ class CaseAction extends Action {
                 $this->ajaxReturn(['status' => true, 'data' => $data]);
             }
             unset($where['undergraduate_major']);
+
+
             $where['plains'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
             $datas1 = M('cases')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
             $datas1 = $this->setDate($datas1);
             if (is_array($datas1)) {
+                $fileids = [];
+                foreach ($datas1 as $k=>$v){
+                    $fileids[] = M('rFileCases')->where(['type'=>3,'cases_id'=>$v['id']])->getField('file_id');
+                    $datas1[$k]['headfile'] = M('file')->where(['file_id'=>['in',$fileids]])->find();
+                }
                 $count1 = M('cases')->where($where)->count();
                 $data['list'] = $datas1;
                 $data['count'] = $count1;
                 $data['total'] = ceil($count1 / $rows);
                 $this->ajaxReturn(['status' => true, 'data' => $data]);
             }
+            unset($where['plains']);
+
+            $where['receive_year'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
+            $datas1 = M('cases')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
+            $datas1 = $this->setDate($datas1);
+            if (is_array($datas1)) {
+                $fileids = [];
+                foreach ($datas1 as $k=>$v){
+                    $fileids[] = M('rFileCases')->where(['type'=>3,'cases_id'=>$v['id']])->getField('file_id');
+                    $datas1[$k]['headfile'] = M('file')->where(['file_id'=>['in',$fileids]])->find();
+                }
+                $count1 = M('cases')->where($where)->count();
+                $data['list'] = $datas1;
+                $data['count'] = $count1;
+                $data['total'] = ceil($count1 / $rows);
+                $this->ajaxReturn(['status' => true, 'data' => $data]);
+            }
+            unset($where['receive_year']);
+
+            $where['receive_college'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
+$datas1 = M('cases')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
+$datas1 = $this->setDate($datas1);
+if (is_array($datas1)) {
+    $fileids = [];
+    foreach ($datas1 as $k=>$v){
+        $fileids[] = M('rFileCases')->where(['type'=>3,'cases_id'=>$v['id']])->getField('file_id');
+        $datas1[$k]['headfile'] = M('file')->where(['file_id'=>['in',$fileids]])->find();
+    }
+    $count1 = M('cases')->where($where)->count();
+    $data['list'] = $datas1;
+    $data['count'] = $count1;
+    $data['total'] = ceil($count1 / $rows);
+    $this->ajaxReturn(['status' => true, 'data' => $data]);
+}
+unset($where['receive_college']);
 
             if (!is_array($datas1)) {
                 $this->ajaxReturn(['status' => false, 'data' => []]);
             }
         }
+//        var_dump($fileids);
         if (empty($wheredata['lotwhere']) || empty($pcate) || empty($mcate)) {
             $count = M('cases')->count();
             $datas = M('cases')->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
@@ -744,6 +832,10 @@ class CaseAction extends Action {
 //                var_dump($data);
             foreach ($data['list'] as $k => $v) {
                 $data['list'][$k]['add_ts'] = date('Y-m-d ', $v['add_ts']);
+                $fileids[] = M('rFileCases')->where(['type'=>3,'cases_id'=>$v['id']])->getField('file_id');
+//                var_dump($fileids);
+                $data['list'][$k]['headfile'] = M('file')->where(['file_id'=>['in',$fileids]])->find();
+                unset($fileids);
             }
             $catedata = M('product')->select();
             foreach ($data['list'] as $k => $v) {
@@ -785,6 +877,66 @@ class CaseAction extends Action {
 
         var_dump($data);
         return ['data' => $data ?: [], 'sql' => $model->getLastSql(), 'count' => $count];
+    }
+    public function frontsearch() {
+//        if (IS_POST) {
+        $wheredata = I('post.');
+        $page = $wheredata['page'] ? $wheredata['page'] : 1;
+        $rows = $wheredata['rows'] ? $wheredata['rows'] : 15;
+        $sidx = $wheredata['sidx'];
+        $sord = $wheredata['sord'];
+        $where = [];
+        ##学历
+        if(!empty($wheredata['education'])){
+            $where['education'] = $wheredata['education'];
+        }
+        ##服务项目
+        if(!empty($wheredata['programcate'])){
+            $where['programcate'] = $wheredata['programcate'];
+        }
+        ##日语水平
+        if(!empty($wheredata['japan_language'])){
+            $where['japan_language'] = $wheredata['japan_language'];
+        }
+        ##录取年份
+        if(!empty($wheredata['receive_year'])){
+            if(!empty($wheredata['receive_year'])){
+                if(!$wheredata['receive_year']=='2010'){
+                    $where['receive_year'] = ['between',[2000,2012]];
+                }else{
+                    $where['receive_year'] = $wheredata['receive_year'];
+                }
+            }
+        }
+        ##名校报考经验
+        if(!empty($wheredata['receive_college'])){
+            $where['receive_college'] = $wheredata['receive_college'];
+        }
+
+            $count = M('cases')->where($where)->count();
+            $datas = M('cases')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
+            if(!empty($datas)){
+                $data['count'] = $count;
+                $data['list'] = $datas;
+                $data['total'] = ceil($count / $rows);
+                foreach ($data['list'] as $k => $v) {
+                    $data['list'][$k]['add_ts'] = date('Y-m-d ', $v['add_ts']);
+                    $fileids[] = M('rFileCases')->where(['type'=>3,'cases_id'=>$v['id']])->getField('file_id');
+                    $data['list'][$k]['headfile'] = M('file')->where(['file_id'=>['in',$fileids]])->find();
+                    unset($fileids);
+                }
+                $catedata = M('product')->select();
+                foreach ($data['list'] as $k => $v) {
+                    foreach ($catedata as $k1 => $v1) {
+                        if ($v['contract_product'] == $v1['product_id']) {
+                            $data['list'][$k]['contract_product'] = $v1['name'];
+                        }
+                    }
+                }
+                $this->ajaxReturn(['status' => true, 'data' => $data]);
+            }else{
+                $this->ajaxReturn(['status' => false, 'data' => []]);
+            }
     }
 
 }

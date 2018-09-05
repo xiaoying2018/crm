@@ -369,6 +369,7 @@ class CasedataAction extends Action {
                     $where['year'] = $wheredata['year'];
                 }
             }
+
             ##录取类型
             if(!empty($wheredata['xueli'])){
                 $where['xueli'] = $wheredata['xueli'];
