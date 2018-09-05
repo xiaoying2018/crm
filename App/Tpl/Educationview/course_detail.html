@@ -45,8 +45,8 @@ td a {
             <div class="tabs-container">
                 <div style="padding: 20px 20px; background: rgb(255, 255, 255); min-height: 492.48px;" id="left-content">
                     <ul class="nav nav-tabs" id="left_list" style="height:40px;">
-                        <li><a href="#tab1" data-toggle="tab" type="tab1">基本信息</a></li>
-                        <li><a href="#tab5" data-toggle="tab" type="tab5">课程详情</a></li>
+                        <li><a href="#tab1" data-toggle="tab" type="tab1">班级信息</a></li>
+                        <li><a href="#tab5" data-toggle="tab" type="tab5">班级详情</a></li>
                         <li><a href="#tab6" data-toggle="tab" type="tab6">课时分类</a></li>
                         <li><a href="#tab2" data-toggle="tab" type="tab2">课时信息({{count.section}})</a></li>
                         <li><a href="#tab3" data-toggle="tab" type="tab3">开班班次({{count.period}})</a></li>
@@ -59,7 +59,7 @@ td a {
                                 <div class="form-horizontal view-group ">
                                     <div class="form-group">
                                         <div class="clearfix group_item col-lg-6">
-                                            <label class="col-lg-2">课程名称</label>
+                                            <label class="col-lg-2">班级名称</label>
                                             <div class="col-lg-4">
                                                 <p>{{detail.name}}</p>
                                             </div>
@@ -71,7 +71,7 @@ td a {
                                             </div>
                                         </div>
                                         <div class="clearfix group_item col-lg-6">
-                                            <label class="col-lg-2">课程时长</label>
+                                            <label class="col-lg-2">总课时</label>
                                             <div class="col-lg-4">
                                                 <p>{{detail.time_long}}</p>
                                             </div>
@@ -108,7 +108,7 @@ td a {
                                             </div>
                                         </div>
                                         <div class="clearfix group_item col-lg-6">
-                                            <label class="col-lg-2">课程图片</label>
+                                            <label class="col-lg-2">班级图片</label>
                                             <div class="col-lg-4">
                                                 <p v-if="detail.pic"><img :src="detail.pic" alt=""></p>
                                                 <p v-else>无图片</p>
@@ -177,14 +177,14 @@ td a {
                         <div class="tab-pane" id="tab3">
                             <div class="panel-body">
                                 <a href="javascript:;" onclick="showPeriodAdd()" class="btn btn-primary btn-sm" style="margin-bottom:15px;">
-                                    <i class="fa fa-plus-circle"></i>&nbsp; 新建课期(开班)
+                                    <i class="fa fa-plus-circle"></i>&nbsp; 新建班次(开班)
                                 </a>
                                 <table class="table select-table table-bordered">
                                     <thead>
                                         <tr style="background-color:#f9fafc;text-align:center;">
-                                            <td style="">课期名称</td>
-                                            <td style="">课程周期</td>
-                                            <td style="">课程总时长</td>
+                                            <td style="">班次名称</td>
+                                            <td style="">班次周期</td>
+                                            <td style="">班次总时长</td>
                                             <td style="">班主任</td>
                                             <td style="">操作</td>
                                         </tr>
@@ -217,7 +217,7 @@ td a {
                                 <table class="table select-table table-bordered">
                                     <thead>
                                         <tr style="background-color:#f9fafc;text-align:center;">
-                                            <td style=""> 产品名称</td>
+                                            <td style="">产品名称</td>
                                             <td style="">产品编号</td>
                                             <td style="">成本价</td>
                                             <td style="">添加人</td>
@@ -314,7 +314,7 @@ td a {
         </div>
     </div>
 </div>
-<div style="display:none" id="dialog-period-add" title="开期(开班)">
+<div style="display:none" id="dialog-period-add" title="开期(开班次)">
     <div class="spiner-example">
         <div class="sk-spinner sk-spinner-three-bounce">
             <div class="sk-bounce1"></div>
@@ -323,7 +323,7 @@ td a {
         </div>
     </div>
 </div>
-<div style="display:none" id="dialog-period-edit" title="课期(班级)修改">
+<div style="display:none" id="dialog-period-edit" title="班次修改">
     <div class="spiner-example">
         <div class="sk-spinner sk-spinner-three-bounce">
             <div class="sk-bounce1"></div>
@@ -332,7 +332,7 @@ td a {
         </div>
     </div>
 </div>
-<div style="display:none" id="dialog-periodmanage-add" title="课期(班级)管理">
+<div style="display:none" id="dialog-periodmanage-add" title="班次管理">
     <div class="spiner-example">
         <div class="sk-spinner sk-spinner-three-bounce">
             <div class="sk-bounce1"></div>
@@ -456,7 +456,7 @@ $(function() {
                     period_id = parent.data('id'),
                     _this = this;
                 if (!period_id) return;
-                layer.confirm('确定删除课期(班级)吗?', {icon: 3, title: '提示'}, function (index) {
+                layer.confirm('确定删除班次吗?', {icon: 3, title: '提示'}, function (index) {
                     // 删除
                     $.ajax({
                         url: "/index.php?m=education&a=period_del",
@@ -731,7 +731,7 @@ $(function() {
                             // 刷新主页数据
                             templete_Detail.getCourseDetail();
                             //
-                            layer.msg('新增课期(开办)成功！');
+                            layer.msg('新增班次成功！');
                             // 关闭弹框
                             $(_dialog).dialog('close');
 
@@ -777,7 +777,7 @@ $(function() {
                             // 刷新主页数据
                             templete_Detail.getCourseDetail();
                             //
-                            layer.msg('修改课期(班级)成功！');
+                            layer.msg('修改班次成功！');
                             // 关闭弹框
                             $(_dialog).dialog('close');
 

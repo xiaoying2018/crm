@@ -15,6 +15,11 @@ class EducationviewAction extends Action
         }
     }
 
+    public function student_banci()
+    {
+        $this->display();
+    }
+
     public function index ()
     {
         $this->display();

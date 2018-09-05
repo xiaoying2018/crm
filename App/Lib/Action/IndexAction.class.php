@@ -115,6 +115,7 @@ class IndexAction extends Action {
 			$mobile = str_replace('index.php', 'mobile', $_SERVER["PHP_SELF"]);
 			header("Location: http://".$_SERVER['SERVER_NAME'].':'.$_SERVER["SERVER_PORT"].$mobile);
 		}
+		
 		$user = M('User');
 		$dashboard = $user->where('user_id = %d', session('user_id'))->getField('dashboard');
 		$widget = unserialize($dashboard);	
