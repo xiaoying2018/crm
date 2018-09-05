@@ -35,12 +35,15 @@ class CourseDocumentAction extends Action{
                         $limit = $wheredata['row'] ? $wheredata['row'] : 10;// 每页显示条数
                         $condition=array();
                         $condition['id']=array('not in',$document_ids);
+                        $condition['cd.creator_id']=session('user_id');
                         $data=$this->db->getDataBy('all',$condition);
+
                     }else{
                         $wheredata = $_REQUEST;
                         $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码
                         $limit = $wheredata['row'] ? $wheredata['row'] : 10;// 每页显示条数
                         $condition=array();
+                        $condition['cd.creator_id']=session('user_id');
                         $data=$this->db->getDataBy('all',$condition);
                         $count = count($data);
                     }
@@ -58,6 +61,7 @@ class CourseDocumentAction extends Action{
                             $limit = $wheredata['row'] ? $wheredata['row'] : 10;// 每页显示条数
                             $condition=array();
                             $condition['id']=array('in',$document_ids);
+                            $condition['cd.creator_id']=session('user_id');
                             $data=$this->db->getDataBy('all',$condition);
                         }
                 }
@@ -68,6 +72,7 @@ class CourseDocumentAction extends Action{
                     $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码
                     $limit = $wheredata['row'] ? $wheredata['row'] : 10;// 每页显示条数
                     $condition=array();
+                    $condition['cd.creator_id']=session('user_id');
                     $data=$this->db->getDataBy('all',$condition);
                     $count = count($data);
             }

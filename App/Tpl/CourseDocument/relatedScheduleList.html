@@ -220,8 +220,8 @@
             datatype: "JSON",
             mtype: "post",
             width: "100%",
+            height:"330px",
             postData: _requert,
-            height: _height,
             autowidth: true,
             forceFit: true,
             autoScroll: true,
@@ -382,7 +382,7 @@
         }).trigger("reloadGrid"); //重新载入
 
 
-        jQuery("#table_list_22").jqGrid('navGrid', '#gridpager', {edit: false, add: false, del: false, search: false}, {}, {}, {multipleSearch: true, multipleGroup: true});
+        //jQuery("#table_list_22").jqGrid('navGrid', '#gridpager', {edit: false, add: false, del: false, search: false}, {}, {}, {multipleSearch: true, multipleGroup: true});
 
         $('.ui-jqgrid-bdiv').niceScroll({
             cursorcolor: "#77B8FF",
@@ -486,37 +486,13 @@
         _height = $(window).height() - ($(".title-bar").outerHeight() + $("#gridpager").outerHeight()) - 190;
         width = $(".table_vue").width();
         $("#table_list_22").setGridWidth(width)
-        $("#table_list_22").setGridHeight(_height)
+        // $("#table_list_22").setGridHeight(_height)
     }
-    //过滤成员属性
-    function member_format(cellvalue, options, cell){
-        if (cellvalue == 1) {
-            return '多成员'
-        }else{
-            return '单成员'
-        }
-    }
+
 
     //课程名称
     function name_format(cellvalue, options, cell){
         return '<a class="a_name" href="/index.php?m=abroad_course&a=edit&id='+cell.id+'" >'+cellvalue+'</a>';
     }
-    //图片预览
-    function img_format(cellvalue, options, cell){
-        return '<a href="'+cellvalue+'"  class="litebox_file" data-litebox-group="group-1">预览</a>';
-    }
-    //是否在售
-    function sale(cellvalue, options, cell){
-        var _flag = '';
-        if (cellvalue == 1){
-            _flag = 'checked'
-        }
-        return '<div class="switch"><input type="checkbox" '+_flag+' data-id="'+cell.id+'" /></div>';
-    }
-    //渲染表格最后一列...操作按钮
-    function btngroup(cellvalue, options, cell){
-        return '<a href="/index.php?m=abroad_course_category&a=add&cid='+cell.cid+'" class="btn btn-info btn-sm">添加子分类</a>'
-    }
-
 
 </script>
