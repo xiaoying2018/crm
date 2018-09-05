@@ -240,6 +240,7 @@ class EducationAction extends Action
         $courseModel = new CourseModelEdu();
         $lists = $courseModel->course_lists(null, $wheredata['page'], $wheredata['rows'])['data'];
         $count = $courseModel->course_lists(null, $wheredata['page'], $wheredata['rows'])['count'];
+
 //        $this->ajaxReturn($wheredata['rows']);
         $this->ajaxReturn([
             'result' => true,

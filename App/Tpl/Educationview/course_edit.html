@@ -96,7 +96,7 @@
                                     <select name="category" class="form-control">
                                         <option value="">选择分类</option>
                                         <foreach name="category" item="c">
-                                            <option value="{$c.id}">{$c.name}</option>
+                                            <option value="{$c.id}" <if condition="$info['category'] == $c['id']">selected</if> >{$c.name}</option>
                                         </foreach>
                                     </select>
                                 </div>
