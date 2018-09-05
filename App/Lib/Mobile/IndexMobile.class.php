@@ -19,6 +19,7 @@ class IndexMobile extends Action{
 	 * 首页动态信息
 	 */
 	public function home(){
+
 		if($this->isPost()){
 			if(!empty($_POST['role_id'])){
 				$where['role_id'] = $_POST['role_id'];
@@ -138,7 +139,7 @@ class IndexMobile extends Action{
 			$this->ajaxReturn($data,'JSON');
 		}
 	}
-	
+
 	//获得岗位权限的模块数组
 	public function permission_list(){
 		$m_permission = M('Permission');
@@ -157,7 +158,7 @@ class IndexMobile extends Action{
 		}
 		return $permission;
 	}
-	
+
 	/*
 	 * 3.2版本首页动态信息
 	 */
@@ -185,7 +186,7 @@ class IndexMobile extends Action{
 			}
 			$where['action_name'] = array('not in',array('completedelete','delete','view'));
 			$by = isset($_GET['by']) ? $_GET['by'] : '';
-			
+
 			//获取权限
 			$permission_list = $this->permission_list();
 			//无权限控制的模块
@@ -199,7 +200,7 @@ class IndexMobile extends Action{
 					$this->ajaxReturn('','您没有此权利！',-2);
 				}
 			}
-			
+
 			switch ($by) {
 				case 'business' : $where['module_name'] = 'business'; break;
 				case 'customer' : $where['module_name'] = 'customer'; break;
@@ -260,7 +261,7 @@ class IndexMobile extends Action{
 							}else{
 								$tmp['subject'] = $log_info['subject'];
 							}
-							
+
 							//过滤html代码
 							$str = htmlspecialchars_decode($log_info['content']); //内容全部反编译
 							$str = preg_replace( "@<script(.*?)</script>@is", "", $str );
@@ -270,7 +271,7 @@ class IndexMobile extends Action{
 							$str = preg_replace( "@<(.*?)>@is", "", $str );
 							$str = str_replace( "&nbsp;","", $str );
 							$content_info = preg_replace("/<(.*?)>/","",$str);
-							
+
 							$tmp['content'] = msubstr($content_info,0,50);
 							$comment_cont = $m_comment->where("module='log' and module_id=%d", $log_info['log_id'])->count();
 							$tmp['comment_count'] = $comment_cont;
@@ -867,7 +868,7 @@ class IndexMobile extends Action{
 					$comment_list[$k]['department_name'] = $m_role_department->where(array('department_id'=>$department_id))->getField('name');
 					$comment_list[$k]['log_department_name'] = $m_role_department->where(array('department_id'=>$log_department_id))->getField('name');
 				}
-				
+
 			}
 			$comment_count = D('CommentLogView')->where($where)->count();
 			$page = ceil($comment_count/10);
@@ -1121,7 +1122,7 @@ class IndexMobile extends Action{
 								$fields_list_business[$key]['form_type'] = 'text';
 								$fields_list_business[$key]['setting'] = '';
 							}
-							
+
 							$default_value = '';
 							switch ($val){
 								case 'code' : $default_value = $code;break;
@@ -1193,10 +1194,10 @@ class IndexMobile extends Action{
 		if(!$m || !$field_name || !$data_id){
 			$content_error = '参数错误！';
 		}
-		
+
 		if($m == 'leads'){
 			$outdays = M('config') -> where('name="leads_outdays"')->getField('value');
-			$outdate = empty($outdays) ? 0 : time()-86400*$outdays;	
+			$outdate = empty($outdays) ? 0 : time()-86400*$outdays;
 			$where['have_time'] = array('egt',$outdate);
 			$where['owner_role_id'] = array('neq',0);
 			$where['leads_id'] = $data_id;
@@ -1242,9 +1243,9 @@ class IndexMobile extends Action{
 			$customer_idArr = $m_customer->where(array('owner_role_id'=>array('in', $all_ids)))->getField('customer_id', true);
 			$customer_id = $rContactsCustomer->where('contacts_id = %d', $data_id)->getField('customer_id');
 			$owner_role_id = $m_customer->where('customer_id = %d',$customer_id)->getField('owner_role_id');
-			
+
 			//判断联系人所在客户是否在客户池，如果在则不判断权限
-		
+
 			 //查询客户数据
 			$customer = D('CustomerView')->where('customer.customer_id = %d', $customer_id)->find();
 			$outdays = M('config') -> where('name="customer_outdays"')->getField('value');
@@ -1265,7 +1266,7 @@ class IndexMobile extends Action{
 		if(empty($info) || empty($data_id)){
 			$content_error = '数据不存在或已被删除！';
 		}
-		
+
 		if(!empty($content_error)){
 			$this->info = $content_error;
 		}else{

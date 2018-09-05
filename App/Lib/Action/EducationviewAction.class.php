@@ -15,6 +15,11 @@ class EducationviewAction extends Action
         }
     }
 
+    public function student_banci()
+    {
+        $this->display();
+    }
+
     public function index ()
     {
         $this->display();
@@ -22,7 +27,12 @@ class EducationviewAction extends Action
 
     public function course_add ()
     {
-        $category           =   [];
+        $category           =   [
+            ['id'=>1,'name'=>'修士考试'],
+            ['id'=>2,'name'=>'留考校内考'],
+            ['id'=>3,'name'=>'热门公开课'],
+            ['id'=>4,'name'=>'保录班'],
+        ];
         $member_type        =   [
             1   =>  '一对多',
             2   =>  '一对一',
@@ -42,7 +52,12 @@ class EducationviewAction extends Action
             ->find();
         if( !$info )  $this->error('课程不存在');
 
-        $category           =   [];
+        $category           =   [
+            ['id'=>1,'name'=>'修士考试'],
+            ['id'=>2,'name'=>'留考校内考'],
+            ['id'=>3,'name'=>'热门公开课'],
+            ['id'=>4,'name'=>'保录班'],
+        ];
         $member_type        =   [
             1   =>  '一对多',
             2   =>  '一对一',
