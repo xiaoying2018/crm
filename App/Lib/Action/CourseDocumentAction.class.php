@@ -11,9 +11,6 @@ class CourseDocumentAction extends Action{
         $this->db=D('CourseDocument');
     }
     public function index(){
-        if(IS_POST){
-
-        }
         if ($this->isAjax()) {
                 if(isset($_REQUEST['schedule_id']) && is_numeric($_REQUEST['schedule_id'])){
                     $schedule_id=$_GET['schedule_id'];
@@ -97,7 +94,7 @@ class CourseDocumentAction extends Action{
             $this->assign('schedule_id',$schedule_id);
 
         }
-
+        $this->alert=parseAlert();
         $this->display();
     }
 
@@ -105,12 +102,13 @@ class CourseDocumentAction extends Action{
     {
         if(IS_POST){
             if($aid=$this->db->addData()){
-                $this->redirect(U('CourseDocument/index'));
+                alert('success','课件添加成功',U('CourseDocument/index'));
+               // $this->redirect(U('CourseDocument/index'));
             }else{
-                $this->error($this->db->getError());
+                alert('error',$this->db->getError(),U('CourseDocument/add'));
             }
         }else{
-
+            $this->alert=parseAlert();
             $this->display();
         }
     }
