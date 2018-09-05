@@ -1,7 +1,5 @@
 <link rel="stylesheet" href="/Public/js/jqGrid/ui.jqgridffe4.css">
 <link rel="stylesheet" href="/Public/css/page/publicTable.css">
-<link rel="stylesheet" href="/Public/layui/css/layui.css">
-<script src="__PUBLIC__/layui/layui.js" type="text/javascript"></script>
 <include file="Public:header" />
 <style>
     #ids{width: 200px;height: 200px;border: 1px solid red}
@@ -155,6 +153,12 @@
     }
     .professorSearchModal .table td{
         border-color:#f2f2f2;
+    }
+    .ui-jqgrid-htable{
+        width: 100% !important;
+    }
+    #table_list_2{
+        width: 100% !important;
     }
 </style>
 <script src="/Public/js/jqGrid/i18n/grid.locale-cnffe4.js" type="text/javascript"></script>
@@ -679,11 +683,11 @@
             $("#table_list_2").setGridParam({datatype: 'json', postData: _data}).trigger('reloadGrid');
         }
         $(window).resize(function () {
-            // $(window).unbind("onresize");  
+            // $(window).unbind("onresize");
             // var _height = $(window).height() - ($(".title-bar").outerHeight() + $("#gridpager").outerHeight() + $("#secondPart").height() + 260);
             // console.log("xxx",_height);
-            // $("#table_list_2").setGridHeight(_height);  
-            // $(window).bind("onresize", this);  
+            // $("#table_list_2").setGridHeight(_height);
+            // $(window).bind("onresize", this);
         });
         $("#table_list_2").clearGridData();
 
@@ -817,7 +821,7 @@
                     var curRowData = jQuery("#table_list_2").jqGrid('getRowData', rowIds[k]);
 //                    console.log(curRowData)
                     var curChk = $("#" + rowIds[k] + "").find("input");
-                    curChk.attr('value', curRowData['id']);//给checkbox赋值   
+                    curChk.attr('value', curRowData['id']);//给checkbox赋值
 
                     //查看详情name
                     var _text = $("#" + rowIds[k] + "").find("[aria-describedby='table_list_2_name']").text();
