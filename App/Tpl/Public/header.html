@@ -523,7 +523,7 @@ $(function(){
 								<i class="fa fa-angle-right"></i>
 								<a href="{:U('educationview/index')}">教务主页</a>
 							</li>
-							<li <if condition="preg_match( '/course/', $action_name )">class="active"</if>>
+							<li <if condition="$module_name eq 'educationview' &&  $action_name eq 'course_index'">class="active"</if>>
 								<i class="fa fa-angle-right"></i>
 								<a href="{:U('educationview/course_index')}">班级管理</a>
 							</li>
@@ -533,9 +533,9 @@ $(function(){
 							</li>
 						</if>
 
-						<li <if condition="preg_match( '/student/', $action_name )">class="active"</if>>
+						<li <if condition="$module_name eq 'educationview' &&  $action_name eq 'course_manage'">class="active"</if>>
 							<i class="fa fa-angle-right"></i>
-							<a href="{:U('educationview/student_banci')}">班次管理</a>
+							<a href="{:U('educationview/course_manage')}">课程管理</a>
 						</li>
 
 						<if condition="session('?admin') || in_array(4,session('edu_roles')) || in_array(1,session('edu_roles')) || in_array(5,session('edu_roles'))">
@@ -936,7 +936,7 @@ $(function(){
 						<?php endif; ?>
 
 						<?php if($module_name == 'educationview' && $action_name == 'course_index'): ?>
-							<li class="active"><a href="{:U('educationview/course_index')}">课程管理</a></li>
+							<li class="active"><a href="{:U('educationview/course_index')}">班级管理</a></li>
 						<?php endif; ?>
 
 						<?php if($module_name == 'coursedocument' && $action_name == 'index'): ?>

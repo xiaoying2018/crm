@@ -206,7 +206,8 @@
             autoScroll: true,
             multiselect: true,
             useColSpanStyle: true,
-            colNames: ["id","班级名称", "分类", "课时数", "总课时(min)", "成员属性", "创建人","创建时间","修改人","修改时间","操作"],
+            // colNames: ["id","班级名称", "分类", "课时数", "总课时(min)", "成员属性", "创建人","创建时间","修改人","修改时间","操作"],
+            colNames: ["id","班级名称", "分类", "成员属性", "创建人","创建时间","修改人","修改时间","操作"],
             colModel: [{
                     name: "id",
                     index: "id",
@@ -240,18 +241,6 @@
                             return ' - ';
                         }
                     }
-                }, {
-                    name: "section_total",
-                    index: "section_total",
-                    editable: false,
-                    sorttype: "text",
-                    search: true
-                }, {
-                    name: "time_long",
-                    index: "time_long",
-                    editable: false,
-                    sorttype: "text",
-                    search: true
                 }, {
                     name: "member_type",
                     index: "member_type",

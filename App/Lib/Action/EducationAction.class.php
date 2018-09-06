@@ -176,7 +176,29 @@ class EducationAction extends Action
                 $result = $this->_validator->batch_handle($params, $this->_rules()[ACTION_NAME]);
                 if ($result['result'] === true) {
                     $courseModel = new CourseModelEdu();
-                    if ($courseModel->where(['id' => ['eq', (int)$id]])->save(['status' => -7]) !== false) {
+//                    if ($courseModel->where(['id' => ['eq', (int)$id]])->save(['status' => -7]) !== false) {
+                    if ($courseModel->where(['id' => ['eq', (int)$id]])->delete() !== false) {
+
+                        // 删除班级和产品的关联数据 todo
+                        (new CourseProductModelEdu())->where(['course_id'=>['eq',(int)$id]])->delete();
+
+                        // 获取班级下班期的ids
+                        $_banqis = (new PeriodModelEdu())->where(['course_id'=>['eq',(int)$id]])->select();
+                        if ($_banqis)
+                        {
+                            $_banqi_ids = array_map(function ($v){
+                                return $v['id'];
+                            },$_banqis);
+                            // 删除班级下的班期
+                            (new PeriodModelEdu())->where(['course_id'=>['eq',(int)$id]])->delete();
+
+                            if($_banqi_ids)
+                            {
+                                // 删除班期下的排课
+                                (new ScheduleModelEdu())->where(['period_id'=>['in',$_banqi_ids]])->delete();
+                            }
+                        }
+
                         $this->ajaxReturn(['result' => true]);
                     }
                     $this->_throw($courseModel->getDbError());
@@ -296,8 +318,15 @@ class EducationAction extends Action
             $periods = [];
             $products = [];
 
+            // 课程下的课时分类IDS
+            $_section_cate_ids = (new BanjiKechengModelEdu())->where(['course_id'=>['eq',$id]])->select();
+
+            $section_cate_ids = array_map(function ($v){
+                return $v['section_cate_id'];
+            },$_section_cate_ids);
+            
             // 课程下的课时分类
-            $sections_cate = (new SectionCateModelEdu())->where(['course_id'=>['eq',$id]])->select();
+            $sections_cate = (new SectionCateModelEdu())->where(['id'=>['in',$section_cate_ids]])->select();
             if($sections_cate)
             {
                 foreach ($sections_cate as $k => $v)
@@ -310,6 +339,7 @@ class EducationAction extends Action
             // 课程详情
             $courseModel = new CourseModelEdu();
             $courseInfo = $courseModel->course_lists(['c.id' => ['eq', $id]]);
+            
 //            $this->ajaxReturn($courseInfo);
             $detail = $courseInfo['data'] ? $courseInfo['data'][0] : false;
             if ($detail) {
@@ -356,39 +386,108 @@ class EducationAction extends Action
         }
 
     }
-    /* >>>>>>>>>>>>>>>>>>> 课程模块 end <<<<<<<<<<<<<<<<< */
+    /* >>>>>>>>>>>>>>>>>>> 班级模块 end <<<<<<<<<<<<<<<<< */
 
-    /* >>>>>>>>>>>>>>>>>>> 课时分类模块 start <<<<<<<<<<<<<<<<<<<< */
+    /* >>>>>>>>>>>>>>>>>>> 课程模块 start <<<<<<<<<<<<<<<<<<<< */
+
+    // 课程列表
+    public function course_manage()
+    {
+        $wheredata = $_REQUEST;
+        $current_page = $wheredata['page'];// 当前页
+        $rows = $wheredata['rows'];// 每页显示条数
+        $page_start = ($current_page - 1) * $rows;
+
+        // TODO 查询条件
+        $sort_field = $wheredata['sidx'] ?: 0;// 排序规则
+        $sort = $wheredata['sord'] ?: 0;// 排序规则
+
+        $courseModel = new SectionCateModelEdu();
+
+        // 如果需要排序
+        if ($sort && $sort_field && $sort_field == 'create_time')
+        {
+            // 查询结果
+            $lists = $courseModel->order("{$sort_field} {$sort}")->limit($page_start,$rows)->select();
+        }else{
+            // 查询结果
+            $lists = $courseModel->limit($page_start,$rows)->select();
+        }
+
+//        $lists = $courseModel->limit($page_start,$rows)->select();
+        $count = $courseModel->count();
+
+        foreach ($lists as $k => $v)
+        {
+            if ($v['create_time']) $lists[$k]['create_time'] = date('Y-m-d H:i:s',$v['create_time']);
+
+            $lists[$k]['create_user'] = M('user')->where(['role_id'=>['eq',$v['create_user']]])->find()['full_name']?:' - ';
+
+            // 当前课程下的课时数
+            $section_model = new SectionModelEdu();
+            $lists[$k]['section_num'] = $section_model->where(['cate'=>['eq',$v['id']]])->count();
+
+        }
+
+        $this->ajaxReturn([
+            'result' => true,
+            'lists' => $lists,
+            '_sql' => $courseModel->getLastSql(),
+            'count' => $count,
+            'total' => ceil($count / $wheredata['rows'])
+        ]);
+    }
+
     public function section_cate_add()
     {
+
         // model
-        if ($this->isPost() || $this->isAjax()) {
+        if ($this->isPost()) {
             $sectionModel = new SectionCateModelEdu();
             $params = I('post.');
             if ($params) {
                 if ($data = $sectionModel->create($params, 1)) {
+
+                    if ($_FILES['pic']['size'])
+                    {
+                        $fileInfo = $this->upload();
+                        $params['pic'] = $fileInfo[0]['savepath'] . $fileInfo[0]['savename'];
+                    }
+
                     // TODO 操作者 操作时间
                     $params['create_user'] = session('role_id');
                     $params['create_time'] = time();
+
+                    $res = $sectionModel->add($params);
+
+                    if ($params['course_id'])
+                    {
+                        foreach ($params['course_id'] as $k => $v)
+                        {
+                            $banji_kecheng_model = new BanjiKechengModelEdu();
+                            $_rel_data['course_id'] = $v;// 班级ID
+                            $_rel_data['section_cate_id'] = $res;// 课程ID
+                            $banji_kecheng_model->add($_rel_data);
+                        }
+                    }
+
                     // 写库
-                    if ($sectionModel->add($params)) {
-                        $this->ajaxReturn(['result' => true]);
+                    if ($res) {
+                        $this->redirect(U('educationview/course_manage'));
                     } else {
-                        $this->ajaxReturn(['result' => false, 'error' => $sectionModel->getError()]);
+                        $this->error($sectionModel->getError(),U('educationview/course_manage'));
                     }
                 } else {
-                    $this->ajaxReturn(['result' => false, 'error' => $sectionModel->getError()]);
+                    $this->error($sectionModel->getError(),U('educationview/course_manage'));
                 }
             } else {
                 // 验证失败
-                $this->ajaxReturn([
-                    'result' => false,
-                    'error' => '参数异常'
-                ]);
+                $this->error('参数异常',U('educationview/course_manage'));
             }
         }
     }
 
+    // 课程删除
     public function section_cate_del()
     {
         if ($this->isPost() || $this->isAjax()) {
@@ -398,8 +497,16 @@ class EducationAction extends Action
                 // model
                 $sectionModel = new SectionCateModelEdu();
                 try {
-                    //      删除主信息
-                    $sectionModel->where(['id' => ['eq', $id]])->delete();
+                    // 删除主信息
+                    $res = $sectionModel->where(['id' => ['eq', $id]])->delete();
+
+                    // 删除关联信息
+                    if ($res)
+                    {
+                        $rel_model = new BanjiKechengModelEdu();
+                        $rel_model->where(['section_cate_id'=>['eq',$id]])->delete();
+                    }
+
                     $this->ajaxReturn(['result' => true]);
                 } catch (Exception $e) {
                     $this->ajaxReturn(['result' => false, 'error' => $sectionModel->getError()]);
@@ -410,7 +517,113 @@ class EducationAction extends Action
             }
         }
     }
-    /* >>>>>>>>>>>>>>>>>>> 课时分类模块 end <<<<<<<<<<<<<<<<< */
+
+    // 获取当前课程详情
+    public function course_manage_detail()
+    {
+        
+        try {
+            // 参数获取
+            $id = (int)I('post.id');
+
+            // 盘数判断
+            !$id && $this->_throw('主键缺失');
+            
+            // 获取课程信息
+            $course_model = new SectionCateModelEdu();
+            $detail = $course_model->find($id);
+
+            if ($detail)
+            {
+                $detail['create_user'] = M('user')->where(['role_id'=>['eq',$detail['create_user']]])->find()['full_name']?:' - ';
+                $detail['create_time'] = $detail['create_time']?date('Y-m-d H:i:s',$detail['create_time']):' - ';
+            }
+
+            // 获取课程下课时信息
+            $section_model = new SectionModelEdu();
+            $sections = $section_model->where(['cate'=>['eq',$detail['id']]])->select();
+
+            if ($sections)
+            {
+                foreach ($sections as $k => $v)
+                {
+                    $sections[$k]['create_user'] = M('user')->where(['role_id'=>['eq',$v['creator_id']]])->find()['full_name']?:' - ';
+                    
+                    if(C('config_qiniu.start')){
+                        $sections[$k]['_video_path']='http://'.$v['video_path'];
+                    }else{
+                        $sections[$k]['_video_path']=$v['video_path'];
+                    }
+                }
+            }
+
+            // 课时总数
+            $count = count($sections);
+
+            $this->ajaxReturn([
+                'result' => true,
+                'detail' => $detail,
+                'sections' => $sections,
+                'count' => $count
+            ]);
+
+        } catch (Exception $e) {
+            $this->ajaxReturn([
+                'result' => false,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+    }
+
+    // 课程编辑
+    public function course_manage_edit()
+    {
+
+        // 参数获取
+        $par = I('post.');
+
+        // 盘数判断
+        if (!$par || !$par['id'])
+        {
+            $this->ajaxReturn([
+                'result' => false,
+                'error' => '缺少参数'
+            ]);
+        }
+
+        // todo 课程编辑修改附表
+
+        if ($_FILES['pic']['size'])
+        {
+            $fileInfo = $this->upload();
+            $par['pic'] = $fileInfo[0]['savepath'] . $fileInfo[0]['savename'];
+        }
+
+        if ($par['course_id'])
+        {
+            // 删除已有的
+            $rel_model = new BanjiKechengModelEdu();
+            $rel_model->where(['section_cate_id'=>['eq',$par['id']]])->delete();
+            // 重新添加
+            foreach ($par['course_id'] as $k => $v)
+            {
+                $banji_kecheng_model = new BanjiKechengModelEdu();
+                $_rel_data['course_id'] = $v;// 班级ID
+                $_rel_data['section_cate_id'] = $par['id'];// 课程ID
+                $banji_kecheng_model->add($_rel_data);
+            }
+        }
+
+        // 更新
+        $course_model = new SectionCateModelEdu();
+        $res = $course_model->where(['id'=>['eq',$par['id']]])->save($par);
+
+        $this->success('修改成功',U('educationview/course_manage'));
+
+    }
+    
+    /* >>>>>>>>>>>>>>>>>>> 课程模块 end <<<<<<<<<<<<<<<<< */
 
     /* >>>>>>>>>>>>>>>>>>> 课时模块 start <<<<<<<<<<<<<<<<<<<< */
     public function section_add()
@@ -422,6 +635,9 @@ class EducationAction extends Action
 
             $result = $this->_validator->batch_handle($params, $this->_rules()[ACTION_NAME]);
             if ($result['result'] === true) {
+
+                if ($params['course_id']) $params['cate'] = $params['course_id'];
+
                 if ($data = $sectionModel->create($params, 1)) {
                     // 检测课节编号是否存在
                     $yet = $sectionModel->field('id')
@@ -687,10 +903,21 @@ class EducationAction extends Action
                     // 详情
                     $detail = $periods[0];
                     $course_id = $detail['course_id'];
+
+                    // 结构改变
+                    $_section_cate_model = new SectionCateModelEdu();
+                    $_rel_model = new BanjiKechengModelEdu();
                     // 班级下所有课程
+                    $kechengs = $_rel_model->where(['course_id'=>['eq',$course_id]])->select();
+                    // 班级下所有课程的IDS
+                    $kecheng_ids = array_map(function ($v){
+                        return $v['section_cate_id'];
+                    },$kechengs);
+                    
+                    // 班次下所有课时
                     $section = $sectionModel->field('id,name')
-                        ->where(['course_id' => ['eq', $course_id]])->select();
-                    // 班级下已排课的课程
+                        ->where(['course_id' => ['in', $kecheng_ids]])->select();
+                    // 班级下已排课的课时
 
                     $scheduleYet = $sectionModel->period_schedule(['c_sch.period_id' => ['eq', $period_id]]);
 
@@ -786,8 +1013,9 @@ class EducationAction extends Action
             // 参数接收
             $params = I('post.');
             // 验证
-            $result = $this->_validator->batch_handle($params, $this->_rules()[ACTION_NAME]);
-            if ($result['result'] === true) {
+//            $result = $this->_validator->batch_handle($params, $this->_rules()[ACTION_NAME]);
+
+//            if ($result['result'] === true) {
                 // model
                 $scheduleModel = new ScheduleModelEdu();
                 $periodModel = new PeriodModelEdu();
@@ -799,13 +1027,13 @@ class EducationAction extends Action
                         ->find($data['period_id']);
                     $sectionInfo = $sectionModel->field('course_id,title,duration')
                         ->find($data['section_id']);
-                    if ($periodInfo['course_id'] != $sectionInfo['course_id']) {
-                        $this->ajaxReturn(['result' => false, 'error' => '数据关联出错!!!']);
-                    }
-                    //入库之前进行api预约房间
-
-
+//                    if ($periodInfo['course_id'] != $sectionInfo['course_id']) {
+//                        $this->ajaxReturn(['result' => false, 'error' => '数据关联出错!!!']);
+//                    }
+                    // 入库之前进行api预约房间
+                    
                     $schedule_res = $scheduleModel->add($data);// 获取新增ID
+                    
                     // 入库
                     if ($schedule_res !== false) {
 
@@ -857,9 +1085,9 @@ class EducationAction extends Action
                 } else {
                     $this->ajaxReturn(['result' => false, 'error' => $scheduleModel->getError()]);
                 }
-            } else {
-                $this->ajaxReturn(['result' => false, 'error' => $this->_message(ACTION_NAME, $result['field'])]);
-            }
+//            } else {
+//                $this->ajaxReturn(['result' => false, 'error' => $this->_message(ACTION_NAME, $result['field'])]);
+//            }
 
         } else {
             $this->ajaxReturn(['result' => false, 'error' => '非法操作']);
