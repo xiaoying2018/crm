@@ -47,8 +47,8 @@ td a {
                     <ul class="nav nav-tabs" id="left_list" style="height:40px;">
                         <li><a href="#tab1" data-toggle="tab" type="tab1">班级信息</a></li>
                         <li><a href="#tab5" data-toggle="tab" type="tab5">班级详情</a></li>
-                        <li><a href="#tab6" data-toggle="tab" type="tab6">课时分类</a></li>
-                        <li><a href="#tab2" data-toggle="tab" type="tab2">课时信息({{count.section}})</a></li>
+                        <li><a href="#tab6" data-toggle="tab" type="tab6">包含课程</a></li>
+                        <!--<li><a href="#tab2" data-toggle="tab" type="tab2">课时信息({{count.section}})</a></li>-->
                         <li><a href="#tab3" data-toggle="tab" type="tab3">开班班次({{count.period}})</a></li>
                         <li><a href="#tab4" data-toggle="tab" type="tab4">所属产品-班级({{count.product}})</a></li>
 
@@ -70,12 +70,12 @@ td a {
                                                 <p>{{detail.section_total}}</p>
                                             </div>
                                         </div>
-                                        <div class="clearfix group_item col-lg-6">
-                                            <label class="col-lg-2">总课时</label>
-                                            <div class="col-lg-4">
-                                                <p>{{detail.time_long}}</p>
-                                            </div>
-                                        </div>
+                                        <!--<div class="clearfix group_item col-lg-6">-->
+                                            <!--<label class="col-lg-2">总课时</label>-->
+                                            <!--<div class="col-lg-4">-->
+                                                <!--<p>{{detail.time_long}}</p>-->
+                                            <!--</div>-->
+                                        <!--</div>-->
                                         <div class="clearfix group_item col-lg-6">
                                             <label class="col-lg-2">成员类型</label>
                                             <div class="col-lg-4">
@@ -136,7 +136,7 @@ td a {
                                     <thead>
                                         <tr style="background-color:#f9fafc;text-align:center;">
                                             <td style="">课时名称</td>
-                                            <td style="">课时分类</td>
+                                            <td style="">所属课程</td>
                                             <td style="">课时编号</td>
                                             <td style="">课时标题</td>
                                             <td style="">课时时长</td>
@@ -242,30 +242,30 @@ td a {
                         </div>
                         <div class="tab-pane" id="tab6">
                             <div class="panel-body">
-                                <a href="javascript:;" onclick="showSectionCateAdd()" class="btn btn-primary btn-sm addsection" style="margin-bottom:15px;">
-                                    <i class="fa fa-plus-circle"></i>&nbsp; 添加课时分类
-                                </a>
+                                <!--<a href="javascript:;" onclick="showSectionCateAdd()" class="btn btn-primary btn-sm addsection" style="margin-bottom:15px;">-->
+                                    <!--<i class="fa fa-plus-circle"></i>&nbsp; 添加课程-->
+                                <!--</a>-->
                                 <table class="table select-table table-bordered">
                                     <thead>
                                     <tr style="background-color:#f9fafc;text-align:center;">
-                                        <td style="">分类名称</td>
+                                        <td style="">课程名称</td>
                                         <td style="">创建人</td>
                                         <td style="">创建时间</td>
-                                        <td style="">操作</td>
+                                        <!--<td style="">操作</td>-->
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr v-for="s in sections_cate" :data-id="s.id">
                                         <td style="">
-                                            <a href="javascript:;">
+                                            <a :href="'/index.php?m=educationview&a=course_manage_detail&id='+s.id">
                                                 {{s.name}}
                                             </a>
                                         </td>
                                         <td style="">{{s.create_user}}</td>
                                         <td style="">{{s.create_time}}</td>
-                                        <td style="text-align:center;padding:14px;color:#666">
-                                            <button class="btn btn-danger btn-sm" @click="section_cate_del($event)">删除</button>
-                                        </td>
+                                        <!--<td style="text-align:center;padding:14px;color:#666">-->
+                                            <!--<button class="btn btn-danger btn-sm" @click="section_cate_del($event)">取消关联</button>-->
+                                        <!--</td>-->
                                     </tr>
                                     </tbody>
                                 </table>

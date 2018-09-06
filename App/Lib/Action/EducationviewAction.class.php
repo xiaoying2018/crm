@@ -25,6 +25,11 @@ class EducationviewAction extends Action
         $this->display();
     }
 
+    public function course_manage()
+    {
+        $this->display();
+    }
+
     public function course_add ()
     {
         $category           =   [
@@ -47,11 +52,11 @@ class EducationviewAction extends Action
         $courseModel    =   new CourseModelEdu();
         if( !$id )  $this->error('主键缺失');
         // 详情
-        $info           =   $courseModel->field('id,name,category,member_type,pic,detail')
+        $info           =   $courseModel->field('id,name,is_show,is_open,category,member_type,pic,detail')
             ->where( ['id'=>['eq',$id], 'status'=>['eq',1]] )
             ->find();
         if( !$info )  $this->error('课程不存在');
-
+        
         $category           =   [
             ['id'=>1,'name'=>'修士考试'],
             ['id'=>2,'name'=>'留考校内考'],
@@ -102,8 +107,53 @@ class EducationviewAction extends Action
 
     public function section_index (){}
 
+    public function course_manage_detail()
+    {
+        $this->display();
+    }
+
+    public function course_manage_edit()
+    {
+        // 参数接收
+        $id = I('get.id');
+
+        // 参数判断
+        if (!$id) $this->error('缺少参数');
+
+        // 获取当前课程详情
+        $course_model = new SectionCateModelEdu();
+        $course = $course_model->find($id);
+
+        if ($course)
+        {
+            $rel_model = new BanjiKechengModelEdu();
+            $banjiids = $rel_model->where(['section_cate_id'=>['eq',$course['id']]])->select();
+            $course['banjiids'] = array_map(function ($v){
+                return $v['course_id'];
+            },$banjiids);
+        }
+
+        $this->course = $course;// 变量分配
+
+        // 获取当前所有班级
+        $banji_model = new CourseModelEdu();
+        $banjis = $banji_model->select();
+
+        $this->banjis = $banjis;// 变量分配
+
+        $this->display();
+    }
+
     public function section_cate_add()
     {
+
+        // 获取当前所有班级
+        $banji_model = new CourseModelEdu();
+
+        $banjis = $banji_model->select();
+
+        $this->banjis = $banjis;
+
         $this->display();
     }
 
