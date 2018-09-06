@@ -775,7 +775,11 @@ $(function(){
 								</a>
 								<ul class="dropdown-menu">
 									<li><a href="{:U('user/edit')}">个人资料</a></li>
-	                                <li><a href="{:U('setting/lockscreen')}">一键锁屏</a></li>
+									<!-- 如果是 www.liuxuecrm.com 进入 不显示选择此标签 -->
+									<if condition="$_SERVER['SERVER_NAME'] != 'www.liuxuecrm.net'">
+										<li><a href="{:U('setting/lockscreen')}">一键锁屏</a></li>
+									</if>
+
 									<li class="divider"></li>
 									<li><a class="logout" href="javascript:void(0);">{:L('EXIT')}</a></li>
 								</ul>
