@@ -110,8 +110,9 @@ class IndexAction extends Action {
     
 	public function index(){
 
+
 		//手机访问跳转
-		if (isMobile()) {
+		if (isMobile() || $_SERVER['SERVER_NAME'] != 'www.liuxuecrm.net') {
 			$mobile = str_replace('index.php', 'mobile', $_SERVER["PHP_SELF"]);
 			header("Location: http://".$_SERVER['SERVER_NAME'].':'.$_SERVER["SERVER_PORT"].$mobile);
 		}
