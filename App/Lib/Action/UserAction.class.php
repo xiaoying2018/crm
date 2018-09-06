@@ -22,11 +22,16 @@ class UserAction extends Action {
 
 	//登录
 	public function login() {
-		//手机访问跳转
-		if (isMobile()) {
-			$mobile = str_replace('index.php', 'mobile', $_SERVER["PHP_SELF"]);
-			header("Location: http://".$_SERVER['SERVER_NAME'].':'.$_SERVER["SERVER_PORT"].$mobile);
-		}
+	    
+        if ($_SERVER['SERVER_NAME'] != 'www.liuxuecrm.net' && $_SERVER['SERVER_NAME'] != 'liuxuecrm.net')
+        {
+            //手机访问跳转
+            if (isMobile()) {
+                $mobile = str_replace('index.php', 'mobile', $_SERVER["PHP_SELF"]);
+                header("Location: http://".$_SERVER['SERVER_NAME'].':'.$_SERVER["SERVER_PORT"].$mobile);
+            }
+        }
+
 		$m_announcement = M('announcement');
 		$where['status'] = array('eq', 1);
 		$where['isshow'] = array('eq', 1);
