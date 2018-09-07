@@ -33,10 +33,10 @@ class EducationviewAction extends Action
     public function course_add ()
     {
         $category           =   [
-            ['id'=>1,'name'=>'修士考试'],
+            ['id'=>1,'name'=>'修士考'],
             ['id'=>2,'name'=>'留考校内考'],
-            ['id'=>3,'name'=>'热门公开课'],
-            ['id'=>4,'name'=>'保录班'],
+            ['id'=>3,'name'=>'日语'],
+            ['id'=>4,'name'=>'美术'],
         ];
         $member_type        =   [
             1   =>  '一对多',
@@ -56,12 +56,12 @@ class EducationviewAction extends Action
             ->where( ['id'=>['eq',$id], 'status'=>['eq',1]] )
             ->find();
         if( !$info )  $this->error('课程不存在');
-        
+
         $category           =   [
-            ['id'=>1,'name'=>'修士考试'],
+            ['id'=>1,'name'=>'修士考'],
             ['id'=>2,'name'=>'留考校内考'],
-            ['id'=>3,'name'=>'热门公开课'],
-            ['id'=>4,'name'=>'保录班'],
+            ['id'=>3,'name'=>'日语'],
+            ['id'=>4,'name'=>'美术'],
         ];
         $member_type        =   [
             1   =>  '一对多',
