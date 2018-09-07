@@ -42,7 +42,7 @@
         <div class="form-group clearfix">
             <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>选择用户</label>
             <div class="col-md-8">
-                <select name="user_id" id="" class="form-control">
+                <select name="user_id" id="add_select2_teacher" class="form-control ">
                     <option value="">选择用户</option>
                     <foreach name="users" item="item">
                         <option value="{$item.user_id}">&nbsp;&nbsp;&nbsp;&nbsp;{$item.full_name}</option>
@@ -52,6 +52,10 @@
         </div>
     </div>
 </form>
+
+<script>
+    $("#add_select2_teacher").select2();
+</script>
 
 
 

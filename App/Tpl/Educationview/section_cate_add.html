@@ -58,6 +58,9 @@
         padding-left: 5px;
         padding-right: 15px;
     }
+    .select2-container{
+        height: auto !important;
+    }
 </style>
 <script>
     $(function () {
@@ -103,15 +106,20 @@
                              <!-- 所属班级 -->
                             <div class="form-group clearfix">
                                 <label class="col-md-2 control-label">所属班级：</label>
-                                <div class="col-md-10">
-                                    <foreach name="banjis" item="banji">
+                                <div class="col-md-8">
+                                    <select name="" id="banji_class" multiple="multiple" style="width: 100%;">
+                                        <foreach name="banjis" item="banji">
+                                            <option value="_{$banji.id}" >{$banji.name}</option>
+                                        </foreach>
+                                    </select>
+                                    <!-- <foreach name="banjis" item="banji">
                                         <div class="checkbox checkbox-info">
                                             <div class="checkbox checkbox-info" style="float:left;">
                                                 <input type="checkbox" id="_{$banji.id}" name="course_id[]" value="{$banji.id}" style="width: 40px; height: 20px;">&nbsp;
                                                 <label for="_{$banji.id}">{$banji.name}</label>
                                             </div>
                                         </div>
-                                    </foreach>
+                                    </foreach> -->
                                 </div>
                             </div>
 
@@ -158,7 +166,12 @@
     </form>
 </div>
 <script type="text/javascript">
-
+    $(function(){
+        $("#banji_class").select2({
+            placeholder:"请选择班级或输入关键字",
+            multiple: true,
+        });
+    })
     var ue = UE.getEditor('editor');
     //初始化上传图片
     function xmTanUploadImg(obj,img_id) {
