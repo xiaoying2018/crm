@@ -38,7 +38,7 @@
 		    right:0px;
 		    z-index: 102;
 		}
-		
+
 
 		.sidebar-collapse{z-index:9999; border-right: 1px solid #dbdbdb;}
 		.tooltip{width:88px;line-height:36px;}
@@ -60,7 +60,7 @@
 		.notification{top:150px;z-index:9999;}
 
 		.checkbox, .radio{margin:0 auto;}
-		
+
 		/*闪烁效果*/
 		.crm_heart{
 		    animation:heart 1s ease infinite;
@@ -261,7 +261,7 @@ $(function(){
 					} else {
 						$customer_url = U('customer/index','scene_id='.$customer_default_info['id']);
 					}
-					
+
 					//版本、到期
 	        		$authorize_setting = C('AUTHORIZE_SETTING');
 					$days_remaining = '100';
@@ -290,19 +290,19 @@ $(function(){
     left: 0;
     top: 0;padding:6px 21px 21px;background: #FFF;border-right: 1px solid #dbdbdb !important;z-index: 999;">
 	                    <br>
-	                    <?php 
+	                    <?php
 	                    	$img = M('User')->where('user_id = %d', session('user_id'))->getField('img');
 	                    	$defaultinfo_info = M('Config')->where('name = "defaultinfo"')->find();
 							$defaultinfo = unserialize($defaultinfo_info['value']);
 						?>
 	                    <div class="logo-element" style="margin: -17px -25px;">
-	                    	
+
 	                    	<?php if ( $_SERVER['HTTP_HOST'] == 'liuxuecrm.net' || $_SERVER['HTTP_HOST'] == 'www.liuxuecrm.net' ): ?>
 	                    		<img class="" src="__PUBLIC__/img/outer-crm.svg" style="margin-bottom:0px;height:45px;margin-top:-9px;" alt="MXCRM">
 							<?php else: ?>
 								<img class="" src="__PUBLIC__/img/logo-crm.svg" style="margin-bottom:0px;height:45px;margin-top:-9px;" alt="MXCRM">
 							<?php endif; ?>
-	                    	
+
 	                    </div>
 	                </li>
 					<li class="item_l" >
@@ -532,7 +532,7 @@ $(function(){
 							</li>
 						</if>
 
-				<if condition="session('?admin') || in_array(4,session('edu_roles')) || in_array(1,session('edu_roles')) || in_array(5,session('edu_roles'))">
+				        <if condition="session('?admin') || in_array(4,session('edu_roles')) || in_array(1,session('edu_roles')) || in_array(5,session('edu_roles'))">
 							<li <if condition="$module_name eq 'educationview' &&  $action_name eq 'course_manage'">class="active"</if>>
 								<i class="fa fa-angle-right"></i>
 								<a href="{:U('educationview/course_manage')}">课程管理</a>
@@ -643,7 +643,7 @@ $(function(){
 	    </nav>
 		<div id="page-wrapper" class="gray-bg" style="background:#e6e9f0">
     		<div class="row border-bottom white-bg" style="z-index: 102;">
-				
+
 				<!-- 顶部菜单栏 -->
 				<nav class="navbar navbar-default nav-head navbar-static-top" role="navigation" style="padding:0;margin-bottom: 0px; border-bottom:2px solid #f7f7f7">
 					<?php
@@ -953,8 +953,12 @@ $(function(){
 						<?php endif; ?>
 
 						<?php if($module_name == 'coursedocument' && $action_name == 'index'): ?>
-						<li class="active"><a href="{:U('CourseDocument/index')}">课件管理</a></li>
+						    <li class="active"><a href="{:U('CourseDocument/index')}">课件管理</a></li>
 						<?php endif; ?>
+
+                        <?php if($module_name == 'educationview' && ($action_name == 'course_manage' || $action_name == 'course_manage_detail')): ?>
+                            <li class="active"><a href="{:U('educationview/course_manage')}">课程管理</a></li>
+                        <?php endif; ?>
 
 						<?php if($module_name == 'educationview' && $action_name == 'teacher_index'): ?>
 							<li class="active"><a href="{:U('educationview/teacher_index')}">教师管理</a></li>
@@ -1087,8 +1091,8 @@ if(href != '' && href != null){
 		title: "添加失败!",type: "error",
 		confirmButtonColor: "#DD6B55",
 		confirmButtonText: "返回",
-		closeOnConfirm: false 
-	}, 
+		closeOnConfirm: false
+	},
 	function(){
 		location.href = 'javascript:history.back(-1)';
 	});
@@ -1112,7 +1116,7 @@ function login_tips(){
 		            }else{
 		            	 login_show = 1;
 		            }
-		        }  
+		        }
 		    });
         }
 	},'json')
@@ -1241,7 +1245,7 @@ function aaa(icon, name, content, url_link){
     };
     if(Notification && Notification.permission === "granted"){
         var n = new Notification(name + t, options);
-        //5秒后自动关闭 
+        //5秒后自动关闭
         n.onshow = function(){
             setTimeout(function () {
 	            n.close();
@@ -1254,10 +1258,10 @@ function aaa(icon, name, content, url_link){
         };
         n.onclose = function(){
             console.log("notification closed!");
-        };        
+        };
         n.onerror = function() {
             console.log("An error accured");
-        }        
+        }
     }
 }
 </script>
