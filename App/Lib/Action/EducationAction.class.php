@@ -404,14 +404,42 @@ class EducationAction extends Action
 
         $courseModel = new SectionCateModelEdu();
 
+        // 如果有班级的筛选条件 todo
+        if ($wheredata['banji_id'])
+        {
+            $_banji_xia_course_ids = (new BanjiKechengModelEdu())->where(['course_id'=>['eq',$wheredata['banji_id']]])->select();
+            if ($_banji_xia_course_ids)
+            {
+                $banji_xia_course_ids = array_map(function ($v){
+                    return $v['section_cate_id'];
+                },$_banji_xia_course_ids);
+            }
+            if ($banji_xia_course_ids)
+            {
+                $where['id'] = ['in',$banji_xia_course_ids];
+            }
+        }
+
         // 如果需要排序
         if ($sort && $sort_field && $sort_field == 'create_time')
         {
-            // 查询结果
-            $lists = $courseModel->order("{$sort_field} {$sort}")->limit($page_start,$rows)->select();
+            if ($where)
+            {
+                // 查询结果
+                $lists = $courseModel->where($where)->order("{$sort_field} {$sort}")->limit($page_start,$rows)->select();
+            }else{
+                // 查询结果
+                $lists = $courseModel->order("{$sort_field} {$sort}")->limit($page_start,$rows)->select();
+            }
         }else{
-            // 查询结果
-            $lists = $courseModel->limit($page_start,$rows)->select();
+            if ($where)
+            {
+                // 查询结果
+                $lists = $courseModel->where($where)->order("{$sort_field} {$sort}")->limit($page_start,$rows)->select();
+            }else{
+                // 查询结果
+                $lists = $courseModel->limit($page_start,$rows)->select();
+            }
         }
 
 //        $lists = $courseModel->limit($page_start,$rows)->select();
@@ -429,9 +457,13 @@ class EducationAction extends Action
 
         }
 
+        // 获取所有班级供页面筛选
+        $banjis = (new CourseModelEdu())->field('id,name')->select();
+
         $this->ajaxReturn([
             'result' => true,
             'lists' => $lists,
+            'banji' => $banjis,
             '_sql' => $courseModel->getLastSql(),
             'count' => $count,
             'total' => ceil($count / $wheredata['rows'])

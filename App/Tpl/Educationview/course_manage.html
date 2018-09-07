@@ -38,10 +38,15 @@
         <div class="col-md-12">
             <div class="title-bar" style="position: relative;z-index: 99;">
                 <div id="title-show" class="clearfix">
-                    <ul class="searchpart">
+                    <ul class="searchpart clearfix">
                         <a href="{:U('educationview/section_cate_add')}" class="btn btn-primary btn-sm pull-left" style="margin:2px 0 0 0; width: 100px;" >
                             <i class="fa fa-plus-circle"></i>&nbsp; 新建课程
                         </a>
+                        <select id="search_courses" class="form-control" style="width: 300px;float: right;" @change="reloadgrid()">
+                            <!-- 删选条件 JS 渲染 -->
+                            <option value="">请选择班级</option>
+                            <option :value="n.id" v-for="n in optionarr">{{n.name}}</option>
+                        </select>
                     </ul>
                 </div>
             </div>
@@ -180,7 +185,8 @@
                 return (cm[i].name === 'cb');
             } ,
             loadComplete: function (res) {
-                // console.log("res", res);
+                // <option value="id">name</option>
+                table_container.optionarr = res.banji
             },
             gridComplete: function () {
                 setWidthHeight();
@@ -256,8 +262,12 @@
         data: {
             lists:{},
             nodata:{},
+            optionarr:[]
         },
         methods:{
+            reloadgrid:function (n) {
+                $("#table_list_2").jqGrid("setGridParam", { postData: {banji_id:$("#search_courses").val()}}).trigger("reloadGrid");
+            },
             getLists: function () {
                 var _this		=	this;
                 $.ajax({
