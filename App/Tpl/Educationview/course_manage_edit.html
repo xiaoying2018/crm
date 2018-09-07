@@ -58,6 +58,10 @@
         padding-left: 5px;
         padding-right: 15px;
     }
+
+    .select2-container{
+        height: auto !important;
+    }
 </style>
 <script>
     $(function () {
@@ -83,11 +87,45 @@
                         <div class="col-md-11 add_body_form">
 
                             <div class="form-group cluecateBox">
-                                <label class="col-md-2 control-label">是否是公开课：</label>
+                                <label class="col-md-2 control-label">课程类型：</label>
                                 <div class="col-md-8 radiopart">
                                     <div class="radio radio-info radio-inline ml">
-                                        <input type="radio" id="_is_open" name="is_open" value="1" <if condition="$course['is_open'] == 1">checked</if> ><label for="_is_open" class="mr25">是</label>
-                                        <input type="radio" id="_not_open" name="is_open" value="0" <if condition="$course['is_open'] == 0">checked</if> ><label for="_not_open" class="mr25">否</label>
+                                        <input type="radio" id="_is_open" name="is_open" value="1" <if condition="$course['is_open'] == 1">checked</if> ><label for="_is_open" class="mr25">公开课</label>
+                                        <input type="radio" id="_not_open" name="is_open" value="0" <if condition="$course['is_open'] == 0">checked</if> ><label for="_not_open" class="mr25">内部学员课程</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                            </div>
+
+                            <div class="form-group cluecateBox">
+                                <label class="col-md-2 control-label">授课方式：</label>
+                                <div class="col-md-8 radiopart">
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="_zhibo" name="zhibo" value="1" <if condition="$course['zhibo'] == 1">checked</if> ><label for="_zhibo" class="mr25">直播课</label>
+                                        <input type="radio" id="_lubo" name="zhibo" value="0" <if condition="$course['zhibo'] == 0">checked</if> ><label for="_lubo" class="mr25">录播课</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                            </div>
+
+                            <div class="form-group cluecateBox">
+                                <label class="col-md-2 control-label">课程内容：</label>
+                                <div class="col-md-8 radiopart">
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="_riyu" name="neirong" value="1" <if condition="$course['neirong'] == 1">checked</if> ><label for="_riyu" class="mr25">日语课</label>
+                                        <input type="radio" id="_zhuanye" name="neirong" value="2" <if condition="$course['neirong'] == 2">checked</if> ><label for="_zhuanye" class="mr25">专业基础知识课</label>
+                                        <input type="radio" id="_xiaoneikao" name="neirong" value="3" <if condition="$course['neirong'] == 3">checked</if> ><label for="_xiaoneikao" class="mr25">校内考对策课程</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                            </div>
+
+                            <div class="form-group cluecateBox">
+                                <label class="col-md-2 control-label">是否首页展示：</label>
+                                <div class="col-md-8 radiopart">
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="_show" name="is_show" value="1" <if condition="$course['is_show'] == 1">checked</if> ><label for="_show" class="mr25">是</label>
+                                        <input type="radio" id="_hide" name="is_show" value="0" <if condition="$course['is_show'] == 0">checked</if> ><label for="_hide" class="mr25">否</label>
                                     </div>
                                 </div>
                                 <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
@@ -115,15 +153,24 @@
                                 </div>
                             </div>
 
-                            <div class="form-group cluecateBox">
-                                <label class="col-md-2 control-label">是否首页展示：</label>
-                                <div class="col-md-8 radiopart">
-                                    <div class="radio radio-info radio-inline ml">
-                                        <input type="radio" id="_show" name="is_show" value="1" <if condition="$course['is_show'] == 1">checked</if> ><label for="_show" class="mr25">是</label>
-                                        <input type="radio" id="_hide" name="is_show" value="0" <if condition="$course['is_show'] == 0">checked</if> ><label for="_hide" class="mr25">否</label>
-                                    </div>
+                            <!-- 所属班级 -->
+                            <div class="form-group clearfix">
+                                <label class="col-md-2 control-label">所属班级：</label>
+                                <div class="col-md-8">
+                                    <select name="" id="banji_class" multiple="multiple" style="width: 100%;">
+                                        <foreach name="banjis" item="banji">
+                                            <option value="_{$banji.id}" >{$banji.name}</option>
+                                        </foreach>
+                                    </select>
+                                    <!-- <foreach name="banjis" item="banji">
+                                        <div class="checkbox checkbox-info">
+                                            <div class="checkbox checkbox-info" style="float:left;">
+                                                <input type="checkbox" id="_{$banji.id}" name="course_id[]" value="{$banji.id}" style="width: 40px; height: 20px;">&nbsp;
+                                                <label for="_{$banji.id}">{$banji.name}</label>
+                                            </div>
+                                        </div>
+                                    </foreach> -->
                                 </div>
-                                <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
                             </div>
 
                             <div class="form-group">
@@ -159,6 +206,13 @@
     </form>
 </div>
 <script type="text/javascript">
+
+    $(function(){
+        $("#banji_class").select2({
+            placeholder:"请选择班级或输入关键字",
+            multiple: true,
+        });
+    })
 
     var ue = UE.getEditor('editor');
     //初始化上传图片
