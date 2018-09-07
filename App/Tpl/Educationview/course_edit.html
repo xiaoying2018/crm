@@ -116,6 +116,16 @@
                             </div>
 
                             <div class="form-group cluecateBox">
+                                <label class="col-md-2 control-label">是否是签约班：</label>
+                                <div class="col-md-8 radiopart">
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="_is_qianyue" name="is_qianyue" value="1" <if condition="$info['is_qianyue'] == 1">checked</if> ><label for="_is_qianyue" class="mr25">是</label>
+                                        <input type="radio" id="_not_qianyue" name="is_qianyue" value="0" <if condition="$info['is_qianyue'] == 1">checked</if> ><label for="_not_qianyue" class="mr25">否</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group cluecateBox">
                                 <label class="col-md-2 control-label">是否首页展示：</label>
                                 <div class="col-md-8 radiopart">
                                     <div class="radio radio-info radio-inline ml">
