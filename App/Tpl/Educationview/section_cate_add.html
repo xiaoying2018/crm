@@ -84,7 +84,7 @@
                             </div>
                         </div>
                         <div class="col-md-11 add_body_form">
-
+                            <input type="hidden" id="course_id" name="course_id">
                             <div class="form-group cluecateBox">
                                 <label class="col-md-2 control-label">课程类型：</label>
                                 <div class="col-md-8 radiopart">
@@ -143,7 +143,7 @@
                                 <div class="col-md-8">
                                     <select name="" id="banji_class" multiple="multiple" style="width: 100%;">
                                         <foreach name="banjis" item="banji">
-                                            <option value="_{$banji.id}" >{$banji.name}</option>
+                                            <option value="{$banji.id}" >{$banji.name}</option>
                                         </foreach>
                                     </select>
                                     <!-- <foreach name="banjis" item="banji">
@@ -182,7 +182,7 @@
         <div id="tfoot_div" class="clearfix">
             <div class="clearfix" id="tfoot_page">
                 <div class="ibox-content" style="border-top: none;">
-                    <div class="col-sm-offset-2"><button type="submit" id="save_submit" class="btn btn-primary">创建</button></div>
+                    <div class="col-sm-offset-2"><button id="save_submit" class="btn btn-primary">创建</button></div>
                 </div>
             </div>
         </div>
@@ -190,6 +190,11 @@
 </div>
 <script type="text/javascript">
     $(function(){
+        $("#save_submit").click(function () {
+            var _temp =  $("#banji_class").select2('val');
+            $("#course_id").val(_temp);
+            $("#form").submit();
+        })
         $("#banji_class").select2({
             placeholder:"请选择班级或输入关键字",
             multiple: true,

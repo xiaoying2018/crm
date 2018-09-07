@@ -494,6 +494,8 @@ class EducationAction extends Action
 
                     if ($params['course_id'])
                     {
+                        $params['course_id'] = explode(',',$params['course_id']);
+
                         foreach ($params['course_id'] as $k => $v)
                         {
                             $banji_kecheng_model = new BanjiKechengModelEdu();
@@ -614,7 +616,7 @@ class EducationAction extends Action
 
         // 参数获取
         $par = I('post.');
-
+        
         // 盘数判断
         if (!$par || !$par['id'])
         {
@@ -632,11 +634,14 @@ class EducationAction extends Action
             $par['pic'] = $fileInfo[0]['savepath'] . $fileInfo[0]['savename'];
         }
 
+        // 删除已有的
+        $rel_model = new BanjiKechengModelEdu();
+        $rel_model->where(['section_cate_id'=>['eq',$par['id']]])->delete();
+        
         if ($par['course_id'])
         {
-            // 删除已有的
-            $rel_model = new BanjiKechengModelEdu();
-            $rel_model->where(['section_cate_id'=>['eq',$par['id']]])->delete();
+            $par['course_id'] = explode(',',$par['course_id']);
+
             // 重新添加
             foreach ($par['course_id'] as $k => $v)
             {

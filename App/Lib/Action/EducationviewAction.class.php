@@ -131,6 +131,7 @@ class EducationviewAction extends Action
             $course['banjiids'] = array_map(function ($v){
                 return $v['course_id'];
             },$banjiids);
+            $course['banjiids'] = implode(',',$course['banjiids']);
         }
 
         $this->course = $course;// 变量分配
