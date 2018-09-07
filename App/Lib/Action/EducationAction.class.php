@@ -699,6 +699,28 @@ class EducationAction extends Action
         }
     }
 
+    // 课时视频路径修改
+    public function section_video_path_change()
+    {
+        $id = I('post.id');
+        $path = I('post.path');
+        
+        if (!$id || !$path)
+        {
+            $this->ajaxReturn(['status'=>false,'msg'=>'缺少参数']);
+        }
+
+        $res = (new SectionModelEdu())->where(['id'=>['eq',$id]])->save(['video_path'=>$path]);
+
+        if ($res)
+        {
+            $this->ajaxReturn(['status'=>true,'msg'=>'修改成功']);
+        }else{
+            $this->ajaxReturn(['status'=>false,'msg'=>'网络异常,请联系管理员']);
+        }
+
+    }
+
     public function section_del()
     {
         if ($this->isPost() || $this->isAjax()) {

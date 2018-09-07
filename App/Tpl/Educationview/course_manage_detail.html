@@ -27,6 +27,36 @@ td {
 td a {
     color: #5C8FFC !important;
 }
+.videopath_input{
+    position: absolute;
+    top: -35px;
+    left: 0%;
+    width: 100%;
+    padding: 4px;
+    border: 1px solid #20bb65;
+    display: none;
+    outline: none;
+    border-radius: 5px;
+    background: #fff;
+}
+.videopath_input input{
+    width: 100%;
+    border:none;
+    background: none;
+    outline: none;
+    background: #fff;
+}
+.videopath_input span{
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 14px;
+    padding: 4px 8px;
+    background-color: #20bb65;
+    color: #fff;
+    height: 100%;
+    cursor: pointer;
+}
 </style>
 <script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
 <div class="wrapper wrapper-content animated fadeIn templete_Detail">
@@ -141,9 +171,14 @@ td a {
                                             <td style="text-align:center;padding:14px;color:#666;">
                                                 <div style=" position: relative;">
                                                     <button class="btn btn-success fileinput-button" type="file" >视频上传</button>
-                                                    <input type="file"   :data-id="s.id" onchange="loadFile(this,this.files[0],3)" style="width: 84px;display: inline-block;opacity: 0;left: 50%;position: absolute;top: 0;margin-left: -98px;" class="btn btn-success fileinput-button" value="视频上传" >
+                                                    <input type="file"   :data-id="s.id" onchange="loadFile(this,this.files[0],3)" style="width: 84px;display: inline-block;opacity: 0;left: 50%;position: absolute;top: 0;margin-left: -158px;" class="btn btn-success fileinput-button" value="视频上传" >
+                                                    <button class="btn btn-warning updatevideo">视频路径修改</button>
                                                     <button class="btn btn-danger btn-sm" @click="section_del($event)">删除</button>
                                                     <button class="btn btn-info btn-sm" onclick="showSectionEdit(this)">修改</button>
+                                                    <div class="videopath_input">
+                                                        <input type="text" placeholder="请输入视频链接" class="">
+                                                        <span class="confirmvideo" :data-id="s.id" >确定</span>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>
@@ -189,6 +224,34 @@ td a {
 <script>
 var templete_Detail;
 $(function() {
+    $(document).on('click','.updatevideo',function(){
+        $(this).parent().find(".videopath_input").show();
+    })
+
+    $(document).on('click','.confirmvideo',function(){
+        var _val = $(this).prev().val();
+        var _id = $(this).attr("data-id")
+        if (_val == ''){
+            return false;
+        }
+        if (_val.indexOf('http://') > -1){
+            _val = _val.replace('http://','')
+        }
+        var _data = {
+            id:_id,
+            path:_val
+        }
+        $.ajax({
+            url:"{:U('education/section_video_path_change')}",
+            type:'post',
+            data:_data,
+            success:function(res){
+                alert('修改成功');
+                $('.videopath_input').hide();
+            }
+        })
+        console.log(_data)
+    })
     templete_Detail = new Vue({
         el: '.templete_Detail',
         data: {
