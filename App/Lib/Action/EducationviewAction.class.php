@@ -52,7 +52,7 @@ class EducationviewAction extends Action
         $courseModel    =   new CourseModelEdu();
         if( !$id )  $this->error('主键缺失');
         // 详情
-        $info           =   $courseModel->field('id,name,is_qianyue,is_show,is_open,category,member_type,pic,detail')
+        $info           =   $courseModel->field('id,name,status,is_qianyue,is_show,is_open,category,member_type,pic,detail')
             ->where( ['id'=>['eq',$id], 'status'=>['eq',1]] )
             ->find();
         if( !$info )  $this->error('课程不存在');
