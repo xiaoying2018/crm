@@ -36,7 +36,7 @@ class EducationviewAction extends Action
             ['id'=>1,'name'=>'修士考'],
             ['id'=>2,'name'=>'留考校内考'],
             ['id'=>3,'name'=>'日语'],
-            ['id'=>4,'name'=>'美术'],
+            ['id'=>4,'name'=>'艺术'],
         ];
         $member_type        =   [
             1   =>  '一对多',
@@ -61,7 +61,7 @@ class EducationviewAction extends Action
             ['id'=>1,'name'=>'修士考'],
             ['id'=>2,'name'=>'留考校内考'],
             ['id'=>3,'name'=>'日语'],
-            ['id'=>4,'name'=>'美术'],
+            ['id'=>4,'name'=>'艺术'],
         ];
         $member_type        =   [
             1   =>  '一对多',
