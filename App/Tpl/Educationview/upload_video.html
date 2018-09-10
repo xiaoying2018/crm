@@ -15,13 +15,32 @@
     .progress-label {
         position: absolute;
         left: 50%;
-        top: 4px;
+        top: 6px;
         font-weight: bold;
         text-shadow: 1px 1px 0 #fff;
+        color: #6c6c6c;
+    text-shadow: none;
     }
     #progressbar{
         height:30px;
         display:none;
+        margin-top: 40px;
+    border: none !important;
+    }
+    #progressbar.ui-progressbar .ui-progressbar-value {
+        height:30px;
+        background: none;
+        background-color: #5bc0de;
+        animation: reverse progress-bar-stripes 0.40s linear infinite, animate-positive 2s;
+        -webkit-animation: progress-bar-stripes 2s linear infinite;
+        -o-animation: progress-bar-stripes 2s linear infinite;
+        animation: progress-bar-stripes 2s linear infinite;
+
+        background-image: -webkit-linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent); */
+    background-image: -o-linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+    background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+    -webkit-background-size: 40px 40px;
+    background-size: 40px 40px;
     }
     #dialog{
         display:none;
@@ -34,6 +53,14 @@
     #key{
         display: none;
     }
+    .ipt{
+        opacity: 0;
+        height: 30px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+    }
 </style>
 
 <ul>
@@ -42,12 +69,15 @@
 
     <li>
         <label for="bucket">视频:</label>
-        <input id="file" name="file" class="ipt" type="file" />
+        <div style="position: relative; margin-top: 15px;">
+            <button class=" btn btn-success uploadvideo">选择视频</button>
+            <input id="file" name="file" class="ipt" type="file" />
+        </div>
     </li>
     <!--<li>-->
         <!--<input id="btn_upload" type="button" value="提交">-->
     <!--</li>-->
-    <div id="progressbar"><div class="progress-label"></div></div>
+    <div id="progressbar" class="progress-bar-danger"><div class="progress-label"></div></div>
 </ul>
 <div id="dialog" title="上传成功"></div>
 
@@ -63,7 +93,7 @@
                 progressLabel.text(progressbar.progressbar("value") + "%");
             },
             complete: function() {
-                progressLabel.text("Complete!");
+                progressLabel.text("上传成功!");
             }
         });
         $("#file").change(function() {
@@ -92,6 +122,9 @@
                         }
                         var percentComplete = Math.round(evt.loaded * 100 / evt.total);
                         progressbar.progressbar("value", percentComplete);
+                        if (percentComplete >= 99) {
+                            $(".progress-label").text('视频压缩中，请稍后..');
+                        }
                         // console && console.log(percentComplete, ",", formatSpeed);
                     }
                 }, false);
@@ -102,6 +135,7 @@
                         console && console.log(blkRet);
                         $('#course_key').val(blkRet.key);
                         $('#course_hash').val(blkRet.hash);
+                            $(".progress-label").text('上传成功！');
                         $("#dialog").html('文件成功上传七牛').dialog();
                     } else if (xhr.status != 200 && xhr.responseText) {
 
