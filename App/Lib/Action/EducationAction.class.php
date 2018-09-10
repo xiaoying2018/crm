@@ -2564,13 +2564,7 @@ class EducationAction extends Action
 
     public function getUploadToken()
     {
-        require APP_PATH.'Lib/ORG/qiniu/autoload.php';
-        $accessKey = C('config_qiniu.accessKey');
-        $secretKey = C('config_qiniu.secretKey');
-        $auth = new \Qiniu\Auth($accessKey, $secretKey);
-        $bucket = C('config_qiniu.bucket');
-        // 生成上传Token
-        return $token = $auth->uploadToken($bucket);
+        return qiniu_token();
     }
 
     public function new_upload_video()
@@ -2579,7 +2573,13 @@ class EducationAction extends Action
         $key=I('key');
         $path=C('config_qiniu.domain').'/'.$key;
         $scheduleModel = new SectionModelEdu();
+        //先查询是否有值
+        $scheduleInfo=$scheduleModel->where(array('id'=>$schedule_id))->field('video_path')->find();
+        if($scheduleInfo['video_path']){
+            qiniu_delete($scheduleInfo);
+        }
         $scheduleModel->where(array('id'=>$schedule_id))->save(['video_path'=>$path]);
+
         $this->ajaxReturn(['result' => true]);
     }
 }

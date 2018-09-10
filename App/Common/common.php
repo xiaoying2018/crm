@@ -3173,3 +3173,28 @@ function getRandChar($length){
     }
     return $str;
 }
+
+function qiniu_delete($scheduleInfo)
+{
+    require APP_PATH.'Lib/ORG/qiniu/autoload.php';
+    $accessKey = C('config_qiniu.accessKey');
+    $secretKey = C('config_qiniu.secretKey');
+    $auth = new \Qiniu\Auth($accessKey, $secretKey);
+    $bucket = C('config_qiniu.bucket');
+    $config = new \Qiniu\Config();
+    $bucketManager = new \Qiniu\Storage\BucketManager($auth, $config);
+    $video_path=explode('/',$scheduleInfo['video_path']);
+    $key=$video_path[1];
+    $err = $bucketManager->delete($bucket, $key);
+}
+
+function qiniu_token()
+{
+    require APP_PATH.'Lib/ORG/qiniu/autoload.php';
+    $accessKey = C('config_qiniu.accessKey');
+    $secretKey = C('config_qiniu.secretKey');
+    $auth = new \Qiniu\Auth($accessKey, $secretKey);
+    $bucket = C('config_qiniu.bucket');
+    // 生成上传Token
+    return $token = $auth->uploadToken($bucket);
+}

@@ -351,6 +351,9 @@ $(function() {
         buttons: {
             '上传视频': function () {
                 // 操作
+                if($('#course_key').val()==''){
+                    layer.msg('请先上传视频！');
+                }
                    var _dialog = this,
                     data = {};
                     data['course_id'] = $('#course_id').val();
@@ -371,6 +374,9 @@ $(function() {
                             layer.msg('添加成功！');
                             // 关闭弹框
                             $(_dialog).dialog('close');
+                            $('#course_id').val('');
+                            $('#course_key').val('');
+                            $('#course_hash').val('');
 
                         } else {
                             layer.msg('ERROR ' + res.error);
@@ -381,6 +387,9 @@ $(function() {
             },
             '取消': function () {
                 $(this).dialog('close');
+                $('#course_id').val('');
+                $('#course_key').val('');
+                $('#course_hash').val('');
             }
         },
         close: function () {
