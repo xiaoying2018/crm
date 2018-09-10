@@ -2561,4 +2561,25 @@ class EducationAction extends Action
         $this->ajaxReturn($periods);
     }
 
+
+    public function getUploadToken()
+    {
+        require APP_PATH.'Lib/ORG/qiniu/autoload.php';
+        $accessKey = C('config_qiniu.accessKey');
+        $secretKey = C('config_qiniu.secretKey');
+        $auth = new \Qiniu\Auth($accessKey, $secretKey);
+        $bucket = C('config_qiniu.bucket');
+        // 生成上传Token
+        return $token = $auth->uploadToken($bucket);
+    }
+
+    public function new_upload_video()
+    {
+        $schedule_id=I('course_id');
+        $key=I('key');
+        $path=C('config_qiniu.domain').'/'.$key;
+        $scheduleModel = new SectionModelEdu();
+        $scheduleModel->where(array('id'=>$schedule_id))->save(['video_path'=>$path]);
+        $this->ajaxReturn(['result' => true]);
+    }
 }

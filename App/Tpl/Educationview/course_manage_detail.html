@@ -171,7 +171,8 @@ td a {
                                             <td style="text-align:center;padding:14px;color:#666;">
                                                 <div style=" position: relative;">
                                                     <button class="btn btn-success fileinput-button" type="file" >视频上传</button>
-                                                    <input type="file"   :data-id="s.id" onchange="loadFile(this,this.files[0],3)" style="width: 84px;display: inline-block;opacity: 0;left: 50%;position: absolute;top: 0;margin-left: -158px;" class="btn btn-success fileinput-button" value="视频上传" >
+                                                    <!--<input type="file"   :data-id="s.id" onchange="loadFile(this,this.files[0],3)" style="width: 84px;display: inline-block;opacity: 0;left: 50%;position: absolute;top: 0;margin-left: -158px;" class="btn btn-success fileinput-button" value="视频上传" >-->
+                                                    <input onclick="uploadVideo(this)"  :data-id="s.id" style="width: 84px;display: inline-block;opacity: 0;left: 50%;position: absolute;top: 0;margin-left: -158px;" class="btn btn-success fileinput-button" value="视频上传" >
                                                     <button class="btn btn-warning updatevideo">视频路径修改</button>
                                                     <button class="btn btn-danger btn-sm" @click="section_del($event)">删除</button>
                                                     <button class="btn btn-info btn-sm" onclick="showSectionEdit(this)">修改</button>
@@ -193,6 +194,18 @@ td a {
     </div>
 </div>
 <!-- 弹框模板定义 -->
+<div style="display:none" id="dialog-upload-video" title="上传视频">
+    <div class="spiner-example">
+        <div class="sk-spinner sk-spinner-three-bounce">
+            <div class="sk-bounce1"></div>
+            <div class="sk-bounce2"></div>
+            <div class="sk-bounce3"></div>
+        </div>
+    </div>
+</div>
+
+
+
 <div style="display:none" id="dialog-section-add" title="添加课时">
     <div class="spiner-example">
         <div class="sk-spinner sk-spinner-three-bounce">
@@ -220,6 +233,9 @@ td a {
         </div>
     </div>
 </div>
+    <input type="hidden" id="course_key" >
+    <input type="hidden" id="course_id" >
+    <input type="hidden" id="course_hash" >
 <include file="Public:footer" />
 <script>
 var templete_Detail;
@@ -325,6 +341,53 @@ $(function() {
         }
     });
 
+    // 上传视频
+    $("#dialog-upload-video").dialog({
+        autoOpen: false,
+        // modal: true, 影响分类选择插件
+        width: '55%',
+        maxHeight: 600,
+        position: ["center", 100],
+        buttons: {
+            '上传视频': function () {
+                // 操作
+                   var _dialog = this,
+                    data = {};
+                    data['course_id'] = $('#course_id').val();
+                    data['key'] = $('#course_key').val();
+                    //data['key'] = $('#course_key').val();
+                console.log(data);
+                //return;
+                $.ajax({
+                    url: "{:U('education/new_upload_video')}",
+                    data: data,
+                    dataType: "JSON",
+                    type: "POST",
+                    success: function (res) {
+                        if (res.result) {
+                            // 刷新主页数据
+                            templete_Detail.getCourseDetail();
+                            //
+                            layer.msg('添加成功！');
+                            // 关闭弹框
+                            $(_dialog).dialog('close');
+
+                        } else {
+                            layer.msg('ERROR ' + res.error);
+                        }
+                    }
+                });
+                return;
+            },
+            '取消': function () {
+                $(this).dialog('close');
+            }
+        },
+        close: function () {
+            $(this).html('');
+        }
+    });
+
     // 添加课时弹框显示
     $("#dialog-section-add").dialog({
         autoOpen: false,
@@ -382,7 +445,7 @@ $(function() {
         buttons: {
             '修改': function () {
                 // 操作
-                var course_id = templete_Detail.detail.id,
+                var course_id = course_id,
                     form_data = $('#section_add_form').serializeArray(),
                     data = {},
                     _dialog = this;
@@ -490,6 +553,14 @@ function showSectionEdit(btn) {
 function showSectionAdd() {
     $('#dialog-section-add').dialog('open');
     $('#dialog-section-add').load('{:U("educationview/section_add")}');
+}
+
+// 视频上传
+function uploadVideo(obj) {
+    $('#course_id').val($(obj).attr('data-id'))  ;
+    console.log(course_id);
+    $('#dialog-upload-video').dialog('open');
+    $('#dialog-upload-video').load('{:U("educationview/upload_video")}');
 }
 
 

@@ -390,4 +390,27 @@ class EducationviewAction extends Action
         $this->display();
     }
 
+
+
+    public function upload_video()
+    {
+        $token=$this->getUploadToken();
+        $key=date('Y-m-d-H-i-s').uniqid().mt_rand(10000,99999);
+        $this->assign('token',$token);
+        $this->assign('key',$key);
+        $this->display();
+    }
+
+    public function getUploadToken()
+    {
+        require APP_PATH.'Lib/ORG/qiniu/autoload.php';
+        $accessKey = C('config_qiniu.accessKey');
+        $secretKey = C('config_qiniu.secretKey');
+        $auth = new \Qiniu\Auth($accessKey, $secretKey);
+        $bucket = C('config_qiniu.bucket');
+        // 生成上传Token
+        return $token = $auth->uploadToken($bucket);
+    }
+
+
 }
