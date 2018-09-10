@@ -4,7 +4,7 @@
 <style>
     #ids{width: 200px;height: 200px;border: 1px solid red}
     .a_name{
-        color: #5C8FFC !important; 
+        color: #5C8FFC !important;
     }
     .li_item {
         display: inline-block !important;
@@ -48,7 +48,7 @@
         cursor: pointer;
     }
     .a_name{
-        color: #5C8FFC !important; 
+        color: #5C8FFC !important;
     }
     #table_list_2_cb{
 
@@ -108,6 +108,58 @@
     .ui-jqgrid-hbox{
         padding-right: 0 !important;
     }
+    .supersearch div{
+        margin-top: 8px;
+    }
+    .supersearch div span{
+        display: inline-block;
+        width: 120px;
+    }
+
+    .professorSearchModal .supersearch{
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .professorSearchModal .cm_modal {
+        border-radius: 5px;
+        background-color: #fff;
+    }
+
+    .professorSearchModal .title-bar {
+        border: none;
+        font-size: 16px;
+        padding-bottom: 0;
+        margin-top: 5px;
+    }
+
+    .professorSearchModal .text-tag{
+        display: inline-block;
+    }
+    .professorSearchModal .text-tag {
+        font-size: 16px;
+        padding-left: 4px;
+        border-left: 4px solid #18a689;
+        line-height: 16px;
+        margin-top: 10px;
+    }
+
+    .professorSearchModal .table {
+        font-size: 14px;
+        width: 90%;
+        margin: 0 auto;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .professorSearchModal .table td{
+        border-color:#f2f2f2;
+    }
+    .ui-jqgrid-htable{
+        width: 100% !important;
+    }
+    #table_list_2{
+        width: 100% !important;
+    }
 </style>
 <script src="/Public/js/jqGrid/i18n/grid.locale-cnffe4.js" type="text/javascript"></script>
 <script src="/Public/js/jqGrid/jquery.jqGrid.minffe4.js" type="text/javascript"></script>
@@ -128,43 +180,65 @@
                         </ul>
                     </div>
 
-
                     <div class="row" id="title-show">
-                        <ul class="clearfix row" style="margin:0 0; padding: 0; width: 100%; text-align: right;">
-                            <div class="col-lg-8">
+                        <ul class="clearfix row" style="margin:0 0; padding: 0; width: 100%; text-align: right;margin-top: 10px">
+                            <div class="col-lg-12">
                                 <a href="{:U('professor/add')}" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 新建教授信息</a>
+                                <a title="高级搜索" href="javascript:void(0)" id="supersearch"  class="btn btn-white btn-bitbucket"><i class="fa fa-filter" style="color: #D8E3EF;"></i>高级搜索</a>
                             </div>
-                            <li class="li_item bt col-lg-4">
-                                <input type="text" placeholder="姓名/研究领域/大学/所属学部研究科/职称/所属专业" name="search" id="searchInput" class="form-control input-sm"><i class="fa fa-search"></i>
-                            </li>
+                            <script>
+                                $(document).on('click', '#supersearch', function() {
+                                    $(".professorSearchModal").modal('show');
+                                })
+                            </script>
+
+                            <!--<input type="text" placeholder="姓名/研究领域/大学/所属学部研究科/职称/所属专业" name="search" id="searchInput" class="form-control input-sm"><i class="fa fa-search"></i>-->
+                            <!--<li class="li_item bt col-lg-2">-->
+                            <!--<input type="text" placeholder="姓名" name="search" id="searchInput1" class="form-control input-sm"><i class="fa fa-search"></i>-->
+                            <!--</li>-->
+                            <!--<li class="li_item bt col-lg-2">-->
+                            <!--<input type="text" placeholder="研究领域" name="search" id="searchInput2" class="form-control input-sm"><i class="fa fa-search"></i>-->
+                            <!--</li>-->
+                            <!--<li class="li_item bt col-lg-2">-->
+                            <!--<input type="text" placeholder="大学" name="search" id="searchInput3" class="form-control input-sm"><i class="fa fa-search"></i>-->
+                            <!--</li>-->
+                            <!--<li class="li_item bt col-lg-2">-->
+                            <!--<input type="text" placeholder="所属学部研究科" name="search" id="searchInput4" class="form-control input-sm"><i class="fa fa-search"></i>-->
+                            <!--</li>-->
+                            <!--<li class="li_item bt col-lg-2">-->
+                            <!--<input type="text" placeholder="职称" name="search" id="searchInput5" class="form-control input-sm"><i class="fa fa-search"></i>-->
+                            <!--</li>-->
+                            <!--<li class="li_item bt col-lg-2">-->
+                            <!--<input type="text" placeholder="所属专业" name="search" id="searchInput6" class="form-control input-sm"><i class="fa fa-search"></i>-->
+                            <!--</li>-->
                         </ul>
                     </div>
                 </div>
 
-                <div class="title-bar clearfix" id="secondPart" style="position: relative;z-index: 99;">
-                    <ul class="breadcrum pull-left" style="margin-bottom: 0px;padding-right:0px;padding: 0 5px;width: 100%;">    
-<!--                        <li class="blockLi clearfix">
-                            <span class="colTitle">项目分类：</span>
-                            <ul data-name="program_category" class="ul-c ul-control">
-                                <li value="" data-value="" class="active">不限</li>
-                                <volist name='programcate' id='vo'>
-                                    <li data-value="{$vo.name}">{$vo.name}</li>
-                                </volist>
-                            </ul>
-                            <input type="hidden" name="program_category" value="">
-                        </li>-->
-                        <li class="blockLi clearfix">
-                            <span class="colTitle">专业分类：</span>
-                            <ul data-name="major_category" class="ul-c ul-control">
-                                <li value="" data-value=""  class="active">不限</li>
-                                <volist name='majorcate' id='vo'>
-                                <li data-value="{$vo.name}">{$vo.name}</li>
-                                </volist>
-                            </ul>
-                            <input type="hidden" name="major_category" value="">
-                        </li>
-                    </ul>
-                </div>
+                <!--<div class="title-bar clearfix" id="secondPart" style="position: relative;z-index: 99;">-->
+                <!--<ul class="breadcrum pull-left" style="margin-bottom: 0px;padding-right:0px;padding: 0 5px;width: 100%;">    -->
+                <!--&lt;!&ndash;                        <li class="blockLi clearfix">-->
+                <!--<span class="colTitle">项目分类：</span>-->
+                <!--<ul data-name="program_category" class="ul-c ul-control">-->
+                <!--<li value="" data-value="" class="active">不限</li>-->
+                <!--<volist name='programcate' id='vo'>-->
+                <!--<li data-value="{$vo.name}">{$vo.name}</li>-->
+                <!--</volist>-->
+                <!--</ul>-->
+                <!--<input type="hidden" name="program_category" value="">-->
+                <!--</li>&ndash;&gt;-->
+                <!--<li class="blockLi clearfix">-->
+                <!--<span class="colTitle">专业分类：</span>-->
+                <!--<ul data-name="major_category" class="ul-c ul-control">-->
+                <!--<li value="" data-value=""  class="active">不限</li>-->
+                <!--<volist name='majorcate' id='vo'>-->
+                <!--<li data-value="{$vo.name}">{$vo.name}</li>-->
+                <!--</volist>-->
+                <!--</ul>-->
+                <!--<input type="hidden" name="major_category" value="">-->
+                <!--</li>-->
+                <!--</ul>-->
+                <!--</div>-->
                 <div class="table_vue">
                     <table class="" id="table_list_2"></table>
                     <!-- 分页 -->
@@ -173,7 +247,7 @@
                 <!--                <div class="ibox-content clearfix" id="table_container" style="z-index: 1;">
                                     <table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
                                         <tr id="childNodes_num" class="tabTh">
-                                             表头 
+                                             表头
                                             <td>姓名</td>
                                             <td>录入大学</td>
                                             <td>录取专业</td>
@@ -189,7 +263,7 @@
                                             <td>创建时间</td>
                                             <td>操作</td>
                                         </tr>
-                
+
                                                                 <tr>
                                                                     <td>机构名称</td>
                                                                     <td>机构类别</td>
@@ -236,6 +310,61 @@
         </div>
     </div>
 </div>
+
+
+
+
+<div class="modal fade bs-example-modal-lg professorSearchModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="width: 60%;max-width: 800px;">
+        <div class="row cm_modal">
+            <div class="col-lg-12">
+                <div class="title-bar">
+                    <div class="row " id="title-show">
+                        <div class="all-inline clearfix">
+                            <div style="float: left;">
+                                <span class="text-tag">高级搜索</span>
+                            </div>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" style="float: right;">
+                                关闭
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ">
+                    <form class="form-inline" id="searchForm" action="" method="get" >
+                        <div class="supersearch">
+                            <div>
+                                <span>姓名</span>
+                                <input id="search_1" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name=""/>
+                            </div>
+                            <div>
+                                <span>研究领域</span>
+                                <input id="search_2" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name=""/>
+                            </div>
+                            <div>
+                                <span>大学</span>
+                                <input id="search_3" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name=""/>
+                            </div>
+                            <div>
+                                <span>所属学部研究科</span>
+                                <input id="search_4" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name=""/>
+                            </div>
+                            <div>
+                                <span>职称</span>
+                                <input id="search_5" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name=""/>
+                            </div>
+                            <div>
+                                <span>所属专业</span>
+                                <input id="search_6" type="text" style="width:160px;" class="input-medium form-control input-sm search-query" name=""/>
+                            </div>
+                        </div>
+                        <span class="btn btn-primary btn-lg pull-right" style="margin-right: 5%; margin-bottom: 10px;" id="supersearchBtn">确定</span>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <include file="Professor:detail" />
 <!--详情-->
 
@@ -249,9 +378,9 @@
         buttons: {
             "提交": function () {
                 var form = $('#block-create-form'),
-                        formData = form.serializeArray(),
-                        data = [],
-                        that = this;
+                    formData = form.serializeArray(),
+                    data = [],
+                    that = this;
 
                 $.each(formData, function (k, v) {
                     if (data[v.name] != 'undefined') {
@@ -301,9 +430,9 @@
         buttons: {
             "提交": function () {
                 var form = $('#block-create-form'),
-                        formData = form.serializeArray(),
-                        data = [],
-                        that = this;
+                    formData = form.serializeArray(),
+                    data = [],
+                    that = this;
 
                 $.each(formData, function (k, v) {
                     if (data[v.name] != 'undefined') {
@@ -414,7 +543,7 @@
 
     function showEdit(that) {
         var id = $(that).parent().attr('data-id'),
-                url = "{:U('Clueblock/edit')}";
+            url = "{:U('Clueblock/edit')}";
         $('#dialog-block-edit').dialog('open');
         $('#dialog-block-edit').load(url, 'id=' + id);
     }
@@ -453,20 +582,20 @@
 //            alert(22)
             layer.close(index);
         });
-//        layer.confirm("确认要删除吗，删除后不能恢复", { title: "删除确认" }, function (index) {  
-//                layer.close(index);  
-//                $.post("/cooperations/delete", { gid: $(e.currentTarget).data("gid") }, function (data) {  
-//                    layer.alert(data, {  
-//                        title: "删除操作",  
-//                        btn: ['确定']  
-//                    },  
-//                        function (index, item) { 
+//        layer.confirm("确认要删除吗，删除后不能恢复", { title: "删除确认" }, function (index) {
+//                layer.close(index);
+//                $.post("/cooperations/delete", { gid: $(e.currentTarget).data("gid") }, function (data) {
+//                    layer.alert(data, {
+//                        title: "删除操作",
+//                        btn: ['确定']
+//                    },
+//                        function (index, item) {
 //                            alert(1)
-//                            //layer.close(index);  
-//                            location.reload();  
-//                        });  
-//                });  
-//            });   
+//                            //layer.close(index);
+//                            location.reload();
+//                        });
+//                });
+//            });
     }
 
     function cluecate(that) {
@@ -480,68 +609,85 @@
                 reloaddata()
             }
         });
-        
-                        // 多选列表刷新触发事件
-                $(".ul-control").on("click","li",function(){
-                    $(this).siblings().removeClass("active");
-                    var _class = $(this).parent().data("name");
+
+        // 多选列表刷新触发事件
+        $(".ul-control").on("click","li",function(){
+            $(this).siblings().removeClass("active");
+            var _class = $(this).parent().data("name");
 
 
-                    var _val = "";
+            var _val = "";
 
 
-                    if ($(this).attr("data-value") == "") {
-                        $(this).parent().children().removeClass("active");
-                        $(this).addClass("active");
-                        $("input[name='"+_class+"']").val("");
-                    }else{
-                        if ($(this).hasClass("active")) {
-                            $(this).removeClass("active");
-                        }else{
-                            $(this).addClass("active");
-                        }
-                        var _child = $(this).parent().children().length;
-                        for(var i = 0; i < _child; i++){
-                            var _c = $(this).parent().children().eq(i);
-                            if (_c.hasClass("active") && $(_c).data("value")!="") {
-                                _val += $(_c).data("value")+",";
-                            }
-                        }
-                        _val = _val.substring(0,_val.length - 1);
+            if ($(this).attr("data-value") == "") {
+                $(this).parent().children().removeClass("active");
+                $(this).addClass("active");
+                $("input[name='"+_class+"']").val("");
+            }else{
+                if ($(this).hasClass("active")) {
+                    $(this).removeClass("active");
+                }else{
+                    $(this).addClass("active");
+                }
+                var _child = $(this).parent().children().length;
+                for(var i = 0; i < _child; i++){
+                    var _c = $(this).parent().children().eq(i);
+                    if (_c.hasClass("active") && $(_c).data("value")!="") {
+                        _val += $(_c).data("value")+",";
+                    }
+                }
+                _val = _val.substring(0,_val.length - 1);
 
-                        if (_val == "") {
-                            $(this).siblings().eq(0).addClass("active");
-                        }
+                if (_val == "") {
+                    $(this).siblings().eq(0).addClass("active");
+                }
 
-                        $("input[name='"+_class+"']").val(_val);
-                    }    
+                $("input[name='"+_class+"']").val(_val);
+            }
 
-                    reloaddata()
-                });
-        
-
-        $(document).on('click', '.fa-search', function () {
             reloaddata()
         });
 
+
+        $(document).on('click', '.rrr', function () {
+            reloaddata()
+        });
+
+        $(document).on('click', '#supersearchBtn', function () {
+            reloaddata()
+            $(".professorSearchModal").modal('hide');
+        });
+
+
         function reloaddata() {
-            var _lotwhere = $("#searchInput").val();
+            var search1 = $("#search_1").val();
+            var search2 = $("#search_2").val();
+            var search3 = $("#search_3").val();
+            var search4 = $("#search_4").val();
+            var search5 = $("#search_5").val();
+            var search6 = $("#search_6").val();
             var _program_category = $("input[name=program_category]").val()
             var _major_category = $("input[name=major_category]").val()
             console.log( _program_category+","+_major_category)
             var _data = {
-                lotwhere: _lotwhere,
-                program_category:_program_category,
-                major_category:_major_category
+                s1:search1,
+                s2:search2,
+                s3:search3,
+                s4:search4,
+                s5:search5,
+                s6:search6,
+//                lotwhere: _lotwhere,
+//                program_category:_program_category,
+//                major_category:_major_category
             };
             $("#table_list_2").setGridParam({datatype: 'json', postData: _data}).trigger('reloadGrid');
         }
         $(window).resize(function () {
-            // $(window).unbind("onresize");  
+            // $(window).unbind("onresize");
             // var _height = $(window).height() - ($(".title-bar").outerHeight() + $("#gridpager").outerHeight() + $("#secondPart").height() + 260);
             // console.log("xxx",_height);
-            // $("#table_list_2").setGridHeight(_height);  
-            // $(window).bind("onresize", this);  
+            // $("#table_list_2").setGridHeight(_height);
+            // $(window).bind("onresize", this);
         });
         $("#table_list_2").clearGridData();
 
@@ -675,7 +821,7 @@
                     var curRowData = jQuery("#table_list_2").jqGrid('getRowData', rowIds[k]);
 //                    console.log(curRowData)
                     var curChk = $("#" + rowIds[k] + "").find("input");
-                    curChk.attr('value', curRowData['id']);//给checkbox赋值   
+                    curChk.attr('value', curRowData['id']);//给checkbox赋值
 
                     //查看详情name
                     var _text = $("#" + rowIds[k] + "").find("[aria-describedby='table_list_2_name']").text();
@@ -724,9 +870,9 @@
                 }
                 $("#icheck_num").text(icheck_num)
             },loadComplete:function(){
-            width = $(".table_vue").width();
-            $("#table_list_2").setGridWidth(width)
-            $("#table_list_2").setGridHeight(_height)
+                width = $(".table_vue").width();
+                $("#table_list_2").setGridWidth(width)
+                $("#table_list_2").setGridHeight(_height)
             }
         }).trigger("reloadGrid"); //重新载入
 

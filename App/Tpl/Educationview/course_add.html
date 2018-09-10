@@ -82,24 +82,63 @@
                         </div>
                         <div class="col-md-11 add_body_form">
                             <div class="form-group">
-                                <label class="col-md-2 control-label">课程名称：</label>
+                                <label class="col-md-2 control-label">班级名称：</label>
                                 <div class="col-md-8">
                                     <input class="form-control required" type="text"  name="name" value="" aria-required="true" aria-invalid="true">
                                 </div>
-                                <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
                             </div>
                             <!-- 分类选择 -->
                             <div class="form-group cluecateBox">
-                                <label class="col-md-2 control-label">课程分类：</label>
+                                <label class="col-md-2 control-label">班级分类：</label>
                                 <div class="col-md-8">
                                     <select name="category" class="form-control">
-                                        <option value="">选择分类</option>
+                                        <option value="0"> -- 选择分类 -- </option>
+                                        <!-- 分类在Educationview控制器里修改,没有读数据 -->
                                         <foreach name="category" item="c">
                                             <option value="{$c.id}">{$c.name}</option>
                                         </foreach>
                                     </select>
                                 </div>
-                                <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
+                            </div>
+                            <div class="form-group cluecateBox">
+                                <label class="col-md-2 control-label">是否是内部公开课：</label>
+                                <div class="col-md-8 radiopart">
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="_is_open" name="is_open" value="1"><label for="_is_open" class="mr25">是</label>
+                                        <input type="radio" id="_not_open" name="is_open" value="0" checked><label for="_not_open" class="mr25">否</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group cluecateBox">
+                                <label class="col-md-2 control-label">是否是签约班：</label>
+                                <div class="col-md-8 radiopart">
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="_is_qianyue" name="is_qianyue" value="1"><label for="_is_qianyue" class="mr25">是</label>
+                                        <input type="radio" id="_not_qianyue" name="is_qianyue" value="0" checked><label for="_not_qianyue" class="mr25">否</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group cluecateBox">
+                                <label class="col-md-2 control-label">是否首页展示：</label>
+                                <div class="col-md-8 radiopart">
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="_show" name="is_show" value="1" checked><label for="_show" class="mr25">是</label>
+                                        <input type="radio" id="_hide" name="is_show" value="0"><label for="_hide" class="mr25">否</label>
+                                    </div>
+                                </div>
+                                <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
+                            </div>
+                            <div class="form-group cluecateBox">
+                                <label class="col-md-2 control-label">状态：</label>
+                                <div class="col-md-8 radiopart">
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="status_show" name="status" value="1" checked><label for="status_show" class="mr25">显示</label>
+                                        <input type="radio" id="status_hide" name="status" value="0"><label for="status_hide" class="mr25">隐藏</label>
+                                    </div>
+                                </div>
+                                <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
                             </div>
                             <div class="form-group cluecateBox">
                                 <label class="col-md-2 control-label">成员类型：</label>
@@ -110,17 +149,17 @@
                                         </div>
                                     </foreach>
                                 </div>
-                                <div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
+                                <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
                             </div>
                             <div class="form-group">
-                                <label class="col-md-2 control-label">产品图片：</label>
+                                <label class="col-md-2 control-label">图片：</label>
                                 <div class="col-md-8">
                                     <input class="form-control required" onchange="xmTanUploadImg(this,'pingjiaImg')"  type="file"  name="pic" value="" aria-required="true" aria-invalid="true">
                                     <img src="" alt="" id="pingjiaImg" style="margin-top: 15px;">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-md-2 control-label">商品详情：</label>
+                                <label class="col-md-2 control-label">班级详情：</label>
                                 <div class="col-md-10">
                                     <div  class="col-md-8" id="editor" name="detail" type="text/plain" style="width:100%;height:359px;padding-left: 0;padding-right: 0"></div>
                                 </div>

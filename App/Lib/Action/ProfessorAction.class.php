@@ -458,130 +458,41 @@ class ProfessorAction extends Action {
         $sidx = $wheredata['sidx'];
         $sord = $wheredata['sord'];
         $mcate = $_REQUEST['major_category'];
-//            
-        //姓名，日语，英语，学校级别，专业
-        if ($wheredata['lotwhere'] != '' || $mcate != '') {
-
-            if (!empty($mcate)) {
-                $where['department'] = $mcate;
-            }
-//            $this->ajaxReturn($where);
-            ##职称
-            $where['title'] = $wheredata['lotwhere'];
-            $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
-            $datas1 = $this->setDate($datas1);
-            if (is_array($datas1)) {
-                $count1 = M('professor')->where($where)->count();
-                $data['list'] = $datas1;
-                $data['count'] = $count1;
-                $data['total'] = ceil($count1 / $rows);
-                $this->ajaxReturn(['status' => true, 'data' => $data]);
-            }
-            unset($where['title']);
-            ##姓名
-            $where['name'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
-            $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
-            $datas1 = $this->setDate($datas1);
-            if (is_array($datas1)) {
-                $count1 = M('professor')->where($where)->count();
-                $data['list'] = $datas1;
-                $data['count'] = $count1;
-                $data['total'] = ceil($count1 / $rows);
-                $this->ajaxReturn(['status' => true, 'data' => $data]);
-            }
-            unset($where['name']);
-
-            ##学校
-            $where['university'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
-            $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
-            $datas1 = $this->setDate($datas1);
-            if (is_array($datas1)) {
-                $count1 = M('professor')->where($where)->count();
-                $data['list'] = $datas1;
-                $data['count'] = $count1;
-                $data['total'] = ceil($count1 / $rows);
-                $this->ajaxReturn(['status' => true, 'data' => $data]);
-            }
-            unset($where['university']);
-            ##学部，研究科
-            $where['college'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
-            $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
-            $datas1 = $this->setDate($datas1);
-            if (is_array($datas1)) {
-                $count1 = M('professor')->where($where)->count();
-                $data['list'] = $datas1;
-                $data['count'] = $count1;
-                $data['total'] = ceil($count1 / $rows);
-                $this->ajaxReturn(['status' => true, 'data' => $data]);
-            }
-            unset($where['college']);
-
-            ##
-            $where['department'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
-            $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
-            $datas1 = $this->setDate($datas1);
-            if (is_array($datas1)) {
-                $count1 = M('professor')->where($where)->count();
-                $data['list'] = $datas1;
-                $data['count'] = $count1;
-                $data['total'] = ceil($count1 / $rows);
-                $this->ajaxReturn(['status' => true, 'data' => $data]);
-            }
-            unset($where['department']);
-            ##研究领域
-            $where['research_keywords'] = ['like', ['%' . $wheredata['lotwhere'] . '%']];
-            $datas1 = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
-            $datas1 = $this->setDate($datas1);
-            if (is_array($datas1)) {
-                $count1 = M('professor')->where($where)->count();
-                $data['list'] = $datas1;
-                $data['count'] = $count1;
-                $data['total'] = ceil($count1 / $rows);
-                $this->ajaxReturn(['status' => true, 'data' => $data]);
-            }
-            unset($where['research_keywords']);
-
-
-
-            if (is_array($datas1)) {
-                $count1 = M('professor')->where($where)->count();
-                $data['list'] = $datas1;
-                $data['count'] = $count1;
-                $data['total'] = ceil($count1 / $rows);
-                $this->ajaxReturn(['status' => true, 'data' => $data]);
-            }
-
-            if (!is_array($datas1)) {
-                $this->ajaxReturn(['status' => false, 'data' => []]);
-            }
+//
+           $where = [];
+        if(!empty($wheredata['s1'])){
+            $where['name'] = ['like',['%' . $wheredata['s1'] . '%']];
         }
-        if (empty($wheredata['lotwhere']) || empty($mcate)) {
-            $count = M('professor')->count();
-            $datas = M('professor')->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
-//            foreach ($datas as $k=>$v){
-//                if($v['nature_id']==1){
-//                    $datas[$k]['nature_id'] = '国立';
-//                }else if($v['nature_id']==2){
-//                    $datas[$k]['nature_id'] = '公立';
-//                }else if($v['nature_id']==3){
-//                    $datas[$k]['nature_id'] = '私立';
-//                }
-//            }
-
-            $data['count'] = $count;
-            $data['list'] = $datas;
-            $data['total'] = ceil($count / $rows);
-//                var_dump($data);
-            foreach ($data['list'] as $k => $v) {
-                $data['list'][$k]['add_ts'] = date('Y-m-d ', $v['add_ts']);
-            }
-
-
-            $this->ajaxReturn(['status' => true, 'data' => $data]);
-//            }
-        } else {
-            
+        if(!empty($wheredata['s2'])){
+            $where['research_keywords'] = ['like',['%' . $wheredata['s2'] . '%']];
         }
+        if(!empty($wheredata['s3'])){
+            $where['university'] = ['like',['%' . $wheredata['s3'] . '%']];
+        }
+        if(!empty($wheredata['s4'])){
+            $where['college'] = ['like',['%' . $wheredata['s4'] . '%']];
+        }
+        if(!empty($wheredata['s5'])){
+            $where['title'] = ['like',['%' . $wheredata['s5'] . '%']];
+        }
+        if(!empty($wheredata['s6'])){
+            $where['department'] = ['like',['%' . $wheredata['s6'] . '%']];
+        }
+
+
+            $count = M('professor')->where($where)->count();
+            $datas = M('professor')->where($where)->order('add_ts desc')->limit(($page - 1) * $rows, $rows)->select();
+            if($count){
+                $data['count'] = $count;
+                $data['list'] = $datas;
+                $data['total'] = ceil($count / $rows);
+                foreach ($data['list'] as $k => $v) {
+                    $data['list'][$k]['add_ts'] = date('Y-m-d ', $v['add_ts']);
+                }
+                $this->ajaxReturn(['status' => true, 'data' => $data]);
+            }else{
+                $this->ajaxreturn(['status'=>false,'data'=>[]]);
+            }
     }
 
     public function catesearch() {

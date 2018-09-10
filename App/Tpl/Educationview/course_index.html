@@ -71,7 +71,7 @@
 				<div id="title-show" class="clearfix">
 					<ul class="searchpart">
 						<a href="{:U('educationview/course_add')}" class="btn btn-primary btn-sm pull-left" style="margin:2px 0 0 0; width: 100px;" >
-							<i class="fa fa-plus-circle"></i>&nbsp; 新建课程
+							<i class="fa fa-plus-circle"></i>&nbsp; 新建班级
 						</a>
 					</ul>
 				</div>
@@ -159,7 +159,7 @@
 	</div>
 </div>
 <!-- 弹框 -->
-<div style="display:none" id="dialog-course-add" title="添加课程">
+<div style="display:none" id="dialog-course-add" title="添加班级">
 	<div class="spiner-example">
 		<div class="sk-spinner sk-spinner-three-bounce">
 			<div class="sk-bounce1"></div>
@@ -168,7 +168,7 @@
 		</div>
 	</div>
 </div>
-<div style="display:none" id="dialog-course-edit" title="修改课程">
+<div style="display:none" id="dialog-course-edit" title="修改班级">
 	<div class="spiner-example">
 		<div class="sk-spinner sk-spinner-three-bounce">
 			<div class="sk-bounce1"></div>
@@ -206,7 +206,8 @@
             autoScroll: true,
             multiselect: true,
             useColSpanStyle: true,
-            colNames: ["id","课程名称", "课时数", "课程时间(min)", "成员属性", "创建人","创建时间","修改人","修改时间","操作"],
+            // colNames: ["id","班级名称", "分类", "课时数", "总课时(min)", "成员属性", "创建人","创建时间","修改人","修改时间","操作"],
+            colNames: ["id","班级名称", "分类", "成员属性", "创建人","创建时间","修改人","修改时间","操作"],
             colModel: [{
                     name: "id",
                     index: "id",
@@ -222,17 +223,24 @@
                     search: true,
                     formatter:name_format
                 }, {
-                    name: "section_total",
-                    index: "section_total",
+                    name: "category",
+                    index: "category",
                     editable: false,
                     sorttype: "text",
-                    search: true
-                }, {
-                    name: "time_long",
-                    index: "time_long",
-                    editable: false,
-                    sorttype: "text",
-                    search: true
+                    search: true,
+                    formatter:function(cellvalue, options, cell){
+                        if (cellvalue == 1){
+                            return '修士考试';
+                        }else if(cellvalue == 2){
+                            return '留考校内考';
+                        }else if(cellvalue == 3){
+                            return '热门公开课';
+                        }else if(cellvalue == 4){
+                            return '保录班';
+                        }else{
+                            return ' - ';
+                        }
+                    }
                 }, {
                     name: "member_type",
                     index: "member_type",

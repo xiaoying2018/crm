@@ -1,43 +1,247 @@
-<script src="/Public/style/js/plugins/validate/jquery.validate.min.js"></script>
+<include file="Public:header" />
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<link href="__PUBLIC__/css/litebox.css" rel="stylesheet" type="text/css">
+<link href="__PUBLIC__/css/page/leadsIndex.css" rel="stylesheet" type="text/css">
+<script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<!-- nice-scroll -->
+<!-- <script src="__PUBLIC__/style/js/plugins/nice-scroll/jquery.nicescroll.min.js" type="text/javascript"></script> -->
+<script src="https://nicescroll.areaaperta.com/wp-content/plugins/jnicescroll/js/jquery.nicescroll.min.js?ver=1"></script>
+<script type="text/javascript" src="__PUBLIC__/style/js/TableFreeze.js"></script>
+<script src="__PUBLIC__/js/mxcrm_more.js" type="text/javascript"></script>
 
+<link rel="stylesheet" href="/Public/js/jqGrid/ui.jqgridffe4.css">
+<link rel="stylesheet" href="/Public/css/page/publicTable.css">
+<script src="/Public/js/jqGrid/i18n/grid.locale-cnffe4.js" type="text/javascript"></script>
+<script src="/Public/js/jqGrid/jquery.jqGrid.minffe4.js" type="text/javascript"></script>
+<script type="text/javascript">
+    //实例化编辑器
+    window.UEDITOR_UPLOAD_URL = "{:U('file/editor')}";
+</script>
+<script src="__PUBLIC__/js/laydate/laydate.js" type="text/javascript"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/ueditor.all.js"> </script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/ueditor/lang/zh-cn/zh-cn.js"></script>
 <style type="text/css">
-    .templete_Add .form-group {
-        margin: 10px 0;
+    .add_title{
+        padding-bottom:10px;
+        height: 60px;
+        margin-bottom:15px;
     }
-    .radio-info{
-        margin: 0 20px;
+    .add_title>span{
+        border-bottom: 2px solid #1ab394;
+        font-size: 24px;
     }
-    .textarea textarea{
-        width: 100%;
+    .add_body >div >.full-height-scroll{
+        border-right:1px dotted #ccc
     }
-    .select2-selection{
-        background-color: #FFFFFF !important;
-        background-image: none !important;
-        border: 1px solid #d8e3ef !important;
-        border-radius: 1px !important;
-        height: 32px;
-        line-height: 32px;
+    .add_body_title{
+        margin:20px auto 20px auto;
+        padding-left: 25px;
     }
-    .select2-selection__rendered{
-        padding-left: 17px !important;
+    .add_body_form{
+        padding-left: 38px;
+    }
+    .add_body_form>form>.form-group{
+        margin-bottom: 25px;
+    }
+    body{overflow-y:hidden;}
+    .form-control{
+        float:left;
+    }
+    .checkbox{float:left;}
+    .radiopart .radio input[type="radio"]{
+        margin-left: 0;
+        position: relative;
+        left: 0px;
+    }
+    .radiopart .radio label{
+        padding-left: 5px;
+        padding-right: 15px;
+    }
+    .select2-container{
+        height: auto !important;
     }
 </style>
+<script>
+    $(function () {
+        $(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+        $(window).resize(function () {
+            $(".add_body").height(window.innerHeight - $("#add_body").offset().top - $("#tfoot_div").height() - 40);
+        })
+    })
+</script>
+<div class="wrapper wrapper-content animated fadeIn col-md-10">
+    <include file="Public:alert" />
+    <form class="form-horizontal" id="form" enctype="multipart/form-data" role="form" action="{:U('education/section_cate_add')}" method="post">
+        <div class="ibox-content add_body" id="add_body" style="">
+            <div class="full-height-scroll">
+                <div class="row">
+                    <div class="col-md-12 add_body" style="padding-right: 0px;">
+                        <div class="all-inline">
+                            <span class="sq-tag"></span>
+                            <div class="text-tag">
+                                <span>基础信息</span>
+                            </div>
+                        </div>
+                        <div class="col-md-11 add_body_form">
+                            <input type="hidden" id="course_id" name="course_id">
+                            <div class="form-group cluecateBox">
+                                <label class="col-md-2 control-label">课程类型：</label>
+                                <div class="col-md-8 radiopart">
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="_is_open" name="is_open" value="1"><label for="_is_open" class="mr25">公开课</label>
+                                        <input type="radio" id="_not_open" name="is_open" value="0"><label for="_not_open" class="mr25">内部学员课程</label>
+                                    </div>
+                                </div>
+                                <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
+                            </div>
 
+                            <div class="form-group cluecateBox">
+                                <label class="col-md-2 control-label">授课方式：</label>
+                                <div class="col-md-8 radiopart">
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="_zhibo" name="zhibo" value="1"><label for="_zhibo" class="mr25">直播课</label>
+                                        <input type="radio" id="_lubo" name="zhibo" value="0"><label for="_lubo" class="mr25">录播课</label>
+                                    </div>
+                                </div>
+                                <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
+                            </div>
 
+                            <div class="form-group cluecateBox">
+                                <label class="col-md-2 control-label">课程内容：</label>
+                                <div class="col-md-8 radiopart">
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="_riyu" name="neirong" value="1"><label for="_riyu" class="mr25">日语课</label>
+                                        <input type="radio" id="_zhuanye" name="neirong" value="2"><label for="_zhuanye" class="mr25">专业基础知识课</label>
+                                        <input type="radio" id="_xiaoneikao" name="neirong" value="3"><label for="_xiaoneikao" class="mr25">校内考对策课程</label>
+                                    </div>
+                                </div>
+                                <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
+                            </div>
 
-<form action="" id="section_cate_add_form">
-    <div class="col-md-10 add_body_form" style="margin:20px 0 0 21px;">
-        <!-- 文本 -->
-        <div class="form-group clearfix">
-            <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>分类名称</label>
-            <div class="col-md-8">
-                <input class="form-control" autocomplete="off" required type="text" name="name" aria-required="true" value="" placeholder="请输入分类名称" />
+                            <div class="form-group cluecateBox">
+                                <label class="col-md-2 control-label">是否首页展示：</label>
+                                <div class="col-md-8 radiopart">
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="_show" name="is_show" value="1" checked><label for="_show" class="mr25">是</label>
+                                        <input type="radio" id="_hide" name="is_show" value="0"><label for="_hide" class="mr25">否</label>
+                                    </div>
+                                </div>
+                                <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
+                            </div>
+
+                            <div class="form-group cluecateBox">
+                                <label class="col-md-2 control-label">状态：</label>
+                                <div class="col-md-8 radiopart">
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="status_show" name="status" value="1" checked><label for="status_show" class="mr25">显示</label>
+                                        <input type="radio" id="status_hide" name="status" value="0"><label for="status_hide" class="mr25">隐藏</label>
+                                    </div>
+                                </div>
+                                <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">课程名称：</label>
+                                <div class="col-md-8">
+                                    <input class="form-control required" type="text"  name="name" value="" aria-required="true" aria-invalid="true">
+                                </div>
+                                <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
+                            </div>
+                            <!-- 所属班级 -->
+                            <div class="form-group clearfix">
+                                <label class="col-md-2 control-label">所属班级：</label>
+                                <div class="col-md-8">
+                                    <select name="" id="banji_class" multiple="multiple" style="width: 100%;">
+                                        <foreach name="banjis" item="banji">
+                                            <option value="{$banji.id}" >{$banji.name}</option>
+                                        </foreach>
+                                    </select>
+                                    <!-- <foreach name="banjis" item="banji">
+                                        <div class="checkbox checkbox-info">
+                                            <div class="checkbox checkbox-info" style="float:left;">
+                                                <input type="checkbox" id="_{$banji.id}" name="course_id[]" value="{$banji.id}" style="width: 40px; height: 20px;">&nbsp;
+                                                <label for="_{$banji.id}">{$banji.name}</label>
+                                            </div>
+                                        </div>
+                                    </foreach> -->
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">图片：</label>
+                                <div class="col-md-8">
+                                    <input class="form-control required" onchange="xmTanUploadImg(this,'pingjiaImg')"  type="file"  name="pic" value="" aria-required="true" aria-invalid="true">
+                                    <img src="" alt="" id="pingjiaImg" style="margin-top: 15px;">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">课程详情：</label>
+                                <div class="col-md-10">
+                                    <div  class="col-md-8" id="editor" name="detail" type="text/plain" style="width:100%;height:359px;padding-left: 0;padding-right: 0"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-1 pull-right">
+                                <!-- <div style="height: 100%; border-right: 1px dashed gray;">&nbsp;sadf</div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        <div id="tfoot_div" class="clearfix">
+            <div class="clearfix" id="tfoot_page">
+                <div class="ibox-content" style="border-top: none;">
+                    <div class="col-sm-offset-2"><button id="save_submit" class="btn btn-primary">创建</button></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#save_submit").click(function () {
+            var _temp =  $("#banji_class").select2('val');
+            $("#course_id").val(_temp);
+            $("#form").submit();
+        })
+        $("#banji_class").select2({
+            placeholder:"请选择班级或输入关键字",
+            multiple: true,
+        });
+    })
+    var ue = UE.getEditor('editor');
+    //初始化上传图片
+    function xmTanUploadImg(obj,img_id) {
+        var file = obj.files[0];
 
-    </div>
-</form>
+        console.log(obj);console.log(file);
+        console.log("file.size = " + file.size);  //file.size 单位为byte
 
+        var reader = new FileReader();
 
+        //读取文件过程方法
+        reader.onloadstart = function (e) {
+            console.log("开始读取....");
+        }
+        reader.onprogress = function (e) {
+            console.log("正在读取中....");
+        }
+        reader.onabort = function (e) {
+            console.log("中断读取....");
+        }
+        reader.onerror = function (e) {
+            console.log("读取异常....");
+        }
+        reader.onload = function (e) {
+            console.log("成功读取....");
+            var img = document.getElementById(img_id);
+            img.src = e.target.result;
+            //或者 img.src = this.result;  //e.target == this
+        }
 
-
+        reader.readAsDataURL(file)
+    }
+</script>
+<include file="Public:footer" />

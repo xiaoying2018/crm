@@ -109,12 +109,15 @@ class IndexAction extends Action {
     }
     
 	public function index(){
-
-		//手机访问跳转
-		if (isMobile()) {
-			$mobile = str_replace('index.php', 'mobile', $_SERVER["PHP_SELF"]);
-			header("Location: http://".$_SERVER['SERVER_NAME'].':'.$_SERVER["SERVER_PORT"].$mobile);
-		}
+	    
+	    if ($_SERVER['SERVER_NAME'] != 'www.liuxuecrm.net' && $_SERVER['SERVER_NAME'] != 'liuxuecrm.net')
+        {
+            if (isMobile()) {
+                $mobile = str_replace('index.php', 'mobile', $_SERVER["PHP_SELF"]);
+                header("Location: http://".$_SERVER['SERVER_NAME'].':'.$_SERVER["SERVER_PORT"].$mobile);
+            }
+        }
+		
 		$user = M('User');
 		$dashboard = $user->where('user_id = %d', session('user_id'))->getField('dashboard');
 		$widget = unserialize($dashboard);	
