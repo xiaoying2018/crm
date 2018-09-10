@@ -321,7 +321,6 @@ $(function() {
                         dataType: "JSON",
                         type: "POST",
                         success: function (res) {
-                            dd(res);
                             if (res.result) {
                                 _this.getCourseDetail();
                                 layer.msg('删除成功！');
@@ -371,7 +370,7 @@ $(function() {
                             // 刷新主页数据
                             templete_Detail.getCourseDetail();
                             //
-                            layer.msg('添加成功！');
+                            layer.msg('上传成功！');
                             // 关闭弹框
                             $(_dialog).dialog('close');
                             $('#course_id').val('');
