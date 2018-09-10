@@ -186,6 +186,14 @@
                             </div>
 
                             <div class="form-group">
+                                <label class="col-md-2 control-label">报名人数：</label>
+                                <div class="col-md-8">
+                                    <input class="form-control required" type="number"  name="people_num" value="{$course.people_num}" aria-required="true" aria-invalid="true">
+                                </div>
+                                <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
+                            </div>
+
+                            <div class="form-group">
                                 <label class="col-md-2 control-label">图片：</label>
                                 <div class="col-md-8">
                                     <input class="form-control required" onchange="xmTanUploadImg(this,'pingjiaImg')"  type="file"  name="pic" value="{$course.pic}" aria-required="true" aria-invalid="true">
