@@ -93,7 +93,7 @@ class EducationviewAction extends Action
         $sectionModel   =   new SectionModelEdu();
         if( !$id )  $this->ajaxReturn(['result'=>false,'error'=>'主键缺失!']);
         // 详情
-        $info           =   $sectionModel->field('id,node,name,title,duration,detail,cate')
+        $info           =   $sectionModel->field('id,node,name,title,duration,detail,cate,is_free')
             ->where( ['id'=>['eq',$id], 'status'=>['eq',1]] )
             ->find();
         if( !$info )  $this->ajaxReturn( ['result'=>false,'error'=>'课时不存在!','_sql'=>$sectionModel->getDbError()] );

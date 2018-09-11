@@ -38,6 +38,16 @@
             <!--</div>-->
         <!--</div>-->
         <!--<br><br>-->
+        <div class="form-group clearfix">
+            <label class="col-md-4 control-label">是否是试听课程：</label>
+            <div class="col-md-8 radiopart">
+                <div class="radio radio-info radio-inline ml">
+                    <input type="radio" id="is_free" name="is_free" value="1" <if condition="$info['is_free'] == 1">checked</if> ><label for="is_free" class="mr25">是</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="is_not_free" name="is_free" value="0" <if condition="$info['is_free'] == 0">checked</if> ><label for="is_not_free" class="mr25">否</label>
+                </div>
+            </div>
+        </div>
         <!-- 文本 -->
         <div class="form-group clearfix">
             <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>课时名称</label>
