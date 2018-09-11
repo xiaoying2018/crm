@@ -864,8 +864,10 @@ class EducationAction extends Action
             if ($result['result'] === true) {
                 // model
                 $periodModel = new PeriodModelEdu();
+                $periodStudentModel = new PeriodStudentModelEdu();
                 if ($data = $periodModel->create($params, 1)) {
-                    if ($periodModel->add($data)) {
+                    if ($id=$periodModel->add($data)) {
+                        $periodStudentModel->addStudents($params['course_id'],$id);
                         $this->ajaxReturn(['result' => true]);
                     } else {
                         $this->ajaxReturn(['result' => false, 'error' => $periodModel->getError()]);
@@ -2095,6 +2097,9 @@ class EducationAction extends Action
                         $this->ajaxReturn(['result' => false, 'error' => '该产品已包含该课程']);
                     }
                     if ($courseProductModel->add($data)) {
+                        $periods_student_model= new PeriodStudentModelEdu();
+                        $periods_student_model->addStudentsToAllPeriods($params['course_id']);
+
                         $this->ajaxReturn(['result' => true]);
                     } else {
                         $this->ajaxReturn(['result' => false, 'error' => $courseProductModel->getError()]);
@@ -2119,9 +2124,15 @@ class EducationAction extends Action
                 $id || $this->_throw('主键缺失');
                 // model
                 $courseProductModel = new CourseProductModelEdu();
+
+                $product_id =$courseProductModel->field('product_id,course_id')->where(['id' => ['eq', $id]])->find();
                 // 写库
-                if ($courseProductModel->where(['id' => ['eq', $id]])->delete())
-                    $this->ajaxReturn(['result' => true]);
+                if ($courseProductModel->where(['id' => ['eq', $id]])->delete()){
+                    $periods_model=new PeriodStudentModelEdu();
+                    $periods_model->removeStudentsFromPeriodsStudent($product_id['course_id'],$product_id['product_id']);
+                     $this->ajaxReturn(['result' => true]);
+                }
+
 
                 $this->_throw($courseProductModel->getError());
             } catch (Exception $e) {
