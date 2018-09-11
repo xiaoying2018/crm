@@ -246,6 +246,10 @@ $(function(){
 											<td><input class="text-input small-input form-control" name="qq" id="qq" type="text" value="{$user.qq}" style="width:280px;"></td>
 										</tr>
 										<tr>
+											<td class="tdleft">微信</td>
+											<td><input class="text-input small-input form-control" name="wechat" id="wechat" type="text" value="{$user.wechat}" style="width:280px;"></td>
+										</tr>
+										<tr>
 											<td class="tdleft" style="width:150px;">{:L('EMAIL')}</td>
 											<td><input class="text-input small-input form-control" name="email" type="text" value="{$user.email}" style="width:280px;"></td>
 										</tr>
@@ -529,6 +533,19 @@ $('#telephone').blur(function () {
 		})
 		return false;
 	}
+});
+
+
+$('#wechat').blur(function () {
+    var wechat = $(this).val();
+    if (wechat=='') {
+        swal({
+            title: "温馨提示",
+            text: "微信必须填写！",
+            type: "warning"
+        })
+        return false;
+    }
 });
 
 $('#new_password').blur(function(){

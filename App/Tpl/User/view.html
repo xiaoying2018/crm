@@ -84,6 +84,11 @@
 												<td>{$user.qq}</td>
 											</tr>
 											<tr>
+												<if condition="C('iswechat') eq 1"></tr><tr></if>
+												<td class="tdleft">微信 :</td>
+												<td>{$user.wechat}</td>
+											</tr>
+											<tr>
 												<td class="tdleft">出生日期 :</td>
 												<td>{$user.birthday}</td>
 												<if condition="C('ismobile') eq 1"></tr><tr></if>

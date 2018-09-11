@@ -19,6 +19,7 @@ return array(
 	'USER_NAME'				=>	'用户名',
 	'STAFF'					=>	'员工',
 	'EMAIL'					=>	'邮箱',
+	'WECHAT'					=>	'微信',
 	'RESET_PASSWORD_EMAIL'	=>	'邮&nbsp;&nbsp;&nbsp;箱',
 	'USER_CATEGORY'			=>	'用户类别',
 	'DEPARTMENT'			=>	'部门',

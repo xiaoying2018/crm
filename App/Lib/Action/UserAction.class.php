@@ -472,6 +472,7 @@ class UserAction extends Action {
             if ($_POST['telephone'] && !ereg('^1[34758][0-9]{9}$', $_POST['telephone'])){
 				$this->error(L('INVALIDATE_TELEPHONE'));
 			}
+
             $m_user = M('User');
 			$m_role = M('Role');
 			$user = $m_user->where('user_id = %d', intval($_POST['user_id']))->find();
@@ -488,6 +489,13 @@ class UserAction extends Action {
 					alert('error','登录账号不能重复！',$_SERVER['HTTP_REFERER']);
 				}
 			}
+            //wechat
+            if ($user['wechat'] !== trim($_POST['wechat'])) {
+                $name_result = $m_user->where(array('wechat'=>trim($_POST['wechat']),'user_id'=>array('neq',intval($_POST['user_id']))))->find();
+                if($name_result){
+                    alert('error','微信号不能重复！',$_SERVER['HTTP_REFERER']);
+                }
+            }
 
 			//检查坐席号
 			$extid = intval($_POST['extid']);
@@ -1116,6 +1124,7 @@ class UserAction extends Action {
 				'full_name'=>$this->_post('full_name','trim'),
 				'type'=>$this->_post('type','intval'),
 				'telephone'=>$this->_post('telephone','trim'),
+				'wechat'=>$this->_post('wechat','trim'),
 				'sex'=>$this->_post('sex'),
 				'password'=>$pd,
 				'salt'=>$salt,
@@ -1877,4 +1886,8 @@ class UserAction extends Action {
 		}
 		$this->display();
 	}
+
+
+
+
 }

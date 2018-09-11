@@ -139,4 +139,36 @@ class SignInAction extends Action
             ],
         ];
     }
+
+
+    public function getUserInfo()
+    {
+        if($this->isPost()){
+            $condition = I('post.condition');
+            if(empty($condition)){
+                $this->ajaxReturn([
+                    'status'=>false,
+                    'info'=>'请输入查询条件'
+                ]);
+            }
+            $d_user = D('RoleView');
+            $where['user.qq']  = array('eq', $condition);
+            $where['user.wechat']  = array('eq',$condition);
+            $where['user.telephone']  = array('eq',$condition);
+            $where['_logic'] = 'or';
+            $user = $d_user->where($where)->find();
+            if($user){
+                $this->ajaxReturn([
+                    'status'=>true,
+                    'info'=>$user
+                ]);
+            }else{
+                $this->ajaxReturn([
+                    'status'=>false,
+                    'info'=>'查询不到此用户'
+                ]);
+            }
+
+        }
+    }
 }
