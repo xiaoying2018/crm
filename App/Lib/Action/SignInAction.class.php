@@ -156,7 +156,9 @@ class SignInAction extends Action
             $where['user.wechat']  = array('eq',$condition);
             $where['user.telephone']  = array('eq',$condition);
             $where['_logic'] = 'or';
-            $user = $d_user->where($where)->find();
+            $map['_complex'] = $where;
+            $map['status']  = array('eq',1);
+            $user = $d_user->where($map)->find();
             if($user){
                 $this->ajaxReturn([
                     'status'=>true,
