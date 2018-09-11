@@ -143,6 +143,7 @@ class SignInAction extends Action
 
     public function getUserInfo()
     {
+        header("Access-Control-Allow-Origin: *");
         if($this->isPost()){
             $condition = I('post.condition');
             if(empty($condition)){
