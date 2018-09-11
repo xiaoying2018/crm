@@ -408,15 +408,31 @@ class EducationAction extends Action
         if ($wheredata['banji_id'])
         {
             $_banji_xia_course_ids = (new BanjiKechengModelEdu())->where(['course_id'=>['eq',$wheredata['banji_id']]])->select();
+            
             if ($_banji_xia_course_ids)
             {
                 $banji_xia_course_ids = array_map(function ($v){
                     return $v['section_cate_id'];
                 },$_banji_xia_course_ids);
             }
+
             if ($banji_xia_course_ids)
             {
                 $where['id'] = ['in',$banji_xia_course_ids];
+            }else{
+                // 如果当前班级下没有课程
+
+                // 获取所有班级供页面筛选
+                $banjis = (new CourseModelEdu())->field('id,name')->select();
+                // 返回空
+                $this->ajaxReturn([
+                    'result' => true,
+                    'lists' => [],
+                    'banji' => $banjis,
+                    '_sql' => $courseModel->getLastSql(),
+                    'count' => 0,
+                    'total' => 0
+                ]);
             }
         }
 
@@ -435,7 +451,7 @@ class EducationAction extends Action
             if ($where)
             {
                 // 查询结果
-                $lists = $courseModel->where($where)->order("{$sort_field} {$sort}")->limit($page_start,$rows)->select();
+                $lists = $courseModel->where($where)->limit($page_start,$rows)->select();
             }else{
                 // 查询结果
                 $lists = $courseModel->limit($page_start,$rows)->select();
