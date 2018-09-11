@@ -1125,6 +1125,8 @@ class UserAction extends Action {
 				'type'=>$this->_post('type','intval'),
 				'telephone'=>$this->_post('telephone','trim'),
 				'wechat'=>$this->_post('wechat','trim'),
+				'qq'=>$this->_post('qq','trim'),
+				'nick_name'=>$this->_post('nick_name','trim'),
 				'sex'=>$this->_post('sex'),
 				'password'=>$pd,
 				'salt'=>$salt,

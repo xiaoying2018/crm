@@ -9,7 +9,7 @@
 *error_msg 必须
  */
 var input_msg = false;//标示 全局变量
-var input_require = 0, input_pwd = 0, input_doublepwd = 0, input_email = 0, input_phone = 0 , input_wechat=0;//全局变量 判断是否符合条件
+var input_require = 0, input_pwd = 0, input_doublepwd = 0, input_email = 0, input_phone = 0 , input_wechat=0,input_nick_name=0,input_qq=0;//全局变量 判断是否符合条件
 function checkform(obj){
 	var item_val = $(obj).val();//当前对象的值
 	var item_type = $(obj).attr('rel');//类型
@@ -129,7 +129,35 @@ function checkform(obj){
             $('#'+item+'Tip').html('');
         	input_wechat=1;
 		}
-	}
+	}else if(item_type == 'nick_name'){
+        if(item_val == ''){
+            $('#'+item+'Tip').removeClass("hide");
+            $('#'+item+'Tip').addClass('show');
+            $('#'+item+'Tip').addClass("onFocus");
+            $('#'+item+'Tip').html('请填写'+item_name+'！');
+            return false;
+        }else{
+            $('#'+item+'Tip').removeClass("onFocus");
+            $('#'+item+'Tip').removeClass('show');
+            $('#'+item+'Tip').addClass('hide');
+            $('#'+item+'Tip').html('');
+            input_nick_name=1;
+        }
+    }else if(item_type == 'qq'){
+        if(item_val == ''){
+            $('#'+item+'Tip').removeClass("hide");
+            $('#'+item+'Tip').addClass('show');
+            $('#'+item+'Tip').addClass("onFocus");
+            $('#'+item+'Tip').html('请填写'+item_name+'！');
+            return false;
+        }else{
+            $('#'+item+'Tip').removeClass("onFocus");
+            $('#'+item+'Tip').removeClass('show');
+            $('#'+item+'Tip').addClass('hide');
+            $('#'+item+'Tip').html('');
+            input_qq=1;
+        }
+    }
 	if(input_require || (input_pwd || input_doublepwd || input_email || input_phone)){
 		input_msg = true;
 		return true;

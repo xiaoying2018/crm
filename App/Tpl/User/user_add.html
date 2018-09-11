@@ -156,10 +156,29 @@
 				</div>
 				<label class="control-label col-sm-2" for="name" style="width:110px;"><span style="color:#FF0011;">*</span>微信：</label>
 				<div class="col-sm-6">
-					<input type="text" id="wechat" name="wechat" rel="wechat" rell="微信" class="form-control checkit" />
+					<input type="text" id="wechat" name="wechat" rel="wechat" rell="微信" class="form-control checkit"  onblur="checkform(this);"/>
 				</div>
 				<div class="col-sm-3 error_msg" id="wechatTip"></div>
 			</div>
+			<div class="form-group ">
+				<div class="col-sm-1">
+				</div>
+				<label class="control-label col-sm-2" for="name" style="width:110px;"><span style="color:#FF0011;">*</span>昵称：</label>
+				<div class="col-sm-6">
+					<input type="text" id="nick_name" name="nick_name" rel="nick_name" rell="昵称" class="form-control checkit"  onblur="checkform(this);"/>
+				</div>
+				<div class="col-sm-3 error_msg" id="nick_nameTip"></div>
+			</div>
+			<div class="form-group ">
+				<div class="col-sm-1">
+				</div>
+				<label class="control-label col-sm-2" for="name" style="width:110px;"><span style="color:#FF0011;">*</span>QQ：</label>
+				<div class="col-sm-6">
+					<input type="text" id="qq" name="qq" rel="qq" rell="QQ" class="form-control checkit"  onblur="checkform(this);"/>
+				</div>
+				<div class="col-sm-3 error_msg" id="qqTip"></div>
+			</div>
+
 			<div class="form-group ">
 				<div class="col-sm-1">
 				</div>
