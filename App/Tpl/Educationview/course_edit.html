@@ -105,25 +105,27 @@
                                 <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
                             </div>
 
+                            <!-- 公开课和保录班 暂时无用 -->
                             <div class="form-group cluecateBox">
-                                <label class="col-md-2 control-label">是否是内部公开课：</label>
+                                <label class="col-md-2 control-label">是否热门公开课：</label>
                                 <div class="col-md-8 radiopart">
                                     <div class="radio radio-info radio-inline ml">
                                         <input type="radio" id="_is_open" name="is_open" value="1" <if condition="$info['is_open'] == 1">checked</if> ><label for="_is_open" class="mr25">是</label>
                                         <input type="radio" id="_not_open" name="is_open" value="0" <if condition="$info['is_open'] == 0">checked</if> ><label for="_not_open" class="mr25">否</label>
                                     </div>
                                 </div>
+                                <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">选择后会展示在首页</span></div>-->
                             </div>
 
-                            <div class="form-group cluecateBox">
-                                <label class="col-md-2 control-label">是否是签约班：</label>
-                                <div class="col-md-8 radiopart">
-                                    <div class="radio radio-info radio-inline ml">
-                                        <input type="radio" id="_is_qianyue" name="is_qianyue" value="1" <if condition="$info['is_qianyue'] == 1">checked</if> ><label for="_is_qianyue" class="mr25">是</label>
-                                        <input type="radio" id="_not_qianyue" name="is_qianyue" value="0" <if condition="$info['is_qianyue'] == 0">checked</if> ><label for="_not_qianyue" class="mr25">否</label>
-                                    </div>
-                                </div>
-                            </div>
+                            <!--<div class="form-group cluecateBox">-->
+                                <!--<label class="col-md-2 control-label">是否是签约班：</label>-->
+                                <!--<div class="col-md-8 radiopart">-->
+                                    <!--<div class="radio radio-info radio-inline ml">-->
+                                        <!--<input type="radio" id="_is_qianyue" name="is_qianyue" value="1" <if condition="$info['is_qianyue'] == 1">checked</if> ><label for="_is_qianyue" class="mr25">是</label>-->
+                                        <!--<input type="radio" id="_not_qianyue" name="is_qianyue" value="0" <if condition="$info['is_qianyue'] == 0">checked</if> ><label for="_not_qianyue" class="mr25">否</label>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
 
                             <div class="form-group cluecateBox">
                                 <label class="col-md-2 control-label">是否首页展示：</label>
@@ -150,11 +152,10 @@
                             <div class="form-group cluecateBox">
                                 <label class="col-md-2 control-label">成员类型：</label>
                                 <div class="col-md-8 radiopart">
-                                    <foreach name="member_type" item="m" key="k">
-                                        <div class="radio radio-info radio-inline ml">
-                                            <input type="radio" name="member_type"  <if condition="$info['member_type'] eq $k"> checked</if>   value="{$k}"><label for="" class="mr25">{$m}</label>
-                                        </div>
-                                    </foreach>
+                                    <div class="radio radio-info radio-inline ml">
+                                        <input type="radio" id="member_type_y" name="member_type" value="1" <if condition="$info['member_type'] == 1"> checked</if> ><label for="member_type_y" class="mr25">一对多</label>
+                                        <input type="radio" id="member_type_n" name="member_type" value="2" <if condition="$info['member_type'] == 2"> checked</if> ><label for="member_type_n" class="mr25">一对一</label>
+                                    </div>
                                 </div>
                                 <!--<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>-->
                             </div>

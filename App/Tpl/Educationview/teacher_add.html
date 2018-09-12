@@ -31,9 +31,11 @@
             <label class="col-md-4 control-label"><span style="color:#FF0011;">*</span>教师角色</label>
             <div class="col-md-8">
                 <foreach name="eduRoles" item="item">
-                    <div class="radio radio-info radio-inline">
-                        <input type="radio" name="role_id" value="{$item.id}"><label for="">{$item.name}</label>
-                    </div>
+                    <if condition="$item['id'] != 2">
+                        <div class="radio radio-info radio-inline">
+                            <input type="radio" name="role_id" value="{$item.id}"><label for="">{$item.name}</label>
+                        </div>
+                    </if>
                 </foreach>
 
             </div>

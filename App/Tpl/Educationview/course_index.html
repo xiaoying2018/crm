@@ -70,9 +70,12 @@
 			<div class="title-bar" style="position: relative;z-index: 99;">
 				<div id="title-show" class="clearfix">
 					<ul class="searchpart">
-						<a href="{:U('educationview/course_add')}" class="btn btn-primary btn-sm pull-left" style="margin:2px 0 0 0; width: 100px;" >
-							<i class="fa fa-plus-circle"></i>&nbsp; 新建班级
-						</a>
+						<!-- 9-12 阻止教务添加/修改/删除班级和产品关联的操作 -->
+						<if condition="session('?admin')">
+							<a href="{:U('educationview/course_add')}" class="btn btn-primary btn-sm pull-left" style="margin:2px 0 0 0; width: 100px;" >
+								<i class="fa fa-plus-circle"></i>&nbsp; 新建班级
+							</a>
+						</if>
 					</ul>
 				</div>
 			</div>
@@ -207,7 +210,11 @@
             multiselect: true,
             useColSpanStyle: true,
             // colNames: ["id","班级名称", "分类", "课时数", "总课时(min)", "成员属性", "创建人","创建时间","修改人","修改时间","操作"],
-            colNames: ["id","班级名称", "分类", "成员属性", "创建人","创建时间","修改人","修改时间","操作"],
+            <if condition="session('?admin')">
+            	colNames: ["id","班级名称", "分类", "成员属性", "创建人","创建时间","修改人","修改时间","操作"],
+			<else/>
+        		colNames: ["id","班级名称", "分类", "成员属性", "创建人","创建时间","修改人","修改时间"],
+    		</if>
             colModel: [{
                     name: "id",
                     index: "id",
@@ -272,14 +279,18 @@
                     editable: false,
                     sorttype: "text",
                     search: true
-                },{
-                    name:"id",
-                    index: "id",
-                    editable: false,
-                    sorttype: "text",
-                    search: true,
-                    formatter:btngroup
-                }],
+                }
+            	<if condition="session('?admin')">
+					,{
+						name:"id",
+						index: "id",
+						editable: false,
+						sorttype: "text",
+						search: true,
+						formatter:btngroup
+					}
+                </if>
+                ],
             forceFit: true,
             //分页
             rowNum: 30,

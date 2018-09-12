@@ -152,7 +152,7 @@
                                 <!--this.options[this.selectedIndex].value-->
                                 <select class="form-control" id="changecourse" name="courses">
 
-                                    <option value="" data-value="">请选择课程</option>
+                                    <option value="" data-value="">请选择班级</option>
                                     <volist name="courses" id="vo">
                                     <option data-value="{$vo.id}" >&nbsp;&nbsp;{$vo.name}</option>
                                     </volist>
@@ -161,7 +161,7 @@
                             </li>
                             <li class="li_item col-lg-2">
                                 <select class="form-control" id="changeper" >
-                                    <option value=""  data-value="">请选择班级/课期</option>
+                                    <option value=""  data-value="">请选择班次</option>
                                     <!--<option v-for="p in periods" :value="p.id">&nbsp;&nbsp;&nbsp;&nbsp;{{p.name}}</option>-->
                                 </select>
                             </li>

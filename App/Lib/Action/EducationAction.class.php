@@ -21,7 +21,7 @@ class EducationAction extends Action
     public function my_period()
     {
         try {
-            if (in_array(2, session('edu_roles'))) {
+            if (in_array(1, session('edu_roles'))) {
                 $headmaster_id = (int)session('user_id');
                 // TODO 获取班级信息
                 $periodModel = new PeriodModelEdu();
@@ -146,7 +146,7 @@ class EducationAction extends Action
                             $courseModel->commit();
                             //$this->ajaxReturn(['result' => true]);
                             //alert('success', '课程添加成功', U('educationview/course_add'));
-                            $this->redirect( U('educationview/course_add'));
+                            $this->redirect( U('educationview/course_index'));
                         } else {
                             throw new Exception($courseModel->getError(), 414);
                         }

@@ -525,7 +525,8 @@ $(function(){
 							</li>
 						</if>
 
-						<if condition="session('?admin')">
+						<!-- 9-12 班级管理仍然给教务老师看,但是在其他页面阻止教务修改/删除班级和产品关联的操作 -->
+						<if condition="session('?admin') || in_array(1,session('edu_roles'))">
 							<li <if condition="$module_name eq 'educationview' &&  $action_name eq 'course_index'">class="active"</if>>
 								<i class="fa fa-angle-right"></i>
 								<a href="{:U('educationview/course_index')}">班级管理</a>
@@ -539,7 +540,7 @@ $(function(){
 							</li>
 						</if>
 
-						<if condition="in_array(2,session('edu_roles')) || in_array(3,session('edu_roles')) || in_array(1,session('edu_roles')) || session('?admin')">
+						<if condition="in_array(3,session('edu_roles')) || in_array(1,session('edu_roles')) || session('?admin')">
 							<li <if condition="$module_name eq 'coursedocument' &&  $action_name eq 'index'">class="active"</if>>
 							<i class="fa fa-angle-right"></i>
 							<a href="{:U('CourseDocument/index')}">课件管理</a>
@@ -560,7 +561,7 @@ $(function(){
 							</li>
 						</if>
 
-						<if condition="in_array(2,session('edu_roles'))">
+						<if condition="in_array(1,session('edu_roles'))">
 							<li <if condition="preg_match( '/headmaster/', $action_name )">class="active"</if>>
 								<i class="fa fa-angle-right"></i>
 								<a href="{:U('educationview/my_headmaster')}">我的班级</a>

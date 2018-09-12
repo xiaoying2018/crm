@@ -9,7 +9,7 @@ class EducationviewAction extends Action
         ];
         B('Authenticate', $action);
         if( ACTION_NAME == 'my_headmaster' ){
-            !in_array( 2, session('edu_roles') ) && alert('error', '您不是班主任!', $_SERVER['HTTP_REFERER']);
+            !in_array( 1, session('edu_roles') ) && alert('error', '您不是教务老师!', $_SERVER['HTTP_REFERER']);
         }elseif(ACTION_NAME == 'my_lecturer'){
             !in_array( 3, session('edu_roles') ) && alert('error', '您不是讲师!', $_SERVER['HTTP_REFERER']);
         }
@@ -161,7 +161,7 @@ class EducationviewAction extends Action
     public function period_add ()
     {
         $teacherModel       =   new TeacherModelEdu();
-        $headmaster         =   $teacherModel->teacher_lists(['tu.role_id'=>['eq',2]])['data'];
+        $headmaster         =   $teacherModel->teacher_lists(['tu.role_id'=>['eq',1]])['data'];
         $this->assign( compact('headmaster') );
         $this->display();
     }
@@ -180,7 +180,7 @@ class EducationviewAction extends Action
         if( !$info )
             $this->ajaxReturn( ['result'=>false,'error'=>'课时不存在!','_sql'=>$periodModel->getDbError()] );
         $teacherModel       =   new TeacherModelEdu();
-        $headmaster         =   $teacherModel->teacher_lists(['tu.role_id'=>['eq',2]])['data'];
+        $headmaster         =   $teacherModel->teacher_lists(['tu.role_id'=>['eq',1]])['data'];
         $this->assign( compact('headmaster', 'info') );
 
         $this->display();

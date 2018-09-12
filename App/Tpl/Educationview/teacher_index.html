@@ -110,7 +110,9 @@
                             <div class="col-lg-10">
                                 <a onclick="addTeacher()" href="javascript:;" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 注册新教师</a>
                                 <foreach name="roles" item="r">
-                                    <span class="chhose_item pull-right" data-val="{$r.id}"><i class="fa fa-square-o"></i>{$r.name}</span>
+                                    <if condition="$r['id'] != 2">
+                                        <span class="chhose_item pull-right" data-val="{$r.id}"><i class="fa fa-square-o"></i>{$r.name}</span>
+                                    </if>
                                 </foreach>
                             </div>
 
