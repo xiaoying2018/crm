@@ -57,9 +57,10 @@ class PeriodStudentModelEdu extends EducationModelEdu
                     'email'=>$customer['email'],
                     'customer_id'=>$customer['customer_id'],
                     'password'=>'xiaoying123456',
+                    'remark'=>'初始密码:xiaoying123456'
                 ));
                 $profile = ['student_id' => $id];
-                $profile = ['bind_mobile' => $customer['mobile']];
+                $profile['bind_mobile'] = $customer['mobile'];
                 $studentprofileModel->field('student_id')->add($profile);
             }else{
                 continue;
@@ -163,11 +164,13 @@ class PeriodStudentModelEdu extends EducationModelEdu
                     'email'=>$customer['email'],
                     'customer_id'=>$customer['customer_id'],
                     'password'=>'xiaoying123456',
+                    'remark'=>'初始密码:xiaoying123456'
                 ));
                 Log::write($student_model->getLastSql());
                 $profile = ['student_id' => $id];
-                $profile = ['bind_mobile' => $customer['mobile']];
+                $profile['bind_mobile'] = $customer['mobile'];
                 $studentprofileModel->field('student_id')->add($profile);
+                Log::write($studentprofileModel->getLastSql());
             }else{
                 continue;
             }
