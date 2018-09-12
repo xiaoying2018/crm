@@ -135,8 +135,8 @@
                         console && console.log(blkRet);
                         $('#course_key').val(blkRet.key);
                         $('#course_hash').val(blkRet.hash);
-                            $(".progress-label").text('上传成功！');
-                        $("#dialog").html('文件成功上传七牛').dialog();
+                            $(".progress-label").text('文件读取成功！');
+                       // $("#dialog").html('文件成功上传七牛').dialog();
                     } else if (xhr.status != 200 && xhr.responseText) {
 
                     }
