@@ -300,4 +300,41 @@ class CourseDocumentAction extends Action{
         $this->assign('schedule_id',$schedule_id);
         $this->display('chaKanRelatedScheduleList');
     }
+
+
+    public function getDocumentByScheduleId()
+    {
+        $schedule_id= I('schedule_id');
+        if($schedule_id=='' || !is_numeric($schedule_id)){
+            $this->ajaxReturn([
+                'status'=>false,
+                'msg'=>'schedule_id参数不合法'
+            ]);
+        }
+        \Log::write($schedule_id);
+        $data=(new ScheduleDocumentModel())->getDocumentByScheduleId($schedule_id);
+        $this->ajaxReturn([
+            'status'=>true,
+            'data'=>$data
+        ]);
+    }
+
+    public function downLoadDocument()
+    {
+        $document_id =I('document_id');
+        if($document_id=='' || !is_numeric($document_id)){
+            $this->ajaxReturn([
+                'status'=>false,
+                'msg'=>'document_id参数不合法'
+            ]);
+        }
+        $res =D('CourseDocument')->field('*')->where(array('id'=>array('eq',$document_id)))->find();
+        if(empty($res)){
+            $this->ajaxReturn([
+                'status'=>false,
+                'msg'=>'无此文件',
+            ]);
+        }
+        force_download($res['file'],$res['title']);
+    }
 }

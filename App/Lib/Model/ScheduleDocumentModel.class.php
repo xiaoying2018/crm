@@ -13,4 +13,16 @@ class ScheduleDocumentModel extends EducationModelEdu
         }
     }
 
+    public function getDocumentByScheduleId($schedule_id)
+    {
+        $res=$this->field('document_id')->where(array('schedule_id'=>array('eq',$schedule_id)))->select();
+        if(empty($res)) return array();
+        $document_ids=array();
+        foreach ($res as $re){
+            $document_ids[]=$re['document_id'];
+        }
+        $res=(new CourseDocumentModel())->field("*")->where(array('id'=>array('in',$document_ids)))->select();
+        return $res;
+    }
+
 }
