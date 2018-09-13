@@ -61,7 +61,7 @@
                                         <thead>
                                         <tr style="background-color:#f9fafc;text-align:center;">
                                             <td style="">学员名字</td>
-                                            <td style="">学员手机</td>
+                                            <td style="display: none;">学员手机</td>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -69,7 +69,7 @@
                                             <tr v-for="s in allStudents" :data-id="s.schedule_id">
 
                                             <td style="">{{s.realname}}</td>
-                                            <td style="">{{s.mobile}}</td>
+                                            <td style="display: none;">{{s.mobile}}</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -81,7 +81,7 @@
                                         <thead>
                                         <tr style="background-color:#f9fafc;text-align:center;">
                                             <td style="">学员名字</td>
-                                            <td style="">学员手机</td>
+                                            <td style="display: none;">学员手机</td>
                                             <td style="">签到时间</td>
                                             <td style="">状态</td>
                                         </tr>
@@ -90,7 +90,7 @@
                                         <tr>
                                         <tr v-for="ss in signStudents" :data-id="ss.schedule_id">
                                             <td style="">{{ss.realname}}</td>
-                                            <td style="">{{ss.mobile}}</td>
+                                            <td style="display: none;">{{ss.mobile}}</td>
                                             <td style="">{{ss.create_at}}</td>
                                             <template v-if="ss.status && ss.status == 1">
                                                 <td style="">已签到</td>
@@ -112,7 +112,7 @@
                                         <thead>
                                         <tr style="background-color:#f9fafc;text-align:center;">
                                             <td style="">学员名字</td>
-                                            <td style="">学员手机</td>
+                                            <td style="display: none;">学员手机</td>
                                             <td style="">签到时间</td>
                                             <td style="">状态</td>
                                         </tr>
@@ -121,7 +121,7 @@
                                         <tr>
                                         <tr v-for="sss in unSignStudents" :data-id="sss.schedule_id">
                                             <td style="">{{sss.realname}}</td>
-                                            <td style="">{{sss.mobile}}</td>
+                                            <td style="display: none;">{{sss.mobile}}</td>
                                             <td style="">{{sss.create_at}}</td>
                                             <td style="">未签到</td>
                                         </tr>

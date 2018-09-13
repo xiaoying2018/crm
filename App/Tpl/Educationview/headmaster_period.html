@@ -174,16 +174,20 @@
                                     <thead>
                                     <tr style="background-color:#f9fafc;text-align:center;">
                                         <td style="">学员姓名</td>
-                                        <td style="">学员电话</td>
-                                        <td style="">学员邮件</td>
+                                        <if condition="session('?admin')">
+                                            <td style="">学员电话</td>
+                                            <td style="">学员邮件</td>
+                                        </if>
                                         <td style="">操作</td>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr v-for="s in subStudent" :data-id="s.id">
                                         <td style="">{{s.realname}}</td>
-                                        <td style="">{{s.mobile}}</td>
-                                        <td style="">{{s.email}}</td>
+                                        <if condition="session('?admin')">
+                                            <td style="">{{s.mobile}}</td>
+                                            <td style="">{{s.email}}</td>
+                                        </if>
                                         <!--<td style="text-align:center;padding:14px;color:#666">-->
                                             <!--<button class="btn btn-info btn-sm" onclick="notifyStudent()">发消息</button>-->
                                         <!--</td>-->
