@@ -19,8 +19,8 @@
                 <foreach name="send_type" item="s">
                     <div class="checkbox checkbox-info">
                         <div class="checkbox checkbox-info" style="float:left;">
-                            <input type="checkbox" name="types" value="{$s.key}" style="width: 40px; height: 20px;">&nbsp;
-                            <label >{$s.type}</label>
+                            <input type="checkbox" name="types" value="{$s.key}" <if condition="$s['key'] == 1 || $s['key'] == 2">checked</if> style="width: 40px; height: 20px;">&nbsp;
+                            <label >{$s.type} <small style="color: #ce272d"><if condition="$s['key'] == 4">(短信发送成本较高,请酌情使用)</if></small> </label>
                         </div>
                     </div>
                 </foreach>

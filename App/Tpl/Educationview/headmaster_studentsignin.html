@@ -44,7 +44,7 @@
                 <td style="">修改人</td>
                 <td style="">修改时间</td>
                 <td style="">状态</td>
-                <td style="">操作</td>
+                <!--<td style="">操作</td>-->
             </tr>
             </thead>
             <tbody>
@@ -71,21 +71,21 @@
                     <template v-else-if="s.status == -7"><span class="text-warning">请假</span></template>
                     <template v-else><span class="text-danger">未签到</span></template>
                 </td>
-                <td>
-                    <!-- 签到、清除、请假 -->
-                    <template v-if="s.status == 1">
-                        <button type="button" class="btn btn-danger btn-sm" onclick="signOperate(this,0)">取消</button>
-                        <button type="button" class="btn btn-warning btn-sm" onclick="signOperate(this,-7)">请假</button>
-                    </template>
-                    <template v-else-if="s.status == -7">
-                        <button type="button" class="btn btn-info btn-sm" onclick="signOperate(this,1)">签到</button>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="signOperate(this,0)">取消</button>
-                    </template>
-                    <template v-else>
-                        <button type="button" class="btn btn-info btn-sm" onclick="signOperate(this,1)">签到</button>
-                        <button type="button" class="btn btn-warning btn-sm" onclick="signOperate(this,-7)">请假</button>
-                    </template>
-                </td>
+                <!--<td>-->
+                    <!--&lt;!&ndash; 签到、清除、请假 &ndash;&gt;-->
+                    <!--<template v-if="s.status == 1">-->
+                        <!--<button type="button" class="btn btn-danger btn-sm" onclick="signOperate(this,0)">取消</button>-->
+                        <!--<button type="button" class="btn btn-warning btn-sm" onclick="signOperate(this,-7)">请假</button>-->
+                    <!--</template>-->
+                    <!--<template v-else-if="s.status == -7">-->
+                        <!--<button type="button" class="btn btn-info btn-sm" onclick="signOperate(this,1)">签到</button>-->
+                        <!--<button type="button" class="btn btn-danger btn-sm" onclick="signOperate(this,0)">取消</button>-->
+                    <!--</template>-->
+                    <!--<template v-else>-->
+                        <!--<button type="button" class="btn btn-info btn-sm" onclick="signOperate(this,1)">签到</button>-->
+                        <!--<button type="button" class="btn btn-warning btn-sm" onclick="signOperate(this,-7)">请假</button>-->
+                    <!--</template>-->
+                <!--</td>-->
             </tr>
             </tbody>
         </table>
