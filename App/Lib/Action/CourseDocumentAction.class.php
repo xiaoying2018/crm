@@ -304,6 +304,7 @@ class CourseDocumentAction extends Action{
 
     public function getDocumentByScheduleId()
     {
+        header("Access-Control-Allow-Origin: *");
         $schedule_id= I('schedule_id');
         if($schedule_id=='' || !is_numeric($schedule_id)){
             $this->ajaxReturn([
@@ -321,6 +322,7 @@ class CourseDocumentAction extends Action{
 
     public function downLoadDocument()
     {
+        header("Access-Control-Allow-Origin: *");
         $document_id =I('document_id');
         if($document_id=='' || !is_numeric($document_id)){
             $this->ajaxReturn([
