@@ -40,7 +40,9 @@
                     <div style="padding: 20px 20px; background: rgb(255, 255, 255); min-height: 492.48px;" id="left-content">
                         <ul class="nav nav-tabs" id="left_list" style="height:40px;">
                             <li><a href="#tab91" data-toggle="tab" type="tab91">基本信息</a></li>
-                            <li><a href="#tab92" data-toggle="tab" type="tab92">购买产品</a></li>
+                            <if condition="session('?admin')">
+                                <li><a href="#tab92" data-toggle="tab" type="tab92">购买产品</a></li>
+                            </if>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane" id="tab91">
