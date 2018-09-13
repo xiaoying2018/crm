@@ -116,12 +116,13 @@
                                     <thead>
                                     <tr style="background-color:#f9fafc;text-align:center;">
                                         <td style="">课时名称</td>
-                                        <td style="">课时编号</td>
+                                        <!--<td style="">课时编号</td>-->
                                         <td style="">课时标题</td>
                                         <td style="">课时时长</td>
                                         <td style="">授课老师</td>
                                         <td style="">开始时间</td>
                                         <td style="">结束时间</td>
+                                        <td style="">作业</td>
                                         <td style="">创建人</td>
                                         <td style="">创建时间</td>
                                         <td style="">操作</td>
@@ -130,12 +131,17 @@
                                     <tbody>
                                     <tr v-for="s in scheduleYet" :data-id="s.schedule_id">
                                         <td style="">{{s.section_name}}</td>
-                                        <td style="">{{s.node}}</td>
+                                        <!--<td style="">{{s.node}}</td>-->
                                         <td style="">{{s.title}}</td>
                                         <td style="">{{s.duration}}</td>
                                         <td style="">{{s.teacher_name}}</td>
                                         <td style="">{{s.start_time}}</td>
                                         <td style="">{{s.end_time}}</td>
+                                        <td style="">
+                                            <template v-if="s.homework==0"><span class="text-danger" type="button">无</span></template>
+                                            <template v-else><span class="text-success" type="button" :title="s.homework_name"><a
+                                                    :href="s.homework_path" target="_blank">有</a></span></template>
+                                        </td>
                                         <td style="">{{s.creator_name}}</td>
                                         <td style="">{{s.create_at}}</td>
                                         <td style="text-align:center;padding:14px;color:#666">
