@@ -527,7 +527,6 @@ $(function(){
 
 				<!-- 9-12 班级管理仍然给教务老师看,但是在其他页面阻止教务修改/删除班级和产品关联的操作 -->
 				<!-- 9-13 班级管理只给管理员看,后期确定后,指定到某个人可以操作班级管理 -->
-				<!--<if condition="session('?admin') || in_array(1,session('edu_roles'))">-->
 						<if condition="session('?admin')">
 							<li <if condition="$module_name eq 'educationview' &&  $action_name eq 'course_index'">class="active"</if>>
 								<i class="fa fa-angle-right"></i>
