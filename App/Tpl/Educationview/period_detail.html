@@ -220,8 +220,10 @@
                                     <thead>
                                     <tr style="background-color:#f9fafc;text-align:center;">
                                         <td style="">学员姓名</td>
-                                        <td style="">学员电话</td>
-                                        <td style="">学员邮件</td>
+                                        <if condition="session('?admin')">
+                                            <td style="">学员电话</td>
+                                            <td style="">学员邮件</td>
+                                        </if>
                                         <td style="">操作人</td>
                                         <td style="">操作时间</td>
                                         <td style="">操作</td>
@@ -230,12 +232,14 @@
                                     <tbody>
                                     <tr v-for="s in subStudent" :data-id="s.id">
                                         <td style="">
-                                            <a href="javascript:;">
+                                            <!--<a href="javascript:;">-->
                                                 {{ s.realname }}
-                                            </a>
+                                            <!--</a>-->
                                         </td>
-                                        <td style="">{{s.mobile}}</td>
-                                        <td style="">{{s.email}}</td>
+                                        <if condition="session('?admin')">
+                                            <td style="">{{s.mobile}}</td>
+                                            <td style="">{{s.email}}</td>
+                                        </if>
                                         <td style="">{{s.creator_name}}</td>
                                         <td style="">{{s.create_at}}</td>
                                         <td style="text-align:center;padding:14px;color:#666">

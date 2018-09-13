@@ -534,7 +534,7 @@ $(function(){
 							</li>
 						</if>
 
-				        <if condition="session('?admin') || in_array(4,session('edu_roles')) || in_array(1,session('edu_roles')) || in_array(5,session('edu_roles'))">
+				        <if condition="session('?admin') || in_array(4,session('edu_roles')) || in_array(5,session('edu_roles'))">
 							<li <if condition="$module_name eq 'educationview' &&  $action_name eq 'course_manage'">class="active"</if>>
 								<i class="fa fa-angle-right"></i>
 								<a href="{:U('educationview/course_manage')}">课程管理</a>
@@ -548,7 +548,7 @@ $(function(){
 							</li>
 						</if>
 
-						<if condition="session('?admin') || in_array(1,session('edu_roles')) ">
+						<if condition="session('?admin')">
 							<li <if condition="preg_match( '/teacher/', $action_name )">class="active"</if>>
 								<i class="fa fa-angle-right"></i>
 								<a href="{:U('educationview/teacher_index')}">教师管理</a>

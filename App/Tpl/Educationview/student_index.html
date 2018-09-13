@@ -166,7 +166,7 @@
                                 </select>
                             </li>
                             <li class="li_item bt col-lg-2" style="float: none !important;">
-                                <input type="text" placeholder="学生姓名/手机号" name="search" id="searchInput" class="form-control input-sm"><i class="fa fa-search"></i>
+                                <input type="text" placeholder="学生姓名" name="search" id="searchInput" class="form-control input-sm"><i class="fa fa-search"></i>
                                 </li>
                         </ul>
                     </div>
@@ -972,12 +972,14 @@
                 editable: false,
                 sorttype: "text",
                 search: true,
+                hidden:true
             },  {
                 name: "email",
                 index: "email",
                 editable: false,
                 sorttype: "text",
                 search: true,
+                hidden:true
             }, {
                 name: "customer_name",
                 index: "customer_name",
@@ -1106,8 +1108,9 @@
             return '<a class="a_name" href="javascript:;" onclick="showDetail('+cell.id+')">'+cellvalue+'</a>'
         }
         function customer_nameformat(cellvalue, options, cell){
-            console.log("xxx",cell.customer_id);
-            return '<a class="a_name" target="_blank" href="/index.php?m=customer&a=view&id='+cell.customer_id+'&content=" onclick="gotoCustomer(this)" :data-cid="'+cell.customer_id+'">'+cellvalue+'</a>'
+            return cellvalue
+
+            // return '<a class="a_name" target="_blank" href="/index.php?m=customer&a=view&id='+cell.customer_id+'&content=" onclick="gotoCustomer(this)" :data-cid="'+cell.customer_id+'">'+cellvalue+'</a>'
         }
     });
 </script>

@@ -56,14 +56,26 @@
                                                 <label class="col-lg-3">学号</label>
                                                 <div class="col-lg-9"><p>{{detail.code}}</p></div>
                                             </div>
-                                            <div class="clearfix group_item col-lg-6">
-                                                <label class="col-lg-3">电话</label>
-                                                <div class="col-lg-9"><p>{{detail.mobile}}</p></div>
-                                            </div>
-                                            <div class="clearfix group_item col-lg-6">
-                                                <label class="col-lg-3">邮件</label>
-                                                <div class="col-lg-9"><p>{{detail.email}}</p></div>
-                                            </div>
+                                            <if condition="session('?admin')">
+                                                <div class="clearfix group_item col-lg-6">
+                                                    <label class="col-lg-3">电话</label>
+                                                    <div class="col-lg-9"><p>{{detail.mobile}}</p></div>
+                                                </div>
+                                                <div class="clearfix group_item col-lg-6">
+                                                    <label class="col-lg-3">邮件</label>
+                                                    <div class="col-lg-9"><p>{{detail.email}}</p></div>
+                                                </div>
+                                                <div class="clearfix group_item col-lg-6">
+                                                    <label class="col-lg-3">客户信息</label>
+                                                    <div class="col-lg-9">
+                                                        <p>
+                                                            <a :href="'/index.php?m=customer&a=view&id='+detail.customer_id" target="_blank">
+                                                                {{detail.customer_name}}
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </if>
                                             <div class="clearfix group_item col-lg-6">
                                                 <label class="col-lg-3">创建人</label>
                                                 <div class="col-lg-9"><p>{{detail.creator_name}}</p></div>
@@ -71,16 +83,6 @@
                                             <div class="clearfix group_item col-lg-6">
                                                 <label class="col-lg-3">创建时间</label>
                                                 <div class="col-lg-9"><p>{{detail.create_at}}</p></div>
-                                            </div>
-                                            <div class="clearfix group_item col-lg-6">
-                                                <label class="col-lg-3">客户信息</label>
-                                                <div class="col-lg-9">
-                                                    <p>
-                                                        <a :href="'/index.php?m=customer&a=view&id='+detail.customer_id" target="_blank">
-                                                            {{detail.customer_name}}
-                                                        </a>
-                                                    </p>
-                                                </div>
                                             </div>
                                             <div class="clearfix group_item col-lg-12">
                                                 <label class="col-lg-1">学生备注</label>
