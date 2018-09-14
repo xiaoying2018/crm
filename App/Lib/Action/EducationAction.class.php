@@ -553,8 +553,12 @@ class EducationAction extends Action
                     // 删除关联信息
                     if ($res)
                     {
+                        // 删除班级和课程关联表的关联信息
                         $rel_model = new BanjiKechengModelEdu();
                         $rel_model->where(['section_cate_id'=>['eq',$id]])->delete();
+                        // 删除课程下的课时信息
+                        $del_section_model = new SectionModelEdu();
+                        $del_section_model->where(['cate'=>['eq',$id]])->delete();
                     }
 
                     $this->ajaxReturn(['result' => true]);
@@ -883,6 +887,7 @@ class EducationAction extends Action
         }
     }
 
+    // 删除班次
     public function period_del()
     {
         if ($this->isPost() || $this->isAjax()) {
@@ -892,13 +897,19 @@ class EducationAction extends Action
                 if (!$id) $this->_throw('主键缺失');
                 // model
                 $periodModel = new PeriodModelEdu();
-                $data = [
-                    'id' => $id,
-                    'status' => -7,
-                ];
+//                $data = [
+//                    'id' => $id,
+//                    'status' => -7,
+//                ];
                 // 写库
-                if ($periodModel->save($data) !== false)
+                if ($periodModel->where(['id'=>['eq',$id]])->delete() !== false)
+                {
+                    // todo 删除当前班次下的排课信息
+                    $del_paike_model = new ScheduleModelEdu();
+                    $del_paike_model->where(['period_id'=>['eq',$id]])->delete();
+
                     $this->ajaxReturn(['result' => true]);
+                }
 
                 $this->_throw($periodModel->getError());
 
