@@ -13,7 +13,7 @@ class SignInAction extends Action
     {
         try {
             // 请求
-            IS_AJAX || $this->_throw('非法操作');
+//            IS_AJAX || $this->_throw('非法操作');
             // 参数
             $params = I('post.');
             // 验证
