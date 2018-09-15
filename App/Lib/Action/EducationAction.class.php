@@ -1730,6 +1730,7 @@ class EducationAction extends Action
         }
 
         $lists = $studentModel->student_lists($conditions, $wheredata['page'], $wheredata['rows'])['data'];
+        $_count = $studentModel->student_lists($conditions, $wheredata['page'], $wheredata['rows'])['count'];
 
         $courses = $courseModel->field('id,name')
             ->where(['status' => ['eq', 1]])
@@ -1746,9 +1747,10 @@ class EducationAction extends Action
                 ->select();
         }
         $_sql = $studentModel->_sql();
+        
         $data['list'] = $lists;
-        $data['count'] = $counts = $studentModel->student_lists($conditions)['count'];
-        $data['total'] = ceil($counts / $wheredata['rows']);
+        $data['count'] = $_count;
+        $data['total'] = ceil($_count / $wheredata['rows']);
         $this->ajaxReturn(['status' => true, 'data' => $data, 'courses' => $courses]);
         $this->ajaxReturn(compact('lists', 'courses', 'periods', 'conditions', '_sql'));
     }

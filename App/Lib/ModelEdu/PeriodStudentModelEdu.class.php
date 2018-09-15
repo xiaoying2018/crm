@@ -28,7 +28,7 @@ class PeriodStudentModelEdu extends EducationModelEdu
         }
 
         //获取此产品下的所有学生
-        $legelCustomer         =   M('Customer')->field('mx_cst.name,mx_cst.customer_id,mx_rec_o.receivingorder_id')
+        $legelCustomer         =   M('Customer')->field('mx_cst.name,mx_cst.mobile,mx_cst.email,mx_cst.customer_id,mx_rec_o.receivingorder_id')
             ->join("mx_cst LEFT JOIN mx_receivables mx_rec ON mx_cst.customer_id = mx_rec.customer_id") //应收款
             ->join("LEFT JOIN mx_receivingorder mx_rec_o ON mx_rec_o.receivables_id = mx_rec.receivables_id") // 客户收款
             ->join("LEFT JOIN mx_contract mx_ctt ON mx_cst.customer_id = mx_ctt.customer_id") // 收款关联的合同
@@ -59,6 +59,7 @@ class PeriodStudentModelEdu extends EducationModelEdu
                     'password'=>'xiaoying123456',
                     'remark'=>'初始密码:xiaoying123456'
                 ));
+                \Log::write($student_model->getLastSql());
                 $profile = ['student_id' => $id];
                 $profile['bind_mobile'] = $customer['mobile'];
                 $studentprofileModel->field('student_id')->add($profile);

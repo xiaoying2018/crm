@@ -47,20 +47,37 @@ class StudentModelEdu extends EducationModelEdu
             ->join('LEFT JOIN mxcrm.mx_user mx_u1 ON mx_u1.user_id = s.creator_id')
             ->where($_where)
             ->limit(($page-1)*$pagesize,$pagesize)
+            ->group('s.code')
             ->order('s.create_at desc')
             ->select();
 
-        $new_data=array();
-        foreach ($data as $k=>$v){
-            if(!isset($new_data[$v['code']])){
-                $new_data[$v['code']]=$v;
-            }else{
-                continue;
-            }
-        }
-        \Log::write(json_encode($new_data));
-        $count=count($new_data);
-        $new_data=array_values($new_data);
+        $count =  $this->field('s.id,s.realname,s.code,s.mobile,s.email,s.remark,s.create_at,mx_u1.full_name creator_name,mx_c.name customer_name,s.customer_id')
+            ->join("s LEFT JOIN {$this->dbName}.period_student p_s ON s.id = p_s.student_id")
+            ->join("LEFT JOIN {$this->dbName}.course_period c_per ON c_per.id = p_s.period_id")
+            ->join("LEFT JOIN {$this->dbName}.course c ON c_per.course_id = c.id")
+            ->join("LEFT JOIN mxcrm.mx_customer mx_c ON s.customer_id = mx_c.customer_id")
+            ->join('LEFT JOIN mxcrm.mx_user mx_u1 ON mx_u1.user_id = s.creator_id')
+            ->where($_where)
+            ->group('s.code')
+            ->order('s.create_at desc')
+            ->select();
+        $count=count($count);
+        Log::write(json_encode($this->getLastSql()));
+//        echo "<pre>";
+//        var_dump($this->getLastSql());exit();
+//
+//        $new_data=array();
+//        foreach ($data as $k=>$v){
+//            if(!isset($new_data[$v['code']])){
+//                $new_data[$v['code']]=$v;
+//            }else{
+//                continue;
+//            }
+//        }
+//
+      //  \Log::write(json_encode($new_data));
+        
+       // $new_data=array_values($new_data);
 //        $count = $this->field('s.id,s.realname,s.code,s.mobile,s.email,s.remark,s.create_at,mx_u1.full_name creator_name,mx_c.name customer_name,s.customer_id')
 //            ->join("s LEFT JOIN {$this->dbName}.period_student p_s ON s.id = p_s.student_id")
 //            ->join("LEFT JOIN {$this->dbName}.course_period c_per ON c_per.id = p_s.period_id")
@@ -70,7 +87,7 @@ class StudentModelEdu extends EducationModelEdu
 //            ->where($_where)
 //            ->order('s.create_at desc')
 //            ->select();
-        return ['data'=>$new_data,'count'=>$count];
+        return ['data'=>$data,'count'=>$count];
     }
 
     /**
