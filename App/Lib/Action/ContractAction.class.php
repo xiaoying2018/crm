@@ -688,6 +688,7 @@ class ContractAction extends Action {
 			$product['category_name'] = $m_product_category->where('category_id =%d',$product['category_id'])->getField('name');
 			$sales_product[$k]['product'] = $product;
 		}
+
 		//发票信息
 		$invoice_list = M('Invoice')->where(array('contract_id'=>$contract_id))->select();
 		$m_user = M('User');
@@ -2620,4 +2621,21 @@ class ContractAction extends Action {
 			}
 		}
 	}
+
+
+	public function changeProductId(){
+	    $new_product_id=I('post.new_product_id');
+	    $sales_id=I('post.sales_id');
+	    $r_sales=M()->table('mx_sales_product')->where(array('sales_product_id'=>array('eq',$sales_id)))->save(array('product_id'=>$new_product_id));
+	    \Log::write(M()->getLastSql());
+	    if($r_sales){
+	        $this->ajaxReturn(array(
+	            'status'=>1,
+            ));
+        }else{
+	        $this->ajaxReturn(array(
+	           'status'=>0
+            ));
+        }
+    }
 }

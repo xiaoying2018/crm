@@ -253,7 +253,9 @@
 									<table class="table table-bordered" id="no-input-border" width="95%" border="0" cellspacing="1" cellpadding="0">
 										<thead>
 											<tr style="background-color:#f9fafc;text-align:center;">
-												<td style="background-color:#f9fafc;padding:14px;color:#999">产品名称</td>
+												<td style="background-color:#f9fafc;padding:14px;color:#999">产品名称
+
+												</td>
 												<td style="background-color:#f9fafc;padding:14px;color:#999">价格(元)</td>
 												<td style="background-color:#f9fafc;padding:14px;color:#999">折扣(%)</td>
 												<td style="background-color:#f9fafc;padding:14px;color:#999">销售单价(元)</td>
@@ -266,8 +268,11 @@
 											<volist name="sales_product" id="vo">
 												<tr id="row_{$key+1}">
 													<td style="text-align:center;padding:14px;color:#666">
-														{$vo.product.name}                    
-													</td>                                     
+														{$vo.product.name}
+														<if condition="session('role_id')==5">
+														<button onclick="changeProductId(this)" data-sales-product-id="{$vo.sales_product_id}"  data-productid="{$vo.product_id}">修改产品</button>
+														</if>
+													</td>
 													<td style="text-align:center;padding:14px;color:#666">
 														{$vo.ori_price}                       
 													</td>                                     
@@ -1005,7 +1010,54 @@ $("#dialog-map").dialog({
 	position: ["center",100]
 });
 
+function changeProductId(obj){
+    sales_id=$(obj).attr('data-sales-product-id');
+    product_id=$(obj).attr('data-productid');
+    layer.open({
+        type: 1,
+        closeBtn: 0, //不显示关闭按钮
+        anim: 2,
+        shadeClose: true, //开启遮罩关闭
+        content: '<p>原有的产品id:'+product_id+'</p>修改为<input name="product-id"><buttion onclick="confirmChangeProductId(this,sales_id)">确认</buttion>'
+    });
+}
+
+function confirmChangeProductId(obj,sales_id){
+    new_product_id =$(obj).prev().val();
+    if(new_product_id){
+        //alert(new_product_id);
+        $.ajax({
+            type:'post',
+            url: "{:U('Contract/changeProductId')}",
+			data:{
+                new_product_id:new_product_id,
+				sales_id:sales_id
+			},
+            async: false,
+            success: function (data) {
+                if (data.status == 1) {
+                    swal("修改成功！", "修改成功", "success");
+                    location.reload();
+                }else{
+                    swal({
+                        title: "操作失败！",
+                        text:data.info,
+                        type: "error"
+                    })
+                    return false;
+                }
+            },
+            dataType: 'json'
+        });
+	}else{
+      return   alert('请输入要修改的商品id');
+	}
+}
+
 $(function(){
+
+
+
 	$(".role_info").click(function(){
 		$role_id = $(this).attr('rel');
 		$('#dialog-role-info').dialog('open');
@@ -1118,6 +1170,9 @@ $('.del_file').click(function(){
             swal("已取消","您取消了删除操作！","error");
         }
     });
+
+
+
 });
 </script>
 <include file="Public:footer" />	

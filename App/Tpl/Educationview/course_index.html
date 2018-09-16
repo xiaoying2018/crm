@@ -374,6 +374,7 @@
     }
     //渲染表格最后一列...操作按钮
     function btngroup(cellvalue, options, cell){
+      //  return '<buttion class="btn btn-info btn-sm" type="button" style="margin-right:5px;" onclick="courseEdit('+cellvalue+')">修改</buttion><button class="btn btn-danger btn-sm" type="button" onclick="courseDel('+cellvalue+')">删除</button>'
         return '<buttion class="btn btn-info btn-sm" type="button" style="margin-right:5px;" onclick="courseEdit('+cellvalue+')">修改</buttion><button class="btn btn-danger btn-sm" type="button" onclick="courseDel('+cellvalue+')">删除</button>'
     }
     //课程名称
@@ -436,23 +437,23 @@
 	function courseDel (btn){
         var id = btn;
         if( !id ) return ;
-        layer.confirm('确定删除课程吗?', {icon: 3, title:'提示'}, function(index){
+        layer.confirm('删除该班级会导致班级下所有排课信息丢失,如果要删除请联系管理员', {icon: 3, title:'提示'}, function(index){
             // 删除
-            $.ajax({
-                url:"/index.php?m=education&a=course_del",
-                data:{id:id},
-                dataType:"JSON",
-                type:"POST",
-                success:function (res) {
-                    if( res.result ){
-                        
-                        $("#table_list_2").jqGrid("setGridParam", { postData: {}}).trigger("reloadGrid");
-                        layer.msg('课程删除成功！');
-                    }else{
-                        layer.msg('ERROR '+res.error);
-                    }
-                }
-            });
+            // $.ajax({
+            //     url:"/index.php?m=education&a=course_del",
+            //     data:{id:id},
+            //     dataType:"JSON",
+            //     type:"POST",
+            //     success:function (res) {
+            //         if( res.result ){
+            //
+            //             $("#table_list_2").jqGrid("setGridParam", { postData: {}}).trigger("reloadGrid");
+            //             layer.msg('课程删除成功！');
+            //         }else{
+            //             layer.msg('ERROR '+res.error);
+            //         }
+            //     }
+            // });
             layer.close(index);
         });
 	}
