@@ -253,6 +253,8 @@ class PeriodStudentModelEdu extends EducationModelEdu
         \Log::write('要踢出班级的学生id'.json_encode($student_ids));
         if(empty($student_ids)) return ;
 
+
+
         //获取课程下所有关联的产品
         $course_product_model =new CourseProductModelEdu();
         $product_ids=$course_product_model->field('product_id')->where(array('course_id'=>array('eq',$course_id)))->select();
@@ -302,17 +304,21 @@ class PeriodStudentModelEdu extends EducationModelEdu
             $periods_ids_arr[]=$periods_id['id'];
         }
 
+
+
         foreach ($periods_ids_arr as $period){
             foreach ($student_ids as $student_id){
                 $delete_arr[]=array(
                     'period_id'=>$period,
-                    'student_id'=>$student_id
+                    'student_id'=>$student_id['id']
                 );
             }
         }
         \Log::write(json_encode($delete_arr));
         foreach ($delete_arr as $delete){
-            $this->delete($delete);
+           // $this->delete($delete);
+            $this->where(array('period_id'=>array('eq',$delete['period_id']),'student_id'=>array('eq',$delete['student_id'])))->delete();
+            \Log::write( $this->getLastSql());
         }
     }
 }
