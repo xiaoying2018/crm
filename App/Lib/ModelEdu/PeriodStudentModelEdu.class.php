@@ -17,6 +17,7 @@ class PeriodStudentModelEdu extends EducationModelEdu
         );
         //获取此班级下的关联的所有product_id
         $products=$course_product_model->where($where)->field('product_id')->select();
+        \Log::write($course_product_model->getLastSql());
         //如果没有关联产品，返回
         if(empty($products)){
             return ;
@@ -26,7 +27,7 @@ class PeriodStudentModelEdu extends EducationModelEdu
         foreach ($products as $product){
             $products_ids_arr[]=$product['product_id'];
         }
-
+        \Log::write(json_encode($products_ids_arr));
         //获取此产品下的所有学生
         $legelCustomer         =   M('Customer')->field('mx_cst.name,mx_cst.mobile,mx_cst.email,mx_cst.customer_id,mx_rec_o.receivingorder_id')
             ->join("mx_cst LEFT JOIN mx_receivables mx_rec ON mx_cst.customer_id = mx_rec.customer_id") //应收款
@@ -39,7 +40,8 @@ class PeriodStudentModelEdu extends EducationModelEdu
         if(empty($legelCustomer)){
             return ;
         }
-
+        \Log::write( M('Customer')->getLastSql());
+        \Log::write(json_encode($legelCustomer));
         $legelCustomerIds       =   array_map( function ($c){
             return $c['customer_id'];
         }, $legelCustomer );
@@ -71,6 +73,7 @@ class PeriodStudentModelEdu extends EducationModelEdu
         //将合法的客户中，已经选过该课期的学生给过滤掉
         $periodStudents=new PeriodStudentModelEdu();
         $students=$periodStudents->field('student_id')->where('period_id ='.$period_id)->select();
+        \Log::write( $periodStudents->getLastSql());
         $students_arr=[];
         if($students){
             foreach ($students as $k=>$v){
@@ -102,6 +105,7 @@ class PeriodStudentModelEdu extends EducationModelEdu
         if(empty($data)){
             return ;
         }
+        \Log::write( json_encode($data));
         foreach ($data as $da){
             $this->add(array(
                 'period_id'=>$period_id,
