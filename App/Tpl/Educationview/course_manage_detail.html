@@ -315,12 +315,13 @@ $(function() {
                                         node:""
                                     }
                                     _temp.id = $(_el).attr("data-id")
-                                    _temp.sort = $(_el).index() + 1
+                                    _temp.node = $(_el).index() + 1
                                     _arr.push(_temp);
                                 })
                                 $.ajax({
                                     url:"{:U('education/change_section_sort')}",
                                     type:'post',
+                                    dataType:"json",
                                     data:{
                                         new_node:_arr
                                     },
