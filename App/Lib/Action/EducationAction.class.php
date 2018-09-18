@@ -36,7 +36,7 @@ class EducationAction extends Action
         foreach ($new_lists as $k => $v)
         {
             $section_model = new SectionModelEdu();
-            $section_model->where(['id'=>['eq',$v['id']]])->save(['node'=>$v['sort']]);
+            $section_model->where(['id'=>['eq',$v['id']]])->save(['node'=>$v['node']]);
         }
 
         $this->ajaxReturn(['status'=>true,'msg'=>'修改成功']);// 修改成功
