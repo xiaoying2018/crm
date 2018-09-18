@@ -621,7 +621,7 @@ class EducationAction extends Action
 
             // 获取课程下课时信息
             $section_model = new SectionModelEdu();
-            $sections = $section_model->where(['cate'=>['eq',$detail['id']]])->select();
+            $sections = $section_model->where(['cate'=>['eq',$detail['id']]])->order('node')->select();
 
             if ($sections)
             {
