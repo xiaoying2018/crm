@@ -57,6 +57,9 @@ td a {
     height: 100%;
     cursor: pointer;
 }
+#sortable tr{
+    cursor: all-scroll;
+}
 </style>
 <script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
 <div class="wrapper wrapper-content animated fadeIn templete_Detail">
@@ -154,8 +157,8 @@ td a {
                                             <td style="">操作</td>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr v-for="s in sections" :data-id="s.id">
+                                    <tbody id="sortable">
+                                        <tr v-for="s in sections" :data-id="s.id" class="ui-state-default">
                                             <td style="">
                                                 <a href="javascript:;">
                                                 {{s.name}}
@@ -301,6 +304,34 @@ $(function() {
                             $("#temp_detail").html(escapeStringHTML(res.detail.detail))
                             _this.sections = res.sections;
                             _this.count = res.count;
+
+                            $( "#sortable" ).sortable({
+                              stop: function( event, ui) {
+                                var _arr = [];
+                                $("#sortable tr").each(function(){
+                                    var _el = $(this);
+                                    var _temp = {
+                                        id:"",
+                                        node:""
+                                    }
+                                    _temp.id = $(_el).attr("data-id")
+                                    _temp.node = $(_el).index() + 1
+                                    _arr.push(_temp);
+                                })
+                                $.ajax({
+                                    url:"{:U('education/change_section_sort')}",
+                                    type:'post',
+                                    dataType:"json",
+                                    data:{
+                                        new_node:_arr
+                                    },
+                                    success:function(res){
+                                        // console.log("xxx",res);
+                                    }
+                                })
+                              }
+                            });
+                            $( "#sortable" ).disableSelection();
                         } else {
                             alert(res.error);
                         }

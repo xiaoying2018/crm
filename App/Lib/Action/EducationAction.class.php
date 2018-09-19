@@ -17,6 +17,32 @@ class EducationAction extends Action
 
     }
 
+    /**
+     * 课时拖拽排序
+     */
+    public function change_section_sort()
+    {
+        $new_lists = I('post.new_node');
+
+        if (!is_array($new_lists)) $this->ajaxReturn(['status'=>false,'msg'=>'非法操作']);// 数据格式不正确
+
+        // 排除
+        foreach ($new_lists as $k => $v)
+        {
+            if (!$v['id'] || !$v['node']) $this->ajaxReturn(['status'=>false,'msg'=>'非法数据']);// 数据有空
+        }
+
+        // 执行更新
+        foreach ($new_lists as $k => $v)
+        {
+            $section_model = new SectionModelEdu();
+            $section_model->where(['id'=>['eq',$v['id']]])->save(['node'=>$v['node']]);
+        }
+
+        $this->ajaxReturn(['status'=>true,'msg'=>'修改成功']);// 修改成功
+
+    }
+    
     /* >>>>>>>>>>>>>>>>>>> 教师、班主任角色 start <<<<<<<<<<<<<<<<< */
     public function my_period()
     {
@@ -595,7 +621,7 @@ class EducationAction extends Action
 
             // 获取课程下课时信息
             $section_model = new SectionModelEdu();
-            $sections = $section_model->where(['cate'=>['eq',$detail['id']]])->select();
+            $sections = $section_model->where(['cate'=>['eq',$detail['id']]])->order('node')->select();
 
             if ($sections)
             {
