@@ -412,5 +412,18 @@ class EducationviewAction extends Action
         return $token = $auth->uploadToken($bucket);
     }
 
+    public function course_class_index()
+    {
+
+        $courseModel        =   new CourseModelEdu();
+        $courses            =   $courseModel->field('id,name')
+            ->where(['status'=>['eq',1]])
+            ->order('id desc')
+            ->limit(20)
+            ->select() ?: [];
+        $this->assign('courses',$courses);
+        $this->display();
+    }
+
 
 }

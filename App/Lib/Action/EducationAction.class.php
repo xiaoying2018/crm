@@ -2622,4 +2622,32 @@ class EducationAction extends Action
 
         $this->ajaxReturn(['result' => true]);
     }
+
+
+
+    public function course_class_index()
+    {
+        //        $this->ajaxReturn(I('post.'));
+        $wheredata = $_REQUEST;
+        $condition=array();
+        array_key_exists('course', $wheredata)
+        && ($course_id = (int)$wheredata['course'])
+        && $condition['c.id'] = ['eq', $course_id];
+
+        array_key_exists('livecontent', $wheredata)
+        && ($period_id = (int)$wheredata['livecontent'])
+        && $condition['c_per.id'] = ['eq', $period_id];
+
+        $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码
+        $limit = $wheredata['row'] ? $wheredata['row'] : 10;// 每页显示条数
+        // 课期数据
+        $periodModel = new PeriodModelEdu();
+
+        $lists = $periodModel->period_lists_page($condition,$page,$limit);
+        $_sql = $periodModel->_sql();
+        $counts = count($periodModel->period_lists($condition));
+        $total = ceil($counts / $limit);
+//        $this->ajaxReturn(['status'=>true,'data'=>$data,'courses'=>$courses]);
+        $this->ajaxReturn(compact('lists','counts','total', 'conditions', '_sql'));
+    }
 }
