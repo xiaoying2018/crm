@@ -533,7 +533,7 @@ $(function(){
 								<a href="{:U('educationview/course_index')}">班级管理</a>
 							</li>
 						</if>
-						<if condition="session('?admin') ||  in_array(6,session('edu_roles') )">
+						<if condition="in_array(6,session('edu_roles') )">
 							<li <if condition="$module_name eq 'educationview' &&  $action_name eq 'course_class_index'">class="active"</if>>
 							<i class="fa fa-angle-right"></i>
 							<a href="{:U('educationview/course_class_index')}">班次排课</a>
@@ -541,7 +541,7 @@ $(function(){
 						</if>
 
 
-				<if condition="session('?admin') || in_array(4,session('edu_roles')) || in_array(5,session('edu_roles'))">
+						<if condition="session('?admin') || in_array(4,session('edu_roles')) || in_array(5,session('edu_roles'))">
 							<li <if condition="$module_name eq 'educationview' &&  $action_name eq 'course_manage'">class="active"</if>>
 								<i class="fa fa-angle-right"></i>
 								<a href="{:U('educationview/course_manage')}">课程管理</a>

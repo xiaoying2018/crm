@@ -10,8 +10,8 @@ class SignEduRoleBehavior extends Behavior
         // 教务角色
         if( session('?edu_roles') ) return ;
         // 超级用户
-
-        if( session('?admin') ) return ;
+//        if( session('?admin') ) return ;
+        
         // 标记角色
         $roleIds        =   [];
 

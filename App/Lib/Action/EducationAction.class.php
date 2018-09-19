@@ -778,6 +778,16 @@ class EducationAction extends Action
                 // model
                 $sectionModel = new SectionModelEdu();
                 $scheduleModel = new ScheduleModelEdu();
+
+                // 9-19 查询当前课时是否有排课信息 dragon
+                $current_section_paike = $scheduleModel->where(['section_id' => ['eq', $id]])->select();
+                // 如果课时下有排课信息,不能删除课时
+                if ($current_section_paike)
+                {
+                    $this->ajaxReturn(['result' => false, 'error' => '当前课时已有排课,请先删除排课信息']);
+                }
+                // 9-19 end
+
                 try {
                     // 开启
                     $sectionModel->startTrans();
