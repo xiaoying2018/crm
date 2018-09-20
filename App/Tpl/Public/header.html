@@ -541,7 +541,7 @@ $(function(){
 						</if>
 
 
-						<if condition="session('?admin') || in_array(4,session('edu_roles')) || in_array(5,session('edu_roles'))">
+						<if condition="session('?admin') || in_array(4,session('edu_roles')) || in_array(5,session('edu_roles')) || session('role_id') == 32">
 							<li <if condition="$module_name eq 'educationview' &&  $action_name eq 'course_manage'">class="active"</if>>
 								<i class="fa fa-angle-right"></i>
 								<a href="{:U('educationview/course_manage')}">课程管理</a>
