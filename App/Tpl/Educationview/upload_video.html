@@ -147,7 +147,9 @@
             };
             var token = $("#token").val();
             if ($("#file")[0].files.length > 0 && token != "") {
-                Qiniu_upload($("#file")[0].files[0], token, $("#key").val());
+                console.log($("#file")[0].files[0].name);
+
+                Qiniu_upload($("#file")[0].files[0], token, $("#file")[0].files[0].name+Date.parse(new Date()));
             } else {
                 console && console.log("form input error");
             }
