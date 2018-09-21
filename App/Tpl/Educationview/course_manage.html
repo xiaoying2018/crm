@@ -249,8 +249,8 @@
     }
     //渲染表格最后一列...操作按钮
     function btngroup(cellvalue, options, cell){
-            <if condition="session('role_id') == 32">
-                return '<buttion class="btn btn-info btn-sm" type="button" style="margin-right:5px;" onclick="courseEdit('+cellvalue+')">修改</buttion>'
+            <if condition="session('role_id') == 32 || session('role_id') == 88">
+                return ''
                 <else/>
                 return '<buttion class="btn btn-info btn-sm" type="button" style="margin-right:5px;" onclick="courseEdit('+cellvalue+')">修改</buttion><button class="btn btn-danger btn-sm" type="button" onclick="courseDel('+cellvalue+')">删除</button>'
             </if>
