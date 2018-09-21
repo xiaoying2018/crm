@@ -52,19 +52,25 @@ class PeriodStudentModelEdu extends EducationModelEdu
         foreach ($legelCustomer as $customer){
             $res=$student_model->where(array('customer_id'=>array('eq',$customer['customer_id'])))->find();
             if(!$res){
-                //插入新学员
-                $id =$student_model->add(array(
-                    'realname'=>$customer['name'],
-                    'mobile'=>$customer['mobile'],
-                    'email'=>$customer['email'],
-                    'customer_id'=>$customer['customer_id'],
-                    'password'=>'xiaoying123456',
-                    'remark'=>'初始密码:xiaoying123456'
-                ));
-                \Log::write($student_model->getLastSql());
-                $profile = ['student_id' => $id];
-                $profile['bind_mobile'] = $customer['mobile'];
-                $studentprofileModel->field('student_id')->add($profile);
+                $has_mobile=$student_model->where(array('mobile'=>array('eq',$customer['mobile'])))->find();
+                if($has_mobile){
+
+                }else{
+                    //插入新学员
+                    $id =$student_model->add(array(
+                        'realname'=>$customer['name'],
+                        'mobile'=>$customer['mobile'],
+                        'email'=>$customer['email'],
+                        'customer_id'=>$customer['customer_id'],
+                        'password'=>'xiaoying123456',
+                        'remark'=>'初始密码:xiaoying123456'
+                    ));
+                    \Log::write($student_model->getLastSql());
+                    $profile = ['student_id' => $id];
+                    $profile['bind_mobile'] = $customer['mobile'];
+                    $studentprofileModel->field('student_id')->add($profile);
+                }
+
             }else{
                 continue;
             }
