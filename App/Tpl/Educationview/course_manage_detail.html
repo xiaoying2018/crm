@@ -62,6 +62,9 @@ td a {
 }
 </style>
 <script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+
+
+
 <div class="wrapper wrapper-content animated fadeIn templete_Detail">
     <div class="row">
         <div class="title-bar col-lg-12">
@@ -248,9 +251,64 @@ td a {
     <input type="hidden" id="course_id" >
     <input type="hidden" id="course_hash" >
 <include file="Public:footer" />
+</div>
 <script>
+
 var templete_Detail;
 $(function() {
+    // 上传视频
+
+    $("#dialog-upload-video").dialog({
+        autoOpen: false,
+        // modal: true, 影响分类选择插件
+        width: '55%',
+        maxHeight: 600,
+        position: ["center", 100],
+        buttons: {
+            '确认上传': function () {
+                // 操作
+                if($('#course_key').val()=='' || $('#course_key').val()==undefined){
+                    return  layer.msg('请先选择要上传视频！');
+                }
+                var _dialog = this,
+                    data = {};
+                data['course_id'] = $('#course_id').val();
+                data['key'] = $('#course_key').val();
+                //data['key'] = $('#course_key').val();
+                console.log(data);
+                //return;
+                $.ajax({
+                    url: "{:U('education/new_upload_video')}",
+                    data: data,
+                    dataType: "JSON",
+                    type: "POST",
+                    success: function (res) {
+                        if (res.result) {
+                            // 刷新主页数据
+                            templete_Detail.getCourseDetail();
+                            //
+                            layer.msg('上传成功！');
+                            // 关闭弹框
+                            $(_dialog).dialog('close');
+                            $('#course_id').val('');
+                            $('#course_key').val('');
+                            $('#course_hash').val('');
+
+                        } else {
+                            layer.msg('ERROR ' + res.error);
+                        }
+                    }
+                });
+                return;
+            }
+        },
+        close: function () {
+            $('#course_id').val('');
+            $('#course_key').val('');
+            $('#course_hash').val('');
+            // $("#dialog-upload-video").dialog('close');
+        }
+    });
     $(document).on('click','.updatevideo',function(){
         $(this).parent().find(".videopath_input").show();
     })
@@ -379,61 +437,6 @@ $(function() {
         }
     });
 
-    // 上传视频
-    $("#dialog-upload-video").dialog({
-        autoOpen: false,
-        // modal: true, 影响分类选择插件
-        width: '55%',
-        maxHeight: 600,
-        position: ["center", 100],
-        buttons: {
-            '确认上传': function () {
-                // 操作
-                if($('#course_key').val()=='' || $('#course_key').val()==undefined){
-                   return  layer.msg('请先选择要上传视频！');
-                }
-                   var _dialog = this,
-                    data = {};
-                    data['course_id'] = $('#course_id').val();
-                    data['key'] = $('#course_key').val();
-                    //data['key'] = $('#course_key').val();
-                console.log(data);
-                //return;
-                $.ajax({
-                    url: "{:U('education/new_upload_video')}",
-                    data: data,
-                    dataType: "JSON",
-                    type: "POST",
-                    success: function (res) {
-                        if (res.result) {
-                            // 刷新主页数据
-                            templete_Detail.getCourseDetail();
-                            //
-                            layer.msg('上传成功！');
-                            // 关闭弹框
-                            $(_dialog).dialog('close');
-                            $('#course_id').val('');
-                            $('#course_key').val('');
-                            $('#course_hash').val('');
-
-                        } else {
-                            layer.msg('ERROR ' + res.error);
-                        }
-                    }
-                });
-                return;
-            },
-            '取消': function () {
-                $(this).dialog('close');
-                $('#course_id').val('');
-                $('#course_key').val('');
-                $('#course_hash').val('');
-            }
-        },
-        close: function () {
-            $(this).html('');
-        }
-    });
 
     // 添加课时弹框显示
     $("#dialog-section-add").dialog({
@@ -604,11 +607,15 @@ function showSectionAdd() {
 
 // 视频上传
 function uploadVideo(obj) {
+    $("#box2").show();
+    console.log($)
     $('#course_id').val($(obj).attr('data-id'))  ;
     console.log(course_id);
     $('#dialog-upload-video').dialog('open');
     $('#dialog-upload-video').load('{:U("educationview/upload_video")}');
+    // $('[aria-describedby="dialog-upload-video"]')
 }
+
 
 
 </script>

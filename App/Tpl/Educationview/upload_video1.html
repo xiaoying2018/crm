@@ -1,0 +1,160 @@
+<style>
+    .ipt {
+        width: 300px;
+    }
+    label {
+        width: 130px;
+        display: block;
+    }
+    ul li {
+        list-style:none;
+    }
+    .ui-progressbar {
+        position: relative;
+    }
+    .progress-label {
+        position: absolute;
+        left: 50%;
+        top: 6px;
+        font-weight: bold;
+        text-shadow: 1px 1px 0 #fff;
+        color: #6c6c6c;
+    text-shadow: none;
+    }
+    #progressbar{
+        height:30px;
+        display:none;
+        margin-top: 40px;
+    border: none !important;
+    }
+    #progressbar.ui-progressbar .ui-progressbar-value {
+        height:30px;
+        background: none;
+        background-color: #5bc0de;
+        animation: reverse progress-bar-stripes 0.40s linear infinite, animate-positive 2s;
+        -webkit-animation: progress-bar-stripes 2s linear infinite;
+        -o-animation: progress-bar-stripes 2s linear infinite;
+        animation: progress-bar-stripes 2s linear infinite;
+
+        background-image: -webkit-linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent); */
+    background-image: -o-linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+    background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+    -webkit-background-size: 40px 40px;
+    background-size: 40px 40px;
+    }
+    #dialog{
+        display:none;
+    }
+
+    #token{
+        display:none;
+    }
+
+    #key{
+        display: none;
+    }
+    .ipt{
+        opacity: 0;
+        height: 30px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+    }
+</style>
+
+<ul>
+    <input id="token" name="token"  class="ipt" value="{$token}">
+    <input id="key" name="key" class="ipt" value="{$key}">
+
+    <li>
+        <label for="bucket">视频:</label>
+        <div style="position: relative; margin-top: 15px;">
+            <button class=" btn btn-success uploadvideo">选择视频</button>
+            <input id="file" name="file" class="ipt" type="file" />
+        </div>
+    </li>
+    <!--<li>-->
+        <!--<input id="btn_upload" type="button" value="提交">-->
+    <!--</li>-->
+    <div id="progressbar" class="progress-bar-danger"><div class="progress-label"></div></div>
+</ul>
+<div id="dialog" title="上传成功"></div>
+
+<script>
+    $(document).ready(function() {
+        var Qiniu_UploadUrl = "http://up.qiniu.com";
+        var progressbar = $("#progressbar"),
+            progressLabel = $(".progress-label");
+
+        progressbar.progressbar({
+            value: false,
+            change: function() {
+                progressLabel.text(progressbar.progressbar("value") + "%");
+            },
+            complete: function() {
+                progressLabel.text("上传成功!");
+            }
+        });
+        $("#file").change(function() {
+            //普通上传
+            var Qiniu_upload = function(f, token, key) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', Qiniu_UploadUrl, true);
+                var formData, startDate;
+                formData = new FormData();
+                if (key !== null && key !== undefined) formData.append('key', key);
+                formData.append('token', token);
+                formData.append('file', f);
+                var taking;
+                xhr.upload.addEventListener("progress", function(evt) {
+                    if (evt.lengthComputable) {
+                        var nowDate = new Date().getTime();
+                        taking = nowDate - startDate;
+                        var x = (evt.loaded) / 1024;
+                        var y = taking / 1000;
+                        var uploadSpeed = (x / y);
+                        var formatSpeed;
+                        if (uploadSpeed > 1024) {
+                            formatSpeed = (uploadSpeed / 1024).toFixed(2) + "Mb\/s";
+                        } else {
+                            formatSpeed = uploadSpeed.toFixed(2) + "Kb\/s";
+                        }
+                        var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+                        progressbar.progressbar("value", percentComplete);
+                        if (percentComplete >= 99) {
+                            $(".progress-label").text('视频压缩中，请稍后..');
+                        }
+                        // console && console.log(percentComplete, ",", formatSpeed);
+                    }
+                }, false);
+
+                xhr.onreadystatechange = function(response) {
+                    if (xhr.readyState == 4 && xhr.status == 200 && xhr.responseText != "") {
+                        var blkRet = JSON.parse(xhr.responseText);
+                        console && console.log(blkRet);
+                        $('#course_key').val(blkRet.key);
+                        $('#course_hash').val(blkRet.hash);
+                            $(".progress-label").text('文件读取成功！');
+                       // $("#dialog").html('文件成功上传七牛').dialog();
+                    } else if (xhr.status != 200 && xhr.responseText) {
+
+                    }
+                };
+                startDate = new Date().getTime();
+                $("#progressbar").show();
+                xhr.send(formData);
+            };
+            var token = $("#token").val();
+            if ($("#file")[0].files.length > 0 && token != "") {
+                console.log($("#file")[0].files[0].name);
+
+                Qiniu_upload($("#file")[0].files[0], token, $("#file")[0].files[0].name+Date.parse(new Date()));
+            } else {
+                console && console.log("form input error");
+            }
+        })
+
+    })
+
+</script>
