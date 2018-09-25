@@ -198,9 +198,10 @@ td a {
 
                                                     </if>
 
+                                                    <button class="btn btn-info btn-sm" onclick="showSectionEdit(this)">修改</button>
+
                                                     <if condition="session('?admin')">
                                                         <button class="btn btn-danger btn-sm" @click="section_del($event)">删除</button>
-                                                        <button class="btn btn-info btn-sm" onclick="showSectionEdit(this)">修改</button>
                                                         <else/>
                                                         <!-- 925 todo 需要确定需求后完善权限,目前只有管理员可见 -->
                                                     </if>
