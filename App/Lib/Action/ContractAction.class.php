@@ -68,12 +68,18 @@ class ContractAction extends Action {
 		if(!$contract_custom) {
 			$contract_custom = '5k_crm';
 		}
+
 		if($this->isPost()){
 			//判断合同编号是否存在
 			if ($m_contract->where(array('number'=>$contract_custom.trim($_POST['number'])))->find()) {
 				$this->error('该合同编号已存在！');
 			}
-
+			if(!$_POST['business_id']){
+                $this->error('请关联合同商机');
+            }
+            if(!$_POST['customer_id']){
+                $this->error('请选择来源客户');
+            }
 			// 8-31 添加合同凭证 dragon
 			if (!$_FILES['pz_path']['size'])
             {
@@ -104,7 +110,9 @@ class ContractAction extends Action {
 				}
 			}
 			if ($m_contract->create()) {
+
 				if($m_contract_data->create() !== false){
+
 					$m_contract->type = 1;
 					if(empty($_POST['customer_id']) && isset($_POST['business_id'])){
 						$customer_id = M('business')->where('business_id = %d', $_POST['business_id'])->getField('customer_id');
@@ -122,6 +130,7 @@ class ContractAction extends Action {
 					$m_contract->status = L('HAS_BEEN_CREATED');
 					$m_contract->number = $contract_custom.trim($_POST['number']);
 					$m_contract->prefixion = $contract_custom;
+					//合同表
 					if($contractId = $m_contract->add()){
 						$m_contract_data->contract_id = $contractId;
 						if ($m_contract_data->add()) {
@@ -191,9 +200,13 @@ class ContractAction extends Action {
 										if(!$add_product_flag){
 											alert('error','合同产品信息创建失败！',$_SERVER['HTTP_REFERER']);
 										}
-									}
+									}else{
+                                        alert('error','合同产品信息创建失败！',$_SERVER['HTTP_REFERER']);
+                                    }
 								}
-							}
+							}else{
+                                $this->error($m_sales->getError());
+                            }
 							
 							//商机状态改为合同签订，客户自动锁定
 							$business_id = intval($_POST['business_id']);
