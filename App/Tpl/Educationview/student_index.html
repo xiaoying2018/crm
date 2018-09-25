@@ -105,11 +105,17 @@
                         <ul class="breadcrum pull-left">
                             <li>已选中&nbsp;<span id="icheck_num"></span>&nbsp;项</li>
                             <!--<li class="single_btn"><a href="javascript:void(0)" id="edit_data"><i class="fa fa-pencil"></i>&nbsp;编辑</a></li>-->
-                            <li><a id="delete" href="javascript:void(0)" onclick="delThis()"><i class="fa fa-times"></i>&nbsp;删除</a></li>
-                            <li class="single_btn" style="display: inline-block;"><a href="javascript:void(0)" class="edit_href"><i class="fa fa-pencil"></i>&nbsp;编辑</a></li>
-                            <li class="">
-                                <a href="javascript:void(0)" id="send_message" onclick="sendMessage()"><i class="fa fa-file-text"></i>&nbsp;消息推送</a>
-                            </li>
+                            <if condition="session('?admin')">
+                                <li><a id="delete" href="javascript:void(0)" onclick="delThis()"><i class="fa fa-times"></i>&nbsp;删除</a></li>
+                                <li class="single_btn" style="display: inline-block;"><a href="javascript:void(0)" class="edit_href"><i class="fa fa-pencil"></i>&nbsp;编辑</a></li>
+                            </if>
+                            <!-- 925 仅 管理员 和 教务 可操作 -->
+                            <if condition="session('?admin') || in_array(1,session('edu_roles'))">
+                                <li class="">
+                                    <a href="javascript:void(0)" id="send_message" onclick="sendMessage()"><i class="fa fa-file-text"></i>&nbsp;消息推送</a>
+                                </li>
+                            </if>
+
                             <li class="last_li" style="bottom:10px;"><big><a class="fa fa-times pull-right" id="back-show"></a></big></li>
                         </ul>
                     </div>
@@ -145,8 +151,11 @@
                     <div class="row" id="title-show">
                         <ul class="clearfix row" style="margin:0; padding: 0; width: 100%; text-align: right;">
                             <div class="col-lg-6">
-                                <a onclick="addStudent()" href="javascript:;" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 添加学生</a>
-                                <!--<span class="chhose_item pull-right" data-val=""><i class="fa fa-square-o"></i></span>-->
+                                <!-- 925 仅 管理员 和 教务 可操作 -->
+                                <if condition="session('?admin') || in_array(1,session('edu_roles'))">
+                                    <a onclick="addStudent()" href="javascript:;" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 添加学生</a>
+                                </if>
+                                    <!--<span class="chhose_item pull-right" data-val=""><i class="fa fa-square-o"></i></span>-->
                             </div>
                             <li class="li_item col-lg-2">
                                 <!--this.options[this.selectedIndex].value-->
@@ -166,7 +175,7 @@
                                 </select>
                             </li>
                             <li class="li_item bt col-lg-2" style="float: none !important;">
-                                <input type="text" placeholder="学生姓名/手机号码" name="search" id="searchInput" class="form-control input-sm"><i class="fa fa-search"></i>
+                                <input type="text" placeholder="学生姓名" name="search" id="searchInput" class="form-control input-sm"><i class="fa fa-search"></i>
                             </li>
                         </ul>
                     </div>

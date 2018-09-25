@@ -50,7 +50,7 @@ td a {
                         <li><a href="#tab6" data-toggle="tab" type="tab6">包含课程</a></li>
                         <!--<li><a href="#tab2" data-toggle="tab" type="tab2">课时信息({{count.section}})</a></li>-->
                         <li><a href="#tab3" data-toggle="tab" type="tab3">开班班次({{count.period}})</a></li>
-                        <if condition="session('?admin')">
+                        <if condition="session('?admin') || in_array(1,session('edu_roles'))">
                             <li><a href="#tab4" data-toggle="tab" type="tab4">所属产品-班级({{count.product}})</a></li>
                         </if>
                     </ul>
@@ -201,8 +201,11 @@ td a {
                                             <td style="">{{p.time_long}}</td>
                                             <td style="">{{p.headmaster}}</td>
                                             <td style="text-align:center;padding:14px;color:#666">
-                                                <button class="btn btn-danger btn-sm" @click="period_del($event)">删除</button>
-                                                <button class="btn btn-info btn-sm" onclick="showPeriodEdit(this)">修改</button>
+                                                <!-- 925 仅管理员可操作 -->
+                                                <if condition="session('?admin')">
+                                                    <button class="btn btn-danger btn-sm" @click="period_del($event)">删除</button>
+                                                    <button class="btn btn-info btn-sm" onclick="showPeriodEdit(this)">修改</button>
+                                                </if>
                                                 <button class="btn btn-info btn-sm" @click="showPeriodManage(p.id)">学员、排课管理</button>
                                             </td>
                                         </tr>
@@ -234,7 +237,9 @@ td a {
                                             <td style="">{{p.creator_name}}</td>
                                             <td style="">{{p.create_at}}</td>
                                             <td style="text-align:center;padding:14px;color:#666">
-                                                <button class="btn btn-danger btn-sm" @click="PC_del($event)">取消</button>
+                                                <if condition="session('?admin')">
+                                                    <button class="btn btn-danger btn-sm" @click="PC_del($event)">取消</button>
+                                                </if>
                                             </td>
                                         </tr>
                                     </tbody>

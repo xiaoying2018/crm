@@ -71,7 +71,8 @@
 				<div id="title-show" class="clearfix">
 					<ul class="searchpart">
 						<!-- 9-12 阻止教务添加/修改/删除班级和产品关联的操作 -->
-						<if condition="session('?admin')">
+						<!-- 9-25 仅限管理员和教务添加/修改/删除班级和产品关联的操作 -->
+						<if condition="session('?admin') || in_array(1,session('edu_roles'))">
 							<a href="{:U('educationview/course_add')}" class="btn btn-primary btn-sm pull-left" style="margin:2px 0 0 0; width: 100px;" >
 								<i class="fa fa-plus-circle"></i>&nbsp; 新建班级
 							</a>
