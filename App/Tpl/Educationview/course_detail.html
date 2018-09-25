@@ -50,7 +50,7 @@ td a {
                         <li><a href="#tab6" data-toggle="tab" type="tab6">包含课程</a></li>
                         <!--<li><a href="#tab2" data-toggle="tab" type="tab2">课时信息({{count.section}})</a></li>-->
                         <li><a href="#tab3" data-toggle="tab" type="tab3">开班班次({{count.period}})</a></li>
-                        <if condition="session('?admin')">
+                        <if condition="session('?admin') || in_array(1,session('edu_roles'))">
                             <li><a href="#tab4" data-toggle="tab" type="tab4">所属产品-班级({{count.product}})</a></li>
                         </if>
                     </ul>
@@ -237,7 +237,9 @@ td a {
                                             <td style="">{{p.creator_name}}</td>
                                             <td style="">{{p.create_at}}</td>
                                             <td style="text-align:center;padding:14px;color:#666">
-                                                <button class="btn btn-danger btn-sm" @click="PC_del($event)">取消</button>
+                                                <if condition="session('?admin')">
+                                                    <button class="btn btn-danger btn-sm" @click="PC_del($event)">取消</button>
+                                                </if>
                                             </td>
                                         </tr>
                                     </tbody>
