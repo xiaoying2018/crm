@@ -39,9 +39,12 @@
             <div class="title-bar" style="position: relative;z-index: 99;">
                 <div id="title-show" class="clearfix">
                     <ul class="searchpart clearfix">
-                        <a href="{:U('educationview/section_cate_add')}" class="btn btn-primary btn-sm pull-left" style="margin:2px 0 0 0; width: 100px;" >
-                            <i class="fa fa-plus-circle"></i>&nbsp; 新建课程
-                        </a>
+                        <!-- 925 仅 管理员 和 教务 可操作 -->
+                        <if condition="session('?admin') || in_array(1,session('edu_roles'))">
+                            <a href="{:U('educationview/section_cate_add')}" class="btn btn-primary btn-sm pull-left" style="margin:2px 0 0 0; width: 100px;" >
+                                <i class="fa fa-plus-circle"></i>&nbsp; 新建课程
+                            </a>
+                        </if>
                         <select id="search_courses" class="form-control" style="width: 300px;float: right;" @change="reloadgrid()">
                             <!-- 删选条件 JS 渲染 -->
                             <option value="">请选择班级</option>
@@ -249,10 +252,11 @@
     }
     //渲染表格最后一列...操作按钮
     function btngroup(cellvalue, options, cell){
-            <if condition="session('role_id') == 32 || session('role_id') == 88">
-                return ''
-                <else/>
+        // 925 仅管理员可操作
+            <if condition="session('?admin')">
                 return '<buttion class="btn btn-info btn-sm" type="button" style="margin-right:5px;" onclick="courseEdit('+cellvalue+')">修改</buttion><button class="btn btn-danger btn-sm" type="button" onclick="courseDel('+cellvalue+')">删除</button>'
+            <else/>
+                return ''
             </if>
     }
     //课程名称

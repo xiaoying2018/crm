@@ -109,10 +109,9 @@
                         <ul class="clearfix row" style="margin:14px 0; padding: 0; width: 100%; text-align: right;">
                             <div class="col-lg-10">
                                 <a onclick="addTeacher()" href="javascript:;" class="btn btn-primary btn-sm pull-left" style="margin-right:8px"><i class="fa fa-plus-circle"></i>&nbsp; 注册新教师</a>
+
                                 <foreach name="roles" item="r">
-                                    <if condition="$r['id'] != 2">
-                                        <span class="chhose_item pull-right" data-val="{$r.id}"><i class="fa fa-square-o"></i>{$r.name}</span>
-                                    </if>
+                                    <span class="chhose_item pull-right" data-val="{$r.id}"><i class="fa fa-square-o"></i>{$r.name}</span>
                                 </foreach>
                             </div>
 

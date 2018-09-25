@@ -141,9 +141,12 @@ td a {
                         </div>
                         <div class="tab-pane" id="tab2">
                             <div class="panel-body">
-                                <a href="javascript:;" onclick="showSectionAdd()" class="btn btn-primary btn-sm addsection" style="margin-bottom:15px;">
-                                    <i class="fa fa-plus-circle"></i>&nbsp; 添加课时
-                                </a>
+                                <!-- 925 仅 管理员 和 教务 可操作 -->
+                                <if condition="session('?admin') || in_array(1,session('edu_roles'))">
+                                    <a href="javascript:;" onclick="showSectionAdd()" class="btn btn-primary btn-sm addsection" style="margin-bottom:15px;">
+                                        <i class="fa fa-plus-circle"></i>&nbsp; 添加课时
+                                    </a>
+                                </if>
                                 <table class="table select-table table-bordered">
                                     <thead>
                                         <tr style="background-color:#f9fafc;text-align:center;">
@@ -173,19 +176,23 @@ td a {
                                             <td style="">{{s.create_at}}</td>
                                             <td style="text-align:center;padding:14px;color:#666;">
                                                 <div style=" position: relative;">
-                                                    <div style="position:relative; display: inline-block;">
-                                                        <button class="btn btn-success fileinput-button" type="file" >视频上传</button>
-                                                        <!--<input type="file"   :data-id="s.id" onchange="loadFile(this,this.files[0],3)" style="width: 84px;display: inline-block;opacity: 0;left: 50%;position: absolute;top: 0;margin-left: -152px;" class="btn btn-success fileinput-button" value="视频上传" >-->
-                                                        <input onclick="uploadVideo(this)"  :data-id="s.id" style="width: 84px;display: inline-block;opacity: 0;left: 0%;position: absolute;top: 0;" class="btn btn-success fileinput-button" value="视频上传" >
-                                                    </div>
+
+                                                    <!-- 925 仅 管理员 和 教务 可操作 -->
+                                                    <if condition="session('?admin') || in_array(1,session('edu_roles'))">
+                                                        <div style="position:relative; display: inline-block;">
+                                                            <button class="btn btn-success fileinput-button" type="file" >视频上传</button>
+                                                            <!--<input type="file"   :data-id="s.id" onchange="loadFile(this,this.files[0],3)" style="width: 84px;display: inline-block;opacity: 0;left: 50%;position: absolute;top: 0;margin-left: -152px;" class="btn btn-success fileinput-button" value="视频上传" >-->
+                                                            <input onclick="uploadVideo(this)"  :data-id="s.id" style="width: 84px;display: inline-block;opacity: 0;left: 0%;position: absolute;top: 0;" class="btn btn-success fileinput-button" value="视频上传" >
+                                                        </div>
+                                                    </if>
                                                     <!--<div class="updatevideo" style="position:relative; display: inline-block;">-->
                                                         <!--<button class="btn btn-warning">视频路径修改</button>-->
                                                     <!--</div>-->
-                                                    <if condition="session('role_id') == 32 || session('role_id') == 88">
-                                                        <!-- todo 需要修改权限,目前时间来不及先定位到某个人 -->
-                                                        <else/>
+                                                    <if condition="session('?admin')">
                                                         <button class="btn btn-danger btn-sm" @click="section_del($event)">删除</button>
                                                         <button class="btn btn-info btn-sm" onclick="showSectionEdit(this)">修改</button>
+                                                        <else/>
+                                                        <!-- 925 todo 需要确定需求后完善权限,目前只有管理员可见 -->
                                                     </if>
                                                     <!--<div class="videopath_input">-->
                                                         <!--<input type="text" placeholder="请输入视频链接" class="">-->

@@ -201,8 +201,11 @@ td a {
                                             <td style="">{{p.time_long}}</td>
                                             <td style="">{{p.headmaster}}</td>
                                             <td style="text-align:center;padding:14px;color:#666">
-                                                <button class="btn btn-danger btn-sm" @click="period_del($event)">删除</button>
-                                                <button class="btn btn-info btn-sm" onclick="showPeriodEdit(this)">修改</button>
+                                                <!-- 925 仅管理员可操作 -->
+                                                <if condition="session('?admin')">
+                                                    <button class="btn btn-danger btn-sm" @click="period_del($event)">删除</button>
+                                                    <button class="btn btn-info btn-sm" onclick="showPeriodEdit(this)">修改</button>
+                                                </if>
                                                 <button class="btn btn-info btn-sm" @click="showPeriodManage(p.id)">学员、排课管理</button>
                                             </td>
                                         </tr>

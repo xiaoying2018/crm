@@ -518,7 +518,7 @@ $(function(){
 						<span class="fa arrow"></span>
 					</a>
 					<ul class="nav-second-level" <if condition="$module_name eq 'educationview' || $module_name eq 'publicclass' || $module_name eq 'coursedocument'">style="display: block;"</if>>
-						<if condition="session('?admin') || in_array(1,session('edu_roles')) ">
+						<if condition="session('?admin') || in_array(1,session('edu_roles'))">
 							<li <if condition="$action_name eq 'index' && $module_name != 'publicclass' && $module_name != 'coursedocument'">class="active"</if>>
 								<i class="fa fa-angle-right"></i>
 								<a href="{:U('educationview/index')}">教务主页</a>
@@ -527,13 +527,15 @@ $(function(){
 
 				<!-- 9-12 班级管理仍然给教务老师看,但是在其他页面阻止教务修改/删除班级和产品关联的操作 -->
 				<!-- 9-13 班级管理只给管理员看,后期确定后,指定到某个人可以操作班级管理 -->
-						<if condition="session('?admin')">
+				<!-- 9-25 班级管理教务可见 -->
+						<if condition="session('?admin') || in_array(1,session('edu_roles'))">
 							<li <if condition="$module_name eq 'educationview' &&  $action_name eq 'course_index'">class="active"</if>>
 								<i class="fa fa-angle-right"></i>
 								<a href="{:U('educationview/course_index')}">班级管理</a>
 							</li>
 						</if>
-						<if condition="in_array(6,session('edu_roles') )">
+
+						<if condition="session('?admin') || in_array(1,session('edu_roles'))">
 							<li <if condition="$module_name eq 'educationview' &&  $action_name eq 'course_class_index'">class="active"</if>>
 							<i class="fa fa-angle-right"></i>
 							<a href="{:U('educationview/course_class_index')}">班次排课</a>
@@ -541,7 +543,7 @@ $(function(){
 						</if>
 
 
-						<if condition="session('?admin') || in_array(4,session('edu_roles')) || in_array(5,session('edu_roles')) || session('role_id') == 32 || session('role_id') == 88">
+						<if condition="session('?admin') || in_array(1,session('edu_roles')) || in_array(4,session('edu_roles')) || in_array(5,session('edu_roles')) || session('role_id') == 32 || session('role_id') == 88">
 							<li <if condition="$module_name eq 'educationview' &&  $action_name eq 'course_manage'">class="active"</if>>
 								<i class="fa fa-angle-right"></i>
 								<a href="{:U('educationview/course_manage')}">课程管理</a>
