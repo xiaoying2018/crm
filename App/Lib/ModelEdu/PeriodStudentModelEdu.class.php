@@ -66,9 +66,12 @@ class PeriodStudentModelEdu extends EducationModelEdu
                         'remark'=>'初始密码:xiaoying123456'
                     ));
                     \Log::write($student_model->getLastSql());
-                    $profile = ['student_id' => $id];
-                    $profile['bind_mobile'] = $customer['mobile'];
-                    $studentprofileModel->field('student_id')->add($profile);
+                    if($id){
+                        $profile = ['student_id' => $id];
+                        $profile['bind_mobile'] = $customer['mobile'];
+                        $studentprofileModel->field('student_id')->add($profile);
+                    }
+
                 }
 
             }else{

@@ -1743,6 +1743,9 @@ class EducationAction extends Action
 
     public function student_indexs()
     {
+        B('CheckUnsignCustomers');
+       // tag('CheckUnsignCustomers');
+
 //        $this->ajaxReturn(I('post.'));
         $wheredata = I('post.');
         $conditions = $this->student_condition(I('post.'));
