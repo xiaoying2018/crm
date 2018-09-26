@@ -1649,6 +1649,9 @@ class EducationAction extends Action
                     $studentModel = new StudentModelEdu();
                     $studentPeriodModel = new PeriodStudentModelEdu();
                     $signinModel = new SigninModelEdu();
+                    // 926 删除学员附表信息 dragon
+                    $stuProfileModel = new StudentprofileModelEdu();
+
                     // 写库
                     //      开启事务
                     $studentModel->startTrans();
@@ -1661,6 +1664,9 @@ class EducationAction extends Action
                     //      删除学员签到信息
                     ($signinModel->where(['student_id' => ['in', $id]])->delete() === false)
                     && $this->_throw($signinModel->getDbError());
+                    //      删除学员签到信息
+                    ($stuProfileModel->where(['student_id' => ['in', $id]])->delete() === false)
+                    && $this->_throw($stuProfileModel->getDbError());
 
                     $studentModel->commit();
                     $this->ajaxReturn(['result' => true]);

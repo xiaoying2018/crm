@@ -256,7 +256,7 @@
             <if condition="session('?admin')">
                 return '<buttion class="btn btn-info btn-sm" type="button" style="margin-right:5px;" onclick="courseEdit('+cellvalue+')">修改</buttion><button class="btn btn-danger btn-sm" type="button" onclick="courseDel('+cellvalue+')">删除</button>'
             <else/>
-                return ''
+                return '<buttion class="btn btn-info btn-sm" type="button" style="margin-right:5px;" onclick="courseEdit('+cellvalue+')">修改</buttion>'
             </if>
     }
     //课程名称

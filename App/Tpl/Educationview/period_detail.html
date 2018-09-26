@@ -180,11 +180,9 @@
                                         <td style="text-align:center;padding:14px;color:#666">
                                             <template v-if="s.schedule_status == 1">
                                                 <!-- 925 仅管理员可操作 -->
-                                                <if condition="session('?admin')">
-                                                    <button class="btn btn-danger btn-sm" @click="scheduleDel(s.schedule_id)">删除排课</button>
-                                                </if>
-                                                    <button class="btn btn-success fileinput-button" type="button" @click="chakanKejian(s.schedule_id)" >查看课件</button>
-                                                    <button class="btn btn-success fileinput-button" type="button" @click="guanlianKejian(s.schedule_id)">关联课件</button>
+                                                <button class="btn btn-danger btn-sm" @click="scheduleDel(s.schedule_id)">删除排课</button>
+                                                <button class="btn btn-success fileinput-button" type="button" @click="chakanKejian(s.schedule_id)" >查看课件</button>
+                                                <button class="btn btn-success fileinput-button" type="button" @click="guanlianKejian(s.schedule_id)">关联课件</button>
                                             </template>
                                             <template v-else>
                                                 <div class="file-container" style="display:inline-block;position:relative;overflow: hidden;vertical-align:middle">

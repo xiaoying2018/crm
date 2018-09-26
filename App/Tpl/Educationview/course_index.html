@@ -211,11 +211,7 @@
             multiselect: true,
             useColSpanStyle: true,
             // colNames: ["id","班级名称", "分类", "课时数", "总课时(min)", "成员属性", "创建人","创建时间","修改人","修改时间","操作"],
-            <if condition="session('?admin')">
-            	colNames: ["id","班级名称", "分类", "成员属性", "创建人","创建时间","修改人","修改时间","操作"],
-			<else/>
-        		colNames: ["id","班级名称", "分类", "成员属性", "创建人","创建时间","修改人","修改时间"],
-    		</if>
+        	colNames: ["id","班级名称", "分类", "成员属性", "创建人","创建时间","修改人","修改时间","操作"],
             colModel: [{
                     name: "id",
                     index: "id",
@@ -281,16 +277,14 @@
                     sorttype: "text",
                     search: true
                 }
-            	<if condition="session('?admin')">
-					,{
-						name:"id",
-						index: "id",
-						editable: false,
-						sorttype: "text",
-						search: true,
-						formatter:btngroup
-					}
-                </if>
+				,{
+					name:"id",
+					index: "id",
+					editable: false,
+					sorttype: "text",
+					search: true,
+					formatter:btngroup
+				}
                 ],
             forceFit: true,
             //分页
@@ -376,7 +370,13 @@
     //渲染表格最后一列...操作按钮
     function btngroup(cellvalue, options, cell){
       //  return '<buttion class="btn btn-info btn-sm" type="button" style="margin-right:5px;" onclick="courseEdit('+cellvalue+')">修改</buttion><button class="btn btn-danger btn-sm" type="button" onclick="courseDel('+cellvalue+')">删除</button>'
-        return '<buttion class="btn btn-info btn-sm" type="button" style="margin-right:5px;" onclick="courseEdit('+cellvalue+')">修改</buttion><button class="btn btn-danger btn-sm" type="button" onclick="courseDel('+cellvalue+')">删除</button>'
+			<if condition="session('?admin')">
+				return '<buttion class="btn btn-info btn-sm" type="button" style="margin-right:5px;" onclick="courseEdit('+cellvalue+')">修改</buttion><button class="btn btn-danger btn-sm" type="button" onclick="courseDel('+cellvalue+')">删除</button>'
+			<else/>
+				return '<buttion class="btn btn-info btn-sm" type="button" style="margin-right:5px;" onclick="courseEdit('+cellvalue+')">修改</buttion>'
+            </if>
+
+		// return '<buttion class="btn btn-info btn-sm" type="button" style="margin-right:5px;" onclick="courseEdit('+cellvalue+')">修改</buttion><button class="btn btn-danger btn-sm" type="button" onclick="courseDel('+cellvalue+')">删除</button>'
     }
     //课程名称
     function name_format(cellvalue, options, cell){

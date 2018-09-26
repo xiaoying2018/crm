@@ -187,20 +187,25 @@ td a {
                                                             <!--<input type="file"   :data-id="s.id" onchange="loadFile(this,this.files[0],3)" style="width: 84px;display: inline-block;opacity: 0;left: 50%;position: absolute;top: 0;margin-left: -152px;" class="btn btn-success fileinput-button" value="视频上传" >-->
                                                             <input onclick="uploadVideo(this)"  :data-id="s.id" style="width: 84px;display: inline-block;opacity: 0;left: 0%;position: absolute;top: 0;" class="btn btn-success fileinput-button" value="视频上传" >
                                                         </div>
+
+                                                        <div class="updatevideo" style="position:relative; display: inline-block;">
+                                                            <button class="btn btn-warning">视频路径修改</button>
+                                                        </div>
+                                                        <div class="videopath_input">
+                                                            <input type="text" placeholder="请输入视频链接" class="">
+                                                            <span class="confirmvideo" :data-id="s.id" >确定</span>
+                                                        </div>
+
                                                     </if>
-                                                    <!--<div class="updatevideo" style="position:relative; display: inline-block;">-->
-                                                        <!--<button class="btn btn-warning">视频路径修改</button>-->
-                                                    <!--</div>-->
+
+                                                    <button class="btn btn-info btn-sm" onclick="showSectionEdit(this)">修改</button>
+
                                                     <if condition="session('?admin')">
                                                         <button class="btn btn-danger btn-sm" @click="section_del($event)">删除</button>
-                                                        <button class="btn btn-info btn-sm" onclick="showSectionEdit(this)">修改</button>
                                                         <else/>
                                                         <!-- 925 todo 需要确定需求后完善权限,目前只有管理员可见 -->
                                                     </if>
-                                                    <!--<div class="videopath_input">-->
-                                                        <!--<input type="text" placeholder="请输入视频链接" class="">-->
-                                                        <!--<span class="confirmvideo" :data-id="s.id" >确定</span>-->
-                                                    <!--</div>-->
+
                                                 </div>
                                             </td>
                                         </tr>
