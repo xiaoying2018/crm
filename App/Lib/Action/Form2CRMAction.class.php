@@ -796,7 +796,7 @@ class Form2CRMAction extends Action
             $this->toRegister($create, $goto_key, $mobile_key);
 
             // 926 如果用户手机号码在线索中已经存在,无需再次进入线索 dragon
-            $stu_mobile_in_leads_exists = M('leads')->where(['mobile'=>['eq',$mobile_key],'is_deleted'=>['neq',1]])->find();
+            $stu_mobile_in_leads_exists = M('leads')->where(['mobile'=>['eq',$create[$mobile_key]]])->find();
 
             if ($stu_mobile_in_leads_exists) return ;
             // 926 end
