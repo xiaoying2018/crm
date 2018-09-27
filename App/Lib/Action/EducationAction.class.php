@@ -1003,7 +1003,9 @@ class EducationAction extends Action
 
     public function period_detail()
     {
+
         if (!$this->isPost() || $this->isAjax()) {
+            
             try {
                 $period_id = (int)I('post.id');
                 $period_id || $this->_throw('主键缺失');
@@ -1059,7 +1061,8 @@ class EducationAction extends Action
                     // 未分班的学员
                     $notYetStudent = $studentModel->notYetToPeriodStudentList($course_id,$period_id);
                     // 讲师列表
-                    $teacher = $teacherModel->teacher_lists('')['data'];
+                    $teacher = $teacherModel->teacher_lists(['tu.role_id'=>['eq',3]],1,1000)['data'];
+                    
                     //数量
                     $count['scheduleYet'] = count($scheduleYet);
                     $count['subStudent'] = count($subStudent);
