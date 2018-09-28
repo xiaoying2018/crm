@@ -84,6 +84,7 @@ class NewLeadsAction extends ExtensionAction
 
         // 下属ids
         $params['subIds']           =   array_map('intval',getPerByAction('leads','index', false));
+        
         // model
         $model                      =   D('LeadsView');
         // config model
@@ -130,7 +131,7 @@ class NewLeadsAction extends ExtensionAction
         $blocks                     =   $this->getBlockLists();
         // 下属列表信息
         $subLists                   =   M('User')->field('role_id, full_name')
-            ->where(['role_id'=>['in',implode( ',', $params['subIds'] )]])->order('role_id desc')->select();
+            ->where(['role_id'=>['in',implode( ',', $params['subIds'] )],'status'=>['eq',1]])->order('role_id desc')->select();
 
         QueueEcho( [
             'con'=>$conditions,
