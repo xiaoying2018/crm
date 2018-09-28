@@ -1,0 +1,50 @@
+<div  style="height: 400px;overflow-y: auto">
+    <div class="panel-body" style="padding: 18px;">
+        <select class="select_name form-control" name="to_role_id" id="to_role_id">
+            <option value="">输入老师姓名后选择老师</option>
+        </select>
+        <!-- 任务内容 -->
+        <div class="form-group" style="margin: 10px 0;">
+            <textarea class="form-control" placeholder="提醒内容" rows="5" name="content" id="add-helper-tips-content"></textarea>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(".select_name").select2({
+        width:"400px",
+        ajax: {
+            placeholder:'请选择',
+            allowClear:true,
+            url: "{:U('materials/getteachers')}",
+            data: function(params) {
+                var query = {
+                    "name": params.term
+                }
+                // console.log("params",params);
+                return query;
+            },
+            dataType: 'json',
+            processResults: function(data, params) {
+                if (data.status) {
+                    var itemList = [];
+                    //当数据对象不是{id:0,text:'ANTS'}这种形式的时候，可以使用类似此方法创建新的数组对象
+                    var arr = data.data
+                    for(var i = 0; i < arr.length; i++){
+                        itemList.push({id: arr[i]['role_id'], text: arr[i]['full_name'], email: arr[i]['email']})
+                    }
+                    var _s = {results: itemList}
+
+                    // console.log('_s',_s)
+                    return _s
+                }else{
+                    return []
+                }
+            },
+        },
+        // dataAdapter:function(){
+        //     alert(123)
+        //     $('#to_role_id').val(['36']).trigger('change');
+        // }
+    });
+</script>

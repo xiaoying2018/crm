@@ -91,6 +91,7 @@
 									<li class="single_btn"><a href="javascript:void(0)" id="log_leads"><i class="fa fa-file-text"></i>&nbsp;添加沟通日志</a></li>
 									<li class="single_btn"><a href="javascript:void(0)" id="remind"><i class="fa fa-bell-o"></i>&nbsp;提醒</a></li>
 									<li class="single_btn"><a id="change_lead" href="javascript:void(0)"><i class="icon-repeat i_icon"></i>&nbsp;转化为客户</a></li>
+
 								</if>
 								<if condition="$by eq 'public'">
 									<li><a id="batch_receive" href="javascript:void(0)">{:L('BATCH_RECEIVE')}</a></li>
@@ -106,6 +107,7 @@
 									<li><a id="delete" href="javascript:void(0)"><i class="fa fa-times"></i>&nbsp;删除</a></li>
 								</if>
 								<template v-if="by != 'transformed' && by != 'public'">
+									<li class=""><a id="add_helper" href="javascript:void(0)"><i class="icon-plus i_icon"></i>&nbsp;添加联合跟进人</a></li>
 									<li><a id="batch_transfer" href="javascript:void(0)">更换负责人</a></li>
 								</template>
 								<li class="last_li"><big><a class="fa fa-times pull-right" id="back-show"></a></big></li>
@@ -997,6 +999,17 @@
 		</div>
 	</div>
 </div>
+
+<div style="display:none" id="dialog-add-helper" title="添加联合跟进人">
+	<div class="spiner-example">
+		<div class="sk-spinner sk-spinner-three-bounce">
+			<div class="sk-bounce1"></div>
+			<div class="sk-bounce2"></div>
+			<div class="sk-bounce3"></div>
+		</div>
+	</div>
+</div>
+
 <div style="display:none" id="dialog-remind" title="提醒">
 	<div class="spiner-example">
 		<div class="sk-spinner sk-spinner-three-bounce">
@@ -1363,10 +1376,101 @@
         width = 800;
     }
 
+    $('#add_helper').click(function(){
+        $('#dialog-add-helper').dialog('open');
+        $('#dialog-add-helper').load('{:U("leads/showAddHelper")}');
+	})
+
     $("#log_leads").click(function(){
         $('#dialog-log').dialog('open');
         $('#dialog-log').load('{:U("log/add","r=RLeadsLog&module=leads&id=")}'+$(this).attr('rel'));
     });
+
+    $("#dialog-add-helper").dialog({
+        autoOpen: false,
+        modal: true,
+        width: width,
+        maxHeight: 400,
+        position: ["center",100],
+        buttons: {
+            "确定": function () {
+                var id_array = new Array();
+                $("input.check_list:checked").each(function(){
+                    id_array.push($(this).val());
+                });
+                if(id_array.length == 0){
+                    alert_crm('{:L('PLEASE_CHOOSE_THE_LEADS')}');
+                    return false;
+                }
+                //console.log('线索id长度'+id_array.length)
+
+              	//获取所有的选中leads_id
+                // $('#to_role_id').val(['36']).trigger('change');
+                var _selected = $("#to_role_id").select2("data")[0];
+                var _sdd;
+                if (_selected.id == "") {
+                   return alert('请先选择您要共同跟进的老师');
+                }else{
+                    _sdd = _selected.id
+                }
+                // 修改联合跟进人
+				for(var i=0;i<id_array.length;i++){
+                    $.ajax({
+                        type:'post',
+                        url: "/index.php/api/edit_leads",
+                        data: {
+                            id:id_array[i],//
+                            merge:_sdd,
+                        },
+                        async: true,
+                        success: function (data) {
+                            if (data.status == 1) {
+                                $.ajax({
+                                    type:'post',
+                                    url: "{:U('message/ajaxsend')}", // 请求接口
+                                    data: {
+                                        email:_selected.email,
+                                        to_role_id:_sdd, // 接受者的role_id
+                                        content:$('#add-helper-tips-content').val(), // 站内信内容
+                                    },
+                                    async: true,
+                                    success: function (data) {
+
+                                        // TODO 发送邮件 收件人地址为 _selected.email
+                                        // $.ajax({
+                                        //     type:'post',
+                                        //     url: "{:U('api/sendtask')}", // 请求接口
+                                        //     data: {
+                                        //         to:_selected.email,
+                                        //         content:$('#content').val(), // 任务内容
+                                        //     },
+                                        //     async: true,
+                                        //     success: function (data) {
+                                        //         console.log(data);
+                                        //     },
+                                        //     dataType: 'json'
+                                        // });
+
+                                    },
+                                    dataType: 'json'
+                                });
+                                //alert('修改成功') // 发送成功
+                            }else{
+                                // alert(data.msg) // 发送失败
+                            }
+
+                        },
+                        dataType: 'json'
+                    });
+				}
+                $(this).dialog("close");
+            },
+            "取消": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+
 
     $("#dialog-log").dialog({
         autoOpen: false,

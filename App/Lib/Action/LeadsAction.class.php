@@ -2162,4 +2162,10 @@ class LeadsAction extends Action
 			$this->ajaxReturn(0,"新增错误！",0);
 		}
 	}
+
+
+	public function showAddHelper()
+    {
+       $this->display();
+    }
 }
