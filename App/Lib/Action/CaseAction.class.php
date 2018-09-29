@@ -399,6 +399,7 @@ class CaseAction extends Action {
     }
 
     public function detail() {
+        header("Access-Control-Allow-Origin:*");
         $id = $_REQUEST['id'];
         if (!empty($id)) {
             $detailData = M('cases')->where(['id' => $id])->find();
