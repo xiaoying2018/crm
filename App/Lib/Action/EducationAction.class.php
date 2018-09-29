@@ -167,12 +167,19 @@ class EducationAction extends Action
                         $courseModel->startTrans();
                         $fileInfo = $this->upload();
                         $data['pic'] = $fileInfo[0]['savepath'] . $fileInfo[0]['savename'];
-                        if ($courseModel->add($data)) {
+                        if ($course_id=$courseModel->add($data)) {
+                            \Log::write($course_id);
+                            foreach($params['kc'] as $ck){
+                                M()->table('education.banji_kecheng')->add(array(
+                                    'course_id'=>$course_id,
+                                    'section_cate_id'=>$ck
+                                ));
+                            }
                             // 提交
                             $courseModel->commit();
                             //$this->ajaxReturn(['result' => true]);
-                            //alert('success', '课程添加成功', U('educationview/course_add'));
-                            $this->redirect( U('educationview/course_index'));
+                            alert('success','班级添加成功',U('educationview/course_index'));
+
                         } else {
                             throw new Exception($courseModel->getError(), 414);
                         }

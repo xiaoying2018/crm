@@ -22,11 +22,14 @@ class EducationviewAction extends Action
 
     public function index ()
     {
+
         $this->display();
     }
 
     public function course_manage()
     {
+
+
         $this->display();
     }
 
@@ -42,7 +45,14 @@ class EducationviewAction extends Action
             1   =>  '一对多',
             2   =>  '一对一',
         ];
-        $this->assign( compact('category', 'member_type') );
+
+        // 获取当前所有班级
+
+        $kechengs = M()->table('education.course_section_cate')->select();
+
+
+        $this->assign( compact('category', 'member_type','kechengs') );
+
         $this->display();
     }
 
@@ -52,7 +62,7 @@ class EducationviewAction extends Action
         $courseModel    =   new CourseModelEdu();
         if( !$id )  $this->error('主键缺失');
         // 详情
-        $info           =   $courseModel->field('id,name,status,is_qianyue,is_show,is_open,category,member_type,pic,detail')
+        $info           =   $courseModel->field('id,name,status,is_qianyue,is_show,is_open,category,member_type,pic,detail,people_num')
             ->where( ['id'=>['eq',$id], 'status'=>['eq',1]] )
             ->find();
         if( !$info )  $this->error('课程不存在');
@@ -67,13 +77,20 @@ class EducationviewAction extends Action
             1   =>  '一对多',
             2   =>  '一对一',
         ];
-        $this->assign( compact('category', 'member_type', 'info') );
+        $info['kc']= M()->table('education.banji_kecheng')->where(array('course_id'=>array('eq',$id)))->getField('section_cate_id',true);
+
+        //获取课程
+        $kechengs = M()->table('education.course_section_cate')->select();
+
+
+        $this->assign( compact('category', 'member_type', 'info','kechengs') );
 
         $this->display();
     }
 
     public function course_index ()
     {
+        $this->alert=parseAlert();
         $this->display();
     }
 
@@ -99,6 +116,12 @@ class EducationviewAction extends Action
         if( !$info )  $this->ajaxReturn( ['result'=>false,'error'=>'课时不存在!','_sql'=>$sectionModel->getDbError()] );
 
         $info['cate_name'] = (new SectionCateModelEdu())->where(['id'=>['eq',$info['cate']]])->find()['name']?:'';
+
+
+
+
+
+
 
         $this->assign( compact( 'info') );
 
