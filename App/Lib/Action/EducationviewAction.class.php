@@ -321,7 +321,6 @@ class EducationviewAction extends Action
         $courses            =   $courseModel->field('id,name')
             ->where(['status'=>['eq',1]])
             ->order('id desc')
-            ->limit(20)
             ->select() ?: [];
         $this->assign('courses',$courses);
         $this->display();
@@ -442,7 +441,6 @@ class EducationviewAction extends Action
         $courses            =   $courseModel->field('id,name')
             ->where(['status'=>['eq',1]])
             ->order('id desc')
-            ->limit(20)
             ->select() ?: [];
         $this->assign('courses',$courses);
         $this->display();
