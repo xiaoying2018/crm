@@ -1792,6 +1792,7 @@ class EducationAction extends Action
             ->order('id desc')
             ->limit(20)
             ->select() ?: [];
+
         $periods = [];
         if ($conditions['c.id']) {
             $periodModel = new PeriodModelEdu();
