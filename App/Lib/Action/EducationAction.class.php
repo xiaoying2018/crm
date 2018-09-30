@@ -1738,7 +1738,6 @@ class EducationAction extends Action
         $courses = $courseModel->field('id,name')
             ->where(['status' => ['eq', 1]])
             ->order('id desc')
-            ->limit(20)
             ->select() ?: [];
         $periods = [];
         if ($conditions['c.id']) {
@@ -1746,7 +1745,6 @@ class EducationAction extends Action
             $periods = $periodModel->field('id,name,course_id')
                 ->where(['status' => ['eq', 1], 'course_id' => ['eq', $conditions['c.id'][1]]])
                 ->order('id desc')
-                ->limit(10)
                 ->select();
         }
         $_sql = $studentModel->_sql();
@@ -1790,15 +1788,14 @@ class EducationAction extends Action
         $courses = $courseModel->field('id,name')
             ->where(['status' => ['eq', 1]])
             ->order('id desc')
-            ->limit(20)
             ->select() ?: [];
+
         $periods = [];
         if ($conditions['c.id']) {
             $periodModel = new PeriodModelEdu();
             $periods = $periodModel->field('id,name,course_id')
                 ->where(['status' => ['eq', 1], 'course_id' => ['eq', $conditions['c.id'][1]]])
                 ->order('id desc')
-                ->limit(10)
                 ->select();
         }
         $_sql = $studentModel->_sql();
