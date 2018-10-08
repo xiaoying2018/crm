@@ -182,12 +182,16 @@ $(function(){
 											<if condition="$vo['form_type'] == 'textarea'">
 												<if condition = "$vo['tip_start'] eq 1">
 													<div class="col-md-6">
-														<textarea class="form-control" rows="5"></textarea>
+														<!-- 临时增加name 9-14 dragon -->
+														<textarea class="form-control"  name="description"  rows="5"></textarea>
+														<!-- <textarea class="form-control"  name="description"  rows="5"></textarea> -->
 													</div>
 													<div class="col-md-2"><span style="color: red;line-height: 32px;margin-left: 10px;">*</span></div>
 												<else/>
 													<div class="col-md-8">
-														<textarea class="form-control" rows="5"></textarea>
+														<!-- 临时增加name 9-14 dragon -->
+														<textarea class="form-control"  name="description"  rows="5"></textarea>
+														<!-- <textarea class="form-control"  name="description"  rows="5"></textarea> -->
 													</div>
 												</if>
 											<elseif condition="$vo['form_type'] == 'address'"/>
