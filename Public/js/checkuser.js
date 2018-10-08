@@ -93,7 +93,7 @@ function checkform(obj){
 			}
 		}
 	}else if(item_type == 'phone'){
- 		var myreg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+ 		var myreg = /^(((1[3|4|5|7|8|9|6][0-9]{1}))+\d{8})$/;
 		if(item_val == ''){
 			$('#'+item+'Tip').removeClass("hide");
 			$('#'+item+'Tip').addClass('show');

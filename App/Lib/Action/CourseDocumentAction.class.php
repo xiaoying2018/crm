@@ -12,6 +12,11 @@ class CourseDocumentAction extends Action{
     }
     public function index(){
         if ($this->isAjax()) {
+                $wheredata = $_REQUEST;
+                $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码
+                $limit = $wheredata['rows'] ? $wheredata['rows'] : 10;// 每页显示条数
+                $start = ($page - 1) * $limit;// 查询起始值
+
                 if(isset($_REQUEST['schedule_id']) && is_numeric($_REQUEST['schedule_id'])){
                     $schedule_id=$_GET['schedule_id'];
                     if(isset($_REQUEST['type']) && $_REQUEST['type']=='guanlian'){
@@ -29,23 +34,18 @@ class CourseDocumentAction extends Action{
                         foreach ($schedule_document as $val){
                             $document_ids[]=$val['document_id'];
                         }
-
-                        $wheredata = $_REQUEST;
-                        $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码
-                        $limit = $wheredata['row'] ? $wheredata['row'] : 10;// 每页显示条数
                         $condition=array();
                         $condition['id']=array('not in',$document_ids);
                         $condition['cd.creator_id']=session('user_id');
-                        $data=$this->db->getDataBy('all',$condition);
-
+                        $res=$this->db->getDataPage($condition,$start,$limit);
+                        $count=$res['count'];
+                        $data=$res['data'];
                     }else{
-                        $wheredata = $_REQUEST;
-                        $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码
-                        $limit = $wheredata['row'] ? $wheredata['row'] : 10;// 每页显示条数
                         $condition=array();
                         $condition['cd.creator_id']=session('user_id');
-                        $data=$this->db->getDataBy('all',$condition);
-                        $count = count($data);
+                        $res=$this->db->getDataPage($condition,$start,$limit);
+                        $count=$res['count'];
+                        $data=$res['data'];
                     }
                 }elseif($type='chakan'){
                     $model=$schedule_document=D('ScheduleDocument');
@@ -56,25 +56,22 @@ class CourseDocumentAction extends Action{
                             foreach ($schedule_document as $val){
                                 $document_ids[]=$val['document_id'];
                             }
-                            $wheredata = $_REQUEST;
-                            $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码
-                            $limit = $wheredata['row'] ? $wheredata['row'] : 10;// 每页显示条数
                             $condition=array();
                             $condition['id']=array('in',$document_ids);
                             $condition['cd.creator_id']=session('user_id');
-                            $data=$this->db->getDataBy('all',$condition);
+                            $res=$this->db->getDataPage($condition,$start,$limit);
+                            $count=$res['count'];
+                            $data=$res['data'];
                         }
                 }
 
 
             }else{
-                    $wheredata = $_REQUEST;
-                    $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码
-                    $limit = $wheredata['row'] ? $wheredata['row'] : 10;// 每页显示条数
                     $condition=array();
                     $condition['cd.creator_id']=session('user_id');
-                    $data=$this->db->getDataBy('all',$condition);
-                    $count = count($data);
+                    $res=$this->db->getDataPage($condition,$start,$limit);
+                    $count=$res['count'];
+                    $data=$res['data'];
             }
 
             $this->ajaxReturn([

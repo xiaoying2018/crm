@@ -43,12 +43,13 @@ class CourseDocumentModel extends EducationModelEdu
         return session('role_id');
     }
 
-    public function getDataBy($field='all',$condition=array()){
+    public function getDataBy($field='all',$condition=array(),$start=0,$limit=30){
         if($field=='all'){
             $data=$this->alias('cd')
                 ->field('cd.*,u.name')
                 ->join('JOIN mx_user u ON u.user_id = cd.creator_id')
                 ->where($condition)
+                ->limit($start,$limit)
                 ->select();
             foreach ($data as $key=>$val){
                 if($val['size']){
@@ -59,6 +60,30 @@ class CourseDocumentModel extends EducationModelEdu
         }else{
             return $this->getField("cid,$field");
         }
+    }
+
+    public function getDataPage($condition=array(),$start=0,$limit=30)
+    {
+        $count =$this->alias('cd')
+            ->field('cd.*,u.name')
+            ->join('JOIN mx_user u ON u.user_id = cd.creator_id')
+            ->where($condition)
+            ->count();
+        $data=$this->alias('cd')
+            ->field('cd.*,u.name')
+            ->join('JOIN mx_user u ON u.user_id = cd.creator_id')
+            ->where($condition)
+            ->limit($start,$limit)
+            ->select();
+        foreach ($data as $key=>$val){
+            if($val['size']){
+                $data[$key]['size']=format_size($val['size']);
+            }
+        }
+        return [
+            'count'=>$count,
+            'data'=>$data,
+        ];
     }
 
     //添加数据

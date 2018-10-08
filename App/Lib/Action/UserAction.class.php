@@ -469,7 +469,7 @@ class UserAction extends Action {
 			if ($_POST['email'] && !ereg('^[_\.0-9a-zA-Z]+@([0-9a-zA-Z][A-Za-z0-9_-]+\.)+[a-zA-Z]{2,4}$', $_POST['email'])){
 				$this->error(L('INVALIDATE_EMAIL'));
 			}
-            if ($_POST['telephone'] && !ereg('^1[34758][0-9]{9}$', $_POST['telephone'])){
+            if ($_POST['telephone'] && !ereg('^1[3475896][0-9]{9}$', $_POST['telephone'])){
 				$this->error(L('INVALIDATE_TELEPHONE'));
 			}
 
