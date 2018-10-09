@@ -2691,7 +2691,7 @@ class EducationAction extends Action
         && $condition['c_per.id'] = ['eq', $period_id];
 
         $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码
-        $limit = $wheredata['row'] ? $wheredata['row'] : 10;// 每页显示条数
+        $limit = $wheredata['rows'] ? $wheredata['rows'] : 10;// 每页显示条数
         // 课期数据
         $periodModel = new PeriodModelEdu();
 
@@ -2701,5 +2701,50 @@ class EducationAction extends Action
         $total = ceil($counts / $limit);
 //        $this->ajaxReturn(['status'=>true,'data'=>$data,'courses'=>$courses]);
         $this->ajaxReturn(compact('lists','counts','total', 'conditions', '_sql'));
+    }
+
+
+    public function getRecordVideo()
+    {
+
+        if(IS_AJAX){
+            $schedule_id=$_POST['schedule_id'];
+
+            //根据schedule_id 查询 serial
+            $schedule_model =new ScheduleModelEdu();
+            $serial=$schedule_model->where(array('id'=>array('eq',$schedule_id)))->getField('serial');
+            if(!$serial){
+                $this->ajaxReturn(array(
+                    'status'=>false,
+                    'msg'=>'该教室没有在第三方创建成功【缺失serial】'
+                ));
+            }
+
+            // 通过课时中的房间号码,获取房间中的录制视屏
+            $_tk_send_url = C('TK_ROOM_URL')?:'http://global.talk-cloud.net/WebAPI/';
+            $tk_send_data['key'] = C('TK_ROOM_KEY')?:'PGxzTqaSNL0WEWTL';// key
+            $tk_send_data['serial'] =$serial;// 房间号码
+//                    var_dump(curlPost($_tk_send_url.'getrecordlist','Content-type:application/x-www-form-urlencoded',$tk_send_data));exit();
+
+            $current_room_video_list = json_decode(curlPost($_tk_send_url.'getrecordlist','Content-type:application/x-www-form-urlencoded',$tk_send_data)['msg']);
+
+//                    var_dump($current_room_video_list);
+//                    var_dump($current_room_video_list->result);
+
+//                    echo "<pre>";
+//                    var_dump(curlPost($_tk_send_url.'getrecordlist','Content-type:application/x-www-form-urlencoded',$tk_send_data));exit();
+
+            if(!$current_room_video_list->result)
+            {
+                $data = $current_room_video_list->recordlist;
+            }else{
+                $data = '';
+            }
+            $this->ajaxReturn(array(
+                'status'=>true,
+                'data'=>$data
+            ));
+        }
+
     }
 }
