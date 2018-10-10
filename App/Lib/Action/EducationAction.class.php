@@ -911,10 +911,11 @@ class EducationAction extends Action
             if ($result['result'] === true) {
                 // model
                 $periodModel = new PeriodModelEdu();
-                $periodStudentModel = new PeriodStudentModelEdu();
+                //$periodStudentModel = new PeriodStudentModelEdu();
                 if ($data = $periodModel->create($params, 1)) {
                     if ($id=$periodModel->add($data)) {
-                        $periodStudentModel->addStudents($params['course_id'],$id);
+
+                        //$periodStudentModel->addStudents($params['course_id'],$id);
                         $this->ajaxReturn(['result' => true]);
                     } else {
                         $this->ajaxReturn(['result' => false, 'error' => $periodModel->getError()]);
@@ -1757,7 +1758,7 @@ class EducationAction extends Action
 
     public function student_indexs()
     {
-        B('CheckUnsignCustomers');
+        //B('CheckUnsignCustomers');
        // tag('CheckUnsignCustomers');
 
 //        $this->ajaxReturn(I('post.'));
@@ -2162,8 +2163,8 @@ class EducationAction extends Action
                         $this->ajaxReturn(['result' => false, 'error' => '该产品已包含该课程']);
                     }
                     if ($courseProductModel->add($data)) {
-                        $periods_student_model= new PeriodStudentModelEdu();
-                        $periods_student_model->addStudentsToAllPeriods($params['course_id']);
+                       // $periods_student_model= new PeriodStudentModelEdu();
+                       // $periods_student_model->addStudentsToAllPeriods($params['course_id']);
 
                         $this->ajaxReturn(['result' => true]);
                     } else {
@@ -2193,8 +2194,8 @@ class EducationAction extends Action
                 $product_id =$courseProductModel->field('product_id,course_id')->where(['id' => ['eq', $id]])->find();
                 // 写库
                 if ($courseProductModel->where(['id' => ['eq', $id]])->delete()){
-                    $periods_model=new PeriodStudentModelEdu();
-                    $periods_model->removeStudentsFromPeriodsStudent($product_id['course_id'],$product_id['product_id']);
+                    //$periods_model=new PeriodStudentModelEdu();
+                    //$periods_model->removeStudentsFromPeriodsStudent($product_id['course_id'],$product_id['product_id']);
                      $this->ajaxReturn(['result' => true]);
                 }
 
@@ -2745,6 +2746,39 @@ class EducationAction extends Action
                 'data'=>$data
             ));
         }
+
+    }
+
+
+
+    public function record_schedule_list()
+    {
+        $wheredata = $_REQUEST;
+        $condition=array();
+        array_key_exists('course', $wheredata)
+        && ($course_id = (int)$wheredata['course'])
+        && $condition['Course.id'] = ['eq', $course_id];
+
+        array_key_exists('livecontent', $wheredata)
+        && ($period_id = (int)$wheredata['livecontent'])
+        && $condition['Period.id'] = ['eq', $period_id];
+
+        $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码
+        $limit = $wheredata['rows'] ? $wheredata['rows'] : 10;// 每页显示条数
+
+        $course_model=new CoursescheduleViewModel();
+        $lists=$course_model
+            ->where($condition)
+            ->limit(($page-1)*$limit,$limit)
+            ->order('Schedule.id desc')
+            ->select();
+        $_sql = $course_model->_sql();
+        \Log::write($_sql);
+        $counts = count($course_model->where($condition)->select());
+        $total = ceil($counts / $limit);
+//        $this->ajaxReturn(['status'=>true,'data'=>$data,'courses'=>$courses]);
+        $this->ajaxReturn(compact('lists','counts','total', 'conditions', '_sql'));
+        //排课数据
 
     }
 }

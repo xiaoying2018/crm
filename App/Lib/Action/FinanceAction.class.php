@@ -2042,7 +2042,7 @@ class FinanceAction extends Action{
 					//发送站内信
 					$url = U('finance/view','t=receivingorder&id='.$receivingorder_id);
 					sendMessage($receivingorder['creator_role_id'],'您创建的回款单《<a href="'.$url.'">'.$receivingorder['name'].'</a>》<font style="color:green;">已审核</font>！',1);
-                    B('CheckUnsignCustomers');
+                    //B('CheckUnsignCustomers');
 					alert('success', L('CHECK_SUCCESS'), $_SERVER['HTTP_REFERER']);
 				}else{
 					alert('error', L('CHECK_FAILED'), $_SERVER['HTTP_REFERER']);
