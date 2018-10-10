@@ -2163,9 +2163,4 @@ class LeadsAction extends Action
 		}
 	}
 
-
-	public function showAddHelper()
-    {
-       $this->display();
-    }
 }

@@ -447,4 +447,21 @@ class EducationviewAction extends Action
     }
 
 
+    public function record_schedule_list()
+    {
+        $courseModel        =   new CourseModelEdu();
+        $courses            =   $courseModel->field('id,name')
+            ->where(['status'=>['eq',1]])
+            ->order('id desc')
+            ->select() ?: [];
+        $this->assign('courses',$courses);
+       $this->display();
+    }
+
+    public function showAddHelper()
+    {
+        $this->display(TMPL_PATH.'Leads/showaddhelper.html');
+    }
+
+
 }
