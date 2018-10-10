@@ -109,12 +109,14 @@ class NewLeadsAction extends ExtensionAction
         {
             unset($conditions['owner_role_id']);
             $conditions['jg_code'] = ['eq','91be12b72fsh'];
+            $count                      =   $model->where($conditions)->count();
         }
 
         if (session('role_id') == 95)// 日本村
         {
             unset($conditions['owner_role_id']);
             $conditions['jg_code'] = ['eq','ec74f72eb0sh'];
+            $count                      =   $model->where($conditions)->count();
         }
 
         $lists                      =   $model->where($conditions)->order($orderby)->limit($offset, $pagesize)->select();
