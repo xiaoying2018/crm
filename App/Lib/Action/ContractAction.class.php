@@ -236,7 +236,7 @@ class ContractAction extends Action {
 							foreach($role_ids as $v){
 								sendMessage($v,$_SESSION['name'].'&nbsp;&nbsp;创建了新的合同《<a href="'.$url.'">'.trim($_POST['number']).'-'.trim($_POST['contract_name']).'</a>》<font style="color:green;">需要进行审核</font>！',1);
 							}
-							
+                            B('CheckUnsignCustomers');
 							if($_POST['refer_url']){
 								alert('success', L('CREATE_A_CONTRACT_SUCCESSFULLY'), $_POST['refer_url'].'#tab6');
 							}else{

@@ -1758,7 +1758,7 @@ class EducationAction extends Action
 
     public function student_indexs()
     {
-        //B('CheckUnsignCustomers');
+        B('CheckUnsignCustomers');
        // tag('CheckUnsignCustomers');
 
 //        $this->ajaxReturn(I('post.'));
