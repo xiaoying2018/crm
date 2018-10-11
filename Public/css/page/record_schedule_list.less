@@ -1,0 +1,62 @@
+.videopart {
+    position: fixed;
+    z-index: 22222;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    .coverbg {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+
+    .innerInfo {
+        background-color: #fff;
+        position: relative;
+        width: 400px;
+        margin: 0 auto;
+        padding: 0 20px;
+        top: 50%;
+        transform: translateY(-60%);
+        border-radius: 2px;
+
+        .h3Dv {
+            padding: 15px 0px;
+            border-bottom: 1px solid #eee;
+            position: relative;
+
+            h3 {
+                padding: 0;
+                margin: 0;
+            }
+
+            .fa-close {
+				cursor: pointer;
+                position: absolute;
+                right: 5px;
+                top: 15px;
+                font-size: 20px;
+            }
+        }
+
+        .videolist {
+            position: relative;
+            padding: 0;
+            margin: 0 auto;
+			padding-top: 10px;
+            .lii_item {
+                display: block;
+                padding-bottom: 10px;
+
+                a {
+                    color: #36c5ff;
+                }
+            }
+        }
+    }
+}
