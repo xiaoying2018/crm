@@ -1596,6 +1596,7 @@ class EducationAction extends Action
                     $this->ajaxReturn($addres);
                 }
                 $result             =   $this->_validator->batch_handle( $params, $this->_rules()[ACTION_NAME] );
+
 //                $this->ajaxReturn($result);
                 if( $result['result'] === true ){
                 // model
@@ -2590,7 +2591,7 @@ class EducationAction extends Action
                 'realname' => 'required',
                 'mobile' => 'required',
                 'email' => 'required|email',
-                'customer_id' => 'required',
+                //'customer_id' => 'required',
                 'password' => 'required|max:30',
                 'remark' => 'max:3000',
             ],

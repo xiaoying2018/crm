@@ -267,7 +267,7 @@ class StudentModelEdu extends EducationModelEdu
             return $p['product_id'];
         }, $products );
         //合法客户信息
-        $legelCustomer         =   M('Customer')->field('name,customer_id')
+        $legelCustomer         =   (new StudentModelEdu())->field('realname,customer_id')
             //->join("mx_cst LEFT JOIN mx_contract mx_ctt ON mx_cst.customer_id = mx_ctt.customer_id") //关联的合同
             //->join("LEFT JOIN mx_r_business_contract mx_r_bc ON mx_r_bc.contract_id = mx_ctt.contract_id") // 合同关联的商机
             //->join("LEFT JOIN mx_r_business_product mx_r_bp ON mx_r_bp.business_id = mx_r_bc.business_id") // 商机下的产品
