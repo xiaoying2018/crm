@@ -4,6 +4,7 @@ class StudentsModel extends EBaseModel
 {
     protected $tableName                =   'students';
 
+
     public function getStudents($condition='')
     {
         if ($condition)

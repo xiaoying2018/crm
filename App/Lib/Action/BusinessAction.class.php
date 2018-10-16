@@ -736,6 +736,7 @@ class BusinessAction extends Action{
 			//权限判断（根据客户）
 			$m_config = M('Config');
 			$customer_info = D('CustomerView')->where('customer.customer_id = %d', $customer_id)->find();
+
 			$outdays = $m_config->where('name="customer_outdays"')->getField('value');
 			$outdate = empty($outdays) ? 0 : time()-86400*$outdays;
 
@@ -864,6 +865,7 @@ class BusinessAction extends Action{
 				$paymentorder_list[$kr]['owner'] = getUserByRoleId($vr['owner_role_id']);
 			}
 			$this->paymentorder_list = $paymentorder_list;
+
 		}else{
 			$business_id = $this->_request('id','intval');
 			$business = $m_business->where('business_id = %d',$business_id)->select();
@@ -903,6 +905,7 @@ class BusinessAction extends Action{
         $m_r_business_product = M('rBusinessProduct');
         $m_product_category = M('ProductCategory');
         $m_log_status = M('LogStatus');
+
         foreach ($business as $k_bus => $vo_bus) {
 			//沟通日志
 			$log_ids = $m_r_business_log->where('business_id = %d', $vo_bus['business_id'])->getField('log_id', true);
@@ -954,6 +957,8 @@ class BusinessAction extends Action{
 			$business_info['mark'] = 1;
 			$business_products[] = $business_info;
         }
+
+
         $file_ids = array();
         if(!empty($customer_id)){
         	//沟通日志
@@ -1013,6 +1018,8 @@ class BusinessAction extends Action{
 			$this->business_id = $business_id;
 			$customer_id = $business[0]['customer_id'];//赋值客户id,关联联系人用
 		}
+
+
         $file_info = M('File')->where(array('file_id'=>array('in',$file_ids)))->select();
         foreach ($file_info as $fk=>$fv){
             $file_info[$fk]['owner'] = D('RoleView')->where('role.role_id = %d',$fv['role_id'])->find();
@@ -1070,9 +1077,10 @@ class BusinessAction extends Action{
 			$event_list[$k]['img'] = $m_user ->where('role_id =%d',$v['creator_role_id'])->getField('img');
 		}
 
+
+
         // 客户关联申请信息 dragon 2018-7-12
         $r_customer_id = D('Students')->cstm2stdt($customer_id); // 获取当前客户的学员ID
-
         $r_apply = [];// 客户申请
         if ($r_customer_id)
         {

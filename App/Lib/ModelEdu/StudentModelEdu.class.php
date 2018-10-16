@@ -192,7 +192,7 @@ class StudentModelEdu extends EducationModelEdu
     /**
      * @ 购买课程，还未分班的学员
      */
-    public function notYetToPeriodStudentList ($course_id,$period_id)
+    public function _notYetToPeriodStudentList ($course_id,$period_id)
     {
 
         $courseProductModel     =   new CourseProductModelEdu();
@@ -207,10 +207,10 @@ class StudentModelEdu extends EducationModelEdu
         }, $products );
         //合法客户信息
         $legelCustomer         =   M('Customer')->field('mx_cst.name,mx_cst.customer_id')
-            ->join("mx_cst LEFT JOIN mx_contract mx_ctt ON mx_cst.customer_id = mx_ctt.customer_id") //关联的合同
-            ->join("LEFT JOIN mx_r_business_contract mx_r_bc ON mx_r_bc.contract_id = mx_ctt.contract_id") // 合同关联的商机
-            ->join("LEFT JOIN mx_r_business_product mx_r_bp ON mx_r_bp.business_id = mx_r_bc.business_id") // 商机下的产品
-            ->where(['mx_r_bp.product_id'=>['in',implode(',',$productIds)]])
+            //->join("mx_cst LEFT JOIN mx_contract mx_ctt ON mx_cst.customer_id = mx_ctt.customer_id") //关联的合同
+            //->join("LEFT JOIN mx_r_business_contract mx_r_bc ON mx_r_bc.contract_id = mx_ctt.contract_id") // 合同关联的商机
+            //->join("LEFT JOIN mx_r_business_product mx_r_bp ON mx_r_bp.business_id = mx_r_bc.business_id") // 商机下的产品
+            //->where(['mx_r_bp.product_id'=>['in',implode(',',$productIds)]])
             ->select();
         if( !$legelCustomer )   return [];
         $legelCustomerIds       =   array_map( function ($c){
@@ -252,6 +252,66 @@ class StudentModelEdu extends EducationModelEdu
 
     }
 
+
+    public function notYetToPeriodStudentList ($course_id,$period_id)
+    {
+
+        $courseProductModel     =   new CourseProductModelEdu();
+        // 获取购买该课程的所有学员
+        //      课程所属产品
+        $products               =   $courseProductModel->field('id,product_id')
+            ->where(['course_id'=>['eq',$course_id]])
+            ->select();
+        if( !$products )    return [];
+        $productIds             =   array_map( function($p){
+            return $p['product_id'];
+        }, $products );
+        //合法客户信息
+        $legelCustomer         =   M('Customer')->field('name,customer_id')
+            //->join("mx_cst LEFT JOIN mx_contract mx_ctt ON mx_cst.customer_id = mx_ctt.customer_id") //关联的合同
+            //->join("LEFT JOIN mx_r_business_contract mx_r_bc ON mx_r_bc.contract_id = mx_ctt.contract_id") // 合同关联的商机
+            //->join("LEFT JOIN mx_r_business_product mx_r_bp ON mx_r_bp.business_id = mx_r_bc.business_id") // 商机下的产品
+            //->where(['mx_r_bp.product_id'=>['in',implode(',',$productIds)]])
+            ->select();
+        if( !$legelCustomer )   return [];
+        $legelCustomerIds       =   array_map( function ($c){
+            return $c['customer_id'];
+        }, $legelCustomer );
+        $legelCustomerIds=array_unique($legelCustomerIds);
+        //将合法的客户中，已经选过该课期的学生给过滤掉
+        $periodStudents=new PeriodStudentModelEdu();
+        $students=$periodStudents->field('student_id')->where('period_id ='.$period_id)->select();
+        $students_arr=[];
+        if($students){
+            foreach ($students as $k=>$v){
+                $students_arr[]=$v['student_id'];
+            }
+            $student_model=new StudentModelEdu();
+            $customer_ids=$student_model->field('customer_id')
+                ->where(array('id'=>array('in',$students_arr)))
+                ->select();
+            if($customer_ids){
+                $customer_ids_arr=[];
+                foreach ($customer_ids as $k=>$v){
+                    $customer_ids_arr[]=$v['customer_id'];
+                }
+                if(!empty($students_arr)){
+                    foreach ($legelCustomerIds as $key=> $student){
+                        if(in_array($student,$customer_ids_arr)){
+                            unset($legelCustomerIds[$key]);
+                        }
+                    }
+                }
+            }
+        }
+
+        $data= $this->alias('s')->field(' DISTINCT  s.id,s.realname');
+        $map['s.customer_id']=array('in',$legelCustomerIds);
+        $data=$data->where($map)->select() ?: [];
+
+        return $data;
+
+    }
 
     protected function _before_insert(&$data, $options)
     {
