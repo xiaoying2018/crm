@@ -167,7 +167,35 @@
                                             </a>
                                         </td>
                                         <td style="">{{s.teacher_name}}</td>
-                                        <td style="">{{s.start_time}}</td>
+                                        <td style="">
+                                            <!-- <span>{{s.start_time}}</span> -->
+                                            <span v-if="s.start_time">
+                                                <input class="form-control required Wdate ccc_data"
+                                                    type="text"
+                                                    :id="s.schedule_id"
+                                                    :value="s.start_time"
+                                                    onclick="WdatePicker({
+                                                        dateFmt:'yyyy-MM-dd HH:mm:ss',
+                                                        onpicked:function(dp){
+                                                            var r =  confirm('要使用新的日期:' + dp.cal.getNewDateStr() + '覆盖吗?')
+                                                            if (r) {
+                                                                var _data = {};
+                                                                _data.start_time = dp.cal.getNewDateStr();
+                                                                _data.sch_id = $(this).attr('id')
+                                                                $.ajax({
+                                                                    type:'post',
+                                                                    url:'/index.php?m=education&a=update_paike_start_time',
+                                                                    data:_data,
+                                                                    success:function(res){
+                                                                        $('div > iframe').parent().hide();
+                                                                        return true;
+                                                                    }
+                                                                })
+                                                            }
+                                                        }
+                                                    })" />
+                                            </span>
+                                        </td>
                                         <td style="">{{s.end_time}}</td>
                                         <td style="">{{s.creator_name}}</td>
                                         <td style="">{{s.create_at}}</td>
@@ -454,6 +482,7 @@
             $("[type='tab91']").click();
             // 获取详情
             this.getPeriodDetail();
+
         }
     });
 
@@ -516,6 +545,25 @@
         })
     });
 
+
+// function d533_focus(element){
+//     // WdatePicker({
+//     //     onpicking:function(dp){
+//     //         console.log("xxx",dp);
+//     //         // if(!confirm('日期框原来的值为: '+dp.cal.getDateStr()+', 要用新选择的值:' + dp.cal.getNewDateStr() + '覆盖吗?')) 
+//     //             // return true;
+//     //     }
+//     // })
+//     var onpickedFunc = function(dp){ 
+//         if(!confirm('日期框的值为:'+dp.cal.getNewDateStr() +', 确实要更改吗?')) return true; 
+//     }
+
+//     WdatePicker({
+//         el:element,
+//         dateFmt:'yyyy-MM-dd HH:mm:ss',
+//         onpicked:onpickedFunc
+//     })
+// }
 
 
 
