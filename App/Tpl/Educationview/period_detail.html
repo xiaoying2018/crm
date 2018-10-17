@@ -168,8 +168,8 @@
                                         </td>
                                         <td style="">{{s.teacher_name}}</td>
                                         <td style="">
-                                            <!-- <span>{{s.start_time}}</span> -->
-                                            <span v-if="s.start_time">
+                                            <span v-if="s.schedule_status != 1">{{s.start_time}}</span>
+                                            <span v-else>
                                                 <input class="form-control required Wdate ccc_data"
                                                     type="text"
                                                     :id="s.schedule_id"
