@@ -11,6 +11,37 @@ class EducationAction extends Action
             $this->ajaxReturn(['result' => false, 'error' => '无权操作']);
     }
 
+    /**
+     * 更新排课开始时间
+     * par: sch_id , start_time
+     * met: post
+     * res: bool
+     */
+    public function update_paike_start_time()
+    {
+        // 获取数据  排课编号 和 新的开始时间
+        $sch_id = intval(I('post.sch_id'));
+        $start_time = I('post.start_time');
+
+        // 验证数据
+        if (!$sch_id || !$start_time) $this->ajaxReturn(['result'=>false,'msg'=>'非法参数']);
+
+        try{
+            // 获取原数据
+            $data = (new ScheduleModelEdu())->find($sch_id);
+
+            if (!$data) $this->ajaxReturn(['result'=>false,'msg'=>'目标数据不存在或已被删除']);
+
+            (new ScheduleModelEdu())->where(['id'=>['eq',$sch_id]])->save(['start_time'=>$start_time]);
+
+        }catch (\Exception $exception){
+            $this->ajaxReturn(['result'=>false,'msg'=>$exception->getMessage()]);
+        }
+
+        // 返回结果
+        $this->ajaxReturn(['result'=>true,'msg'=>'修改成功']);
+
+    }
 
     public function index()
     {
