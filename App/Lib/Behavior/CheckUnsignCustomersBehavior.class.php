@@ -165,7 +165,7 @@ class CheckUnsignCustomersBehavior extends Behavior
                         'mobile'=>$customer['mobile'],
                         'email'=>$customer['email'],
                         'customer_id'=>$customer['customer_id'],
-                        'creator_id'=>session('user_id')?session('user_id'):5,
+                        'creator_id'=>5,
                         'password'=>'xiaoying123456',
                         'remark'=>'初始密码:xiaoying123456'
                     ));
