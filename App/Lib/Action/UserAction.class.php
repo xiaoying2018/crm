@@ -1297,6 +1297,7 @@ class UserAction extends Action {
 		if($this->isAjax() && $this->isPost()){
 
 			$position_id = isset($_POST['position_id']) ? $_POST['position_id'] : 0;
+
 			if($position_id != 0){
 				$per = $_POST['per'] ? $_POST['per'] : array();
 				$m_permission = M('Permission');
@@ -1400,6 +1401,7 @@ class UserAction extends Action {
 			//println($owned_permission);
 			$this->owned_permission = $owned_permission;
 			$this->position_id = intval($_GET['position_id']);
+
 			$this->display();
 		} else{
 			alert('error', L('PLEASE_CHOOSE_TO_AUTHORIZE_JOBS'), $_SERVER['HTTP_REFERER']);

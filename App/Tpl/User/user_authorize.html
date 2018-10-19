@@ -1081,6 +1081,12 @@
 						<h4 style="padding-top: 10px;clear:both;">保险记录</h4>
 						<span style="width:25%; float:left;">
 							<input class="check_opt" type="checkbox" <if condition="isset($owned_permission['materials/insurance'])">checked="checked"</if> name="per[]" value="materials/insurance"/>列表
+							<select style="width:auto;<if condition="!isset($owned_permission['materials/insurance'])">display:none;</if>"  name="materials[insurance]">
+								<option <if condition="$owned_permission['materials/insurance'] == 1">selected="selected"</if> value="1">{:L('PERMISSION_SUB')}</option>
+							<option <if condition="$owned_permission['materials/insurance'] == 2">selected="selected"</if> value="2">{:L('PERMISSION_EVERYONE')}</option>
+							<option <if condition="$owned_permission['materials/insurance'] == 3">selected="selected"</if> value="3">{:L('PERMISSION_SELF')}</option>
+							<option <if condition="$owned_permission['materials/insurance'] == 4">selected="selected"</if> value="4">{:L('PERMISSION_DEPARTMENT')}</option>
+							</select>
 						</span>
 						<span style="width:25%; float:left;">
 							<input class="check_opt" type="checkbox" <if condition="isset($owned_permission['materials/insuranceAdd'])">checked="checked"</if> name="per[]" value="materials/insuranceAdd"/>添加
@@ -1095,6 +1101,12 @@
 						<h4 style="padding-top: 10px;clear:both;">申请院校/COE申请/签证申请</h4>
 						<span style="width:25%; float:left;">
 							<input class="check_opt" type="checkbox" <if condition="isset($owned_permission['materials/apply'])">checked="checked"</if> name="per[]" value="materials/apply"/>列表
+							<select style="width:auto;<if condition="!isset($owned_permission['materials/apply'])">display:none;</if>"  name="materials[apply]">
+								<option <if condition="$owned_permission['materials/apply'] == 1">selected="selected"</if> value="1">{:L('PERMISSION_SUB')}</option>
+								<option <if condition="$owned_permission['materials/apply'] == 2">selected="selected"</if> value="2">{:L('PERMISSION_EVERYONE')}</option>
+								<option <if condition="$owned_permission['materials/apply'] == 3">selected="selected"</if> value="3">{:L('PERMISSION_SELF')}</option>
+								<option <if condition="$owned_permission['materials/apply'] == 4">selected="selected"</if> value="4">{:L('PERMISSION_DEPARTMENT')}</option>
+							</select>
 						</span>
 						<span style="width:25%; float:left;">
 							<input class="check_opt" type="checkbox" <if condition="isset($owned_permission['materials/applyAdd'])">checked="checked"</if> name="per[]" value="materials/applyAdd"/>添加
@@ -1109,6 +1121,12 @@
 						<h4 style="padding-top: 10px;clear:both;">材料样本</h4>
 						<span style="width:25%; float:left;">
 							<input class="check_opt" type="checkbox" <if condition="isset($owned_permission['materials/materialssample'])">checked="checked"</if> name="per[]" value="materials/materialssample"/>列表
+							<select style="width:auto;<if condition="!isset($owned_permission['materials/materialssample'])">display:none;</if>"  name="materials[materialssample]">
+								<option <if condition="$owned_permission['materials/materialssample'] == 1">selected="selected"</if> value="1">{:L('PERMISSION_SUB')}</option>
+							<option <if condition="$owned_permission['materials/materialssample'] == 2">selected="selected"</if> value="2">{:L('PERMISSION_EVERYONE')}</option>
+							<option <if condition="$owned_permission['materials/materialssample'] == 3">selected="selected"</if> value="3">{:L('PERMISSION_SELF')}</option>
+							<option <if condition="$owned_permission['materials/materialssample'] == 4">selected="selected"</if> value="4">{:L('PERMISSION_DEPARTMENT')}</option>
+							</select>
 						</span>
 						<span style="width:25%; float:left;">
 							<input class="check_opt" type="checkbox" <if condition="isset($owned_permission['materials/materialssampleAdd'])">checked="checked"</if> name="per[]" value="materials/materialssampleAdd"/>添加
@@ -1123,6 +1141,13 @@
 						<h4 style="padding-top: 10px;clear:both;">样本分类</h4>
 						<span style="width:25%; float:left;">
 							<input class="check_opt" type="checkbox" <if condition="isset($owned_permission['materials/materialssamplecate'])">checked="checked"</if> name="per[]" value="materials/materialssamplecate"/>列表
+							<select style="width:auto;<if condition="!isset($owned_permission['materials/materialssamplecate'])">display:none;</if>"  name="materials[materialssamplecate]">
+								<option <if condition="$owned_permission['materials/materialssamplecate'] == 1">selected="selected"</if> value="1">{:L('PERMISSION_SUB')}</option>
+							<option <if condition="$owned_permission['materials/materialssamplecate'] == 2">selected="selected"</if> value="2">{:L('PERMISSION_EVERYONE')}</option>
+							<option <if condition="$owned_permission['materials/materialssamplecate'] == 3">selected="selected"</if> value="3">{:L('PERMISSION_SELF')}</option>
+							<option <if condition="$owned_permission['materials/materialssamplecate'] == 4">selected="selected"</if> value="4">{:L('PERMISSION_DEPARTMENT')}</option>
+							</select>
+
 						</span>
 						<span style="width:25%; float:left;">
 							<input class="check_opt" type="checkbox" <if condition="isset($owned_permission['materials/materialssamplecateAdd'])">checked="checked"</if> name="per[]" value="materials/materialssamplecateAdd"/>添加

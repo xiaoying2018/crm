@@ -26,6 +26,7 @@ class MaterialsAction extends Action
     public function index()
     {
         if ($this->isAjax()){
+
             $wheredata = $_REQUEST;
             $name = $wheredata['name'] ? $wheredata['name'] : '';// 查询关键字
             $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码
@@ -389,6 +390,8 @@ class MaterialsAction extends Action
     {
         if ($this->isAjax())
         {
+            $below_ids = getPerByAction(MODULE_NAME,ACTION_NAME,true);
+            $below_ids=array_merge($below_ids,[session('role_id')]);
             $wheredata = $_REQUEST;
             $cate = $wheredata['c'] ? $wheredata['c'] : 1;// 申请类别标签 1=普通申请 2=COE申请 3=签证申请
             $name = $wheredata['name'] ? $wheredata['name'] : '';// 查询关键字
@@ -398,6 +401,7 @@ class MaterialsAction extends Action
             $sort = $wheredata['sord'] ?: 0;// 排序规则
             $start = ($page - 1) * $limit;// 查询起始值
             $condition['tag'] = ['eq',$cate];// 查询条件
+            $condition['teacher_id'] = array('in',implode(',', $below_ids));
 
             // 如果按申请年份搜索
             if ($sort_field == 'apply_date') $sort_field = 'join_year';
@@ -427,6 +431,7 @@ class MaterialsAction extends Action
                     $list = M('MaterialsApply')->where($condition)->order('create_time desc')->limit($start,$limit)->select();
                 }
                 $count = M('MaterialsApply')->where($condition)->count();
+
             }
 
             if ($list)
