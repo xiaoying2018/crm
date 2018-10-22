@@ -1226,6 +1226,7 @@ class EducationAction extends Action
                         $tk_room_data['roomname'] = $sectionInfo['title'];// 房间名称
                         $tk_room_data['starttime'] = strtotime($params['start_time']);// 开始时间
                         $tk_room_data['endtime'] = (strtotime($params['start_time']) + (60 * $sectionInfo['duration']));// 结束时间
+                        $tk_room_data['autoopenav'] = 0;// 是否自动开启音视频
                         // 如果需要,房间的预约时间默认修改为 +- 10分钟
 //                        $tk_room_data['starttime'] = (strtotime($params['start_time']) + 600);// 开始时间
 //                        $tk_room_data['endtime'] = (strtotime($params['start_time']) + (60 * $sectionInfo['duration']) + 600);// 结束时间

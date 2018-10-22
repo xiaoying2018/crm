@@ -476,7 +476,18 @@ class MaterialsAction extends Action
 
         $info['sex'] = $info['sex']?'男':'女';
 
-        $ids = implode(',',json_decode($info['materials'])); // 需要提交的材料的 ids
+//        $ids = implode(',',json_decode($info['materials'])); // 需要提交的材料的 ids
+
+        $apply_materials_model = M('apply_materials');
+        
+        $apply_sample_list = $apply_materials_model->where(['apply_id'=>['eq',$id]])->select();
+
+        if (!empty($apply_sample_list))
+        {
+            $ids = array_map(function ($v){
+                return $v['sample_id'];
+            },$apply_sample_list);
+        }
 
         $materials = M('MaterialsSample')->field('name')->where(['id'=> ['IN',$ids]])->select(); // 需要提交的材料 ID 转 名称
 
@@ -529,12 +540,33 @@ class MaterialsAction extends Action
             $data['ms_time'] = strtotime($data['ms_time']) ?: '';
             $data['offer_time'] = strtotime($data['offer_time']) ?: '';
             $data['exam_time'] = strtotime($data['exam_time']) ?: '';
+            $apply_materials_rel_data = $data['materials'] ?: '';
             $data['materials'] = json_encode($data['materials']) ?: '';
 
             // 执行添加操作
             try {
                 $res = M('MaterialsApply')->add($data);
+
                 if (!$res) die('添加失败,请检确认添加数据是否合理 或 联系管理员! ');
+
+                // 把需要提交的申请材料存放在关联表中
+                if (!empty($apply_materials_rel_data))
+                {
+                    $apply_materials_model = M('apply_materials');
+                    $apply_materials_data = [];
+                    $current_time = time();
+                    $current_user = session('role_id');
+                    foreach ($apply_materials_rel_data as $k => $v)
+                    {
+                        $apply_materials_data[$k]['apply_id'] = $res;
+                        $apply_materials_data[$k]['sample_id'] = $v;
+                        $apply_materials_data[$k]['create_time'] = $current_time;
+                        $apply_materials_data[$k]['create_user'] = $current_user;
+                        $apply_materials_data[$k]['status'] = 0;
+                    }
+                    $apply_materials_model->addAll($apply_materials_data);
+                }
+
             } catch (\Exception $exception) {
                 die($exception->getMessage());
             }
@@ -578,7 +610,76 @@ class MaterialsAction extends Action
             $data['ms_time'] = strtotime($data['ms_time']) ?: '';
             $data['offer_time'] = strtotime($data['offer_time']) ?: '';
             $data['exam_time'] = strtotime($data['exam_time']) ?: '';
+            $apply_materials_rel_data = $data['materials'] ?: [];
             $data['materials'] = json_encode($data['materials']) ?: '';
+
+            // 把需要提交的申请材料存放在关联表中
+            // 查找老数据所需材料列表
+            $apply_materials_model = M('apply_materials');
+
+            $apply_sample_list = $apply_materials_model->where(['apply_id'=>['eq',$id]])->select();
+
+            // 如果之前有所需材料,并且也有新的所需材料 则需要确认老数据和新数据是否一致
+            if (!empty($apply_sample_list) && !empty($apply_materials_rel_data))
+            {
+                $old_ids = array_map(function ($v){
+                    return $v['sample_id'];
+                },$apply_sample_list);
+
+                // 获取差集
+                $new_differ = array_diff($apply_materials_rel_data,$old_ids);// 需要添加的
+                $old_differ = array_diff($old_ids,$apply_materials_rel_data);// 需要删除的
+
+                // 需要添加的
+                if (!empty($new_differ))
+                {
+                    $apply_materials_model = M('apply_materials');
+                    $apply_materials_data = [];
+                    $current_time = time();
+                    $current_user = session('role_id');
+                    foreach ($new_differ as $k => $v)
+                    {
+                        $apply_materials_data[$k]['apply_id'] = $id;
+                        $apply_materials_data[$k]['sample_id'] = $v;
+                        $apply_materials_data[$k]['create_time'] = $current_time;
+                        $apply_materials_data[$k]['create_user'] = $current_user;
+                        $apply_materials_data[$k]['status'] = 0;
+                    }
+
+                    $end_add_data = array_values($apply_materials_data);
+
+                    $apply_materials_model->addAll($end_add_data);
+                }
+
+                // 需要删除的
+                if (!empty($old_differ))
+                {
+                    $apply_materials_model = M('apply_materials');
+                    $apply_materials_model->where(['sample_id'=>['in',$old_differ],'apply_id'=>['eq',$id]])->delete();
+
+                }
+
+            }elseif (!empty($apply_materials_rel_data)){
+                // 之前没有所需材料 且 现在有所需材料,直接添加
+                $apply_materials_model = M('apply_materials');
+                $apply_materials_data = [];
+                $current_time = time();
+                $current_user = session('role_id');
+                foreach ($apply_materials_rel_data as $k => $v)
+                {
+                    $apply_materials_data[$k]['apply_id'] = $id;
+                    $apply_materials_data[$k]['sample_id'] = $v;
+                    $apply_materials_data[$k]['create_time'] = $current_time;
+                    $apply_materials_data[$k]['create_user'] = $current_user;
+                    $apply_materials_data[$k]['status'] = 0;
+                }
+                $apply_materials_model->addAll($apply_materials_data);
+            }else{
+                // 之前有所需材料,但是现在没有,则删除之前的所需材料信息
+                $apply_materials_model = M('apply_materials');
+                $apply_materials_model->where(['apply_id'=>['eq',$id]])->delete();
+            }
+
 
             // 执行更新操作
             try {
@@ -603,7 +704,18 @@ class MaterialsAction extends Action
 
         $info['sname'] = D('Students')->findStudents($info['student_id'])['realname'];
         $info['adviser_name'] = M('User')->field('full_name')->where('user_id=' . $info['adviser'])->find()['full_name'];
-        $info['materials'] = json_decode($info['materials']);
+//        $info['materials'] = json_decode($info['materials']);
+        $apply_materials_model = M('apply_materials');
+
+        $apply_sample_list = $apply_materials_model->where(['apply_id'=>['eq',$id]])->select();
+
+        if (!empty($apply_sample_list))
+        {
+            $ids = array_map(function ($v){
+                return $v['sample_id'];
+            },$apply_sample_list);
+        }
+        $info['materials'] = $ids;
         $all_materials = M('MaterialsSample')->field('id,name')->where('cate_id=' . $info['cate_id'])->select() ?: [];
 
         $info['create_time'] = $info['create_time']?date('Y-m-d H:i',$info['create_time']):'';
