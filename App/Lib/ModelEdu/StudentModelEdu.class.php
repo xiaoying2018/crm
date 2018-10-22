@@ -36,7 +36,7 @@ class StudentModelEdu extends EducationModelEdu
         }
 
         // 如果不是超管也不是教务,默认只能看到自己的学员 2018-7-27 dragon
-        if (!session('?admin') && !in_array(1,session('edu_roles'))) $_where['s.creator_id'] = session('user_id');
+        if (!session('?admin') && !in_array(1,session('edu_roles')) && !in_array(4,session('edu_roles'))) $_where['s.creator_id'] = session('user_id');
         // 2018-7-27 end
 
         $data =  $this->field('s.id,s.realname,s.code,s.mobile,s.email,s.remark,s.create_at,mx_u1.full_name creator_name,mx_c.name customer_name,s.customer_id')
