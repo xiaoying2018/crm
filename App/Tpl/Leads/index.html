@@ -84,7 +84,7 @@
 				<div class="title-bar" style="position: relative;z-index: 99;">
 					<div class="row  clearfix" id="title-hide" style="display:none;">
 						<!-- 如果是合作机构人员,这些条件不展示 -->
-						<if condition="$Think.session.role_id != 81 && $Think.session.role_id != 95">
+						<if condition="$Think.session.role_id != 81 && $Think.session.role_id != 95 && $Think.session.role_id != 206">
 							<ul class="breadcrum pull-left">
 								<li>已选中&nbsp;<span id="icheck_num"></span>&nbsp;项</li>
 								<if condition="$by neq 'public' and $by neq 'deleted' and $by neq 'transformed'">
@@ -118,7 +118,7 @@
 					<div id="title-show" class="clearfix">
 						<ul class="searchpart">
 							<!-- 如果是合作机构人员,这些条件不展示 -->
-							<if condition="$Think.session.role_id != 81 && $Think.session.role_id != 95">
+							<if condition="$Think.session.role_id != 81 && $Think.session.role_id != 95 && $Think.session.role_id != 206">
 								<if condition="$by neq 'public'">
 									<a href="{:U('leads/add')}" class="btn btn-primary btn-sm pull-left" style="margin:2px 0 0 0; width: 100px;">
 										<i class="fa fa-plus-circle"></i>&nbsp; 新建线索
