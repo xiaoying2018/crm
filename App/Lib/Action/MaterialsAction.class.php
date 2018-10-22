@@ -401,7 +401,10 @@ class MaterialsAction extends Action
             $sort = $wheredata['sord'] ?: 0;// 排序规则
             $start = ($page - 1) * $limit;// 查询起始值
             $condition['tag'] = ['eq',$cate];// 查询条件
-            $condition['teacher_id'] = array('in',implode(',', $below_ids));
+            if(!session('?admin')){
+                $condition['teacher_id'] = array('in',implode(',', $below_ids));
+            }
+
 
             // 如果按申请年份搜索
             if ($sort_field == 'apply_date') $sort_field = 'join_year';
@@ -451,6 +454,7 @@ class MaterialsAction extends Action
             $data['count'] = $count;// 总条数
             $data['total'] = ceil($count / $limit);// 总页数
             $data['list'] = $list;// 数据列表
+            $data['_sql'] =  M('MaterialsApply')->getLastSql();// 数据列表
 
             $this->ajaxReturn(['status'=>true,'data'=>$data]);
         }

@@ -1858,19 +1858,25 @@ function checkPerByAction($m, $a){
 function getPerByAction($m, $a, $sub_role=false){
 	$m_permission = M('permission');
 	$url = getCheckUrlByAction($m, $a);
-
 	$per_type =  M('Permission') -> where('position_id = %d and url = "%s"', session('position_id'), $url)->getField('type');
+
+
 	if($sub_role){
 		if($per_type == 3){
 			$below_ids = array();
 		}elseif($per_type == 4){
 			$departmen_role_ids = array();
+
 			$role_ids = getRoleByDepartmentId(session('department_id'), true);
+
 			foreach($role_ids as $v){
 				$departmen_role_ids[] = $v['role_id'];
 			}
+
 			$temp_below_ids = getSubRoleId(false);
-			$below_ids = array_intersect($departmen_role_ids, $temp_below_ids);
+
+			$below_ids = array_merge($departmen_role_ids, $temp_below_ids);
+
 		}else{
 			$below_ids = getSubRoleId(false);
 		}
@@ -1891,6 +1897,7 @@ function getPerByAction($m, $a, $sub_role=false){
 			case 3: $role_array = array(session('role_id')); break;
 			//默认 部门所有人
 			case 4:
+
 				$role_ids = getRoleByDepartmentId(session('department_id'), true);
 				foreach($role_ids as $v){
 					$role_array[] = $v['role_id'];
