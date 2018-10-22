@@ -327,8 +327,12 @@ class EducationAction extends Action
     {
         $wheredata = $_REQUEST;
         $courseModel = new CourseModelEdu();
-        $lists = $courseModel->course_lists(null, $wheredata['page'], $wheredata['rows'])['data'];
-        $count = $courseModel->course_lists(null, $wheredata['page'], $wheredata['rows'])['count'];
+        if(!empty($wheredata['lotwhere'])){
+            $where['c.name']=array('LIKE','%'.$wheredata['lotwhere'].'%');
+        }
+
+        $lists = $courseModel->course_lists($where, $wheredata['page'], $wheredata['rows'])['data'];
+        $count = $courseModel->course_lists($where, $wheredata['page'], $wheredata['rows'])['count'];
 
 //        $this->ajaxReturn($wheredata['rows']);
         $this->ajaxReturn([
@@ -2797,7 +2801,12 @@ class EducationAction extends Action
         array_key_exists('livecontent', $wheredata)
         && ($period_id = (int)$wheredata['livecontent'])
         && $condition['Period.id'] = ['eq', $period_id];
-
+        $order=array();
+        $order['Schedule.id']='desc';
+        if($wheredata['sidx']=='start_time'){
+            $order['Schedule.start_time']=$wheredata['sord'];
+            unset($order['Schedule.id']);
+        }
         $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码
         $limit = $wheredata['rows'] ? $wheredata['rows'] : 10;// 每页显示条数
 
@@ -2805,7 +2814,7 @@ class EducationAction extends Action
         $lists=$course_model
             ->where($condition)
             ->limit(($page-1)*$limit,$limit)
-            ->order('Schedule.id desc')
+            ->order($order)
             ->select();
         $_sql = $course_model->_sql();
         \Log::write($_sql);

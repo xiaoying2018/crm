@@ -77,6 +77,10 @@
 								<i class="fa fa-plus-circle"></i>&nbsp; 新建班级
 							</a>
 						</if>
+
+						<li class="li_item bt col-lg-2" style="float: none !important;">
+							<input type="text" placeholder="班级名称" name="search" id="searchInput" class="form-control input-sm"><i class="fa fa-search"></i>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -799,6 +803,19 @@
             }
         }
     });
+
+    $(document).on('click', '.fa-search', function () {
+        reloaddata()
+    });
+
+    function reloaddata() {
+        var _lotwhere = $("#searchInput").val();
+
+        var _data = {
+            lotwhere: _lotwhere,
+        };
+        $("#table_list_2").setGridParam({datatype: 'json', postData: _data}).trigger('reloadGrid');
+    }
 
 
 </script>
