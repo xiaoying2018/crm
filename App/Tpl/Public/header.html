@@ -827,7 +827,7 @@ $(function(){
 						</li>
 
 						<!-- 如果是合作机构人员,这些条件不展示 -->
-						<if condition="$Think.session.role_id != 81 && $Think.session.role_id != 95">
+						<if condition="$Think.session.role_id != 81 && $Think.session.role_id != 95 && $Think.session.role_id != 206">
 						<li <if condition = "$module_name eq 'leads' && $_GET['by'] eq 'public'">class="active"</if> >
 						<a href="{:U('leads/index','by=public')}"><span class="fa fa fa-child" style="display:inline"></span>&nbsp;&nbsp;公共线索池</a>
 						</li>

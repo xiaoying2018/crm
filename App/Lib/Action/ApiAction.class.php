@@ -352,6 +352,13 @@ class ApiAction extends Action
 
     	$num = rand(1,10);
 
+    	// 10-22 新需求,如果是朗德教育的数据,直接分配给指定的一个用户
+        if ($code == 'lg62bo2sk5zz')
+        {
+            // todo
+            return ['name'=>'朗格-合作机构', 'cate'=>'83', 'person_id'=>'149','creator_role_id'=>'206','creator_name'=>'朗格'];
+        }
+
         switch (intval($num))
         {
             case 1:

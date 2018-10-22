@@ -108,7 +108,43 @@ $(function() {
                                 </div>
                             </div>
                         </div>
-                        <if condition="$info['tag'] == 1">
+                        <if condition="$info['tag'] == 2">
+                            <div class="col-md-11 add_body_form">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">出生年月</label>
+                                    <div class="col-md-8">
+                                        <if condition="$info['birthday']">
+                                            {$info.birthday|date="Y-m-d H:i",###}
+                                            <else/>
+                                            -
+                                        </if>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-11 add_body_form">
+                                <div class="form-group">
+                                    <div class="col-md-4 control-label">性别:</div>
+                                    <div class="col-md-8">{$info.sex|default=' - '}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-11 add_body_form">
+                                <div class="form-group">
+                                    <div class="col-md-4 control-label">户籍地:</div>
+                                    <div class="col-md-8">{$info.form_addr|default=' - '}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-11 add_body_form">
+                                <div class="form-group">
+                                    <div class="col-md-4 control-label">所属校区:</div>
+                                    <div class="col-md-8">{$info.branch|default=' - '}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-11 add_body_form">
+                                <div class="form-group">
+                                    <div class="col-md-4 control-label">申请期限类型:</div>
+                                    <div class="col-md-8">{$info.time_type|default=' - '}</div>
+                                </div>
+                            </div>
                             <div class="col-md-11 add_body_form">
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">入学年份</label>

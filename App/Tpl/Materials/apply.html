@@ -237,7 +237,7 @@
             autoScroll: true,
             multiselect: true,
             useColSpanStyle: true,
-            colNames: ["id","学员姓名", "申请项目", "申请学校", "入学时间", "提交材料时间", "考试时间","面试时间","offer发布时间","截止时间","材料老师","顾问老师","状态"],
+            colNames: ["id","学员姓名", "申请项目", "申请学校", "入学时间", "提交材料时间", "考试时间","面试时间","offer发布时间","截止时间","材料老师","顾问老师","创建时间","状态"],
             colModel: [{
                     name: "id",
                     index: "id",
@@ -319,6 +319,13 @@
                     editable: false,
                     sorttype: "text",
                     search: true,
+                },{
+                    name:"create_time",
+                        index: "create_time",
+                        editable: false,
+                        sorttype: "text",
+                        search: true,
+                        formatter:timeFormat
                 },{
                     name:"status",
                     index: "status",
