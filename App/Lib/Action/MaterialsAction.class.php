@@ -474,6 +474,8 @@ class MaterialsAction extends Action
 
         if (!$info) die('数据不存在'); // 数据为空
 
+        $info['sex'] = $info['sex']?'男':'女';
+
         $ids = implode(',',json_decode($info['materials'])); // 需要提交的材料的 ids
 
         $materials = M('MaterialsSample')->field('name')->where(['id'=> ['IN',$ids]])->select(); // 需要提交的材料 ID 转 名称
@@ -521,6 +523,7 @@ class MaterialsAction extends Action
             $data['create_time'] = time();
             $data['update_time'] = time();
             $data['first_end_time'] = strtotime($data['first_end_time']) ?: '';
+            $data['birthday'] = strtotime($data['birthday']) ?: '';
             $data['end_time'] = strtotime($data['end_time']) ?: '';
             $data['submit_time'] = strtotime($data['submit_time']) ?: '';
             $data['ms_time'] = strtotime($data['ms_time']) ?: '';
@@ -565,10 +568,11 @@ class MaterialsAction extends Action
             if (!($data = I('post.')) || !($id = I('post.id'))) die('缺少参数,请选择关联学员');
 
             // 过滤数据
-
+            
             // 处理数据
             $data['update_time'] = time();
             $data['first_end_time'] = strtotime($data['first_end_time']) ?: '';
+            $data['birthday'] = strtotime($data['birthday']) ?: '';
             $data['end_time'] = strtotime($data['end_time']) ?: '';
             $data['submit_time'] = strtotime($data['submit_time']) ?: '';
             $data['ms_time'] = strtotime($data['ms_time']) ?: '';
@@ -603,6 +607,7 @@ class MaterialsAction extends Action
         $all_materials = M('MaterialsSample')->field('id,name')->where('cate_id=' . $info['cate_id'])->select() ?: [];
 
         $info['create_time'] = $info['create_time']?date('Y-m-d H:i',$info['create_time']):'';
+        $info['birthday'] = $info['birthday']?date('Y-m-d H:i',$info['birthday']):'';
         $info['update_time'] = $info['update_time']?date('Y-m-d H:i',$info['update_time']):'';
         $info['first_end_time'] = $info['first_end_time']?date('Y-m-d H:i',$info['first_end_time']):'';
         $info['end_time'] = $info['end_time']?date('Y-m-d H:i',$info['end_time']):'';

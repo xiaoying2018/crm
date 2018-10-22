@@ -163,7 +163,69 @@
                                     <div class="col-md-2"></div>
                                 </div>
 
-                                <if condition="$info['tag'] == 1"><!-- 如果是普通申请,显示入学年份和月份 -->
+                                <if condition="$info['tag'] == 2"><!-- 如果是COE申请,显示入学年份和月份 -->
+
+                                    <!-- 出生年月 -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label"> 出生年月</label>
+                                        <div class="col-md-6">
+                                            <input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"
+                                                   style="width: 100%;" name="birthday" id="birthday"
+                                                   class="input_edit edit form-control" value="{$info['birthday']}">
+                                        </div>
+                                    </div>
+
+                                    <!-- 性别 -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label">性别：</label>
+                                        <div class="col-md-6">
+                                            <div class="radio radio-info">
+                                                <input type="radio" name="sex" id="sex_man" value="1" <if condition="$info['sex'] == 1">checked="checked"</if>>
+                                                <label for="sex_man">男</label>
+                                            </div>
+                                            <div class="radio radio-info">
+                                                <input type="radio" name="sex" id="sex_woman" value="0" <if condition="$info['sex'] == 0">checked="checked"</if>>
+                                                <label for="sex_woman">女</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 户籍地 -->
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label"> 户籍地</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control " type="text" name="form_addr" id="form_addr" value="{$info['form_addr']}" placeholder="户籍所在地"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- 所属校区 -->
+                                    <div class="form-group ">
+                                        <label class="col-md-4 control-label" for="branch"> 所属校区：</label>
+                                        <div class="col-sm-6">
+                                            <select id="branch" class="form-control checkit" onchange="" style="float:left;" rell="所属校区" name="branch">
+                                                <option value="">--请选择--</option>
+                                                <option value="上海校" <if condition="$info['branch'] == '上海校'">selected</if>>上海校</option>
+                                                <option value="苏州校" <if condition="$info['branch'] == '苏州校'">selected</if>>苏州校</option>
+                                                <option value="成都校" <if condition="$info['branch'] == '成都校'">selected</if>>成都校</option>
+                                                <option value="南京校" <if condition="$info['branch'] == '南京校'">selected</if>>南京校</option>
+                                                <option value="河南校" <if condition="$info['branch'] == '河南校'">selected</if>>河南校</option>
+                                                <option value="石家庄" <if condition="$info['branch'] == '石家庄'">selected</if>>石家庄</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- 申请期限类型 -->
+                                    <div class="form-group ">
+                                        <label class="col-md-4 control-label" for="time_type"> 申请期限类型：</label>
+                                        <div class="col-sm-6">
+                                            <select id="time_type" class="form-control checkit" onchange="" style="float:left;" rell="申请期限类型" name="time_type">
+                                                <option value="">--请选择--</option>
+                                                <option value="短期" <if condition="$info['time_type'] == '短期'">selected</if>>短期</option>
+                                                <option value="长期" <if condition="$info['time_type'] == '长期'">selected</if>>长期</option>
+                                                <option value="短期+长期" <if condition="$info['time_type'] == '短期+长期'">selected</if>>短期+长期</option>
+                                            </select>
+                                        </div>
+                                    </div>
 
                                     <!-- 入学年份 -->
                                     <div class="form-group ">
