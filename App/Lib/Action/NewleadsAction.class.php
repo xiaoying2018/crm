@@ -119,6 +119,13 @@ class NewLeadsAction extends ExtensionAction
             $count                      =   $model->where($conditions)->count();
         }
 
+        if (session('role_id') == 206)// 朗格
+        {
+            unset($conditions['owner_role_id']);
+            $conditions['jg_code'] = ['eq','lg62bo2sk5zz'];
+            $count                      =   $model->where($conditions)->count();
+        }
+
         $lists                      =   $model->where($conditions)->order($orderby)->limit($offset, $pagesize)->select();
 
         if ($lists)
