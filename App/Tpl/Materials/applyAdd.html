@@ -176,10 +176,7 @@ $(function() {
                                             <option value="">--请选择--</option>
 
                                             <volist name="cates" id="cate">
-                                                <!-- 如果分类不属于签证 且 不属于COE,则可选择 -->
-                                                <if condition="$cate['id'] != 1 && $cate['id'] != 2">
-                                                    <option value="{$cate.id}">{$cate.name}</option>
-                                                </if>
+                                                <option value="{$cate.id}">{$cate.name}</option>
                                             </volist>
                                         </select>
                                     </div>

@@ -41,6 +41,12 @@ body {
     font-size: 16px;
     line-height: 20px;
 }
+
+.change_sample_status{
+    cursor: pointer;
+    -webkit-user-select:none;
+}
+
 </style>
 <link rel="stylesheet" href="__PUBLIC__/css/jquery.fileupload.css" type="text/css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
@@ -101,7 +107,13 @@ $(function() {
                                 <div class="col-md-8">
                                     <if condition="$materials">
                                         <volist name="materials" id="material">
-                                            <p>{$i}. {$material.name}</p>
+
+                                            <if condition="$material['status'] == 1">
+                                                <p class="change_sample_status" style="color: green;" data-value="{$material.id}" data-status="{$material.status}">{$i}. {$material.name}</p>
+                                            <else/>
+                                                <p class="change_sample_status" style="color: red;" data-value="{$material.id}" data-status="{$material.status}">{$i}. {$material.name}</p>
+                                            </if>
+
                                         </volist>
                                         <else/> -
                                     </if>
@@ -337,7 +349,7 @@ $(function() {
                                             <div class="ibox-content" style="border-top: none;">
                                                 <div class="col-sm-offset-2" style="text-align:center;margin-left:0px;">
                                                     <input type="hidden" name="cate_id" value="{$info.cate_id}">
-                                                    <input type="hidden" name="program_id" value="{$info.id}">
+                                                    <input type="hidden" id="current_apply_id" name="program_id" value="{$info.id}">
                                                     <input type="hidden" name="student_id" value="{$info.student_id}">
                                                     <input type="hidden" name="sname" value="{$info.sname}">
                                                     <input type="hidden" name="program_name" value="{$info.project_name}">
@@ -406,10 +418,64 @@ $(function() {
 <include file="Materials:detail" />
 <script type="text/javascript" src="__PUBLIC__/js/uploadPreview.js"></script>
 <script type="text/javascript">
+
 $(function() {
     // 分配任务弹框
     $('#allot').click(function() {
         $(".materialsModal").modal('show');
+    });
+
+    // 修改所需材料提交状态
+    $('.change_sample_status').click(function () {
+        // 当前申请编号
+        var current_apply_id = $('#current_apply_id').val();
+        // 当前选中的所需材料编号
+        var current_selected_sample_id = $(this).data('value');
+        // 当前状态
+        var current_status = $(this).data('status');
+
+        var _this = $(this);
+
+        if (current_status == 1)
+        {
+            current_status = 'no';
+        }else{
+            current_status = 'yes';
+        }
+
+        console.log(current_status);
+
+        // 发送请求,执行修改
+        $.ajax({
+            type: 'post',
+            url: "{:U('materials/changeCurrentAppleSampleStatus')}",
+            data: {
+                current_apply_id: current_apply_id,
+                current_selected_sample_id: current_selected_sample_id,
+                status: current_status
+            },
+            async: false,
+            success: function(data) {
+                if (data.status == 1) {
+                    if (data.type == 'yes')
+                    {
+                        _this.data('status',1)
+                        _this.css({'color':'green'});
+                    }else{
+                        _this.data('status',0)
+                        _this.css({'color':'red'});
+                    }
+                } else {
+                    swal({
+                        title: "操作失败！",
+                        text: data.msg,
+                        type: "error"
+                    })
+                    return false;
+                }
+            },
+            dataType: 'json'
+        });
     });
 
 });
