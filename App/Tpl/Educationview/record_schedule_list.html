@@ -1,6 +1,10 @@
 <link rel="stylesheet" href="/Public/js/jqGrid/ui.jqgridffe4.css">
 <link rel="stylesheet" href="/Public/css/page/publicTable.css">
 <link rel="stylesheet" href="/Public/css/page/record_schedule_list.css">
+
+<!-- select2 -->
+<link href="__PUBLIC__/style/css/plugins/select2/select2.min.css" rel="stylesheet">
+<script src="__PUBLIC__/style/js/plugins/select2/select2.full.min.js"></script>
 <include file="Public:header" />
 <style>
     #ids{width: 200px;height: 200px;border: 1px solid red}
@@ -113,7 +117,7 @@
                             </div>
                             <li class="li_item col-lg-2">
                                 <!--this.options[this.selectedIndex].value-->
-                                <select class="form-control" id="changecourse" name="courses">
+                                <select class="form-control select2" id="changecourse" name="courses">
                                     <option value="" data-value="">请选择班级</option>
                                     <volist name="courses" id="vo">
                                         <option data-value="{$vo.id}">&nbsp;&nbsp;{$vo.name}</option>
@@ -121,7 +125,7 @@
                                 </select>
                             </li>
                             <li class="li_item col-lg-2">
-                                <select class="form-control" id="changeper">
+                                <select class="form-control select2" id="changeper">
                                     <option value="" data-value="">请选择班次</option>
                                     <!--<option v-for="p in periods" :value="p.id">&nbsp;&nbsp;&nbsp;&nbsp;{{p.name}}</option>-->
                                 </select>
@@ -504,7 +508,7 @@ $(function() {
         autoScroll: true,
         multiselect: true,
         useColSpanStyle: true,
-        colNames: ["班级名称", "班次名称", "课时名称", "操作"],
+        colNames: ["班级名称", "班次名称", "课时名称", '上课时间',"操作"],
         colModel: [{
             name: "course_name",
             index: "course_name",
@@ -523,6 +527,32 @@ $(function() {
             editable: false,
             sorttype: "text",
             search: true,
+        },{
+            name: "start_time",
+            index: "start_time",
+            editable: false,
+            sortable: true,
+            sorttype: "desc",
+            formatter:function(cellvalue, options, cell){
+                var t = new Date(cellvalue);//你已知的时间
+                var t_s = t.getTime();//转化为时间戳毫秒数
+
+                t.setTime(t_s + 1000 * cell.duration*60);//设置新时间比旧时间多一分钟
+
+                var n_date = new Date(t);
+                //個位數判斷
+                var _m = n_date.getMinutes()+"";
+                var _s = n_date.getSeconds()+"";
+                if (_m.length == 1){
+                    _m = '0'+n_date.getMinutes();
+                }
+                if (_s.length == 1){
+                    _s = '0'+n_date.getSeconds();
+                }
+                t = n_date.getFullYear() + '-' + (n_date.getMonth() + 1) + '-' + n_date.getDate() + ' ' + n_date.getHours() + ':' + _m + ':' + _s;
+
+                return cellvalue+'-'+t
+            },
         }, {
             name: "id",
             index: "id",
