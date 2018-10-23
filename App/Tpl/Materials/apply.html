@@ -237,7 +237,7 @@
             autoScroll: true,
             multiselect: true,
             useColSpanStyle: true,
-            colNames: ["id","学员姓名", "申请项目", "申请学校", "入学时间", "提交材料时间", "考试时间","面试时间","offer发布时间","截止时间","材料老师","顾问老师","创建时间","状态"],
+            colNames: ["id","学员姓名", "申请项目", "申请学校", "入学时间", "提交材料时间", "考试时间","面试时间","offer发布时间","截止时间","材料老师","顾问老师","创建时间","申请进度"],
             colModel: [{
                     name: "id",
                     index: "id",
@@ -327,12 +327,14 @@
                         search: true,
                         formatter:timeFormat
                 },{
-                    name:"status",
-                    index: "status",
+                    // name:"status",
+                    // index: "status",percent
+                    name:"percent",
+                    index: "percent",
                     editable: false,
                     sorttype: "text",
-                    search: true,
-                    formatter:statusFormat
+                    // search: true,
+                    // formatter:statusFormat
                 }],
             forceFit: true,
             //分页

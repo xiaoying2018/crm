@@ -125,7 +125,7 @@
                                 <!-- 分类 -->
                                 <hr>
 
-                                <if condition="$info['tag'] == 1"><!-- 如果是普通申请,显示分类选项 -->
+                                <if condition="$info['tag'] == 2"><!-- 如果是COE申请,显示分类选项 -->
 
                                     <div class="form-group ">
                                         <label class="col-md-4 control-label" for="cate_id"><span style="color:#FF0011;">*</span> 材料分类：</label>
@@ -135,10 +135,7 @@
                                                 <option value="">--请选择--</option>
 
                                                 <volist name="cates" id="cate">
-                                                    <!-- 如果材料分类不是签证 且 不是COE,则可选择 -->
-                                                    <if condition="$cate['id'] != 1 && $cate['id'] != 2">
-                                                        <option value="{$cate.id}" <if condition="$info['cate_id'] == $cate['id']">selected</if>>{$cate.name}</option>
-                                                    </if>
+                                                    <option value="{$cate.id}" <if condition="$info['cate_id'] == $cate['id']">selected</if>>{$cate.name}</option>
                                                 </volist>
                                             </select>
                                         </div>

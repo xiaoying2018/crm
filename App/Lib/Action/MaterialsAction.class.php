@@ -19,6 +19,48 @@ class MaterialsAction extends Action
 //    }
 
 
+    public function updateapplysample()
+    {
+        // 获取所有申请
+        $all_apply = M('materials_apply')->select();
+        
+        // 在每个申请中查询所需提交的材料
+        foreach ($all_apply as $k => $v)
+        {
+            // 如果当前申请需要提交材料
+            if ($v['materials'])
+            {
+                $current_sample = json_decode($v['materials']);
+
+                if ($current_sample)
+                {
+                    $apply_materials_model = M('apply_materials');
+                    $apply_materials_data = [];
+                    $current_time = time();
+                    // crm机器人是62
+                    $current_user = 62;
+                    foreach ($current_sample as $key => $val)
+                    {
+                        $apply_materials_data[$key]['apply_id'] = $v['id'];
+                        $apply_materials_data[$key]['sample_id'] = $val;
+                        $apply_materials_data[$key]['create_time'] = $current_time;
+                        $apply_materials_data[$key]['create_user'] = $current_user;
+                        $apply_materials_data[$key]['status'] = 0;
+                    }
+                    $res = $apply_materials_model->addAll($apply_materials_data);
+                    echo "<pre>";
+                    var_dump($res);
+                }
+
+            }
+        }
+
+        // 打印结果
+        exit();
+
+    }
+
+
     /**
      * 材料管理 (标签/材料名)
      * ===========================================================================
@@ -397,8 +439,8 @@ class MaterialsAction extends Action
             $name = $wheredata['name'] ? $wheredata['name'] : '';// 查询关键字
             $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码
             $limit = $wheredata['rows'] ? $wheredata['rows'] : 10;// 每页显示条数
-            $sort_field = $wheredata['sidx'] ?: 0;// 排序规则
-            $sort = $wheredata['sord'] ?: 0;// 排序规则
+            $sort_field = $wheredata['sidx'] ?: "create_time";// 排序规则
+            $sort = $wheredata['sord'] ?: "desc";// 排序规则
             $start = ($page - 1) * $limit;// 查询起始值
             $condition['tag'] = ['eq',$cate];// 查询条件
             if(!session('?admin')){
@@ -439,6 +481,7 @@ class MaterialsAction extends Action
 
             if ($list)
             {
+                
                 foreach ($list as $k => $v)
                 {
                     $list[$k]['apply_date'] = $v['join_year'];
@@ -448,7 +491,15 @@ class MaterialsAction extends Action
                     }else{
                         $list[$k]['apply_date'] .= '0'.$v['join_mouth'];
                     }
+
+                    // 查询当前申请的材料提交进度
+                    $current_apply_want_sample_num = M('apply_materials')->where(['apply_id'=>['eq',$v['id']]])->count();
+                    $current_apply_has_get_sample_num = M('apply_materials')->where(['apply_id'=>['eq',$v['id']],'status'=>['eq',1]])->count();
+
+                    $list[$k]['percent'] = round( $current_apply_has_get_sample_num/$current_apply_want_sample_num * 100 , 2) . "％";;
+
                 }
+
             }
 
             $data['count'] = $count;// 总条数
@@ -476,9 +527,28 @@ class MaterialsAction extends Action
 
         $info['sex'] = $info['sex']?'男':'女';
 
-        $ids = implode(',',json_decode($info['materials'])); // 需要提交的材料的 ids
+//        $ids = implode(',',json_decode($info['materials'])); // 需要提交的材料的 ids
 
-        $materials = M('MaterialsSample')->field('name')->where(['id'=> ['IN',$ids]])->select(); // 需要提交的材料 ID 转 名称
+        $apply_materials_model = M('apply_materials');
+        
+        $apply_sample_list = $apply_materials_model->where(['apply_id'=>['eq',$id]])->select();
+
+        if (!empty($apply_sample_list))
+        {
+            $ids = array_map(function ($v){
+                return $v['sample_id'];
+            },$apply_sample_list);
+        }
+
+        $materials = M('MaterialsSample')->field('id,name')->where(['id'=> ['IN',$ids]])->select(); // 需要提交的材料 ID 转 名称
+        
+        if (!empty($materials))
+        {
+            foreach ($materials as $k => $v)
+            {
+                $materials[$k]['status'] = M('apply_materials')->where(['apply_id'=>['eq',$info['id']],'sample_id'=>['eq',$v['id']]])->find()['status']?:0;
+            }
+        }
 
         // 获取当前申请已提交的材料
         $list = D('Materials')->getMaterials('program_id='.$id);
@@ -490,7 +560,7 @@ class MaterialsAction extends Action
                 $list[$k]['name'] = $v['name'].'.'.trim(strrchr($v['file'], '.'),'.');
             }
         }
-
+        
         $count = count($list);
 
         // 分配并返回视图文件
@@ -504,6 +574,31 @@ class MaterialsAction extends Action
 
     }
 
+    // 修改当前申请中某个所需材料的提交状态
+    public function changeCurrentAppleSampleStatus()
+    {
+        $apply_id = intval(I('post.current_apply_id'));
+        $sample_id = intval(I('post.current_selected_sample_id'));
+        $stauts = I('post.status')?:'';
+
+        if (!$apply_id || !$sample_id || !$stauts) $this->ajaxReturn(['status'=>false,'msg'=>'非法请求']);
+
+        $apply_sample_model = M('apply_materials');
+
+        if ($stauts == 'yes')
+        {
+            $type = 'yes';
+            $res = $apply_sample_model->where(['apply_id'=>['eq',$apply_id],'sample_id'=>['eq',$sample_id]])->save(['status'=>1]);
+        }else{
+            $type = 'no';
+            $res = $apply_sample_model->where(['apply_id'=>['eq',$apply_id],'sample_id'=>['eq',$sample_id]])->save(['status'=>0]);
+        }
+
+//        if (!$res) $this->ajaxReturn(['status'=>false,'msg'=>'修改失败,请联系管理员']);
+
+        $this->ajaxReturn(['status'=>true,'type'=>$type]);
+    }
+
     /**
      * 添加
      */
@@ -514,10 +609,10 @@ class MaterialsAction extends Action
             // 接收表单数据
             if (!($data = I('post.')) || !I('post.student_id') || !I('post.tag')) die('请填写必选项!');
 
-            if ($data['tag'] == 1) // 如果是普通申请,则入学年月份为必选字段
-            {
-                if (!$data['join_year'] || !$data['join_mouth']) $this->error('请填写必选字段! 入学年份/入学月份');
-            }
+//            if ($data['tag'] == 1) // 如果是普通申请,则入学年月份为必选字段
+//            {
+//                if (!$data['join_year'] || !$data['join_mouth']) $this->error('请填写必选字段! 入学年份/入学月份');
+//            }
 
             // 处理数据
             $data['create_time'] = time();
@@ -529,12 +624,33 @@ class MaterialsAction extends Action
             $data['ms_time'] = strtotime($data['ms_time']) ?: '';
             $data['offer_time'] = strtotime($data['offer_time']) ?: '';
             $data['exam_time'] = strtotime($data['exam_time']) ?: '';
+            $apply_materials_rel_data = $data['materials'] ?: '';
             $data['materials'] = json_encode($data['materials']) ?: '';
 
             // 执行添加操作
             try {
                 $res = M('MaterialsApply')->add($data);
+
                 if (!$res) die('添加失败,请检确认添加数据是否合理 或 联系管理员! ');
+
+                // 把需要提交的申请材料存放在关联表中
+                if (!empty($apply_materials_rel_data))
+                {
+                    $apply_materials_model = M('apply_materials');
+                    $apply_materials_data = [];
+                    $current_time = time();
+                    $current_user = session('role_id');
+                    foreach ($apply_materials_rel_data as $k => $v)
+                    {
+                        $apply_materials_data[$k]['apply_id'] = $res;
+                        $apply_materials_data[$k]['sample_id'] = $v;
+                        $apply_materials_data[$k]['create_time'] = $current_time;
+                        $apply_materials_data[$k]['create_user'] = $current_user;
+                        $apply_materials_data[$k]['status'] = 0;
+                    }
+                    $apply_materials_model->addAll($apply_materials_data);
+                }
+
             } catch (\Exception $exception) {
                 die($exception->getMessage());
             }
@@ -578,7 +694,76 @@ class MaterialsAction extends Action
             $data['ms_time'] = strtotime($data['ms_time']) ?: '';
             $data['offer_time'] = strtotime($data['offer_time']) ?: '';
             $data['exam_time'] = strtotime($data['exam_time']) ?: '';
+            $apply_materials_rel_data = $data['materials'] ?: [];
             $data['materials'] = json_encode($data['materials']) ?: '';
+
+            // 把需要提交的申请材料存放在关联表中
+            // 查找老数据所需材料列表
+            $apply_materials_model = M('apply_materials');
+
+            $apply_sample_list = $apply_materials_model->where(['apply_id'=>['eq',$id]])->select();
+
+            // 如果之前有所需材料,并且也有新的所需材料 则需要确认老数据和新数据是否一致
+            if (!empty($apply_sample_list) && !empty($apply_materials_rel_data))
+            {
+                $old_ids = array_map(function ($v){
+                    return $v['sample_id'];
+                },$apply_sample_list);
+
+                // 获取差集
+                $new_differ = array_diff($apply_materials_rel_data,$old_ids);// 需要添加的
+                $old_differ = array_diff($old_ids,$apply_materials_rel_data);// 需要删除的
+
+                // 需要添加的
+                if (!empty($new_differ))
+                {
+                    $apply_materials_model = M('apply_materials');
+                    $apply_materials_data = [];
+                    $current_time = time();
+                    $current_user = session('role_id');
+                    foreach ($new_differ as $k => $v)
+                    {
+                        $apply_materials_data[$k]['apply_id'] = $id;
+                        $apply_materials_data[$k]['sample_id'] = $v;
+                        $apply_materials_data[$k]['create_time'] = $current_time;
+                        $apply_materials_data[$k]['create_user'] = $current_user;
+                        $apply_materials_data[$k]['status'] = 0;
+                    }
+
+                    $end_add_data = array_values($apply_materials_data);
+
+                    $apply_materials_model->addAll($end_add_data);
+                }
+
+                // 需要删除的
+                if (!empty($old_differ))
+                {
+                    $apply_materials_model = M('apply_materials');
+                    $apply_materials_model->where(['sample_id'=>['in',$old_differ],'apply_id'=>['eq',$id]])->delete();
+
+                }
+
+            }elseif (!empty($apply_materials_rel_data)){
+                // 之前没有所需材料 且 现在有所需材料,直接添加
+                $apply_materials_model = M('apply_materials');
+                $apply_materials_data = [];
+                $current_time = time();
+                $current_user = session('role_id');
+                foreach ($apply_materials_rel_data as $k => $v)
+                {
+                    $apply_materials_data[$k]['apply_id'] = $id;
+                    $apply_materials_data[$k]['sample_id'] = $v;
+                    $apply_materials_data[$k]['create_time'] = $current_time;
+                    $apply_materials_data[$k]['create_user'] = $current_user;
+                    $apply_materials_data[$k]['status'] = 0;
+                }
+                $apply_materials_model->addAll($apply_materials_data);
+            }else{
+                // 之前有所需材料,但是现在没有,则删除之前的所需材料信息
+                $apply_materials_model = M('apply_materials');
+                $apply_materials_model->where(['apply_id'=>['eq',$id]])->delete();
+            }
+
 
             // 执行更新操作
             try {
@@ -603,7 +788,18 @@ class MaterialsAction extends Action
 
         $info['sname'] = D('Students')->findStudents($info['student_id'])['realname'];
         $info['adviser_name'] = M('User')->field('full_name')->where('user_id=' . $info['adviser'])->find()['full_name'];
-        $info['materials'] = json_decode($info['materials']);
+//        $info['materials'] = json_decode($info['materials']);
+        $apply_materials_model = M('apply_materials');
+
+        $apply_sample_list = $apply_materials_model->where(['apply_id'=>['eq',$id]])->select();
+
+        if (!empty($apply_sample_list))
+        {
+            $ids = array_map(function ($v){
+                return $v['sample_id'];
+            },$apply_sample_list);
+        }
+        $info['materials'] = $ids;
         $all_materials = M('MaterialsSample')->field('id,name')->where('cate_id=' . $info['cate_id'])->select() ?: [];
 
         $info['create_time'] = $info['create_time']?date('Y-m-d H:i',$info['create_time']):'';
@@ -668,6 +864,11 @@ class MaterialsAction extends Action
         try {
             $res = M('MaterialsApply')->where('id in(' . $id . ')')->delete();
             if (!$res) $this->ajaxReturn('', '删除失败', 0);
+
+            // 删除关联数据
+            $apply_materials_model = M('apply_materials');
+            $apply_materials_model->where(['apply_id'=>['eq',$id]])->delete();
+
         } catch (\Exception $exception) {
             die('删除失败' . $exception->getMessage());
         }
