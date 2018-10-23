@@ -109,7 +109,7 @@ $(function() {
                                         <volist name="materials" id="material">
 
                                             <if condition="$material['status'] == 1">
-                                                <p class="change_sample_status" style="color: green;" data-value="{$material.id}" data-status="{$material.status}">{$i}. {$material.name}</p>
+                                                <p class="change_sample_status" style="color: green;" data-value="{$material.id}" data-status="{$material.status}">{$i}. {$material.name} √</p>
                                             <else/>
                                                 <p class="change_sample_status" style="color: red;" data-value="{$material.id}" data-status="{$material.status}">{$i}. {$material.name}</p>
                                             </if>
@@ -460,9 +460,12 @@ $(function() {
                     if (data.type == 'yes')
                     {
                         _this.data('status',1)
+                        _this.text(_this.text() + ' √')
                         _this.css({'color':'green'});
                     }else{
                         _this.data('status',0)
+                        // todo 删除字符串最后的 √
+                        _this.text(_this.text().substring(0, _this.text().lastIndexOf('√')))
                         _this.css({'color':'red'});
                     }
                 } else {
