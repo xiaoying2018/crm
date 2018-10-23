@@ -130,7 +130,7 @@
                                             </select>
                                         </div>
                                         <div class="col-md-2">
-                                            <select name="teacher_id" class="form-control">
+                                            <select name="teacher_id" class="select2 form-control" style="width: 237px;">
                                                 <option value="">选择讲师</option>
                                                 <option v-for="t in teacher" :value="t.user_id">&nbsp;&nbsp;&nbsp;&nbsp;{{t.teacher_name}}</option>
                                             </select>
@@ -373,6 +373,8 @@
                                 $('[name="student_id"]').select2({
 
                                 });
+
+                                $('[name="teacher_id"]').select2()
                             })
                         }else{
                             layer.msg( 'ERROR '+res.error );
