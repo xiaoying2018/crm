@@ -609,10 +609,10 @@ class MaterialsAction extends Action
             // 接收表单数据
             if (!($data = I('post.')) || !I('post.student_id') || !I('post.tag')) die('请填写必选项!');
 
-            if ($data['tag'] == 1) // 如果是普通申请,则入学年月份为必选字段
-            {
-                if (!$data['join_year'] || !$data['join_mouth']) $this->error('请填写必选字段! 入学年份/入学月份');
-            }
+//            if ($data['tag'] == 1) // 如果是普通申请,则入学年月份为必选字段
+//            {
+//                if (!$data['join_year'] || !$data['join_mouth']) $this->error('请填写必选字段! 入学年份/入学月份');
+//            }
 
             // 处理数据
             $data['create_time'] = time();
