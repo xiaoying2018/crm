@@ -336,4 +336,22 @@ class CourseDocumentAction extends Action{
         }
         force_download($res['file'],$res['title']);
     }
+
+
+    public function downLoadDocumentByFilePath()
+    {
+        header("Access-Control-Allow-Origin: *");
+        $document =I('file_path');
+        $title=I('file_name');
+
+        if(empty($document)){
+            $this->ajaxReturn([
+                'status'=>false,
+                'msg'=>'请传入正确的文件',
+            ]);
+        }
+
+        
+        force_download($document,$title);
+    }
 }
