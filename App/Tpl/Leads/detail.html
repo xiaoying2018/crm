@@ -433,6 +433,14 @@
                         <table class="right_table" width="100%">
                             <tbody>
                                 <tr>
+                                    <td class="std_title">咨询项目:</td>
+                                    <td class="td_content">
+                                        <input v-if="!isUpdata && leads.crm_project" class="needNotice" type="text" name="due_date" id="crm_project" :value="leads.crm_project.content" disabled="disabled">
+                                        <div v-if="isUpdata && leads.crm_project" class="clearstyle fullBl" v-html="leads.crm_project.html" style="width: 100%;">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td class="std_title">父母是否支持:</td>
                                     <td class="td_content">
                                         <input class="input_edit" type="text" v-if="leads.is_allow" :value="leads.is_allow.content" disabled="disabled" id="is_allow" />
