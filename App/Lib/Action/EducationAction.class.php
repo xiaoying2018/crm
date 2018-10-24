@@ -27,18 +27,48 @@ class EducationAction extends Action
         if (!$sch_id || !$start_time) $this->ajaxReturn(['result'=>false,'msg'=>'非法参数']);
 
         try{
-//            // 获取原数据
-//            $data = (new ScheduleModelEdu())->where(['id'=>['eq',$sch_id]])->find();
-//
-//            echo "<pre>";
-//            var_dump($data);exit();
-//
-//            if (!$data) $this->ajaxReturn(['result'=>false,'msg'=>'目标数据不存在或已被删除']);
 
             (new ScheduleModelEdu())->where(['id'=>['eq',$sch_id]])->save(['start_time'=>$start_time]);
 
-            // todo 修改拓课云开始时间
 
+            // 1024 修改拓课云开始时间
+
+                // 获取当前排课房间号 $serial
+                $info = (new ScheduleModelEdu())->where(['id'=>['eq',$sch_id]])->find()?:[];
+
+                if (empty($info)) $this->ajaxReturn(['result'=>false,'msg'=>'要修改的数据不存在']);
+
+                $serial = $info['serial'];
+                $section_id = $info['section_id'];
+
+                if (!$serial) $this->ajaxReturn(['result'=>false,'msg'=>'当前排课缺失拓课云房间号,请联系管理员!']);
+
+                if (!$section_id) $this->ajaxReturn(['result'=>false,'msg'=>'当前排课未关联课时,请联系管理员!']);
+
+                // 获取当前排课的课时时长 $time_length
+                $time_length = (new SectionModelEdu())->where(['id'=>['eq',$section_id]])->find()['duration'];
+
+                // 计算当前排课结束时间 $end_time = $start_time + $time_length
+                $end_time = strtotime($start_time) + ($time_length*60);
+
+                // 请求 TK-Could 房间修改接口 roommodify
+                $tk_room_data['key'] = C('TK_ROOM.key');// 秘钥
+                $tk_room_data['serial'] = $serial;// 结束时间
+                $tk_room_data['starttime'] = strtotime($start_time);// 开始时间
+                $tk_room_data['endtime'] = $end_time;// 结束时间
+                // $tk_room_data['chairmanpwd'] = 'xy_laoshi';// 老师密码
+                // $tk_room_data['assistantpwd'] = 'xy_zhujiao';// 助教密码
+                // $tk_room_data['patrolpwd'] = 'xy_xunke';// 巡课密码
+
+                $tk_send_url = C('TK_ROOM.url').'roommodify';// 接口请求地址
+
+                $tk_roomcreate_res = curlPost($tk_send_url,'Content-type:application/x-www-form-urlencoded',$tk_room_data);// 发起预约房间的请求
+
+                $tk_room_res = json_decode($tk_roomcreate_res['msg'])->result;// 接口返回的请求结果,0为成功
+
+                if ($tk_room_res) $this->ajaxReturn(['result'=>false,'msg'=>$tk_room_res.' | 拓课云房间修改失败,请联系管理员手动修改!']);
+
+            // 1024 end
 
         }catch (\Exception $exception){
             $this->ajaxReturn(['result'=>false,'msg'=>$exception->getMessage()]);
