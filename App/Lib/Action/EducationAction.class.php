@@ -37,6 +37,8 @@ class EducationAction extends Action
 
             (new ScheduleModelEdu())->where(['id'=>['eq',$sch_id]])->save(['start_time'=>$start_time]);
 
+            // todo 修改拓课云开始时间
+
         }catch (\Exception $exception){
             $this->ajaxReturn(['result'=>false,'msg'=>$exception->getMessage()]);
         }
