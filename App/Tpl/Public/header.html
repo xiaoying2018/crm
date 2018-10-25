@@ -901,12 +901,16 @@ $(function(){
 						<?php elseif($module_name == 'apply'): ?>
 						<li <if condition = "$module_name eq 'apply'">class="active"</if>><a href="{:U('apply/index')}"><span class="fa fa-sitemap" style="display:inline"></span>&nbsp;&nbsp;申请服务</a></li>
 						<!-- 添加头部标题 end dragon -->
-						<?php elseif($module_name == 'finance' || $module_name == 'financevoucher' || $module_name == 'invoice'): ?>
+						<?php elseif($module_name == 'finance' || $module_name == 'financevoucher' || $module_name == 'invoice' ||  $module_name == 'refund'): ?>
 						<li <if condition = "$module_name eq 'finance' && $t eq 'receivables'">class="active"</if>><a href="{:U('finance/index','t=receivables')}"><span class="fa fa-credit-card" style="display:inline"></span>&nbsp;&nbsp;应收款</a></li>
 						<li <if condition = "$module_name eq 'finance' && $t eq 'receivingorder'">class="active"</if>><a href="{:U('finance/index','t=receivingorder')}"><span class="fa fa-money" style="display:inline"></span>&nbsp;&nbsp;回款单</a></li>
 						<li <if condition = "$module_name eq 'finance' && $t eq 'payables'">class="active"</if>><a href="{:U('finance/index','t=payables')}"><span class="fa fa-credit-card" style="display:inline"></span>&nbsp;&nbsp;应付款</a></li>
 						<li <if condition = "$module_name eq 'finance' && $t eq 'paymentorder'">class="active"</if>><a href="{:U('finance/index','t=paymentorder')}"><span class="fa fa-money" style="display:inline"></span>&nbsp;&nbsp;付款单</a></li>
+
 						<li <if condition = "$module_name eq 'invoice'">class="active"</if>><a href="{:U('invoice/index')}"><span class="fa fa-bookmark" style="display:inline"></span>&nbsp;&nbsp;发票</a></li>
+
+						<li <if condition = "$module_name eq 'refund' ">class="active"</if>><a href="{:U('refund/index')}"><span class="fa fa-money" style="display:inline"></span>&nbsp;&nbsp;退款单</a></li>
+
 						<?php elseif($module_name == 'log' || $module_name =='examine' || ($module_name == 'knowledge' && $action_name != 'category') || $module_name == 'announcement' || $module_name == 'sign' || $module_name == 'event' || $module_name == 'task' || ($module_name == 'kaoqin' && $action_name == 'index') ): ?>
 						<li <if condition = "$module_name eq 'log'">class="active"</if>><a href="{:U('log/index')}"><span class="fa fa-pencil-square" style="display:inline"></span>&nbsp;&nbsp;工作日志</a></li>
 						<li <if condition = "$module_name == 'examine'">class="active"</if>><a href="{:U('examine/index')}"><span class="fa fa-check-square-o" style="display:inline"></span>&nbsp;&nbsp;审批</a></li>

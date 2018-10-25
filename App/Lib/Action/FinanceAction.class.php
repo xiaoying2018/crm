@@ -887,6 +887,7 @@ class FinanceAction extends Action{
 				//应收款编号前缀
 				$receivables_custom = M('Config')->where('name="receivables_custom"')->getField('value');
 				$m_receivables = M('Receivables');
+
 				if($this->isPost()){
 					if ($m_receivables->create()) {
 						if(empty($_POST['customer_id'])){
@@ -911,9 +912,12 @@ class FinanceAction extends Action{
 						if($id = $m_receivables->add()){
 							//创建应收款同时创建收款单		
 							if(!empty($id)){
+							    //记录操作日志
 								actionLog($id,'t=receivables');
 
 								//发送站内信给审核人
+
+
 								$check_position_ids =  M('Permission') -> where('url = "%s"','finance/check')->getField('position_id',true);
 								if($check_position_ids){
 									$receivables_check_role_ids = D('RoleView')->where(array('role.position_id'=>array('in',$check_position_ids),'user.status'=>array('neq',2)))->getField('role_id');

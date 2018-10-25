@@ -1451,6 +1451,88 @@ class ContractAction extends Action {
 		$this->assign('contractList',$list);
 		$this->display();
 	}
+
+
+
+
+    public function listDialog_refund(){
+        //权限控制（是否有应收款添加、编辑权限）
+        if(!checkPerByAction('finance','add_receivables') && !checkPerByAction('finance','edit_receivables') && !checkPerByAction('invoice','add') && !checkPerByAction('invoice','edit')){
+            echo '<div class="alert alert-error">您没有此权利！</div>';die();
+        }
+        //合同视图
+        $d_contract = D('ContractView');
+        //退款表
+        $m_receivables = M('Receivables');
+        //获取类型
+        $type = $_GET['type'] ? trim($_GET['type']) : '';
+        $params[] = 'type='.trim($_GET['type']);
+
+        //分页
+        $p = isset($_GET['p']) ? intval($_GET['p']) : 1 ;
+        $where = array();
+        //没有被删除
+        $where['is_deleted'] = 0;
+        //已经被审核过
+        $where['is_checked'] = 1;
+        //合同的拥有者  在   拥有这个操作的的用户中
+        $where['contract.owner_role_id'] = array('in',getPerByAction(MODULE_NAME,'index'));
+
+        if ($_GET['customer_id']) {
+            $where['customer_id'] = intval($_GET['customer_id']);
+            $params[] = 'customer_id='.intval($_GET['customer_id']);
+        }
+        if ($_REQUEST["field"]) {
+            if (trim($_REQUEST['field']) == "all") {
+                $field = is_numeric(trim($_REQUEST['search'])) ? 'number|price|contract.description' : 'number|contract.description';
+            } else {
+                $field = trim($_REQUEST['field']);
+            }
+            $search = empty($_REQUEST['search']) ? '' : trim($_REQUEST['search']);
+            $condition = empty($_REQUEST['condition']) ? 'is' : trim($_REQUEST['condition']);
+
+            if ('create_time' == $field || 'update_time' == $field || 'due_date' == $field) {
+                $search = is_numeric($search)?$search:strtotime($search);
+            }
+            if($field =="business.customer_id"){
+                $c_where['name'] = array('like','%'.$search.'%');
+                $customer_ids = M('Customer')->where($c_where)->getField('customer_id',true);
+                $where['customer_id'] = array('in',$customer_ids);
+            }else{
+                switch ($condition) {
+                    case "is" : $where[$field] = array('eq',$search);break;
+                    case "isnot" :  $where[$field] = array('neq',$search);break;
+                    case "contains" :  $where[$field] = array('like','%'.$search.'%');break;
+                    case "not_contain" :  $where[$field] = array('notlike','%'.$search.'%');break;
+                    case "start_with" :  $where[$field] = array('like',$search.'%');break;
+                    case "end_with" :  $where[$field] = array('like','%'.$search);break;
+                    case "is_empty" :  $where[$field] = array('eq','');break;
+                    case "is_not_empty" :  $where[$field] = array('neq','');break;
+                    case "gt" :  $where[$field] = array('gt',$search);break;
+                    case "egt" :  $where[$field] = array('egt',$search);break;
+                    case "lt" :  $where[$field] = array('lt',$search);break;
+                    case "elt" :  $where[$field] = array('elt',$search);break;
+                    case "eq" : $where[$field] = array('eq',$search);break;
+                    case "neq" : $where[$field] = array('neq',$search);break;
+                    case "between" : $where[$field] = array('between',array($search-1,$search+86400));break;
+                    case "nbetween" : $where[$field] = array('not between',array($search,$search+86399));break;
+                    case "tgt" :  $where[$field] = array('gt',$search+86400);break;
+                    default : $where[$field] = array('eq',$search);
+                }
+            }
+            $params = array('field='.$field, 'condition='.$condition, 'search='.$_REQUEST["search"]);
+        }
+        import("@.ORG.DialogListPage");
+        $list = $d_contract->where($where)->page($p.',10')->order('update_time desc')->select();
+        $count = $d_contract->where($where)->count();
+        $this->search_field = $_REQUEST;//搜索信息
+        $Page = new Page($count,10);
+        $Page->parameter = implode('&', $params);
+        $this->assign('page',$Page->show());
+        $this->assign('contractList',$list);
+        $this->display('listdialog');
+    }
+
 	
 	/**
 	*获取合同列表(js使用)

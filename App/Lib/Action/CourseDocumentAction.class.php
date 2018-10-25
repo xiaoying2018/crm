@@ -11,6 +11,7 @@ class CourseDocumentAction extends Action{
         $this->db=D('CourseDocument');
     }
     public function index(){
+
         if ($this->isAjax()) {
                 $wheredata = $_REQUEST;
                 $page = $wheredata['page'] ? $wheredata['page'] : 1;// 请求页码

@@ -664,7 +664,6 @@ function parseAlert() {
 	$alert['content'] = unserialize(stripslashes(cookie('alert')));
 	$alert['time'] = cookie('alerttime');
 	cookie('alert', null);
-
 	return $alert;
 }
 
