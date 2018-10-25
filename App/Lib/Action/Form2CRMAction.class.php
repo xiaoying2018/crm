@@ -197,6 +197,22 @@ class Form2CRMAction extends Action
                 $created['mobile'] = $params['XY_b35'].'-'.$created['mobile'];
             }
 
+            // 1024 新增 判断域名
+            if ((strpos($params['XY_b28'],'lang') !== false) || (strpos($params['XY_b28'],'yuyan') !== false)){
+                // 如果是 /yuyan /yuyanms /yuyanzl lang.xiaoying.net lang.xiao-ying.net lang.eggelite.com 网站提交的表单,填充咨询项目字段为 语言学校
+                $created['crm_project'] = '语言学校';
+            }elseif (strpos($params['XY_b28'],'sgu') !== false){
+                // 如果是 /sgu 网站提交的表单,填充咨询项目字段为 SGU
+                $created['crm_project'] = 'SGU';
+            }elseif (strpos($params['XY_b28'],'meishu') !== false){
+                // 如果是 /meishu 网站提交的表单,填充咨询项目字段为 艺术
+                $created['crm_project'] = '艺术';
+            }elseif (strpos($params['XY_b28'],'duyan') !== false){
+                // 如果是 /duyan 网站提交的表单,填充咨询项目字段为 读研
+                $created['crm_project'] = '读研';
+            }
+            // 1024 end
+
             // 去重处理、写库
             $writeResult            =   $this->write($created);
             // token 处理

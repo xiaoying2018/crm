@@ -2046,6 +2046,7 @@ class LeadsAction extends Action
 		$customer_data['leads_create_role_id'] =  array_key_exists('creator_role_id',$leads_info) ? $leads_info['creator_role_id'] : session('role_id');
         $customer_data['leads_id'] =  $leads_id;// 0802 新增关联线索编号
         $customer_data['name'] =  $leads_info['name'];
+        $customer_data['crm_project'] =  $leads_info['crm_project'];// 1024 新增咨询项目字段
 		$customer_data['contacts_id'] = $contacts_id;
 		$customer_data['address'] =  $leads_info['state'].'/n'.$leads_info['city'].'/n'.$leads_info['area'].'/n'.$leads_info['street'];
 		$customer_data['create_time'] = time();

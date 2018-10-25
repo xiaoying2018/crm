@@ -217,7 +217,9 @@
                                             </template>
                                             <template v-else>
                                                 <div class="file-container" style="display:inline-block;position:relative;overflow: hidden;vertical-align:middle">
-                                                   
+                                                    <if condition="session('role_id') == 5">
+                                                        <button class="btn btn-danger btn-sm" @click="scheduleDel(s.schedule_id)">删除排课</button>
+                                                    </if>
                                                     <!--<button class="btn btn-success fileinput-button" type="button">视频上传</button>-->
                                                     <!--<input type="file"  onchange="loadFile(this,this.files[0],1)" style="position:absolute;top:0;left:0;font-size:34px; opacity:0">-->
                                                 </div>

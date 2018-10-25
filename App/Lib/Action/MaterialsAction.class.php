@@ -496,7 +496,7 @@ class MaterialsAction extends Action
                     $current_apply_want_sample_num = M('apply_materials')->where(['apply_id'=>['eq',$v['id']]])->count();
                     $current_apply_has_get_sample_num = M('apply_materials')->where(['apply_id'=>['eq',$v['id']],'status'=>['eq',1]])->count();
 
-                    $list[$k]['percent'] = round( $current_apply_has_get_sample_num/$current_apply_want_sample_num * 100 , 2) . "％";;
+                    $list[$k]['percent'] = round( $current_apply_has_get_sample_num/$current_apply_want_sample_num * 100 , 2) . "％";
 
                 }
 

@@ -170,6 +170,9 @@
                 });
         });
 
+        var _requert = {}
+        _requert["c"] = "{: I('get.c') }";
+
         table();
     });
 
@@ -188,7 +191,7 @@
             datatype: "JSON",
             mtype: "post",
             width: "100%",
-            postData: "",
+            postData: _requert,
             height: _height,
             autowidth: true,
             forceFit: true,

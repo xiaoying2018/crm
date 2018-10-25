@@ -215,7 +215,7 @@
                         <input type="hidden" name="sms" id="hidden_sms" value="0"/>
                         <input type="hidden" name="email" id="hidden_email" value="0"/>
                         <!-- class="nicescroll" -->
-                        <div id="table_div" style="overflow-x: scroll;">
+                        <div id="table_div" style="overflow: scroll;">
                             <table class="table table-hover table-striped table_thead_fixed" id="tab_Test3">
                                 <tr id="childNodes_num" class="tabTh">
                                     <td style="width:30px;padding-left: 20px">
@@ -396,6 +396,7 @@
                             _this.lists = res.lists;
                             _this.total = res.count;
                             layer.msg('刷新成功!');
+                            setHeight();
                         }
                     }
                 });
@@ -443,10 +444,16 @@
         console.log(data);
         return ;
     }
+    $(window).resize(function() {
+        setHeight();
+    });
+    function setHeight(){
+        $("#table_div").height($(window).height()-280)
+    }
 </script>
 
 <script type="text/javascript">
-
+    
     /*让复选框默认取消选择*/
     $(':checkbox').prop('checked', false);
     $('[data-toggle="tooltip"]').tooltip({html:true});
