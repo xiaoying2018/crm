@@ -475,6 +475,11 @@ class EducationAction extends Action
 
         $courseModel = new SectionCateModelEdu();
 
+        $where=array();
+        if(!empty($wheredata['lotwhere'])){
+            $where['name']=array('LIKE','%'.$wheredata['lotwhere'].'%');;
+        }
+
         // 如果有班级的筛选条件 todo
         if ($wheredata['banji_id'])
         {

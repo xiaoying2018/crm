@@ -50,6 +50,10 @@
                             <option value="">请选择班级</option>
                             <option :value="n.id" v-for="n in optionarr">{{n.name}}</option>
                         </select>
+
+                        <li class="li_item bt col-lg-2" style="float: none !important;">
+                            <input type="text" placeholder="课程名称" name="search" id="searchInput" class="form-control input-sm"><i style="right:10px;" class="fa fa-search"></i>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -297,6 +301,19 @@
             },
         },
     });
+
+    $(document).on('click', '.fa-search', function () {
+        reloaddata()
+    });
+
+    function reloaddata() {
+        var _lotwhere = $("#searchInput").val();
+
+        var _data = {
+            lotwhere: _lotwhere,
+        };
+        $("#table_list_2").setGridParam({datatype: 'json', postData: _data}).trigger('reloadGrid');
+    }
 
     /**
      * @ 详情
